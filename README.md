@@ -4,16 +4,17 @@ A native timer for **stock PebbleOS**, with activity sharing for compatible
 watchfaces such as [Dynamic](https://github.com/xefensor/dynamic-watchface).
 The first target is Pebble Time 2 (`emery`, 200 × 228).
 
-Timer 0.2.0 is a **local, unpublished development candidate**. The prepared
-[PBW](releases/Timer-0.2.0.pbw), [source archive](releases/Timer-0.2.0-source.zip)
-and [checksums](releases/SHA256SUMS.txt) are kept together for review.
-The latest published release remains
-[Timer 0.1.1](https://github.com/xefensor/pebble-app-timer/releases/tag/v0.1.1).
-Real-phone and physical-watch checks remain separate from portable tests and
-emulator checks.
+Timer 0.2.0 is a **development prerelease for phone/watch testing**. Download the
+[PBW](https://github.com/xefensor/pebble-app-timer/releases/download/v0.2.0/Timer-0.2.0.pbw),
+[source archive](https://github.com/xefensor/pebble-app-timer/releases/download/v0.2.0/Timer-0.2.0-source.zip)
+and [checksums](https://github.com/xefensor/pebble-app-timer/releases/download/v0.2.0/SHA256SUMS.txt).
+Portable, package and emulator checks pass; real-phone delivery, Bluetooth
+behavior and physical alarm vibration still need device testing.
 
 ## Version 0.2.0
 
+- Testing prerelease: real-phone/plugin delivery, Bluetooth loss/reconnection
+  and physical-watch alarm behavior remain to be verified on actual devices.
 - Up to eight saved timers, a timer list and a hours/minutes/seconds editor.
 - Large countdown, progress bubbles and a right-hand action bar for editing,
   pausing, resuming and deleting. Completed timers offer one-minute snooze.
@@ -25,6 +26,7 @@ emulator checks.
   Reusing a slot while offline replaces its old phone snapshot on reconnection.
 - The interface is independently implemented; no upstream Pebble Timer source,
   fonts or image assets are incorporated.
+- A dedicated quick Extend action is deferred; use Edit to change the duration.
 
 ## Version 0.1.1
 

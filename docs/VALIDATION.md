@@ -1,5 +1,13 @@
 # Timer validation
 
+## Testing prerelease
+
+Xef authorized publishing 0.2.0 as a GitHub development prerelease for actual
+phone/watch testing on 2 November 2026. The distribution PBW is unchanged from
+the package and native evidence below. A dedicated quick Extend action is
+deferred; the existing Edit control changes the duration. No new gesture or
+increment is implied. Real-device testing is the next phase of this prerelease.
+
 ## 0.2.0 local recovery — 2 November 2026
 
 This is an unpublished candidate on `recovery/0.2.0-2026-11-02`. GitHub was
@@ -93,7 +101,7 @@ source. The committed candidate is checked with
 Source or documentation edits require regenerating the source archive and
 checksums, committing them, and repeating committed-HEAD preparation.
 
-Before publication, complete the actual phone/watch procedure in the
+Before treating the release as device-validated, complete the actual phone/watch procedure in the
 [README](../README.md#actual-phone-and-watch-checks): upgrade an existing
 Activity Timer installation; verify plugin permissions and delivery to Dynamic;
 restart the phone app; reuse a slot while disconnected; test nearby deadlines,
