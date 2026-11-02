@@ -1,0 +1,373 @@
+{
+  "version": "0.3.1",
+  "verification": "Native distribution candidate smoke validation",
+  "environment": "Emery QEMU over local FIFOs; phone JavaScript omitted; not a real phone or physical watch",
+  "candidatePbwSha256": "af6eaf21a2ee12a524537d3ae274acfdfc0b55826ee1877a4b5e7bf36998a00d",
+  "nativePayloadSha256": {
+    "emery/app_resources.pbpack": "b58d8f0fc04367f823045aafa7724dee47b1fe6674411d117e32909b3f527a31",
+    "emery/manifest.json": "d70cdb5a3dc46a1878c61514ae91a55c0113ed26ded415ab9ad07cd20cf4d5ae",
+    "emery/pebble-app.bin": "eea7753bd128952c3c8dba592ab3224fc99d7255666c8957fd96f86418703070"
+  },
+  "legacyMigration": {
+    "seededBy": "emulator-only fixture source legacy-fixture.c",
+    "modelBytes": 44,
+    "origin": "6b49d200",
+    "run": 1,
+    "state": "paused",
+    "remainingSeconds": 298,
+    "oldStorageKey": 2100,
+    "newStorageKeysClearedByFixture": [
+      2103,
+      2120,
+      2121,
+      2130,
+      2131,
+      2132,
+      2133,
+      2134,
+      2135,
+      2136,
+      2137,
+      2138,
+      2139,
+      2140,
+      2141,
+      2142,
+      2143,
+      2144,
+      2145
+    ],
+    "publicationTicket2102Preserved": true
+  },
+  "nativeBackgroundAlarm": {
+    "phoneJavascriptOmitted": true,
+    "nativeBytesMatchFinalCandidate": true,
+    "bluetoothDisconnectedRequested": true,
+    "note": "Direct SDK transport stays connected; this is bridge-free native Wakeup proof, not a real Bluetooth disconnection test."
+  },
+  "captures": [
+    {
+      "name": "legacy-fixture-paused",
+      "file": "legacy-fixture-paused.png",
+      "sha256": "b47823c802b068c3f8a22bebb937388a86f383e388fb7a2555deb2f903af70bc",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false
+    },
+    {
+      "name": "migration-list",
+      "file": "migration-list.png",
+      "sha256": "ade2e38379c960bd8d93b6ea4c081bcf04e49d8cb3eaee6f1c7f57996eba209c",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false
+    },
+    {
+      "name": "migration-detail",
+      "file": "migration-detail.png",
+      "sha256": "f4ae4551a178a03d436cdbb008d87c6cb283c7fc71ed1ab6e4e9a61b391c1439",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false
+    },
+    {
+      "name": "running",
+      "file": "running.png",
+      "sha256": "eaf7b6cdcd426bba28291200f9b119f290c44d05d1e9acec7e94e7d82bc8fa9b",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false
+    },
+    {
+      "name": "paused",
+      "file": "paused.png",
+      "sha256": "f4ae4551a178a03d436cdbb008d87c6cb283c7fc71ed1ab6e4e9a61b391c1439",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false
+    },
+    {
+      "name": "editor",
+      "file": "editor.png",
+      "sha256": "dff75eb97417e39f2871082b9980906d3228297c5b1e52b0df7d1c317472475e",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false
+    },
+    {
+      "name": "new-editor",
+      "file": "new-editor.png",
+      "sha256": "395ab04abbed757794d3198539381e906bbfd48ab82e47abf876098cfe262ae5",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false
+    },
+    {
+      "name": "second-running",
+      "file": "second-running.png",
+      "sha256": "bf5c569519a539c45bdcc3dd9fb16d7ce6f6a2570c393bf65711614be3404fc2",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false
+    },
+    {
+      "name": "multiple-list",
+      "file": "multiple-list.png",
+      "sha256": "c06d3145f8a23057a17b43f5a920dea02339b7b4c52e08cd41b153e803dfa477",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false
+    },
+    {
+      "name": "editor-24h",
+      "file": "editor-24h.png",
+      "sha256": "c9f005e8d5bad44b5d2cb982555cda7d84776a693a70aabd515b0f679312a086",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false
+    },
+    {
+      "name": "detail-24h",
+      "file": "detail-24h.png",
+      "sha256": "ea0668ceb200fa99552665eeb12bba908cb2d341acf88eab5b8106d9c3d135ee",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false
+    },
+    {
+      "name": "deleted-list",
+      "file": "deleted-list.png",
+      "sha256": "dbfd75ab5b75e3807768539e290c38cac73f01859b8f24cca5b2bdac7a90493c",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false
+    },
+    {
+      "name": "short-running",
+      "file": "short-running.png",
+      "sha256": "371a82c896ec564574ed4e963092d97229416379b08877204852f869c25b6eac",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false
+    },
+    {
+      "name": "alarm",
+      "file": "alarm.png",
+      "sha256": "1e73fc56f2de2f5261692be010a14a3ca42a4779a4a10bf6e73b2c0795945c1a",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false
+    },
+    {
+      "name": "snoozed",
+      "file": "snoozed.png",
+      "sha256": "ec489049265bdc6311eaa79e396aa9d0723ec5a30ca43f8155409c032a5a16a8",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false
+    },
+    {
+      "name": "snoozed-paused",
+      "file": "snoozed-paused.png",
+      "sha256": "f809f23b2e2e030fe3a0c9b526afb760d11ef53876895a0f3c988a073f181fcf",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false
+    },
+    {
+      "name": "alarm-dismiss-test",
+      "file": "alarm-dismiss-test.png",
+      "sha256": "1e73fc56f2de2f5261692be010a14a3ca42a4779a4a10bf6e73b2c0795945c1a",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false
+    },
+    {
+      "name": "dismissed-list",
+      "file": "dismissed-list.png",
+      "sha256": "35de950edcb565064be5f9b3f70c7a64300cef856e2d8d732917a8a398e6ae99",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false
+    },
+    {
+      "name": "reopened-list",
+      "file": "reopened-list.png",
+      "sha256": "d6df26f470516c09a756aa9d10ee631cc7dea7d6b2f517b45dd2d01097a0fe2a",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false
+    },
+    {
+      "name": "eight-timers-full",
+      "file": "eight-timers-full.png",
+      "sha256": "ab88d1cdb41e03786fd61961ffc50bcb1090f3a977a3179eb2baeb192e718a11",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false
+    },
+    {
+      "name": "eight-timers-last-row",
+      "file": "eight-timers-last-row.png",
+      "sha256": "74977783e1cc1ffa963e13365efc9aecab74c66674b7be64ef40dda232744433",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false
+    },
+    {
+      "name": "slot-deleted",
+      "file": "slot-deleted.png",
+      "sha256": "d44392f53cf6f76ceed46a146951ff621e867c9b71ffb0531ec528ea3b541ff4",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false
+    },
+    {
+      "name": "slot-reused",
+      "file": "slot-reused.png",
+      "sha256": "ec489049265bdc6311eaa79e396aa9d0723ec5a30ca43f8155409c032a5a16a8",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false
+    },
+    {
+      "name": "eight-timers-after-reuse",
+      "file": "eight-timers-after-reuse.png",
+      "sha256": "bfa3759abf0ce095a9c45f73a915b652dc32092fd37583aa4f78bbd1ace4a1e7",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false
+    },
+    {
+      "name": "empty-list",
+      "file": "empty-list.png",
+      "sha256": "52d2e763381cb70755837270350632f787580864b0405a0ca6b3f06807eb42ed",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false
+    },
+    {
+      "name": "native-only-no-js-list",
+      "file": "native-only-no-js-list.png",
+      "sha256": "52d2e763381cb70755837270350632f787580864b0405a0ca6b3f06807eb42ed",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false
+    },
+    {
+      "name": "native-only-short-running",
+      "file": "native-only-short-running.png",
+      "sha256": "371a82c896ec564574ed4e963092d97229416379b08877204852f869c25b6eac",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false
+    },
+    {
+      "name": "native-only-background-wakeup",
+      "file": "native-only-background-wakeup.png",
+      "sha256": "1e73fc56f2de2f5261692be010a14a3ca42a4779a4a10bf6e73b2c0795945c1a",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false
+    },
+    {
+      "name": "final-empty-list",
+      "file": "final-empty-list.png",
+      "sha256": "52d2e763381cb70755837270350632f787580864b0405a0ca6b3f06807eb42ed",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false
+    }
+  ],
+  "phoneJavascriptExecuted": false,
+  "focusedReplay": {
+    "reason": "The original 29-case workflow completed and wrote its report despite an ambiguous shell-session status. Its four native-only/final frames were recaptured in a focused follow-up run.",
+    "capturesReplayed": [
+      "native-only-no-js-list",
+      "native-only-short-running",
+      "native-only-background-wakeup",
+      "final-empty-list"
+    ],
+    "other25CaptureFilesPreserved": true,
+    "finalReportHashesVerified": true,
+    "emptyListPixelsIdenticalAfterCleanup": true
+  },
+  "visualReview": {
+    "capturesReviewed": [
+      "migration-list.png",
+      "migration-detail.png",
+      "running.png",
+      "paused.png",
+      "detail-24h.png",
+      "alarm.png",
+      "snoozed-paused.png",
+      "reopened-list.png",
+      "eight-timers-full.png",
+      "slot-reused.png",
+      "empty-list.png",
+      "native-only-background-wakeup.png",
+      "final-empty-list.png"
+    ],
+    "method": "Read-only inspection of original 200x228 native PNGs",
+    "result": "Remaining/elapsed/countdown/state labels, progress dots and action controls fit. Legacy paused data remains available and resumes; eight-slot capacity/reuse and native-only background alarm/cleanup screens are consistent.",
+    "scope": "Thirteen representative layouts reviewed directly; all29 scripted captures retain exact image hashes. The five-minute watchface expiry is covered by separate model/provider/ACT2 checks, not a physical-watch wait."
+  }
+}

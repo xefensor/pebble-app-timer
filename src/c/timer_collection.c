@@ -111,7 +111,7 @@ bool timer_collection_edit(TimerCollection *collection, unsigned slot,
     } else {
       next.deadline = 0;
       next.remaining_seconds = seconds;
-      next.valid_until = saturating_add(now, ACTIVITY_TIMER_MAX_SECONDS);
+      next.valid_until = saturating_add(now, ACTIVITY_TIMER_PAUSED_VISIBLE_SECONDS);
     }
   }
   return commit(collection, slot, &next);

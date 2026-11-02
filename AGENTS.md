@@ -15,6 +15,11 @@ service. Keep timer behaviour independent of Dynamic's presentation.
 - Preserve source/run identity, revisions, transport handshakes and observation
   time. Polling a saved snapshot must not renew its native observation. Zero is
   not proof of native completion.
+- A paused activity is shared for `ACTIVITY_TIMER_PAUSED_VISIBLE_SECONDS`
+  (five minutes), then hidden from consumers while remaining saved in Timer.
+  Reconfirmation advances its revision without renewing observation/expiry.
+  Only explicit paused edits/extensions or Resume establish a fresh window.
+  Clamp old paused leases from the saved observation when upgrading.
 - Back remains available when disconnected, storage fails or sharing is pending.
   Scheduling failure must remain visible; do not claim an alarm was secured.
 - Keep a single AppMessage queue. A transport ACK is not an application receipt.
@@ -23,7 +28,7 @@ service. Keep timer behaviour independent of Dynamic's presentation.
 
 - Install with `npm ci --ignore-scripts`. Use the versioned tarball in `vendor/`;
   never rely on a sibling library checkout. Record updated provenance and hashes.
-  The 0.3.0 candidate pins Activities 0.2.0; `vendor/ACTIVITIES.json` records
+  The 0.3.1 candidate pins Activities 0.2.0; `vendor/ACTIVITIES.json` records
   its exact reviewed source commit and archive checksum.
 - Use `npm run build` for distribution. Its manifestVersion 2 PBW must contain
   native app, PKJS, independently callable `plugin.js`, licences and notices.

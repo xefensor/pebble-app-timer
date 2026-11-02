@@ -86,7 +86,7 @@ bool activity_timer_pause(ActivityTimerModel *timer, uint32_t now) {
   timer->remaining_seconds = remaining;
   timer->deadline = 0;
   timer->state = ACTIVITY_TIMER_PAUSED;
-  timer->valid_until = add_saturating(now, ACTIVITY_TIMER_MAX_SECONDS);
+  timer->valid_until = add_saturating(now, ACTIVITY_TIMER_PAUSED_VISIBLE_SECONDS);
   return true;
 }
 
@@ -112,7 +112,7 @@ bool activity_timer_extend(ActivityTimerModel *timer, uint32_t seconds, uint32_t
     timer->valid_until = add_saturating(timer->deadline, ACTIVITY_TIMER_TERMINAL_SECONDS);
   } else {
     timer->remaining_seconds = remaining + seconds;
-    timer->valid_until = add_saturating(now, ACTIVITY_TIMER_MAX_SECONDS);
+    timer->valid_until = add_saturating(now, ACTIVITY_TIMER_PAUSED_VISIBLE_SECONDS);
   }
   return true;
 }
@@ -129,6 +129,18 @@ bool activity_timer_cancel(ActivityTimerModel *timer, uint32_t now) {
 
 bool activity_timer_reconfirm(ActivityTimerModel *timer, uint32_t now) {
   if (timer->state == ACTIVITY_TIMER_RUNNING && timer->deadline <= now) return false;
+  if (timer->state == ACTIVITY_TIMER_PAUSED) {
+    if (timer->revision == UINT32_MAX) return false;
+    ++timer->revision;
+    /* Reopening or re-sharing unchanged paused state must not restart its
+     * watchface visibility window. Keep the original observation, including
+     * after expiry; the timer remains saved and resumable in the watchapp.
+     * Clamp the former day-long lease when upgrading an existing pause. */
+    const uint32_t until = add_saturating(timer->observed_at,
+        ACTIVITY_TIMER_PAUSED_VISIBLE_SECONDS);
+    if (timer->valid_until > until) timer->valid_until = until;
+    return true;
+  }
   /* Keep a running deadline's validated baseline through RTC rollback. A user
    * pause/resume or extension supplies a new owner-observed baseline instead. */
   if (timer->state == ACTIVITY_TIMER_RUNNING && now < timer->observed_at)
@@ -136,8 +148,6 @@ bool activity_timer_reconfirm(ActivityTimerModel *timer, uint32_t now) {
   if (!advance(timer, now)) return false;
   if (timer->state == ACTIVITY_TIMER_RUNNING)
     timer->valid_until = add_saturating(timer->deadline, ACTIVITY_TIMER_TERMINAL_SECONDS);
-  else if (timer->state == ACTIVITY_TIMER_PAUSED)
-    timer->valid_until = add_saturating(now, ACTIVITY_TIMER_MAX_SECONDS);
   else {
     uint32_t minimum_until = add_saturating(now, ACTIVITY_TIMER_TERMINAL_SECONDS);
     if (timer->valid_until < minimum_until) timer->valid_until = minimum_until;

@@ -5,6 +5,63 @@
 #include <stdio.h>
 #include <string.h>
 
+static void paused_visibility(void) {
+  ActivityTimerModel timer;
+  activity_timer_init(&timer, 789, 1000);
+  assert(activity_timer_start(&timer, 600, 1000));
+  assert(activity_timer_pause(&timer, 1120));
+  const uint32_t expiry = 1120 + ACTIVITY_TIMER_PAUSED_VISIBLE_SECONDS;
+  assert(timer.observed_at == 1120 && timer.valid_until == expiry);
+  uint32_t revision = timer.revision;
+  /* A cold handshake immediately before, at and long after the visibility
+   * boundary changes only the revision. A backward RTC does not renew it. */
+  const uint32_t confirmations[] = {expiry - 1, expiry, 200000, 1000};
+  for (unsigned i = 0; i < sizeof(confirmations) / sizeof(confirmations[0]); ++i) {
+    assert(activity_timer_reconfirm(&timer, confirmations[i]));
+    assert(timer.revision == ++revision);
+    assert(timer.observed_at == 1120 && timer.valid_until == expiry);
+    assert(timer.state == ACTIVITY_TIMER_PAUSED && timer.remaining_seconds == 480);
+    assert(activity_timer_elapsed(&timer, confirmations[i]) == 120);
+    assert(activity_timer_valid(&timer));
+  }
+  ActivityTimerModel restored;
+  memcpy(&restored, &timer, sizeof(restored));
+  assert(activity_timer_valid(&restored));
+  assert(activity_timer_resume(&restored, 200000));
+  assert(restored.deadline == 200480 && restored.valid_until == 200540);
+  assert(restored.observed_at == 200000 && restored.run == timer.run);
+
+  /* Upgrade a saved old lease without treating a later handshake as a new
+   * pause. A deliberately earlier source expiry must stay earlier. */
+  timer.valid_until = timer.observed_at + ACTIVITY_TIMER_MAX_SECONDS;
+  assert(activity_timer_reconfirm(&timer, 200000));
+  assert(timer.valid_until == expiry && timer.observed_at == 1120);
+  timer.valid_until = timer.observed_at + 1;
+  assert(activity_timer_reconfirm(&timer, 300000));
+  assert(timer.valid_until == 1121 && activity_timer_valid(&timer));
+
+  /* An explicit extension is a newly observed paused value and may appear
+   * again for one bounded window. Ordinary reconfirmation cannot extend it. */
+  assert(activity_timer_extend(&timer, 60, 300001));
+  assert(timer.remaining_seconds == 540 && timer.observed_at == 300001);
+  assert(timer.valid_until == 300001 + ACTIVITY_TIMER_PAUSED_VISIBLE_SECONDS);
+  assert(activity_timer_reconfirm(&timer, 400000));
+  assert(timer.observed_at == 300001 && timer.valid_until < 400000);
+  timer.revision = UINT32_MAX;
+  ActivityTimerModel previous = timer;
+  assert(!activity_timer_reconfirm(&timer, 400001));
+  assert(!memcmp(&timer, &previous, sizeof(timer)));
+
+  /* Saturating visibility arithmetic cannot wrap into an earlier epoch. */
+  activity_timer_init(&timer, 789, UINT32_MAX - 100);
+  assert(activity_timer_start(&timer, 60, UINT32_MAX - 100));
+  assert(activity_timer_pause(&timer, UINT32_MAX - 90));
+  assert(timer.valid_until == UINT32_MAX && activity_timer_valid(&timer));
+  assert(activity_timer_reconfirm(&timer, UINT32_MAX));
+  assert(timer.observed_at == UINT32_MAX - 90 && timer.valid_until == UINT32_MAX);
+  assert(activity_timer_valid(&timer));
+}
+
 int main(void) {
   ActivityTimerModel timer;
   activity_timer_init(&timer, 123, 1000);
@@ -81,6 +138,7 @@ int main(void) {
   activity_timer_init(&timer, 123, UINT32_MAX - 1);
   assert(!activity_timer_start(&timer, 5, UINT32_MAX - 1));
   assert(sizeof(ActivityTimerModel) == 44); /* Existing persisted records need no migration. */
+  paused_visibility();
   puts("timer model: lifecycle, persistence, expiry and boundary checks passed");
   return 0;
 }

@@ -4,15 +4,28 @@ A native timer for **stock PebbleOS**, with activity sharing for compatible
 watchfaces such as [Dynamic](https://github.com/xefensor/dynamic-watchface).
 The first target is Pebble Time 2 (`emery`, 200 × 228).
 
-Timer 0.3.0 is an unpublished local candidate for the bounded two-item activity
-design. Its portable, packaged-provider and emulator checks pass, with 29 native
-smoke captures and 14 deadline captures recorded in
-[validation](docs/VALIDATION.md). Actual phone and physical-watch checks remain.
+Timer 0.3.1 is an unpublished local candidate for the bounded two-item activity
+design. Paused timers hide from compatible watchfaces after five minutes and
+remain saved in Timer. The [candidate PBW](releases/Timer-0.3.1.pbw) and
+[validation](docs/VALIDATION.md) are prepared locally. Actual phone and
+physical-watch checks remain.
 The last published testing release is 0.2.0; download its
 [PBW](https://github.com/xefensor/pebble-app-timer/releases/download/v0.2.0/Timer-0.2.0.pbw),
 [source archive](https://github.com/xefensor/pebble-app-timer/releases/download/v0.2.0/Timer-0.2.0-source.zip)
 and [checksums](https://github.com/xefensor/pebble-app-timer/releases/download/v0.2.0/SHA256SUMS.txt).
 That 0.2.0 release and its historical validation remain unchanged.
+
+## Version 0.3.1
+
+- Hide a paused timer from activity consumers after five minutes. Reopening
+  Timer, reconnecting, source polling and repeated sharing do not restart that
+  window. Both session and card sources keep the same native expiry.
+- Keep the paused timer saved and resumable in Timer after it disappears from
+  the watchface. Resume makes it visible again with its new running deadline;
+  explicitly editing its paused duration starts a new five-minute window.
+- Cap older saved paused leases from their last native observation when
+  upgrading. The stored timer format, eight slots and native alarms remain
+  compatible.
 
 ## Version 0.3.0
 
@@ -111,8 +124,11 @@ while disconnected. The original observation, deadline and validity are kept;
 polling never makes an old snapshot fresh. A locally calculated zero does not
 prove the native app completed or sounded its alarm.
 
-State changes are persisted before publishing. Reopening Timer refreshes the
-native observation. Revisions and the PKJS handshake prevent queued old states
+State changes are persisted before publishing. Reopening Timer reconfirms the
+native state. An unchanged paused timer keeps its original observation and
+five-minute visibility deadline, including after that deadline has passed.
+It remains available in Timer; Resume or an explicit duration edit publishes
+a fresh visible state. Revisions and the PKJS handshake prevent queued old states
 from replacing a newer run, including after native app data resets. Cancelled
 and completed records are terminal state, not new consumer alerts. Schema 1
 removes both terminal states. Schema 2 can display the native completed result
@@ -133,7 +149,7 @@ The dependency is installed from `vendor/pebble-activities-0.2.0.tgz`; its
 provenance and SHA-256 are recorded in [vendor/README.md](vendor/README.md).
 
 The distribution build clears the SDK cache so dependency updates cannot leave
-stale phone JavaScript in the PBW. It writes `dist/Timer-0.3.0.pbw` and its checksum. It bundles the provider
+stale phone JavaScript in the PBW. It writes `dist/Timer-0.3.1.pbw` and its checksum. It bundles the provider
 JavaScript and sets `manifestVersion: 2`, including `plugin.js` alongside PKJS
 and the watch binary. A plain `pebble build` creates a development PBW without
 that extra provider bundle; use `npm run build` for an installable shared-activity
@@ -162,9 +178,12 @@ been completed for this release**.
    retained and only one launcher entry remains.
 2. Add a timer from the + row, choose a duration and start it. Wait for “Shared with phone”, then return
    to Dynamic. Its countdown should use the same deadline.
-3. Reopen Timer, pause, and return. Dynamic should show a fixed remaining time.
-   Resume, edit and delete in turn; each operation should update or clear the
-   same run without replaying a completion.
+3. Reopen Timer, pause, and return. Dynamic should show a fixed remaining time
+   for five minutes, then hide it. Reopen Timer and return without editing;
+   the paused timer must remain saved there and stay hidden on Dynamic. Resume
+   it and verify it reappears. Pause and explicitly edit its duration to verify
+   a fresh five-minute window, then delete it; each operation should update or
+   clear the same run without replaying a completion.
 4. Start another run and immediately exit before the application receipt. Timer
    must remain usable, and an old receipt must not acknowledge the new run.
 5. Disconnect Bluetooth while starting or changing a timer. Back must remain

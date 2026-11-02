@@ -1,6 +1,54 @@
 # Timer validation
 
-## 0.3.0 local candidate — 2 November 2026
+## 0.3.1 paused visibility candidate — 2 November 2026
+
+Paused timers advertise a five-minute native validity window. Both session and
+card sources stop returning them at that original expiry; Dynamic's existing
+native expiry scheduler removes an already received card without needing a
+new phone update. A paused timer remains saved and resumable in Timer. Resume
+publishes its new running deadline. Explicit paused edits/extensions create a
+fresh five-minute window; passive polling, reopening and sharing do not.
+
+Paused reconfirmation advances the revision while preserving the saved
+observation and expiry. This also caps an older day-long lease from the saved
+observation, without changing the 44-byte model or deleting an expired pause.
+No library or Dynamic source/binary changes were required. The existing
+Dynamic 0.9.0 native expiry evidence retains its original scope.
+
+- Two strict C99 suites pass. New cases cover repeated reconfirmation before,
+  at and long after expiry, old lease migration, independent saved slots,
+  restored hidden pauses, resume, explicit edits/extensions, revision overflow,
+  backward RTC and saturating timestamp arithmetic.
+- All **14 JavaScript handoff tests** pass. The new tests execute the separate
+  cold provider for both schemas just before, exactly at and after expiry;
+  repeated native reconfirmation cannot renew it. A later native resume makes
+  both sources available again with the correct remaining/elapsed baseline.
+- All **33 release-helper tests** pass. The SDK 4.33.1 Emery distribution build
+  passes with native app, PKJS, callable provider, original identity and pinned
+  Activities 0.2.0. Resources are 4,092 bytes; prestartup RAM footprint is
+  15,480 bytes, with 115,592 bytes of SDK-reported heap before runtime use.
+- [29 native smoke captures](qa/0.3.1/native/emulator.json) cover migration,
+  running/paused detail, edit, resume, 24 hours, eight slots/reuse and native
+  background Wakeup. Thirteen representative frames were inspected directly.
+  The four background/cleanup frames were refreshed in a focused replay;
+  both runs used isolated Emery QEMU FIFOs with phone JavaScript omitted.
+  The native-only installation matches the final binary/resources/manifest,
+  and cleanup returns to the identical empty-list frame. These captures check
+  native regression behavior; the exact five-minute boundary is exercised by
+  the C and JavaScript tests above, rather than claimed as a five-minute
+  physical or emulator watchface session.
+
+Candidate PBW SHA-256:
+
+`af6eaf21a2ee12a524537d3ae274acfdfc0b55826ee1877a4b5e7bf36998a00d`
+
+These checks establish native lifetime and source behavior. The actual
+phone/watch procedure in the README also checks expiry and resume through live
+Timer-to-Dynamic delivery. Physical vibration, radio behavior and battery use
+remain device checks. The 0.3.0 native deadline evidence below is historical;
+the running deadline and Wakeup broker paths were unchanged in 0.3.1.
+
+## 0.3.0 local candidate — historical
 
 The local `feature/activity-views-v2-2026-11-02` branch adds native Remaining and
 Elapsed detail, immutable configured-duration publication metadata and a schema 2

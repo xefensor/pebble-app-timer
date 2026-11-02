@@ -20,7 +20,7 @@ function storage(failing) {
   };
 }
 
-function runtime(file, shared) {
+function runtime(file, shared, at = now) {
   const events = {}, sent = [];
   let source;
   const pebble = {
@@ -33,7 +33,7 @@ function runtime(file, shared) {
   };
   const api = {
     createPublisher(options) { return helpers.createPublisher(options); },
-    createProvider(options) { return helpers.createProvider({...options, now: () => now * 1000}); }
+    createProvider(options) { return helpers.createProvider({...options, now: () => at * 1000}); }
   };
   vm.runInNewContext(fs.readFileSync(path.join(__dirname, '..', file), 'utf8'), {
     Pebble: pebble, localStorage: shared,
@@ -268,4 +268,60 @@ test('only native completion can retain a bounded result card', () => {
   assert.equal(p.valid_until.timestamp.value,now+660);
   provider=helpers.createProvider({storage:shared,pluginUuid:uuid,now:() => (now+661)*1000});
   assert.equal(provider.source({category:'activity',item:'card'}).instances.length,0);
+});
+
+test('both source schemas hide an expired pause without losing its saved snapshot', () => {
+  const shared = storage();
+  const pkjs = runtime('src/pkjs/index.js', shared);
+  const paused = snapshot({ACTIVITY_STATE:'paused', ACTIVITY_DEADLINE:0,
+    ACTIVITY_DURATION:480, ACTIVITY_TOTAL_DURATION:600, ACTIVITY_VALID_UNTIL:now+300});
+  pkjs.events.appmessage({payload:paused});
+  function read(item, at) {
+    let answer;
+    runtime('src/plugin/index.js',shared,at).source({category:'activity',item},
+      {data(value) { answer=value; }});
+    return answer.instances;
+  }
+  for (const item of ['session','card']) {
+    const visible = read(item,now+299.999);
+    assert.equal(visible.length,1);
+    assert.equal(visible[0].properties.observed_at.timestamp.value,now);
+    assert.equal(visible[0].properties.valid_until.timestamp.value,now+300);
+    if (item==='card') {
+      assert.equal(visible[0].properties.main_valid_until.timestamp.value,now+300);
+      assert.equal(visible[0].properties.support_valid_until.timestamp.value,now+300);
+    }
+    assert.equal(read(item,now+300).length,0);
+    assert.equal(read(item,now+3600).length,0);
+  }
+  // Native reconfirm advances the revision without renewing the pause lease.
+  pkjs.events.appmessage({payload:{...paused,ACTIVITY_REVISION:5}});
+  assert.equal(pkjs.sent.at(-1).ACTIVITY_ACCEPTED_REVISION,5);
+  for (const item of ['session','card']) assert.equal(read(item,now+3600).length,0);
+  assert.equal(helpers.createPublisher({storage:shared,pluginUuid:uuid,maxRecords:8}).lastRevision(),5);
+});
+
+test('resuming a hidden pause republishes both source schemas with a fresh countdown', () => {
+  const shared=storage();
+  const pkjs=runtime('src/pkjs/index.js',shared);
+  pkjs.events.appmessage({payload:snapshot({ACTIVITY_STATE:'paused',ACTIVITY_DEADLINE:0,
+    ACTIVITY_DURATION:480,ACTIVITY_TOTAL_DURATION:600,ACTIVITY_VALID_UNTIL:now+300})});
+  const resumedAt=now+3600;
+  pkjs.events.appmessage({payload:snapshot({ACTIVITY_REVISION:5,ACTIVITY_OBSERVED_AT:resumedAt,
+    ACTIVITY_DEADLINE:resumedAt+480,ACTIVITY_VALID_UNTIL:resumedAt+540,ACTIVITY_TOTAL_DURATION:600})});
+  for (const item of ['session','card']) {
+    let answer;
+    runtime('src/plugin/index.js',shared,resumedAt).source({category:'activity',item},
+      {data(value) { answer=value; }});
+    assert.equal(answer.instances.length,1);
+    const p=answer.instances[0].properties;
+    assert.equal(p.state.shortText.text,'active');
+    assert.equal(p.observed_at.timestamp.value,resumedAt);
+    assert.equal(p.valid_until.timestamp.value,resumedAt+540);
+    if (item==='card') {
+      assert.equal(p.main_running.boolean.value,true);
+      assert.equal(p.main_base.numericValue.value,480);
+      assert.equal(p.support_base.numericValue.value,120);
+    }
+  }
 });

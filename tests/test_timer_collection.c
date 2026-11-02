@@ -181,6 +181,46 @@ static void elapsed_duration_baseline(void) {
   assert(collection.slots[slot].revision == revision); /* Reading time is pure. */
 }
 
+static void paused_visibility_and_restore(void) {
+  TimerCollection collection;
+  timer_collection_init(&collection, 123, 1000);
+  assert(timer_collection_create(&collection, 600, 1000) == 0);
+  assert(timer_collection_create(&collection, 1200, 1000) == 1);
+  assert(timer_collection_pause(&collection, 0, 1120));
+  const uint32_t run = collection.slots[0].run;
+  const uint32_t expiry = 1120 + ACTIVITY_TIMER_PAUSED_VISIBLE_SECONDS;
+  /* Simulate the previous version's persisted day-long paused lease. */
+  collection.slots[0].valid_until = 1120 + ACTIVITY_TIMER_MAX_SECONDS;
+  TimerCollection restored;
+  memcpy(&restored, &collection, sizeof(restored));
+  assert(timer_collection_valid(&restored));
+  assert(timer_collection_reconfirm(&restored, 0, expiry));
+  assert(restored.slots[0].valid_until == expiry);
+  assert(restored.slots[0].observed_at == 1120);
+  assert(timer_collection_reconfirm(&restored, 0, 200000));
+  assert(timer_collection_valid(&restored));
+  assert(restored.slots[0].state == ACTIVITY_TIMER_PAUSED);
+  assert(restored.slots[0].valid_until == expiry);
+  assert(restored.slots[0].remaining_seconds == 480);
+  assert(timer_collection_visible(&restored, 0) && timer_collection_count(&restored) == 2);
+  assert(!memcmp(&restored.slots[1], &collection.slots[1], sizeof(ActivityTimerModel)));
+
+  /* Editing a hidden pause creates one new visibility window; it never
+   * removes the saved slot or starts its native deadline before Resume. */
+  assert(timer_collection_edit(&restored, 0, 300, 200001));
+  assert(restored.slots[0].state == ACTIVITY_TIMER_PAUSED);
+  assert(restored.slots[0].run == run && !restored.slots[0].deadline);
+  assert(restored.slots[0].observed_at == 200001);
+  assert(restored.slots[0].valid_until == 200001 + ACTIVITY_TIMER_PAUSED_VISIBLE_SECONDS);
+  assert(timer_collection_reconfirm(&restored, 0, 300000));
+  assert(restored.slots[0].observed_at == 200001);
+  assert(restored.slots[0].valid_until == 200001 + ACTIVITY_TIMER_PAUSED_VISIBLE_SECONDS);
+  assert(timer_collection_resume(&restored, 0, 300001));
+  assert(restored.slots[0].deadline == 300301);
+  assert(restored.slots[0].valid_until == 300361);
+  assert(timer_collection_valid(&restored));
+}
+
 int main(void) {
   legacy_migration();
   independent_timers();
@@ -188,6 +228,7 @@ int main(void) {
   capacity_and_validation();
   revision_floor_and_persistence();
   elapsed_duration_baseline();
+  paused_visibility_and_restore();
   puts("timer collection: migration, eight slots, clocks, revisions, editing and persistence passed");
   return 0;
 }
