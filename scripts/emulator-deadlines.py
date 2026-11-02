@@ -1,6 +1,7 @@
 """Exercise native background Wakeup broker with simultaneous and nearby deadlines."""
 from pathlib import Path
 import hashlib, json, time, uuid, zipfile
+from os import environ
 from pebble_tool.commands.base import PebbleCommand
 import argparse
 def connect():
@@ -15,7 +16,8 @@ from pebble_tool.commands.install import ToolAppInstaller
 from PIL import Image
 
 ROOT = Path(__file__).resolve().parents[1]
-OUT = ROOT / 'docs/qa/0.2.0/local-recovery/deadlines'
+VERSION = json.loads((ROOT/'package.json').read_text())['version']
+OUT = Path(environ.get('TIMER_QA_OUTPUT',str(ROOT/'docs/qa'/VERSION/'native'))) / 'deadlines'
 OUT.mkdir(parents=True,exist_ok=True)
 for filename in ('timer_model.c','timer_model.h','timer_collection.c','timer_collection.h'):
     assert (ROOT/'tests/deadline-fixture/src/c'/filename).read_bytes() == (ROOT/'src/c'/filename).read_bytes(), 'Refresh deadline fixture source copies'
@@ -44,7 +46,7 @@ def clear():
         button('Up',8); button('Down'); button('Select'); button('Down')
 
 native = ROOT / 'build/timer-native-only-candidate.pbw'
-with zipfile.ZipFile(ROOT/'dist/Timer-0.2.0.pbw') as distribution, zipfile.ZipFile(native) as diagnostic:
+with zipfile.ZipFile(ROOT/'dist'/('Timer-'+VERSION+'.pbw')) as distribution, zipfile.ZipFile(native) as diagnostic:
     for name in distribution.namelist():
         if name.startswith('emery/'): assert distribution.read(name) == diagnostic.read(name)
 def install(path):
@@ -93,9 +95,9 @@ for capture in smoke['captures']:
 smoke['cleanupReplay'] = 'Corrected header navigation replayed with eight occupied slots; empty list content equals initial empty-list pixels; transport status footer is excluded from equality.'
 smoke_path.write_text(json.dumps(smoke,indent=2)+'\n')
 send_data_to_qemu(p.transport,QemuBluetoothConnection(connected=True))
-report={'version':'0.2.0','scope':'Fresh native-only Emery QEMU button and background Wakeup checks; no phone runtime or physical watch',
+report={'version':VERSION,'scope':'Fresh native-only Emery QEMU button and background Wakeup checks; no phone runtime or physical watch',
         'nativeOnlyPbwSha256':hashlib.sha256(native.read_bytes()).hexdigest(),
-        'candidatePbwSha256':hashlib.sha256((ROOT/'dist/Timer-0.2.0.pbw').read_bytes()).hexdigest(),'deadlineOffsetsSeconds':[0,5],'durationSeconds':20,'setup':'Native persistence fixture seeds two running timers before Timer schedules its own Wakeup; the watch clock is not changed during scheduled alarms','captures':captures,
+        'candidatePbwSha256':hashlib.sha256((ROOT/'dist'/('Timer-'+VERSION+'.pbw')).read_bytes()).hexdigest(),'deadlineOffsetsSeconds':[0,5],'durationSeconds':20,'setup':'Native persistence fixture seeds two running timers before Timer schedules its own Wakeup; the watch clock is not changed during scheduled alarms','captures':captures,
         'visualReviewRequired':True}
 (OUT/'deadlines.json').write_text(json.dumps(report,indent=2)+'\n')
 print('Deadline broker scenarios captured; inspect both alarm screens', flush=True)

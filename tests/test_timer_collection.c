@@ -158,12 +158,36 @@ static void revision_floor_and_persistence(void) {
   assert(offsetof(TimerCollection, slots) <= 256);
 }
 
+static void elapsed_duration_baseline(void) {
+  TimerCollection collection;
+  timer_collection_init(&collection, 99, 1000);
+  const int slot = timer_collection_create(&collection, 600, 1000);
+  assert(slot == 0);
+  const uint32_t run = collection.slots[slot].run;
+  assert(activity_timer_elapsed(&collection.slots[slot], 1120) == 120);
+  assert(timer_collection_pause(&collection, slot, 1120));
+  assert(activity_timer_elapsed(&collection.slots[slot], 2000) == 120);
+  assert(timer_collection_resume(&collection, slot, 3000));
+  assert(activity_timer_elapsed(&collection.slots[slot], 3010) == 130);
+  /* Edit changes the configured remaining duration within the same run. Its
+   * progress and elapsed display begin at that new duration setting. */
+  assert(timer_collection_edit(&collection, slot, 300, 3020));
+  assert(collection.slots[slot].run == run);
+  assert(activity_timer_elapsed(&collection.slots[slot], 3020) == 0);
+  assert(activity_timer_elapsed(&collection.slots[slot], 3030) == 10);
+  assert(timer_collection_pause(&collection, slot, 3030));
+  const uint32_t revision = collection.slots[slot].revision;
+  assert(activity_timer_elapsed(&collection.slots[slot], 4000) == 10);
+  assert(collection.slots[slot].revision == revision); /* Reading time is pure. */
+}
+
 int main(void) {
   legacy_migration();
   independent_timers();
   edit_and_slot_reuse();
   capacity_and_validation();
   revision_floor_and_persistence();
+  elapsed_duration_baseline();
   puts("timer collection: migration, eight slots, clocks, revisions, editing and persistence passed");
   return 0;
 }

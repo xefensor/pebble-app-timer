@@ -14,6 +14,7 @@ int main(void) {
   assert(activity_timer_start(&timer, 600, 1000));
   assert(timer.run == 1 && timer.deadline == 1600 && timer.observed_at == 1000);
   assert(activity_timer_remaining(&timer, 1120) == 480);
+  assert(activity_timer_elapsed(&timer, 1120) == 120);
   assert(timer.valid_until >= timer.deadline); /* Not music's 120-second lease. */
   assert(!activity_timer_start(&timer, 60, 1000));
 
@@ -21,10 +22,12 @@ int main(void) {
   uint32_t revision = timer.revision;
   assert(timer.remaining_seconds == 480 && !timer.deadline);
   assert(activity_timer_remaining(&timer, 2000) == 480);
+  assert(activity_timer_elapsed(&timer, 2000) == 120); /* Pauses add no active time. */
   assert(!activity_timer_pause(&timer, 2000));
   assert(timer.revision == revision);
   assert(activity_timer_extend(&timer, 60, 2000));
   assert(timer.remaining_seconds == 540);
+  assert(activity_timer_elapsed(&timer, 2000) == 60);
   assert(activity_timer_resume(&timer, 3000));
   assert(timer.deadline == 3540 && timer.remaining_seconds == 0 && timer.run == 1);
   assert(activity_timer_extend(&timer, 60, 3010));
@@ -32,6 +35,7 @@ int main(void) {
   assert(!activity_timer_finish_if_due(&timer, 3599));
   assert(activity_timer_finish_if_due(&timer, 3600));
   assert(timer.state == ACTIVITY_TIMER_FINISHED);
+  assert(activity_timer_elapsed(&timer, 4000) == timer.configured_seconds);
   revision = timer.revision;
   assert(!activity_timer_finish_if_due(&timer, 3601));
   assert(timer.revision == revision); /* Completion is emitted once by owner. */
@@ -42,6 +46,7 @@ int main(void) {
   assert(timer.run == 2 && timer.revision > revision);
   assert(activity_timer_cancel(&timer, 4001));
   assert(timer.state == ACTIVITY_TIMER_CANCELLED && !timer.deadline);
+  assert(activity_timer_elapsed(&timer, 4001) == 0);
   assert(timer.valid_until == 4065); /* Tombstone covers previous running lease. */
   assert(!activity_timer_finish_if_due(&timer, 9000));
   assert(activity_timer_valid(&timer));
@@ -75,7 +80,7 @@ int main(void) {
   assert(activity_timer_valid(&timer) && timer.remaining_seconds == ACTIVITY_TIMER_MAX_SECONDS);
   activity_timer_init(&timer, 123, UINT32_MAX - 1);
   assert(!activity_timer_start(&timer, 5, UINT32_MAX - 1));
-  assert(sizeof(ActivityTimerModel) <= 256);
+  assert(sizeof(ActivityTimerModel) == 44); /* Existing persisted records need no migration. */
   puts("timer model: lifecycle, persistence, expiry and boundary checks passed");
   return 0;
 }

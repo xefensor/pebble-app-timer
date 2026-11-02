@@ -58,6 +58,12 @@ uint32_t activity_timer_remaining(const ActivityTimerModel *timer, uint32_t now)
   return timer->state == ACTIVITY_TIMER_PAUSED ? timer->remaining_seconds : 0;
 }
 
+uint32_t activity_timer_elapsed(const ActivityTimerModel *timer, uint32_t now) {
+  if (timer->state == ACTIVITY_TIMER_CANCELLED) return 0;
+  const uint32_t remaining = activity_timer_remaining(timer, now);
+  return remaining < timer->configured_seconds ? timer->configured_seconds - remaining : 0;
+}
+
 bool activity_timer_start(ActivityTimerModel *timer, uint32_t seconds, uint32_t now) {
   if ((timer->state != ACTIVITY_TIMER_CANCELLED && timer->state != ACTIVITY_TIMER_FINISHED) ||
       seconds < ACTIVITY_TIMER_MIN_SECONDS || seconds > ACTIVITY_TIMER_MAX_SECONDS ||

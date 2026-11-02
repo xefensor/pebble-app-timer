@@ -366,6 +366,7 @@ static void prv_flush(void) {
   dict_write_uint32(out, MESSAGE_KEY_ACTIVITY_DEADLINE, timer->state == ACTIVITY_TIMER_RUNNING ? timer->deadline : 0);
   dict_write_uint32(out, MESSAGE_KEY_ACTIVITY_DURATION, timer->state == ACTIVITY_TIMER_PAUSED ? timer->remaining_seconds : 0);
   dict_write_uint32(out, MESSAGE_KEY_ACTIVITY_CLOCK_AT, 0);
+  dict_write_uint32(out, MESSAGE_KEY_ACTIVITY_TOTAL_DURATION, timer->configured_seconds);
   dict_write_uint8(out, MESSAGE_KEY_ACTIVITY_PRIVATE, 0);
   dict_write_end(out);
   s_transport_busy = true;
@@ -611,17 +612,23 @@ static void prv_draw(Layer *layer, GContext *ctx) {
     const bool running=timer->state==ACTIVITY_TIMER_RUNNING;
     prv_bar(ctx,0,running?1:2,3);
     char name[32],remaining[20];prv_name(timer,name,sizeof(name));
-    const uint32_t seconds=activity_timer_remaining(timer,prv_now());prv_format(seconds,remaining,sizeof(remaining));
+    const uint32_t now=prv_now();
+    const uint32_t seconds=activity_timer_remaining(timer,now);prv_format(seconds,remaining,sizeof(remaining));
     prv_text(ctx,name,FONT_KEY_GOTHIC_24_BOLD,GRect(5,7,156,37),GColorBlack,GTextAlignmentCenter);
+    prv_text(ctx,"Remaining",FONT_KEY_GOTHIC_14,GRect(5,48,156,19),GColorDarkGray,GTextAlignmentCenter);
     prv_text(ctx,remaining,seconds>=3600?FONT_KEY_BITHAM_34_MEDIUM_NUMBERS:FONT_KEY_BITHAM_42_BOLD,
         GRect(3,69,160,59),GColorBlack,GTextAlignmentCenter);
     prv_text(ctx,running?"Running":timer->state==ACTIVITY_TIMER_PAUSED?"Paused":"Finished",
         FONT_KEY_GOTHIC_18_BOLD,GRect(5,125,156,28),GColorDarkGray,GTextAlignmentCenter);
+    char elapsed[20],support[36];
+    prv_format(activity_timer_elapsed(timer,now),elapsed,sizeof(elapsed));
+    snprintf(support,sizeof(support),"Elapsed %s",elapsed);
+    prv_text(ctx,support,FONT_KEY_GOTHIC_18,GRect(5,154,156,26),GColorBlack,GTextAlignmentCenter);
     unsigned lit=timer->configured_seconds?(seconds*10+timer->configured_seconds/2)/timer->configured_seconds:0;
     if (lit>10)lit=10;
     for (unsigned i=0;i<10;++i) {
       graphics_context_set_fill_color(ctx,i<lit?prv_accent():GColorLightGray);
-      graphics_fill_circle(ctx,GPoint(24+(int)(i%5)*29,170+(int)(i/5)*26),9);
+      graphics_fill_circle(ctx,GPoint(24+(int)(i%5)*29,186+(int)(i/5)*15),6);
     }
   }
   if (s_screen != SCREEN_EDITOR || s_storage_error || s_alarm_error)

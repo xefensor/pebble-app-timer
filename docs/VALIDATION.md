@@ -1,6 +1,60 @@
 # Timer validation
 
-## Testing prerelease
+## 0.3.0 local candidate — 2 November 2026
+
+The local `feature/activity-views-v2-2026-11-02` branch adds native Remaining and
+Elapsed detail, immutable configured-duration publication metadata and a schema 2
+card source alongside schema 1. Both source items share one `activity` category
+declaration with the union of their 46 properties. The native persisted model
+remains 44 bytes; bank storage, run identity and Wakeup ownership are unchanged.
+This candidate is unpublished. Historical 0.2.0 evidence below belongs to that
+release and is preserved separately.
+
+| Check | Result and scope |
+| --- | --- |
+| Pinned dependency | Activities 0.2.0 archive, lockfile and installed package; source commit and exact checksum in [vendor/ACTIVITIES.json](../vendor/ACTIVITIES.json) |
+| `npm test` | Two strict C99 suites and all 12 JavaScript handoff tests pass |
+| `python3 -m unittest discover -s tests -p 'test_*release.py'` | All 33 release-helper tests pass, including the new ACT2 compiled-module/source regression |
+| Distribution build | SDK 4.33.1 built the Emery 0.3.0 native app, PKJS, callable provider and notices |
+| `node scripts/verify-timer-bundle.js EXTRACTED_PBW_DIRECTORY` | Repacked distribution scripts pass numeric/symbolic keys, multiple-slot receipts, offline replacement and cold session/card provider reads; all emitted shapes are declared |
+| Working-tree release audit | The release validator passes against current local source: manifest, locked dependency, notices, native CRC/UUID/version, exact PKJS modules, rebuilt provider and packaged runtime; release preparation separately verifies the archived committed snapshot |
+| Native smoke | [29 fresh captures](qa/0.3.0/native/emulator.json), including migration, Remaining/Elapsed detail, pause/resume, eight slots, cleanup and bridge-free background Wakeup |
+| Deadline broker | [14 fresh captures](qa/0.3.0/native/deadlines/deadlines.json), including equal deadlines, deadlines five seconds apart and eight-slot cleanup |
+
+The C suites cover elapsed pause exclusion, unchanged source revision while
+reading a clock, terminal boundaries and Edit baseline reset. The JavaScript
+checks cover both source schemas, independent slot reads, original native
+observation/expiry, conflicting duration metadata and bounded authoritative
+completed results. Saved older snapshots still work without invented elapsed
+time. The local Node runner adapter described below was also used for these
+portable checks; production code and assertions were unchanged.
+The release auditor now includes `view.js` when that module exists in the
+pinned Activities package. Source-map presence, source bytes and actual compiled
+module bytes remain mandatory; missing or altered ACT2 modules are rejected.
+
+After the native captures, only `appinfo.json`'s `plugin.sources` field was
+repacked to declare the two source items under one category. Every other ZIP
+entry retains identical payload and compressed bytes, including PKJS, provider,
+native binary, resources and native manifest. No SDK rebuild was performed for
+this metadata correction. Both QA reports record the previous PBW hash, the
+manifest-only repack and verified identical native payload hashes. The native-only
+deadline PBW was also checked against those exact native payloads, and all 43
+recorded capture hashes were verified.
+
+The final local `dist/Timer-0.3.0.pbw` SHA-256 is:
+
+`fbf6de60e1704132a973f5c608279cc4710710f6438133320df22cc95991be16`
+
+All 14 deadline captures and the representative running, paused and 24-hour
+detail captures were visually reviewed. Countdown, Remaining/Elapsed labels,
+state, progress bubbles, controls, alarm screens and cleanup fit the native
+200×228 screen. These are local artifact and emulator results. Real phone/plugin
+delivery, physical vibration, actual Bluetooth loss/reconnection and battery use
+remain device checks. The release workflow archives this final source and
+documentation, then validates the committed candidate before publication.
+Those local packaging checks do not publish a release.
+
+## 0.2.0 testing prerelease — historical
 
 Xef authorized publishing 0.2.0 as a GitHub development prerelease for actual
 phone/watch testing on 2 November 2026. The distribution PBW is unchanged from

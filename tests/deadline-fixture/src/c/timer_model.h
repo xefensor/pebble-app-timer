@@ -34,6 +34,9 @@ typedef struct {
 void activity_timer_init(ActivityTimerModel *timer, uint32_t origin, uint32_t now);
 bool activity_timer_valid(const ActivityTimerModel *timer);
 uint32_t activity_timer_remaining(const ActivityTimerModel *timer, uint32_t now);
+/* Active time within the current configured duration. Editing the remaining
+ * duration establishes a new baseline; pauses do not add elapsed time. */
+uint32_t activity_timer_elapsed(const ActivityTimerModel *timer, uint32_t now);
 bool activity_timer_start(ActivityTimerModel *timer, uint32_t seconds, uint32_t now);
 bool activity_timer_pause(ActivityTimerModel *timer, uint32_t now);
 bool activity_timer_resume(ActivityTimerModel *timer, uint32_t now);

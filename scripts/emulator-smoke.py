@@ -6,7 +6,7 @@ fixture with `pebble build` from tests/legacy-fixture first. Replaces Timer's
 emulator data deliberately; never run against a physical watch.
 """
 from pathlib import Path
-import argparse,time,uuid
+import argparse,time,uuid,json
 from os import environ
 from pebble_tool.commands.base import PebbleCommand
 from pebble_tool.commands.install import ToolAppInstaller
@@ -15,7 +15,9 @@ from libpebble2.services.screenshot import Screenshot
 from libpebble2.communication.transports.qemu.protocol import QemuButton,QemuBluetoothConnection
 from pebble_tool.commands.emucontrol import send_data_to_qemu
 from PIL import Image
-ROOT=Path(__file__).resolve().parents[1];OUT=Path(environ.get('TIMER_QA_OUTPUT',str(ROOT/'docs/qa/0.2.0/local-recovery')));OUT.mkdir(parents=True,exist_ok=True)
+ROOT=Path(__file__).resolve().parents[1]
+VERSION=json.loads((ROOT/'package.json').read_text())['version']
+OUT=Path(environ.get('TIMER_QA_OUTPUT',str(ROOT/'docs/qa'/VERSION/'native')));OUT.mkdir(parents=True,exist_ok=True)
 class Connection(PebbleCommand):valid_connections={'emulator'}
 c=Connection();c._set_debugging(0)
 p=c._connect(argparse.Namespace(v=0,emulator='emery',sdk=None,vnc=False,sunlight=False))
@@ -51,7 +53,7 @@ def plus():button('Up',8);button('Select')
 def create_short():
  plus();button('Select');button('Down',5);button('Select');button('Up',5);button('Select')
 fixture=ROOT/'tests/legacy-fixture/build/legacy-fixture.pbw'
-final=ROOT/'dist/Timer-0.2.0.pbw'
+final=ROOT/'dist'/('Timer-'+VERSION+'.pbw')
 install(fixture);shot('legacy-fixture-paused')
 install(final);shot('migration-list')
 button('Select');shot('migration-detail')
@@ -92,5 +94,5 @@ install(final);shot('final-empty-list')
 with zipfile.ZipFile(final) as z:
  hashes={name:hashlib.sha256(z.read(name)).hexdigest() for name in z.namelist() if name.startswith('emery/')}
 with zipfile.ZipFile(native) as z:assert all(hashlib.sha256(z.read(k)).hexdigest()==v for k,v in hashes.items())
-report={'version':'0.2.0','verification':'Fresh run after recovery; final distribution candidate','environment':'Emery QEMU and pypkjs; not a real phone or physical watch','candidatePbwSha256':hashlib.sha256(final.read_bytes()).hexdigest(),'nativePayloadSha256':hashes,'legacyMigration':{'seededBy':'emulator-only fixture source legacy-fixture.c','modelBytes':44,'origin':'6b49d200','run':1,'state':'paused','remainingSeconds':298,'oldStorageKey':2100,'newStorageKeysClearedByFixture':[2103,2120,2121]+list(range(2130,2146)),'publicationTicket2102Preserved':True},'nativeBackgroundAlarm':{'phoneJavascriptOmitted':True,'nativeBytesMatchFinalCandidate':True,'bluetoothDisconnectedRequested':True,'note':'Direct SDK transport stays connected; this is bridge-free native Wakeup proof, not a real Bluetooth disconnection test.'},'captures':[{'name':name,'file':name+'.png','sha256':hashlib.sha256((OUT/(name+'.png')).read_bytes()).hexdigest(),'pixels':[200,228],'nativePixelsModified':False} for name in captures]}
+report={'version':VERSION,'verification':'Native distribution candidate smoke validation','environment':'Emery QEMU and pypkjs; not a real phone or physical watch','candidatePbwSha256':hashlib.sha256(final.read_bytes()).hexdigest(),'nativePayloadSha256':hashes,'legacyMigration':{'seededBy':'emulator-only fixture source legacy-fixture.c','modelBytes':44,'origin':'6b49d200','run':1,'state':'paused','remainingSeconds':298,'oldStorageKey':2100,'newStorageKeysClearedByFixture':[2103,2120,2121]+list(range(2130,2146)),'publicationTicket2102Preserved':True},'nativeBackgroundAlarm':{'phoneJavascriptOmitted':True,'nativeBytesMatchFinalCandidate':True,'bluetoothDisconnectedRequested':True,'note':'Direct SDK transport stays connected; this is bridge-free native Wakeup proof, not a real Bluetooth disconnection test.'},'captures':[{'name':name,'file':name+'.png','sha256':hashlib.sha256((OUT/(name+'.png')).read_bytes()).hexdigest(),'pixels':[200,228],'nativePixelsModified':False} for name in captures]}
 (OUT/'emulator.json').write_text(json.dumps(report,indent=2)+'\n');print('Final native smoke passed',flush=True)

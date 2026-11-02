@@ -21,6 +21,11 @@ assert.equal(appinfo.uuid, '50e9ef12-a5ab-4369-a3b5-3447bfba5151');
 assert.equal(appinfo.manifestVersion, 2);
 assert.equal(appinfo.watchapp.watchface, false);
 assert.equal(keys.ACTIVITY_SLOT, 1021, 'Timer slot key changed');
+assert.equal(keys.ACTIVITY_TOTAL_DURATION, 1022, 'Timer total-duration key changed');
+assert.equal(appinfo.plugin.sources.filter(source => source.category === 'activity').length, 1,
+  'PBW must declare one activity category covering both source items');
+assert.deepEqual(appinfo.plugin.sources.find(source => source.category === 'activity').items,
+  ['session', 'card']);
 
 const reverse = {};
 for (const [name, value] of Object.entries(keys)) {
@@ -106,6 +111,7 @@ function verifyPkjs() {
     ACTIVITY_DEADLINE: deadline,
     ACTIVITY_DURATION: 0,
     ACTIVITY_CLOCK_AT: 0,
+    ACTIVITY_TOTAL_DURATION: 1200,
     ACTIVITY_PRIVATE: 0,
     ACTIVITY_PUBLISH_SESSION: ticket
   });
@@ -177,4 +183,36 @@ for (const [name, value] of Object.entries(properties)) {
       `Plugin emitted an undeclared property/shape: ${name}/${shape}`);
   }
 }
-console.log('Packaged timer PKJS, numeric keys, multi-slot receipts, offline replacement and cold provider passed.');
+
+const cardSource = appinfo.plugin.sources.find(declaration =>
+  declaration.category === 'activity' && declaration.items.includes('card'));
+assert.ok(cardSource, 'PBW does not declare activity/card');
+response = undefined;
+sourceError = undefined;
+context.__request = {category:'activity', item:'card'};
+vm.runInContext('__handler(__request, __respond)', context, {timeout:1000});
+assert.equal(sourceError, undefined);
+assert.equal(response.instances.length, 2);
+assert.equal(response.instances[0].instanceId, run);
+assert.equal(response.instances[1].instanceId, 'second-slot:2');
+const card = response.instances[0].properties;
+assert.equal(card.schema_version.numericValue.value, 2);
+assert.equal(card.state.shortText.text, 'active');
+assert.equal(card.main_type.shortText.text, 'clock');
+assert.equal(card.main_clock.shortText.text, 'deadline');
+assert.equal(card.main_running.boolean.value, true);
+assert.equal(card.main_base.numericValue.value - (NOW_SECONDS-card.main_anchor.timestamp.value), 600);
+assert.equal(card.support_type.shortText.text, 'clock');
+assert.equal(card.support_clock.shortText.text, 'elapsed');
+assert.equal(card.support_running.boolean.value, true);
+assert.equal(card.support_base.numericValue.value + (NOW_SECONDS-card.support_anchor.timestamp.value), 600);
+assert.equal(card.support_observed_at.timestamp.value, observedAt);
+assert.equal(card.support_valid_until.timestamp.value, validUntil);
+assert.equal(card.unconfirmed.boolean.value, true);
+for (const [name, value] of Object.entries(card)) {
+  for (const shape of Object.keys(value)) {
+    assert.ok(cardSource.properties[name] && cardSource.properties[name].includes(shape),
+      `Card emitted an undeclared property/shape: ${name}/${shape}`);
+  }
+}
+console.log('Packaged timer PKJS, numeric keys, multi-slot receipts, offline replacement and cold session/card providers passed.');

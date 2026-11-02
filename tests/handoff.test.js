@@ -167,3 +167,105 @@ test('invalid native slot cannot acknowledge or replace another timer', () => {
   assert.equal(provider.source({}).instances.length, 1);
   assert.equal(provider.source({}).instances[0].properties.revision.numericValue.value, 4);
 });
+
+test('one activity manifest declaration covers legacy sessions and bounded cards', () => {
+  const manifest = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'package.json'), 'utf8'));
+  assert.equal(manifest.pebble.messageKeys.ACTIVITY_SLOT, 1021);
+  assert.equal(manifest.pebble.messageKeys.ACTIVITY_TOTAL_DURATION, 1022);
+  const sources = manifest.pebble.plugin.sources.filter(source => source.category === 'activity');
+  assert.equal(sources.length, 1, 'Each source category must be declared once');
+  const card = sources[0];
+  assert.deepEqual(card.items, ['session', 'card']);
+  assert.deepEqual(card.properties.deadline, ['timestamp']);
+  assert.deepEqual(card.properties.duration, ['numericValue']);
+  assert.deepEqual(card.properties.clock_at, ['timestamp']);
+  assert.deepEqual(card.properties.main_base, ['numericValue']);
+  assert.deepEqual(card.properties.support_anchor, ['timestamp']);
+});
+
+test('cold card source reports remaining and elapsed from one native observation', () => {
+  const shared = storage();
+  const pkjs = runtime('src/pkjs/index.js', shared);
+  pkjs.events.appmessage({payload: snapshot({ACTIVITY_TOTAL_DURATION: 900})});
+  let answer;
+  runtime('src/plugin/index.js', shared).source({category:'activity', item:'card'}, {data(value) { answer = value; }});
+  assert.equal(answer.instances.length, 1);
+  const p = answer.instances[0].properties;
+  assert.equal(p.schema_version.numericValue.value, 2);
+  assert.equal(p.main_type.shortText.text, 'clock');
+  assert.equal(p.main_clock.shortText.text, 'deadline');
+  assert.equal(p.main_base.numericValue.value, 600);
+  assert.equal(p.main_anchor.timestamp.value, now);
+  assert.equal(p.main_running.boolean.value, true);
+  assert.equal(p.support_type.shortText.text, 'clock');
+  assert.equal(p.support_clock.shortText.text, 'elapsed');
+  assert.equal(p.support_base.numericValue.value, 300);
+  assert.equal(p.support_anchor.timestamp.value, now);
+  assert.equal(p.support_running.boolean.value, true);
+  assert.equal(p.unconfirmed.boolean.value, true);
+  const later = helpers.createProvider({storage:shared,pluginUuid:uuid,now:() => (now+120)*1000}).source({category:'activity',item:'card'}).instances[0].properties;
+  assert.equal(later.observed_at.timestamp.value, now);
+  assert.equal(later.support_observed_at.timestamp.value, now);
+  assert.equal(later.support_valid_until.timestamp.value, now+660);
+  assert.equal(later.support_base.numericValue.value, 300);
+  assert.equal(later.support_anchor.timestamp.value, now);
+});
+
+test('paused card clocks stay fixed and a changed duration is a new source revision', () => {
+  const shared = storage();
+  const pkjs = runtime('src/pkjs/index.js', shared);
+  pkjs.events.appmessage({payload:snapshot({ACTIVITY_TOTAL_DURATION:600})});
+  pkjs.events.appmessage({payload:snapshot({ACTIVITY_REVISION:5,ACTIVITY_STATE:'paused',
+    ACTIVITY_OBSERVED_AT:now+120,ACTIVITY_DEADLINE:0,ACTIVITY_DURATION:480,ACTIVITY_TOTAL_DURATION:600})});
+  let provider = helpers.createProvider({storage:shared,pluginUuid:uuid,now:() => (now+300)*1000});
+  let p = provider.source({category:'activity',item:'card'}).instances[0].properties;
+  assert.equal(p.main_base.numericValue.value, 480);
+  assert.equal(p.main_running.boolean.value, false);
+  assert.equal(p.support_base.numericValue.value, 120);
+  assert.equal(p.support_running.boolean.value, false);
+  pkjs.events.appmessage({payload:snapshot({ACTIVITY_REVISION:6,ACTIVITY_STATE:'paused',
+    ACTIVITY_OBSERVED_AT:now+300,ACTIVITY_DEADLINE:0,ACTIVITY_DURATION:300,ACTIVITY_TOTAL_DURATION:300})});
+  p = provider.source({category:'activity',item:'card'}).instances[0].properties;
+  assert.equal(p.support_base.numericValue.value, 0);
+  assert.equal(p.revision.numericValue.value, 6);
+});
+
+test('old native snapshots still work without inventing an elapsed value', () => {
+  const shared = storage();
+  runtime('src/pkjs/index.js',shared).events.appmessage({payload:snapshot()});
+  const p=helpers.createProvider({storage:shared,pluginUuid:uuid,now:() => now*1000})
+    .source({category:'activity',item:'card'}).instances[0].properties;
+  assert.equal(p.schema_version.numericValue.value,2);
+  assert.equal(p.main_base.numericValue.value,600);
+  assert.equal(p.support_type,undefined);
+});
+
+test('conflicting duration metadata cannot mutate an accepted revision', () => {
+  const shared=storage();
+  const pkjs=runtime('src/pkjs/index.js',shared);
+  pkjs.events.appmessage({payload:snapshot({ACTIVITY_TOTAL_DURATION:900})});
+  pkjs.events.appmessage({payload:snapshot({ACTIVITY_TOTAL_DURATION:1200})});
+  assert.ok(pkjs.sent.at(-1).ACTIVITY_ERROR);
+  assert.equal(pkjs.sent.at(-1).ACTIVITY_ACCEPTED_REVISION,undefined);
+  const p=helpers.createProvider({storage:shared,pluginUuid:uuid,now:() => now*1000})
+    .source({category:'activity',item:'card'}).instances[0].properties;
+  assert.equal(p.support_base.numericValue.value,300);
+});
+
+test('only native completion can retain a bounded result card', () => {
+  const shared=storage();
+  const pkjs=runtime('src/pkjs/index.js',shared);
+  pkjs.events.appmessage({payload:snapshot({ACTIVITY_TOTAL_DURATION:600})});
+  let provider=helpers.createProvider({storage:shared,pluginUuid:uuid,now:() => (now+600)*1000});
+  let p=provider.source({category:'activity',item:'card'}).instances[0].properties;
+  assert.equal(p.state.shortText.text,'active'); /* Phone clock zero cannot complete it. */
+  pkjs.events.appmessage({payload:snapshot({ACTIVITY_REVISION:5,ACTIVITY_STATE:'completed',ACTIVITY_CLOCK:'none',
+    ACTIVITY_DEADLINE:0,ACTIVITY_OBSERVED_AT:now+600,ACTIVITY_VALID_UNTIL:now+660,ACTIVITY_TOTAL_DURATION:600})});
+  p=provider.source({category:'activity',item:'card'}).instances[0].properties;
+  assert.equal(p.state.shortText.text,'completed');
+  assert.equal(p.show_terminal.boolean.value,true);
+  assert.equal(p.main_retain.boolean.value,true); /* A cached result is still last-reported. */
+  assert.equal(p.valid_until.timestamp.value,now+660);
+  provider=helpers.createProvider({storage:shared,pluginUuid:uuid,now:() => (now+661)*1000});
+  assert.equal(provider.source({category:'activity',item:'card'}).instances.length,0);
+});

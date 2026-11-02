@@ -4,12 +4,33 @@ A native timer for **stock PebbleOS**, with activity sharing for compatible
 watchfaces such as [Dynamic](https://github.com/xefensor/dynamic-watchface).
 The first target is Pebble Time 2 (`emery`, 200 × 228).
 
-Timer 0.2.0 is a **development prerelease for phone/watch testing**. Download the
+Timer 0.3.0 is an unpublished local candidate for the bounded two-item activity
+design. Its portable, packaged-provider and emulator checks pass, with 29 native
+smoke captures and 14 deadline captures recorded in
+[validation](docs/VALIDATION.md). Actual phone and physical-watch checks remain.
+The last published testing release is 0.2.0; download its
 [PBW](https://github.com/xefensor/pebble-app-timer/releases/download/v0.2.0/Timer-0.2.0.pbw),
 [source archive](https://github.com/xefensor/pebble-app-timer/releases/download/v0.2.0/Timer-0.2.0-source.zip)
 and [checksums](https://github.com/xefensor/pebble-app-timer/releases/download/v0.2.0/SHA256SUMS.txt).
-Portable, package and emulator checks pass; real-phone delivery, Bluetooth
-behavior and physical alarm vibration still need device testing.
+That 0.2.0 release and its historical validation remain unchanged.
+
+## Version 0.3.0
+
+- Keep the remaining countdown prominent and show a labelled elapsed time in
+  Timer detail. The existing Edit, pause/resume, delete, snooze and Back controls
+  remain available, with the same eight saved timer slots and native alarms.
+- Publish the configured total duration alongside each immutable native snapshot.
+  Compatible `activity/card` schema 2 consumers can show remaining and elapsed
+  clocks from the same observation. Existing `activity/session` schema 1
+  consumers remain supported.
+- Elapsed means active time within the current duration setting. Pausing freezes
+  it; editing the remaining duration establishes a new baseline. The persisted
+  native timer model and upgrade migration remain unchanged.
+- A native completed state can be shown as a bounded schema 2 result until its
+  original terminal validity expires. Local countdown zero alone never completes
+  a source record. Cancelling retracts the activity.
+- Builds use pinned Pebble Activities 0.2.0. A saved older snapshot without total
+  duration provides its remaining clock without inventing elapsed time.
 
 ## Version 0.2.0
 
@@ -43,7 +64,9 @@ behavior and physical alarm vibration still need device testing.
 Install **one Timer PBW**. It contains the native watchapp, its PKJS phone bridge
 and a read-only provider plugin. Timer owns its saved timer and native Wakeup
 alarm. The bridge saves the last reported state on the phone, and the plugin
-exposes that state as `activity/session` v1 to compatible consumers.
+exposes that state as `activity/session` v1 and `activity/card` v2 to compatible
+consumers. One activity category declares both item names and their properties.
+Both views keep the original native identity, revision and timestamps.
 
 [Pebble Activities](https://github.com/xefensor/pebble-activities) supplies the
 shared library and source convention. It is not another installed app or
@@ -68,6 +91,10 @@ The editor sets hours, minutes and seconds, from five seconds to 24 hours.
 The native app owns every deadline and alarm. Leaving the app or losing phone
 connectivity does not cancel a successfully scheduled Wakeup.
 
+The detail screen shows Remaining, state and Elapsed from one native time read.
+Elapsed excludes paused time within the current duration setting. Edit resets
+that setting and its progress baseline; it is not a lifetime session counter.
+
 The timer respects Quiet Time for vibration. PebbleOS controls missed-Wakeup
 notifications. A scheduling failure displays “Alarm not set; keep app open”
 instead of claiming a background alarm was secured.
@@ -87,7 +114,10 @@ prove the native app completed or sounded its alarm.
 State changes are persisted before publishing. Reopening Timer refreshes the
 native observation. Revisions and the PKJS handshake prevent queued old states
 from replacing a newer run, including after native app data resets. Cancelled
-and completed records are terminal state, not new consumer alerts.
+and completed records are terminal state, not new consumer alerts. Schema 1
+removes both terminal states. Schema 2 can display the native completed result
+for its original, bounded validity; cancellation still clears it. Native alarm
+vibration remains owned by Timer, independently of either display source.
 
 ## Build and check
 
@@ -99,11 +129,11 @@ npm test
 npm run build
 ```
 
-The dependency is installed from `vendor/pebble-activities-0.1.2.tgz`; its
+The dependency is installed from `vendor/pebble-activities-0.2.0.tgz`; its
 provenance and SHA-256 are recorded in [vendor/README.md](vendor/README.md).
 
 The distribution build clears the SDK cache so dependency updates cannot leave
-stale phone JavaScript in the PBW. It writes `dist/Timer-0.2.0.pbw` and its checksum. It bundles the provider
+stale phone JavaScript in the PBW. It writes `dist/Timer-0.3.0.pbw` and its checksum. It bundles the provider
 JavaScript and sets `manifestVersion: 2`, including `plugin.js` alongside PKJS
 and the watch binary. A plain `pebble build` creates a development PBW without
 that extra provider bundle; use `npm run build` for an installable shared-activity

@@ -1,0 +1,360 @@
+{
+  "version": "0.3.0",
+  "verification": "Native distribution candidate smoke validation",
+  "environment": "Emery QEMU and pypkjs; not a real phone or physical watch",
+  "candidatePbwSha256": "fbf6de60e1704132a973f5c608279cc4710710f6438133320df22cc95991be16",
+  "nativePayloadSha256": {
+    "emery/app_resources.pbpack": "b58d8f0fc04367f823045aafa7724dee47b1fe6674411d117e32909b3f527a31",
+    "emery/manifest.json": "67514a4830d7d5bfff3c3fd455a0fbca2c691325d7b9d5efa79810979244f800",
+    "emery/pebble-app.bin": "2b52015c4d4fe5b895c60895182e0050e07c8973161c040f8a5eef823947c65b"
+  },
+  "legacyMigration": {
+    "seededBy": "emulator-only fixture source legacy-fixture.c",
+    "modelBytes": 44,
+    "origin": "6b49d200",
+    "run": 1,
+    "state": "paused",
+    "remainingSeconds": 298,
+    "oldStorageKey": 2100,
+    "newStorageKeysClearedByFixture": [
+      2103,
+      2120,
+      2121,
+      2130,
+      2131,
+      2132,
+      2133,
+      2134,
+      2135,
+      2136,
+      2137,
+      2138,
+      2139,
+      2140,
+      2141,
+      2142,
+      2143,
+      2144,
+      2145
+    ],
+    "publicationTicket2102Preserved": true
+  },
+  "nativeBackgroundAlarm": {
+    "phoneJavascriptOmitted": true,
+    "nativeBytesMatchFinalCandidate": true,
+    "bluetoothDisconnectedRequested": true,
+    "note": "Direct SDK transport stays connected; this is bridge-free native Wakeup proof, not a real Bluetooth disconnection test."
+  },
+  "captures": [
+    {
+      "name": "legacy-fixture-paused",
+      "file": "legacy-fixture-paused.png",
+      "sha256": "b47823c802b068c3f8a22bebb937388a86f383e388fb7a2555deb2f903af70bc",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false
+    },
+    {
+      "name": "migration-list",
+      "file": "migration-list.png",
+      "sha256": "ade2e38379c960bd8d93b6ea4c081bcf04e49d8cb3eaee6f1c7f57996eba209c",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false
+    },
+    {
+      "name": "migration-detail",
+      "file": "migration-detail.png",
+      "sha256": "f4ae4551a178a03d436cdbb008d87c6cb283c7fc71ed1ab6e4e9a61b391c1439",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false
+    },
+    {
+      "name": "running",
+      "file": "running.png",
+      "sha256": "eaf7b6cdcd426bba28291200f9b119f290c44d05d1e9acec7e94e7d82bc8fa9b",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false
+    },
+    {
+      "name": "paused",
+      "file": "paused.png",
+      "sha256": "924be2f80b5631bd64a3a5784d910497b54bdd1890c4dbff336e687c9316c124",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false
+    },
+    {
+      "name": "editor",
+      "file": "editor.png",
+      "sha256": "f89b67b9ee86af18adfca37c9597b332b4276b170c5a331980f4fe1e926e677c",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false
+    },
+    {
+      "name": "new-editor",
+      "file": "new-editor.png",
+      "sha256": "395ab04abbed757794d3198539381e906bbfd48ab82e47abf876098cfe262ae5",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false
+    },
+    {
+      "name": "second-running",
+      "file": "second-running.png",
+      "sha256": "bf5c569519a539c45bdcc3dd9fb16d7ce6f6a2570c393bf65711614be3404fc2",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false
+    },
+    {
+      "name": "multiple-list",
+      "file": "multiple-list.png",
+      "sha256": "344ead03a711c1c3e3729eefafe82613c634a95b92733105f53d2b838640b7dc",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false
+    },
+    {
+      "name": "editor-24h",
+      "file": "editor-24h.png",
+      "sha256": "22d00692f096445d49f78127ff5572770285b1216fe4b45ec30b75d6ead155f2",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false
+    },
+    {
+      "name": "detail-24h",
+      "file": "detail-24h.png",
+      "sha256": "ea0668ceb200fa99552665eeb12bba908cb2d341acf88eab5b8106d9c3d135ee",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false
+    },
+    {
+      "name": "deleted-list",
+      "file": "deleted-list.png",
+      "sha256": "e7dcb9db963503fa28f30497fcd8ae22a17ec8a0edc422e7268f2569fb34ca4e",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false
+    },
+    {
+      "name": "short-running",
+      "file": "short-running.png",
+      "sha256": "371a82c896ec564574ed4e963092d97229416379b08877204852f869c25b6eac",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false
+    },
+    {
+      "name": "alarm",
+      "file": "alarm.png",
+      "sha256": "1e73fc56f2de2f5261692be010a14a3ca42a4779a4a10bf6e73b2c0795945c1a",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false
+    },
+    {
+      "name": "snoozed",
+      "file": "snoozed.png",
+      "sha256": "ec489049265bdc6311eaa79e396aa9d0723ec5a30ca43f8155409c032a5a16a8",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false
+    },
+    {
+      "name": "snoozed-paused",
+      "file": "snoozed-paused.png",
+      "sha256": "f7d52c05b20a0329cae8dc0ba3f272305f9881f76fa1d31bd17a5b20f28b29e9",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false
+    },
+    {
+      "name": "alarm-dismiss-test",
+      "file": "alarm-dismiss-test.png",
+      "sha256": "1e73fc56f2de2f5261692be010a14a3ca42a4779a4a10bf6e73b2c0795945c1a",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false
+    },
+    {
+      "name": "dismissed-list",
+      "file": "dismissed-list.png",
+      "sha256": "bbcefba4a4acedd3fc9b4ce4b1a3e58efccca725dd685f93c1a038b047061a18",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false
+    },
+    {
+      "name": "reopened-list",
+      "file": "reopened-list.png",
+      "sha256": "ac58f032ffa42b3fb5837423a2b199077a59f6d2e9db2f6d756c68ef6108f0b1",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false
+    },
+    {
+      "name": "eight-timers-full",
+      "file": "eight-timers-full.png",
+      "sha256": "6652f4e99481b9273653b2d53ed7128710322d974769debdd01e14e26a05385f",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false
+    },
+    {
+      "name": "eight-timers-last-row",
+      "file": "eight-timers-last-row.png",
+      "sha256": "d2adf3c524b18d0490ad563ecc635f5af76a6ae7f7ffb888aa7651e1de583763",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false
+    },
+    {
+      "name": "slot-deleted",
+      "file": "slot-deleted.png",
+      "sha256": "c014ceb55d9b5f5fe499bd1dc27a16a9c2b809eaaea9eeacb00b49eac6d1750d",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false
+    },
+    {
+      "name": "slot-reused",
+      "file": "slot-reused.png",
+      "sha256": "ec489049265bdc6311eaa79e396aa9d0723ec5a30ca43f8155409c032a5a16a8",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false
+    },
+    {
+      "name": "eight-timers-after-reuse",
+      "file": "eight-timers-after-reuse.png",
+      "sha256": "e84356c8325553c36cfaf90c98097953f1a1096e71dfd214ac86e9d39511e558",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false
+    },
+    {
+      "name": "empty-list",
+      "file": "empty-list.png",
+      "sha256": "1d67562f0443a649d9a6577eed7e1767102ecfcf9e55f968dfca3170fe8414fc",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false,
+      "capturePhase": "Focused replay of corrected eight-slot cleanup and isolated background alarm"
+    },
+    {
+      "name": "native-only-no-js-list",
+      "file": "native-only-no-js-list.png",
+      "sha256": "52d2e763381cb70755837270350632f787580864b0405a0ca6b3f06807eb42ed",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false
+    },
+    {
+      "name": "native-only-short-running",
+      "file": "native-only-short-running.png",
+      "sha256": "371a82c896ec564574ed4e963092d97229416379b08877204852f869c25b6eac",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false
+    },
+    {
+      "name": "native-only-background-wakeup",
+      "file": "native-only-background-wakeup.png",
+      "sha256": "1e73fc56f2de2f5261692be010a14a3ca42a4779a4a10bf6e73b2c0795945c1a",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false
+    },
+    {
+      "name": "final-empty-list",
+      "file": "final-empty-list.png",
+      "sha256": "1d67562f0443a649d9a6577eed7e1767102ecfcf9e55f968dfca3170fe8414fc",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false,
+      "capturePhase": "Focused replay of corrected eight-slot cleanup and isolated background alarm"
+    }
+  ],
+  "cleanupReplay": "Corrected header navigation replayed with eight occupied slots; empty list content equals initial empty-list pixels; transport status footer is excluded from equality.",
+  "manifestOnlyRepack": {
+    "fromPbwSha256": "25258b1ca06ece41035b423f31e439df0747ac7307de996a90ae2c5b40dfe5f4",
+    "changedEntry": "appinfo.json",
+    "changedField": "plugin.sources",
+    "otherEntryPayloadsAndCompressedBytesUnchanged": true
+  },
+  "nativeRendererBytesUnchanged": true,
+  "visualReview": {
+    "capturesReviewed": [
+      "running.png",
+      "paused.png",
+      "detail-24h.png"
+    ],
+    "method": "Read-only inspection of the recorded 200x228 native PNGs",
+    "result": "Remaining, elapsed, countdown, state, progress bubbles and action-bar controls fit running, paused and 24-hour detail.",
+    "scope": "Representative affected detail layouts; complete button workflow is recorded by the capture script."
+  }
+}

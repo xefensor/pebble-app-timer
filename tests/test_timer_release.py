@@ -149,6 +149,39 @@ class TimerReleaseTests(unittest.TestCase):
             with self.subTest(member=name), self.assertRaisesRegex(ValueError, "native integrity"):
                 self.validate({**self.pbw, name: self.pbw[name][:-1] + b"x"})
 
+    def test_act2_view_module_is_required_and_matches_source_and_compiled_bytes(self):
+        dependency = {**self.dependency,
+            "src/js/publisher.js": b"var wire=require('./wire');\nvar view=require('./view');\nmodule.exports=view;\n",
+            "src/js/view.js": b"var wire=require('./wire');\nmodule.exports={wire:wire,cardVersion:2};\n"}
+        mapping = json.loads(self.pbw["pebble-js-app.js.map"])
+        mapping["sources"].append("./~/pebble-activities/dist/js/view.js")
+        texts = ["var sdk=true;\n", (self.root / "src/pkjs/index.js").read_text(),
+                 dependency["src/js/publisher.js"].decode(),
+                 dependency["src/js/wire.js"].decode(), dependency["src/js/view.js"].decode()]
+        mapping["sourcesContent"] = []
+        modules = ["/* 0 */\n/***/ (function(module, exports, __webpack_require__) {\n\n"
+                   "\t__webpack_require__(1);\n\tmodule.exports = __webpack_require__(2);\n\n/***/ })"]
+        for number, text in enumerate(texts, 1):
+            mapping["sourcesContent"].append(text +
+                "\n\n//////////////////\n// WEBPACK FOOTER\n// module id = " + str(number) + "\n")
+            compiled = text.replace("require('pebble-activities/publisher')", "__webpack_require__(3)")
+            compiled = compiled.replace("require('./wire')", "__webpack_require__(4)")
+            compiled = compiled.replace("require('./view')", "__webpack_require__(5)")
+            modules.append("/* %d */\n/***/ (function(module, exports, __webpack_require__) {\n\n" % number +
+                "\n".join("\t" + line for line in compiled.rstrip().splitlines()) + "\n\n/***/ })")
+        files = {**self.pbw, "pebble-js-app.js": ",\n".join(modules).encode(),
+                 "pebble-js-app.js.map": json.dumps(mapping).encode()}
+        release.validate_timer_pkjs(self.root, self.commit_sha, "", files, dependency)
+        for name in ("pebble-js-app.js", "pebble-js-app.js.map"):
+            with self.subTest(member=name), self.assertRaises(ValueError):
+                release.validate_timer_pkjs(self.root, self.commit_sha, "",
+                    {**files, name: files[name].replace(b"cardVersion:2", b"cardVersion:3")}, dependency)
+        mapping["sources"].pop()
+        mapping["sourcesContent"].pop()
+        with self.assertRaisesRegex(ValueError, "omits required sources"):
+            release.validate_timer_pkjs(self.root, self.commit_sha, "",
+                {**files, "pebble-js-app.js.map": json.dumps(mapping).encode()}, dependency)
+
     def test_crc_correct_native_wrong_uuid_version_or_header_is_rejected(self):
         for offset in [8, 12, 104]:
             with self.subTest(offset=offset):

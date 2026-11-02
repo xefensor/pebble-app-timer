@@ -23,6 +23,8 @@ service. Keep timer behaviour independent of Dynamic's presentation.
 
 - Install with `npm ci --ignore-scripts`. Use the versioned tarball in `vendor/`;
   never rely on a sibling library checkout. Record updated provenance and hashes.
+  The 0.3.0 candidate pins Activities 0.2.0; `vendor/ACTIVITIES.json` records
+  its exact reviewed source commit and archive checksum.
 - Use `npm run build` for distribution. Its manifestVersion 2 PBW must contain
   native app, PKJS, independently callable `plugin.js`, licences and notices.
   A plain SDK development PBW lacks the additional provider packaging.
@@ -39,9 +41,14 @@ phone and physical-watch checks; never describe unperformed checks as passed.
 Check affected layouts on an actual emulator when changing native rendering.
 
 The app has eight stable native timer slots and an independent list/editor/detail/
-alarm interface. ACTIVITY_SLOT (1021) is an internal bridge key; the public
-activity/session convention and ACT1 consumer transport are unchanged. Source
-revisions advance globally and dirty slots are published in ascending order.
+alarm interface. ACTIVITY_SLOT (1021) is an internal bridge key;
+ACTIVITY_TOTAL_DURATION (1022) adds immutable configured-duration metadata without
+changing the persisted native model. Keep the activity/session schema 1 source
+alongside activity/card schema 2. The native publication/receipt path remains
+schema 1 plus the optional bridge metadata. Source revisions advance globally
+and dirty slots are published in ascending order.
+Declare the `activity` source category once, with items `session` and `card`
+and the union of both schemas' properties.
 Keep the earliest-deadline Wakeup broker: separate nearby Wakeups conflict on
 stock PebbleOS. Versioned storage chunks must stay below the SDK’s per-key limit;
 write and verify a new bank before committing it or retiring legacy state.
