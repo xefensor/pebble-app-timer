@@ -1,0 +1,31 @@
+Emery QEMU connected through local FIFOs; no phone runtime
+N/A%[=                                                      ]   0.0 B/s 0:00:00
+N/A%[=                                                    ]  53.2 KiB/s 0:00:00
+N/A%[=                                                    ]  59.6 KiB/s 0:00:00
+N/A%[=                                                      ]   0.0 B/s 0:00:00
+N/A%[=                                                    ]  98.3 KiB/s 0:00:00
+N/A%[=                                                    ] 119.4 KiB/s 0:00:00
+legacy-migrated-list
+empty-starting-list
+N/A%[=                                                      ]   0.0 B/s 0:00:00
+N/A%[=                                                    ]  75.3 KiB/s 0:00:00
+N/A%[=                                                    ]  80.4 KiB/s 0:00:00
+N/A%[=                                                      ]   0.0 B/s 0:00:00
+N/A%[=                                                    ] 100.2 KiB/s 0:00:00
+N/A%[=                                                    ] 121.1 KiB/s 0:00:00
+simultaneous-running-list
+simultaneous-background-first-alarm
+simultaneous-second-alarm
+simultaneous-dismissed-list
+N/A%[=                                                      ]   0.0 B/s 0:00:00
+N/A%[=                                                    ]  73.8 KiB/s 0:00:00
+N/A%[=                                                    ]  79.5 KiB/s 0:00:00
+N/A%[=                                                      ]   0.0 B/s 0:00:00
+N/A%[=                                                    ] 100.9 KiB/s 0:00:00
+N/A%[=                                                    ] 122.3 KiB/s 0:00:00
+nearby-running-list
+nearby-background-first-alarm
+nearby-second-alarm
+nearby-dismissed-list
+cleanup-eight-full
+cleanup-empty-list

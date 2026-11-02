@@ -4,10 +4,13 @@ A native timer for **stock PebbleOS**, with activity sharing for compatible
 watchfaces such as [Dynamic](https://github.com/xefensor/dynamic-watchface).
 The first target is Pebble Time 2 (`emery`, 200 × 228).
 
-Download [Timer 0.2.0](https://github.com/xefensor/pebble-app-timer/releases/download/v0.2.0/Timer-0.2.0.pbw)
-and verify it against [SHA256SUMS.txt](https://github.com/xefensor/pebble-app-timer/releases/download/v0.2.0/SHA256SUMS.txt).
-This is a development prerelease. Real-phone and physical-watch checks remain
-separate from portable tests and emulator checks.
+Timer 0.2.0 is a **local, unpublished development candidate**. The prepared
+[PBW](releases/Timer-0.2.0.pbw), [source archive](releases/Timer-0.2.0-source.zip)
+and [checksums](releases/SHA256SUMS.txt) are kept together for review.
+The latest published release remains
+[Timer 0.1.1](https://github.com/xefensor/pebble-app-timer/releases/tag/v0.1.1).
+Real-phone and physical-watch checks remain separate from portable tests and
+emulator checks.
 
 ## Version 0.2.0
 

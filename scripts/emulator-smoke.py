@@ -7,6 +7,7 @@ emulator data deliberately; never run against a physical watch.
 """
 from pathlib import Path
 import argparse,time,uuid
+from os import environ
 from pebble_tool.commands.base import PebbleCommand
 from pebble_tool.commands.install import ToolAppInstaller
 from libpebble2.protocol.apps import AppRunState,AppRunStateStart
@@ -14,7 +15,7 @@ from libpebble2.services.screenshot import Screenshot
 from libpebble2.communication.transports.qemu.protocol import QemuButton,QemuBluetoothConnection
 from pebble_tool.commands.emucontrol import send_data_to_qemu
 from PIL import Image
-ROOT=Path(__file__).resolve().parents[1];OUT=ROOT/'docs/qa/0.2.0';OUT.mkdir(parents=True,exist_ok=True)
+ROOT=Path(__file__).resolve().parents[1];OUT=Path(environ.get('TIMER_QA_OUTPUT',str(ROOT/'docs/qa/0.2.0/local-recovery')));OUT.mkdir(parents=True,exist_ok=True)
 class Connection(PebbleCommand):valid_connections={'emulator'}
 c=Connection();c._set_debugging(0)
 p=c._connect(argparse.Namespace(v=0,emulator='emery',sdk=None,vnc=False,sunlight=False))
@@ -75,6 +76,7 @@ plus();button('Select');button('Down',4);button('Select');button('Select');shot(
 button('Back');shot('eight-timers-after-reuse')
 # Leave no future alarms behind while checking bridge-free background Wakeup.
 for _ in range(8):
+ # The header remains selectable even when the list is full.
  button('Up',8);button('Down');button('Select');button('Down')
 shot('empty-list')
 native=ROOT/'build/timer-native-only-candidate.pbw'
@@ -84,7 +86,7 @@ with zipfile.ZipFile(final) as source,zipfile.ZipFile(native,'w') as archive_out
 install(native);shot('native-only-no-js-list')
 send_data_to_qemu(p.transport,QemuBluetoothConnection(connected=False))
 create_short();shot('native-only-short-running');button('Back');button('Back');time.sleep(6);shot('native-only-background-wakeup')
-button('Down');button('Select');button('Down')
+button('Down');button('Up',8);button('Down');button('Select');button('Down')
 send_data_to_qemu(p.transport,QemuBluetoothConnection(connected=True))
 install(final);shot('final-empty-list')
 with zipfile.ZipFile(final) as z:

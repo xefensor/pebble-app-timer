@@ -1,0 +1,21 @@
+{
+  "name": "deadline-fixture",
+  "version": "0.1.1",
+  "private": true,
+  "pebble": {
+    "displayName": "Timer Seed",
+    "uuid": "50e9ef12-a5ab-4369-a3b5-3447bfba5151",
+    "sdkVersion": "3",
+    "projectType": "native",
+    "targetPlatforms": [
+      "emery"
+    ],
+    "watchapp": {
+      "watchface": false
+    },
+    "resources": {
+      "media": []
+    }
+  },
+  "author": "Xef"
+}

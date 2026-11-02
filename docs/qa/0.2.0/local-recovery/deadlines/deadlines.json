@@ -1,0 +1,82 @@
+{
+  "version": "0.2.0",
+  "scope": "Fresh native-only Emery QEMU button and background Wakeup checks; no phone runtime or physical watch",
+  "nativeOnlyPbwSha256": "983d6810540c14edb3fd382a313913536a94efa85d304fd5a2849275ee7d7626",
+  "deadlineOffsetsSeconds": [
+    0,
+    5
+  ],
+  "durationSeconds": 20,
+  "setup": "Native persistence fixture seeds two running timers before Timer schedules its own Wakeup; the watch clock is not changed during scheduled alarms",
+  "captures": [
+    {
+      "file": "cleanup-eight-full.png",
+      "sha256": "6dfc0a7b2323a5e8d29d99b8107d8dc368889f9e121c2a35dc6f7e2ea98bfd69"
+    },
+    {
+      "file": "empty-starting-list.png",
+      "sha256": "52d2e763381cb70755837270350632f787580864b0405a0ca6b3f06807eb42ed"
+    },
+    {
+      "file": "legacy-migrated-list.png",
+      "sha256": "ade2e38379c960bd8d93b6ea4c081bcf04e49d8cb3eaee6f1c7f57996eba209c"
+    },
+    {
+      "file": "nearby-background-first-alarm.png",
+      "sha256": "add5e0d9dd11db81d4ce3b8de63055883444a0d1f5c9ee2d54ed9eeb764bcb6f"
+    },
+    {
+      "file": "nearby-dismissed-list.png",
+      "sha256": "d41a8687cd676511bbed32c20070d433589b08e10115fd15550016ab4fac9599"
+    },
+    {
+      "file": "nearby-running-list.png",
+      "sha256": "9686a184d90b5c2a0e1727e41cc3cbfb219158396365fb50781302444bbaba7c"
+    },
+    {
+      "file": "nearby-second-alarm.png",
+      "sha256": "96269224fd74c23d309ec1b4963e074bdf792c3ff5000b159fc16461a54f1ede"
+    },
+    {
+      "file": "simultaneous-background-first-alarm.png",
+      "sha256": "add5e0d9dd11db81d4ce3b8de63055883444a0d1f5c9ee2d54ed9eeb764bcb6f"
+    },
+    {
+      "file": "simultaneous-dismissed-list.png",
+      "sha256": "252739bcb54f67d95cc097566a7517b82584590d5559c25055802160a8595fde"
+    },
+    {
+      "file": "simultaneous-running-list.png",
+      "sha256": "229bbe0d9b9bf215190a779c164a8cdcf516daa3562a5aacbc2700748460cc92"
+    },
+    {
+      "file": "simultaneous-second-alarm.png",
+      "sha256": "add5e0d9dd11db81d4ce3b8de63055883444a0d1f5c9ee2d54ed9eeb764bcb6f"
+    },
+    {
+      "file": "cleanup-empty-list.png",
+      "sha256": "52d2e763381cb70755837270350632f787580864b0405a0ca6b3f06807eb42ed"
+    },
+    {
+      "file": "cleanup-background-alarm.png",
+      "sha256": "1e73fc56f2de2f5261692be010a14a3ca42a4779a4a10bf6e73b2c0795945c1a"
+    },
+    {
+      "file": "cleanup-final-empty-list.png",
+      "sha256": "52d2e763381cb70755837270350632f787580864b0405a0ca6b3f06807eb42ed"
+    }
+  ],
+  "visualReviewRequired": false,
+  "candidatePbwSha256": "4e5d6e0caa1b92e36016da753c6a6d68d4f6651e6a222343040b1431eea1c7f2",
+  "visualReview": {
+    "reviewed": true,
+    "scope": "Both actual native alarm screens checked in each deadline scenario, plus eight occupied slots and final empty list."
+  },
+  "nativePayloadSha256": {
+    "emery/app_resources.pbpack": "b58d8f0fc04367f823045aafa7724dee47b1fe6674411d117e32909b3f527a31",
+    "emery/manifest.json": "48e6c9fa7b2bc7dfb919e763aff2115ca936711993c924e30d1d0308ef6316d8",
+    "emery/pebble-app.bin": "a98e107e283faae091b7bc6c40f72980a8e2098a4c7f9700281a4f8e4978084d"
+  },
+  "fixtureSource": "tests/deadline-fixture/src/c/main.c",
+  "fixtureSourceSha256": "dbd374549abefba4a1ea581b9aa827fc27d34a67f6d8f124ce68bdae6bc3ea23"
+}

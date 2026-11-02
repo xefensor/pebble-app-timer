@@ -1,0 +1,347 @@
+{
+  "version": "0.2.0",
+  "verification": "Local CLI recovery execution on 2026-11-02",
+  "environment": "SDK 4.33.1 Emery QEMU over FIFOs; no pypkjs, real phone or physical watch",
+  "candidatePbwSha256": "4e5d6e0caa1b92e36016da753c6a6d68d4f6651e6a222343040b1431eea1c7f2",
+  "nativePayloadSha256": {
+    "emery/app_resources.pbpack": "b58d8f0fc04367f823045aafa7724dee47b1fe6674411d117e32909b3f527a31",
+    "emery/manifest.json": "48e6c9fa7b2bc7dfb919e763aff2115ca936711993c924e30d1d0308ef6316d8",
+    "emery/pebble-app.bin": "a98e107e283faae091b7bc6c40f72980a8e2098a4c7f9700281a4f8e4978084d"
+  },
+  "legacyMigration": {
+    "seededBy": "emulator-only fixture source legacy-fixture.c",
+    "modelBytes": 44,
+    "origin": "6b49d200",
+    "run": 1,
+    "state": "paused",
+    "remainingSeconds": 298,
+    "oldStorageKey": 2100,
+    "newStorageKeysClearedByFixture": [
+      2103,
+      2120,
+      2121,
+      2130,
+      2131,
+      2132,
+      2133,
+      2134,
+      2135,
+      2136,
+      2137,
+      2138,
+      2139,
+      2140,
+      2141,
+      2142,
+      2143,
+      2144,
+      2145
+    ],
+    "publicationTicket2102Preserved": true
+  },
+  "nativeBackgroundAlarm": {
+    "phoneJavascriptOmitted": true,
+    "nativeBytesMatchFinalCandidate": true,
+    "bluetoothDisconnectedRequested": true,
+    "note": "Direct SDK transport stays connected; this is bridge-free native Wakeup proof, not a real Bluetooth disconnection test."
+  },
+  "captures": [
+    {
+      "name": "legacy-fixture-paused",
+      "file": "legacy-fixture-paused.png",
+      "sha256": "b47823c802b068c3f8a22bebb937388a86f383e388fb7a2555deb2f903af70bc",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false
+    },
+    {
+      "name": "migration-list",
+      "file": "migration-list.png",
+      "sha256": "ade2e38379c960bd8d93b6ea4c081bcf04e49d8cb3eaee6f1c7f57996eba209c",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false
+    },
+    {
+      "name": "migration-detail",
+      "file": "migration-detail.png",
+      "sha256": "e14f1ff739828d002c4c33b13af84fae901ae922df6b52aeefaa66628ab5fe15",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false
+    },
+    {
+      "name": "running",
+      "file": "running.png",
+      "sha256": "b62b5db343220ae3cf0ec8e2d579ef42e7ea79fdeb55f2afae034cbd67446ba5",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false
+    },
+    {
+      "name": "paused",
+      "file": "paused.png",
+      "sha256": "e14f1ff739828d002c4c33b13af84fae901ae922df6b52aeefaa66628ab5fe15",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false
+    },
+    {
+      "name": "editor",
+      "file": "editor.png",
+      "sha256": "dff75eb97417e39f2871082b9980906d3228297c5b1e52b0df7d1c317472475e",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false
+    },
+    {
+      "name": "new-editor",
+      "file": "new-editor.png",
+      "sha256": "395ab04abbed757794d3198539381e906bbfd48ab82e47abf876098cfe262ae5",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false
+    },
+    {
+      "name": "second-running",
+      "file": "second-running.png",
+      "sha256": "d6f9d37cccd9b23c5f5e6b8e0d496a99a442153e65c23c36a1a688a4644fe768",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false
+    },
+    {
+      "name": "multiple-list",
+      "file": "multiple-list.png",
+      "sha256": "52d96242d42bf3d30114b29e6f61f90e135db42422134badccf55997e8d7dd90",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false
+    },
+    {
+      "name": "editor-24h",
+      "file": "editor-24h.png",
+      "sha256": "6a696918e085b40b79f24883bde2d200e4c87174da65cb2bd4d9e4ab496c4f93",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false
+    },
+    {
+      "name": "detail-24h",
+      "file": "detail-24h.png",
+      "sha256": "369ba542748938ae166d1137453c9ed9268708f594074efab0cae89410af7a55",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false
+    },
+    {
+      "name": "deleted-list",
+      "file": "deleted-list.png",
+      "sha256": "9af731636a0594cf50eec66bf0caad9c5d81d2a05f279d8875e38f4f449b5118",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false
+    },
+    {
+      "name": "short-running",
+      "file": "short-running.png",
+      "sha256": "6797f8ac6444fe324a28ff6423653a5e92c5049444d2e7f776d0a39183fb46ed",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false
+    },
+    {
+      "name": "alarm",
+      "file": "alarm.png",
+      "sha256": "1e73fc56f2de2f5261692be010a14a3ca42a4779a4a10bf6e73b2c0795945c1a",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false
+    },
+    {
+      "name": "snoozed",
+      "file": "snoozed.png",
+      "sha256": "8075160ffc5c3ab27db76379267f8f3b92cc8932ad82aa7e843cc162e9b98d83",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false
+    },
+    {
+      "name": "snoozed-paused",
+      "file": "snoozed-paused.png",
+      "sha256": "2b852d6fadf534ed294fbf9f956622e019a5a2c3788696c1376eba080b747672",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false
+    },
+    {
+      "name": "alarm-dismiss-test",
+      "file": "alarm-dismiss-test.png",
+      "sha256": "1e73fc56f2de2f5261692be010a14a3ca42a4779a4a10bf6e73b2c0795945c1a",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false
+    },
+    {
+      "name": "dismissed-list",
+      "file": "dismissed-list.png",
+      "sha256": "8f52951a14d627f184a77544ccdf8d3209398abdad9fd3be61ed425791d47a21",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false
+    },
+    {
+      "name": "reopened-list",
+      "file": "reopened-list.png",
+      "sha256": "a1d356a1c2f4420956e1012196efff781279963dc35cda48a7efa0cdcd9e13ff",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false
+    },
+    {
+      "name": "eight-timers-full",
+      "file": "eight-timers-full.png",
+      "sha256": "8cdedd7da8546b93794b76b40d4f3303ce3a9af9a75321e7e669f820e3b3d996",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false
+    },
+    {
+      "name": "eight-timers-last-row",
+      "file": "eight-timers-last-row.png",
+      "sha256": "74977783e1cc1ffa963e13365efc9aecab74c66674b7be64ef40dda232744433",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false
+    },
+    {
+      "name": "slot-deleted",
+      "file": "slot-deleted.png",
+      "sha256": "d44392f53cf6f76ceed46a146951ff621e867c9b71ffb0531ec528ea3b541ff4",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false
+    },
+    {
+      "name": "slot-reused",
+      "file": "slot-reused.png",
+      "sha256": "8075160ffc5c3ab27db76379267f8f3b92cc8932ad82aa7e843cc162e9b98d83",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false
+    },
+    {
+      "name": "eight-timers-after-reuse",
+      "file": "eight-timers-after-reuse.png",
+      "sha256": "39d948fd8b11934d683de2e3de5c360ab55c68bf27b6a4bbb88543e3b11e9aa5",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false
+    },
+    {
+      "name": "empty-list",
+      "file": "empty-list.png",
+      "sha256": "52d2e763381cb70755837270350632f787580864b0405a0ca6b3f06807eb42ed",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false,
+      "capturePhase": "Focused replay of corrected eight-slot cleanup and isolated background alarm"
+    },
+    {
+      "name": "native-only-no-js-list",
+      "file": "native-only-no-js-list.png",
+      "sha256": "f801479181184a6911ba29d41ee6a465b007c02380daf9fe6b4d2ac41d5e5780",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false
+    },
+    {
+      "name": "native-only-short-running",
+      "file": "native-only-short-running.png",
+      "sha256": "1dd74d3d05116ff525c3efc06329cb15e401ed84ae7b32b818f1132d00831e22",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false
+    },
+    {
+      "name": "native-only-background-wakeup",
+      "file": "native-only-background-wakeup.png",
+      "sha256": "1e73fc56f2de2f5261692be010a14a3ca42a4779a4a10bf6e73b2c0795945c1a",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false
+    },
+    {
+      "name": "final-empty-list",
+      "file": "final-empty-list.png",
+      "sha256": "52d2e763381cb70755837270350632f787580864b0405a0ca6b3f06807eb42ed",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false,
+      "capturePhase": "Focused replay of corrected eight-slot cleanup and isolated background alarm"
+    }
+  ],
+  "visualReview": {
+    "reviewed": true,
+    "scope": "All 29 smoke captures reviewed; the two corrected empty-list captures were replayed independently on the same native candidate."
+  },
+  "cleanupReplay": "Corrected header navigation replayed with eight occupied slots; empty list content equals initial empty-list pixels; transport status footer is excluded from equality."
+}

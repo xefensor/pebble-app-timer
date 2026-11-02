@@ -1,0 +1,44 @@
+Emery QEMU connected through local FIFOs; no phone runtime
+N/A%[=                                                      ]   0.0 B/s 0:00:00
+N/A%[=                                                    ]   6.6 KiB/s 0:00:00
+N/A%[=                                                    ]  32.0 KiB/s 0:00:00
+legacy-fixture-paused
+N/A%[=                                                      ]   0.0 B/s 0:00:00
+N/A%[=                                                    ]  77.8 KiB/s 0:00:00
+N/A%[=                                                    ] 124.3 KiB/s 0:00:00
+N/A%[=                                                    ] 119.0 KiB/s 0:00:00
+migration-list
+migration-detail
+running
+paused
+editor
+new-editor
+second-running
+multiple-list
+editor-24h
+detail-24h
+deleted-list
+short-running
+alarm
+snoozed
+snoozed-paused
+alarm-dismiss-test
+dismissed-list
+reopened-list
+eight-timers-full
+eight-timers-last-row
+slot-deleted
+slot-reused
+eight-timers-after-reuse
+empty-list
+N/A%[=                                                      ]   0.0 B/s 0:00:00
+N/A%[=                                                    ] 101.6 KiB/s 0:00:00
+N/A%[=                                                    ] 123.6 KiB/s 0:00:00
+native-only-no-js-list
+native-only-short-running
+native-only-background-wakeup
+N/A%[=                                                      ]   0.0 B/s 0:00:00
+N/A%[=                                                    ] 100.0 KiB/s 0:00:00
+N/A%[=                                                    ] 121.8 KiB/s 0:00:00
+final-empty-list
+Final native smoke passed

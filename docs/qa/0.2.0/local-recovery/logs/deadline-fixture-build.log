@@ -1,0 +1,75 @@
+Setting top to                           : /home/xela/Projekty/Pebble/pebble-app-timer/tests/deadline-fixture
+Setting out to                           : /home/xela/Projekty/Pebble/pebble-app-timer/tests/deadline-fixture/build
+Checking for program 'webpack'           : /home/xela/Projekty/Pebble/.recovery-tools/data/pebble-sdk/SDKs/current/node_modules/.bin/webpack
+WARNING: enableMultiJS is not enabled for this project. message_keys.json will not be included in your project unless you add it to your pebble-js-app.js file.
+Found Pebble SDK for emery in:           : /home/xela/Projekty/Pebble/.recovery-tools/data/pebble-sdk/SDKs/current/sdk-core/pebble/emery
+Checking for program 'gcc, cc'           : arm-none-eabi-gcc
+Checking for program 'ar'                : arm-none-eabi-ar
+'configure' finished successfully (0.036s)
+Waf: Entering directory `/home/xela/Projekty/Pebble/pebble-app-timer/tests/deadline-fixture/build'
+[1/1] Creating message_key_header:  -> build/include/message_keys.auto.h
+[ 2/15] Creating emery | resource_ball:  -> build/emery/system_resources.resball
+[ 3/15] Creating emery | /home/xela/Projekty/Pebble/pebble-app-timer/tests/deadline-fixture/build/emery/appinfo.auto.c:  -> build/emery/appinfo.auto.c
+[ 4/15] Compiling emery | subst: ../../../.recovery-tools/data/pebble-sdk/SDKs/current/sdk-core/pebble/common/pebble_app.ld.template -> build/emery/pebble_app.ld.auto
+[ 5/15] Compiling emery | c: src/c/timer_model.c -> build/src/c/timer_model.c.9.o
+[ 6/15] Compiling emery | c: src/c/timer_collection.c -> build/src/c/timer_collection.c.9.o
+[ 7/15] Creating emery | /home/xela/Projekty/Pebble/pebble-app-timer/tests/deadline-fixture/build/appinfo.json:  -> build/appinfo.json
+[ 8/15] Compiling emery | generate_resource_id_definitions: build/emery/system_resources.resball -> build/emery/src/resource_ids.auto.c
+[ 9/15] Compiling emery | generate_pbpack: build/emery/system_resources.resball -> build/emery/app_resources.pbpack
+[10/15] Compiling emery | generate_resource_id_header: build/emery/system_resources.resball -> build/emery/src/resource_ids.auto.h
+[11/15] Compiling emery | c: build/emery/src/resource_ids.auto.c -> build/emery/src/resource_ids.auto.c.9.o
+[12/15] Compiling emery | c: src/c/main.c -> build/src/c/main.c.9.o
+[13/15] Compiling emery | c: build/emery/appinfo.auto.c -> build/emery/appinfo.auto.c.9.o
+[14/15] Linking emery | cprogram: build/src/c/main.c.9.o build/src/c/timer_collection.c.9.o build/src/c/timer_model.c.9.o build/emery/appinfo.auto.c.9.o build/emery/src/resource_ids.auto.c.9.o -> build/emery/pebble-app.elf
+/home/xela/Projekty/Pebble/.recovery-tools/data/pebble-sdk/SDKs/4.33.1/toolchain/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/14.2.1/../../../../arm-none-eabi/bin/ld: warning: /home/xela/Projekty/Pebble/pebble-app-timer/tests/deadline-fixture/build/emery/pebble-app.elf has a LOAD segment with RWX permissions
+
+[15/15] Processing emery | memory_usage_report: build/emery/pebble-app.elf build/emery/app_resources.pbpack
+-------------------------------------------------------
+EMERY APP MEMORY USAGE
+Total size of resources:        4092 bytes / 256.0KB
+Total footprint in RAM:         2578 bytes / 128.0KB
+Free RAM available (heap):      128494 bytes
+-------------------------------------------------------
+[16/18] Compiling emery | /home/xela/Projekty/Pebble/pebble-app-timer/tests/deadline-fixture/build/emery/pebble-app.raw.bin: build/emery/pebble-app.elf -> build/emery/pebble-app.raw.bin
+[17/18] Processing emery | inject-metadata: build/emery/pebble-app.raw.bin build/emery/pebble-app.elf build/emery/app_resources.pbpack -> build/emery/pebble-app.bin
+[18/18] Creating app_bundle:  -> build/deadline-fixture.pbw
+Waf: Leaving directory `/home/xela/Projekty/Pebble/pebble-app-timer/tests/deadline-fixture/build'
+'build' finished successfully (0.146s)
+'distclean' finished successfully (0.005s)
+Setting top to                           : /home/xela/Projekty/Pebble/pebble-app-timer/tests/deadline-fixture
+Setting out to                           : /home/xela/Projekty/Pebble/pebble-app-timer/tests/deadline-fixture/build
+Checking for program 'webpack'           : /home/xela/Projekty/Pebble/.recovery-tools/data/pebble-sdk/SDKs/current/node_modules/.bin/webpack
+WARNING: enableMultiJS is not enabled for this project. message_keys.json will not be included in your project unless you add it to your pebble-js-app.js file.
+Found Pebble SDK for emery in:           : /home/xela/Projekty/Pebble/.recovery-tools/data/pebble-sdk/SDKs/current/sdk-core/pebble/emery
+Checking for program 'gcc, cc'           : arm-none-eabi-gcc
+Checking for program 'ar'                : arm-none-eabi-ar
+'configure' finished successfully (0.033s)
+Waf: Entering directory `/home/xela/Projekty/Pebble/pebble-app-timer/tests/deadline-fixture/build'
+[1/1] Creating message_key_header:  -> build/include/message_keys.auto.h
+[ 2/15] Creating emery | resource_ball:  -> build/emery/system_resources.resball
+[ 3/15] Creating emery | /home/xela/Projekty/Pebble/pebble-app-timer/tests/deadline-fixture/build/emery/appinfo.auto.c:  -> build/emery/appinfo.auto.c
+[ 4/15] Compiling emery | subst: ../../../.recovery-tools/data/pebble-sdk/SDKs/current/sdk-core/pebble/common/pebble_app.ld.template -> build/emery/pebble_app.ld.auto
+[ 5/15] Compiling emery | c: src/c/timer_model.c -> build/src/c/timer_model.c.9.o
+[ 6/15] Compiling emery | c: src/c/timer_collection.c -> build/src/c/timer_collection.c.9.o
+[ 7/15] Creating emery | /home/xela/Projekty/Pebble/pebble-app-timer/tests/deadline-fixture/build/appinfo.json:  -> build/appinfo.json
+[ 8/15] Compiling emery | generate_resource_id_definitions: build/emery/system_resources.resball -> build/emery/src/resource_ids.auto.c
+[ 9/15] Compiling emery | generate_pbpack: build/emery/system_resources.resball -> build/emery/app_resources.pbpack
+[10/15] Compiling emery | generate_resource_id_header: build/emery/system_resources.resball -> build/emery/src/resource_ids.auto.h
+[11/15] Compiling emery | c: build/emery/appinfo.auto.c -> build/emery/appinfo.auto.c.9.o
+[12/15] Compiling emery | c: src/c/main.c -> build/src/c/main.c.9.o
+[13/15] Compiling emery | c: build/emery/src/resource_ids.auto.c -> build/emery/src/resource_ids.auto.c.9.o
+[14/15] Linking emery | cprogram: build/src/c/main.c.9.o build/src/c/timer_collection.c.9.o build/src/c/timer_model.c.9.o build/emery/appinfo.auto.c.9.o build/emery/src/resource_ids.auto.c.9.o -> build/emery/pebble-app.elf
+/home/xela/Projekty/Pebble/.recovery-tools/data/pebble-sdk/SDKs/4.33.1/toolchain/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/14.2.1/../../../../arm-none-eabi/bin/ld: warning: /home/xela/Projekty/Pebble/pebble-app-timer/tests/deadline-fixture/build/emery/pebble-app.elf has a LOAD segment with RWX permissions
+
+[15/15] Processing emery | memory_usage_report: build/emery/pebble-app.elf build/emery/app_resources.pbpack
+-------------------------------------------------------
+EMERY APP MEMORY USAGE
+Total size of resources:        4092 bytes / 256.0KB
+Total footprint in RAM:         2578 bytes / 128.0KB
+Free RAM available (heap):      128494 bytes
+-------------------------------------------------------
+[16/18] Compiling emery | /home/xela/Projekty/Pebble/pebble-app-timer/tests/deadline-fixture/build/emery/pebble-app.raw.bin: build/emery/pebble-app.elf -> build/emery/pebble-app.raw.bin
+[17/18] Processing emery | inject-metadata: build/emery/pebble-app.raw.bin build/emery/pebble-app.elf build/emery/app_resources.pbpack -> build/emery/pebble-app.bin
+[18/18] Creating app_bundle:  -> build/deadline-fixture.pbw
+Waf: Leaving directory `/home/xela/Projekty/Pebble/pebble-app-timer/tests/deadline-fixture/build'
+'build' finished successfully (0.141s)

@@ -1,0 +1,20 @@
+
+> pebble-app-timer@0.2.0 test
+> python3 scripts/test.py
+
+timer model: lifecycle, persistence, expiry and boundary checks passed
+timer collection: migration, eight slots, clocks, revisions, editing and persistence passed
+✔ native payload is saved by PKJS and read by a separate cold plugin runtime (4.639312ms)
+✔ pause and cancel update the saved run without deriving completion on the phone (1.150826ms)
+✔ storage failure never emits a successful application receipt (0.743838ms)
+✔ polling does not renew the original native lease (0.719817ms)
+✔ timer slots survive cold reads and replace old offline runs independently (3.706817ms)
+✔ invalid native slot cannot acknowledge or replace another timer (1.032465ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 6
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 29.087998
