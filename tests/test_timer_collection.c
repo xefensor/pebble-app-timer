@@ -66,7 +66,8 @@ static void edit_and_slot_reuse(void) {
   uint32_t run = collection.slots[0].run;
   assert(timer_collection_edit(&collection, 0, 1200, 1100));
   assert(collection.slots[0].origin == origin && collection.slots[0].run == run);
-  assert(collection.slots[0].deadline == 2300 && collection.slots[0].configured_seconds == 1200);
+  assert(collection.slots[0].deadline == 2300 && collection.slots[0].configured_seconds == 1300);
+  assert(collection.slots[0].repeat_seconds == 600);
   assert(timer_collection_pause(&collection, 0, 1200));
   assert(timer_collection_edit(&collection, 0, 35, 1250));
   assert(collection.slots[0].state == ACTIVITY_TIMER_PAUSED);
@@ -81,7 +82,12 @@ static void edit_and_slot_reuse(void) {
   assert(collection.slots[0].origin == origin && collection.slots[0].run == run + 1);
   assert(collection.slots[0].revision > tombstone_revision);
   assert(timer_collection_finish_due(&collection, 1410) == 1);
+  assert(!timer_collection_edit(&collection, 0, 40, 1500)); /* Deal with the alarm first. */
+  assert(timer_collection_acknowledge(&collection, 0));
   assert(timer_collection_edit(&collection, 0, 40, 1500));
+  assert(collection.slots[0].state == ACTIVITY_TIMER_FINISHED);
+  assert(collection.slots[0].repeat_seconds == 40 && collection.slots[0].run == run + 1);
+  assert(timer_collection_restart(&collection, 0, 1500));
   assert(collection.slots[0].state == ACTIVITY_TIMER_RUNNING);
   assert(collection.slots[0].run == run + 2 && collection.slots[0].deadline == 1540);
   assert(timer_collection_finish_due(&collection, 1540) == 1);
@@ -169,15 +175,15 @@ static void elapsed_duration_baseline(void) {
   assert(activity_timer_elapsed(&collection.slots[slot], 2000) == 120);
   assert(timer_collection_resume(&collection, slot, 3000));
   assert(activity_timer_elapsed(&collection.slots[slot], 3010) == 130);
-  /* Edit changes the configured remaining duration within the same run. Its
-   * progress and elapsed display begin at that new duration setting. */
+  /* Changing remaining time preserves active elapsed and saved repeat time. */
   assert(timer_collection_edit(&collection, slot, 300, 3020));
   assert(collection.slots[slot].run == run);
-  assert(activity_timer_elapsed(&collection.slots[slot], 3020) == 0);
-  assert(activity_timer_elapsed(&collection.slots[slot], 3030) == 10);
+  assert(activity_timer_elapsed(&collection.slots[slot], 3020) == 140);
+  assert(activity_timer_elapsed(&collection.slots[slot], 3030) == 150);
+  assert(collection.slots[slot].repeat_seconds == 600);
   assert(timer_collection_pause(&collection, slot, 3030));
   const uint32_t revision = collection.slots[slot].revision;
-  assert(activity_timer_elapsed(&collection.slots[slot], 4000) == 10);
+  assert(activity_timer_elapsed(&collection.slots[slot], 4000) == 150);
   assert(collection.slots[slot].revision == revision); /* Reading time is pure. */
 }
 
@@ -258,6 +264,107 @@ static void restart_is_a_new_run(void) {
   assert(!memcmp(&previous, &collection, sizeof(collection)));
 }
 
+static void acknowledged_results_and_capacity(void) {
+  TimerCollection collection;
+  timer_collection_init(&collection, 991, 1000);
+  for (unsigned i = 0; i < TIMER_COLLECTION_CAPACITY; ++i)
+    assert(timer_collection_create(&collection, 60, 1000) == (int)i);
+  assert(!timer_collection_can_create(&collection));
+  assert(timer_collection_finish_due(&collection, 1060) == 255);
+  assert(!timer_collection_can_create(&collection)); /* Pending alarms are never evicted. */
+  const uint32_t revision = collection.revision;
+  assert(timer_collection_acknowledge(&collection, 3));
+  assert(collection.revision > revision && collection.slots[3].acknowledged);
+  assert(collection.slots[3].state == ACTIVITY_TIMER_FINISHED);
+  const uint32_t observed = collection.slots[3].observed_at;
+  const uint32_t until = collection.slots[3].valid_until;
+  assert(timer_collection_reconfirm(&collection, 3, 9999));
+  assert(collection.slots[3].observed_at == observed && collection.slots[3].valid_until == until);
+  assert(timer_collection_can_create(&collection));
+  assert(timer_collection_visible_slot(&collection, 7) == 3);
+  const uint32_t old_run = collection.slots[3].run;
+  assert(timer_collection_create(&collection, 90, 10000) == 3);
+  assert(collection.slots[3].run == old_run + 1 && !collection.slots[3].acknowledged);
+  assert(collection.slots[3].repeat_seconds == 90);
+  assert(timer_collection_visible_slot(&collection, 0) == 3);
+  assert(!timer_collection_can_create(&collection));
+  assert(timer_collection_valid(&collection));
+}
+
+static void edit_bounds_and_snooze_repeat(void) {
+  TimerCollection collection;
+  timer_collection_init(&collection, 992, 1000);
+  assert(timer_collection_create(&collection, 600, 1000) == 0);
+  TimerCollection unchanged = collection;
+  assert(timer_collection_edit(&collection, 0, 480, 1120));
+  assert(!memcmp(&unchanged, &collection, sizeof(collection)));
+  assert(timer_collection_edit(&collection, 0, 86400, 1120));
+  assert(collection.slots[0].configured_seconds == 86520);
+  assert(collection.slots[0].repeat_seconds == 600);
+  assert(activity_timer_elapsed(&collection.slots[0], 1120) == 120);
+  assert(timer_collection_valid(&collection));
+  assert(timer_collection_finish_due(&collection, 87520) == 1);
+  assert(timer_collection_snooze(&collection, 0, 87520));
+  assert(collection.slots[0].configured_seconds == 60 && collection.slots[0].repeat_seconds == 600);
+  assert(activity_timer_elapsed(&collection.slots[0], 87530) == 10);
+  assert(timer_collection_restart(&collection, 0, 87530));
+  assert(collection.slots[0].deadline == 88130 && collection.slots[0].configured_seconds == 600);
+
+  /* Repeated extensions may span more than a day, but arithmetic never wraps. */
+  assert(timer_collection_pause(&collection, 0, 87540));
+  collection.slots[0].configured_seconds = UINT32_MAX;
+  unchanged = collection;
+  assert(!timer_collection_edit(&collection, 0, 86400, 87540));
+  assert(!memcmp(&unchanged, &collection, sizeof(collection)));
+}
+
+static void v1_collection_upgrade(void) {
+  typedef struct {
+    uint32_t magic, version, seed, revision, visible_mask;
+    ActivityTimerModelV1 slots[TIMER_COLLECTION_CAPACITY];
+  } LegacyCollection;
+  TimerCollection collection;
+  timer_collection_init(&collection, 993, 1000);
+  assert(timer_collection_create(&collection, 60, 1000) == 0);
+  assert(timer_collection_create(&collection, 600, 1000) == 1);
+  assert(timer_collection_create(&collection, 60, 1000) == 2);
+  assert(timer_collection_finish_due(&collection, 1060) == 5);
+  LegacyCollection old;
+  memcpy(&old, &collection, offsetof(TimerCollection, slots));
+  old.version = 1;
+  for (unsigned i = 0; i < TIMER_COLLECTION_CAPACITY; ++i) {
+    memcpy(&old.slots[i], &collection.slots[i], sizeof(old.slots[i]));
+    old.slots[i].version = 1;
+  }
+  TimerCollection decoded;
+  assert(sizeof(old) == 372 && sizeof(decoded) == 436);
+  assert(timer_collection_decode(&decoded, &old, sizeof(old), 1));
+  assert(!decoded.slots[0].acknowledged && decoded.slots[2].acknowledged);
+  assert(decoded.slots[1].repeat_seconds == 600 && decoded.slots[1].deadline == 1600);
+  assert(decoded.slots[0].observed_at == 1060 && decoded.slots[0].valid_until == 1120);
+  assert(decoded.revision == collection.revision && decoded.visible_mask == collection.visible_mask);
+  assert(timer_collection_valid(&decoded));
+  TimerCollection previous = decoded;
+  TimerCollection inplace;
+  memcpy(&inplace, &old, sizeof(old));
+  assert(timer_collection_decode(&inplace, &inplace, sizeof(old), 1));
+  assert(!memcmp(&previous, &inplace, sizeof(previous)));
+  unsigned char unaligned[sizeof(old) + 1];
+  memcpy(unaligned + 1, &old, sizeof(old));
+  assert(timer_collection_decode(&decoded, unaligned + 1, sizeof(old), 1));
+  assert(!memcmp(&previous, &decoded, sizeof(previous)));
+  assert(!timer_collection_decode(&decoded, &old, sizeof(old) - 1, 1));
+  assert(!memcmp(&previous, &decoded, sizeof(decoded)));
+  old.slots[1].version = 99;
+  assert(!timer_collection_decode(&decoded, &old, sizeof(old), 1));
+  assert(!memcmp(&previous, &decoded, sizeof(decoded)));
+  assert(!timer_collection_decode(&decoded, &previous, sizeof(previous), 5));
+  old.slots[1].version = 1;
+  old.slots[7].version = 99;
+  assert(!timer_collection_decode(&decoded, &old, sizeof(old), 1));
+  assert(!memcmp(&previous, &decoded, sizeof(decoded)));
+}
+
 int main(void) {
   legacy_migration();
   independent_timers();
@@ -267,6 +374,9 @@ int main(void) {
   elapsed_duration_baseline();
   paused_visibility_and_restore();
   restart_is_a_new_run();
+  acknowledged_results_and_capacity();
+  edit_bounds_and_snooze_repeat();
+  v1_collection_upgrade();
   puts("timer collection: migration, eight slots, clocks, revisions, editing and persistence passed");
   return 0;
 }

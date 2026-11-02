@@ -84,7 +84,7 @@ int main(void) {
   assert(timer.revision == revision);
   assert(activity_timer_extend(&timer, 60, 2000));
   assert(timer.remaining_seconds == 540);
-  assert(activity_timer_elapsed(&timer, 2000) == 60);
+  assert(activity_timer_elapsed(&timer, 2000) == 120);
   assert(activity_timer_resume(&timer, 3000));
   assert(timer.deadline == 3540 && timer.remaining_seconds == 0 && timer.run == 1);
   assert(activity_timer_extend(&timer, 60, 3010));
@@ -114,7 +114,7 @@ int main(void) {
   assert(activity_timer_valid(&restored));
   assert(restored.observed_at == 4001 && restored.valid_until == 4065);
   assert(activity_timer_reconfirm(&restored, 9000));
-  assert(restored.observed_at == 9000 && restored.valid_until == 9060);
+  assert(restored.observed_at == 4001 && restored.valid_until == 4065);
   restored.version = 99;
   assert(!activity_timer_valid(&restored));
 
@@ -137,7 +137,37 @@ int main(void) {
   assert(activity_timer_valid(&timer) && timer.remaining_seconds == ACTIVITY_TIMER_MAX_SECONDS);
   activity_timer_init(&timer, 123, UINT32_MAX - 1);
   assert(!activity_timer_start(&timer, 5, UINT32_MAX - 1));
-  assert(sizeof(ActivityTimerModel) == 44); /* Existing persisted records need no migration. */
+  assert(sizeof(ActivityTimerModelV1) == 44);
+  assert(sizeof(ActivityTimerModel) == 52);
+
+  /* Completion acknowledgment is durable source metadata, not cancellation.
+   * Reopening never renews either a pending or acknowledged result. */
+  activity_timer_init(&timer, 456, 1000);
+  assert(activity_timer_start(&timer, 60, 1000));
+  assert(activity_timer_finish_if_due(&timer, 1060));
+  assert(!timer.acknowledged);
+  const uint32_t completion_revision = timer.revision;
+  assert(activity_timer_reconfirm(&timer, 2000));
+  assert(timer.observed_at == 1060 && timer.valid_until == 1120);
+  assert(activity_timer_acknowledge(&timer));
+  assert(timer.acknowledged && timer.state == ACTIVITY_TIMER_FINISHED);
+  assert(timer.revision > completion_revision);
+  const uint32_t ack_revision = timer.revision;
+  assert(activity_timer_acknowledge(&timer) && timer.revision == ack_revision);
+  assert(activity_timer_reconfirm(&timer, 3000));
+  assert(timer.acknowledged && timer.observed_at == 1060 && timer.valid_until == 1120);
+  ActivityTimerModelV1 old;
+  memcpy(&old, &timer, sizeof(old));
+  old.version = 1;
+  assert(activity_timer_decode(&restored, &old, sizeof(old), true));
+  assert(restored.version == 2 && restored.repeat_seconds == 60 && restored.acknowledged);
+  assert(activity_timer_decode(&restored, &old, sizeof(old), false));
+  assert(!restored.acknowledged);
+  assert(activity_timer_valid(&restored));
+  ActivityTimerModel before = restored;
+  old.version = 99;
+  assert(!activity_timer_decode(&restored, &old, sizeof(old), false));
+  assert(!memcmp(&before, &restored, sizeof(before)));
   paused_visibility();
   puts("timer model: lifecycle, persistence, expiry and boundary checks passed");
   return 0;

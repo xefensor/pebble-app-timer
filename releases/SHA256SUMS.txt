@@ -1,2 +1,2 @@
-769a7690fca5cc7930e22f728fd9fde4ad2aca3d6a937f98785129dced2eae5d  Timer-0.4.0.pbw
-a6399ff2ea751582a4e7c030bdea4d1d8b94c526aceeee8601b08b2ca5f485f2  Timer-0.4.0-source.zip
+1f08e804ec8c4246fb4e9dbf0aacd07cb5aafc54de0f7fc3277049350a7b5351  Timer-0.5.0.pbw
+06f2bc72e5fc7967864fda430660f8f93a1278bfadd0b790bd9eaf6b57b5857a  Timer-0.5.0-source.zip

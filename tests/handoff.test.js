@@ -172,6 +172,7 @@ test('one activity manifest declaration covers legacy sessions and bounded cards
   const manifest = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'package.json'), 'utf8'));
   assert.equal(manifest.pebble.messageKeys.ACTIVITY_SLOT, 1021);
   assert.equal(manifest.pebble.messageKeys.ACTIVITY_TOTAL_DURATION, 1022);
+  assert.equal(manifest.pebble.messageKeys.ACTIVITY_SHOW_TERMINAL, 1023);
   const sources = manifest.pebble.plugin.sources.filter(source => source.category === 'activity');
   assert.equal(sources.length, 1, 'Each source category must be declared once');
   const card = sources[0];
@@ -183,7 +184,7 @@ test('one activity manifest declaration covers legacy sessions and bounded cards
   assert.deepEqual(card.properties.support_anchor, ['timestamp']);
 });
 
-test('cold card source reports remaining and elapsed from one native observation', () => {
+test('cold Timer card is compact while detailed providers retain elapsed from the same observation', () => {
   const shared = storage();
   const pkjs = runtime('src/pkjs/index.js', shared);
   pkjs.events.appmessage({payload: snapshot({ACTIVITY_TOTAL_DURATION: 900})});
@@ -197,13 +198,14 @@ test('cold card source reports remaining and elapsed from one native observation
   assert.equal(p.main_base.numericValue.value, 600);
   assert.equal(p.main_anchor.timestamp.value, now);
   assert.equal(p.main_running.boolean.value, true);
-  assert.equal(p.support_type.shortText.text, 'clock');
-  assert.equal(p.support_clock.shortText.text, 'elapsed');
-  assert.equal(p.support_base.numericValue.value, 300);
-  assert.equal(p.support_anchor.timestamp.value, now);
-  assert.equal(p.support_running.boolean.value, true);
+  assert.equal(p.main_label.longText.text, 'Timer');
+  assert.equal(p.caption.longText.text, 'Timer');
+  assert.equal(p.support_type, undefined);
   assert.equal(p.unconfirmed.boolean.value, true);
   const later = helpers.createProvider({storage:shared,pluginUuid:uuid,now:() => (now+120)*1000}).source({category:'activity',item:'card'}).instances[0].properties;
+  assert.equal(later.support_type.shortText.text, 'clock');
+  assert.equal(later.support_clock.shortText.text, 'elapsed');
+  assert.equal(later.support_running.boolean.value, true);
   assert.equal(later.observed_at.timestamp.value, now);
   assert.equal(later.support_observed_at.timestamp.value, now);
   assert.equal(later.support_valid_until.timestamp.value, now+660);
@@ -289,7 +291,7 @@ test('both source schemas hide an expired pause without losing its saved snapsho
     assert.equal(visible[0].properties.valid_until.timestamp.value,now+300);
     if (item==='card') {
       assert.equal(visible[0].properties.main_valid_until.timestamp.value,now+300);
-      assert.equal(visible[0].properties.support_valid_until.timestamp.value,now+300);
+      assert.equal(visible[0].properties.support_type,undefined);
     }
     assert.equal(read(item,now+300).length,0);
     assert.equal(read(item,now+3600).length,0);
@@ -321,7 +323,50 @@ test('resuming a hidden pause republishes both source schemas with a fresh count
     if (item==='card') {
       assert.equal(p.main_running.boolean.value,true);
       assert.equal(p.main_base.numericValue.value,480);
-      assert.equal(p.support_base.numericValue.value,120);
+      assert.equal(p.support_type,undefined);
     }
   }
+});
+
+test('Done hides a completed run durably without cancelling it or another timer', () => {
+  const shared=storage();
+  const pkjs=runtime('src/pkjs/index.js',shared);
+  pkjs.events.appmessage({payload:snapshot({ACTIVITY_SLOT:0,ACTIVITY_TOTAL_DURATION:600,
+    ACTIVITY_SHOW_TERMINAL:0})});
+  pkjs.events.appmessage({payload:snapshot({ACTIVITY_SLOT:1,ACTIVITY_RUN:'other:1',
+    ACTIVITY_REVISION:5,ACTIVITY_TOTAL_DURATION:1200,ACTIVITY_SHOW_TERMINAL:0,
+    ACTIVITY_DEADLINE:now+1200,ACTIVITY_VALID_UNTIL:now+1260})});
+  const completed=snapshot({ACTIVITY_SLOT:0,ACTIVITY_REVISION:6,ACTIVITY_STATE:'completed',
+    ACTIVITY_CLOCK:'none',ACTIVITY_DEADLINE:0,ACTIVITY_OBSERVED_AT:now+600,
+    ACTIVITY_VALID_UNTIL:now+660,ACTIVITY_TOTAL_DURATION:600,ACTIVITY_SHOW_TERMINAL:1});
+  pkjs.events.appmessage({payload:completed});
+  function read(at) {
+    let answer;
+    runtime('src/plugin/index.js',shared,at).source({category:'activity',item:'card'},
+      {data(value) { answer=value; }});
+    return answer.instances;
+  }
+  assert.equal(read(now+601)[0].properties.show_terminal.boolean.value,true);
+  pkjs.events.appmessage({payload:{...completed,ACTIVITY_REVISION:7,ACTIVITY_SHOW_TERMINAL:0}});
+  let cards=read(now+602);
+  assert.equal(cards[0].properties.state.shortText.text,'completed');
+  assert.equal(cards[0].properties.show_terminal.boolean.value,false);
+  assert.equal(cards[0].properties.revision.numericValue.value,7);
+  assert.equal(cards[0].properties.observed_at.timestamp.value,now+600);
+  assert.equal(cards[1].properties.state.shortText.text,'active');
+
+  /* A cold phone handshake receives the saved acknowledgment and original
+   * expiry. Delayed completion and repeated polling cannot revive the result. */
+  const reopened=runtime('src/pkjs/index.js',shared,now+700);
+  reopened.events.ready();
+  assert.equal(reopened.sent[0].ACTIVITY_LAST_REVISION,7);
+  reopened.events.appmessage({payload:{...completed,ACTIVITY_REVISION:8,ACTIVITY_SHOW_TERMINAL:0}});
+  assert.equal(reopened.sent.at(-1).ACTIVITY_ACCEPTED_REVISION,8);
+  reopened.events.appmessage({payload:completed});
+  assert.equal(reopened.sent.at(-1).ACTIVITY_ERROR,'STALE_REVISION');
+  cards=read(now+700);
+  assert.deepEqual(Array.from(cards,card=>card.instanceId),['other:1']);
+  const full=helpers.createProvider({storage:shared,pluginUuid:uuid,now:()=>(now+602)*1000})
+    .source({category:'activity',item:'card'}).instances;
+  assert.equal(full[0].properties.show_terminal.boolean.value,false);
 });

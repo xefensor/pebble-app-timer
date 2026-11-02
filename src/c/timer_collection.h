@@ -3,7 +3,7 @@
 #include "timer_model.h"
 
 #define TIMER_COLLECTION_MAGIC UINT32_C(0x54434f4c)
-#define TIMER_COLLECTION_VERSION 1u
+#define TIMER_COLLECTION_VERSION 2u
 #define TIMER_COLLECTION_CAPACITY 8u
 
 /* RAM representation. Persist the header and individual models in separate
@@ -21,9 +21,12 @@ void timer_collection_init(TimerCollection *collection, uint32_t seed, uint32_t 
 bool timer_collection_migrate(TimerCollection *collection,
                               const ActivityTimerModel *legacy, uint32_t now);
 bool timer_collection_valid(const TimerCollection *collection);
+bool timer_collection_decode(TimerCollection *collection, const void *bytes,
+                              size_t length, uint8_t alarms);
 unsigned timer_collection_count(const TimerCollection *collection);
 int timer_collection_visible_slot(const TimerCollection *collection, unsigned row);
 bool timer_collection_visible(const TimerCollection *collection, unsigned slot);
+bool timer_collection_can_create(const TimerCollection *collection);
 
 /* Returns a stable slot index, or -1 on capacity/validation/revision failure.
  * Reusing a hidden slot starts a new run; providers replace the preceding run
@@ -37,6 +40,7 @@ bool timer_collection_pause(TimerCollection *collection, unsigned slot, uint32_t
 bool timer_collection_resume(TimerCollection *collection, unsigned slot, uint32_t now);
 bool timer_collection_delete(TimerCollection *collection, unsigned slot, uint32_t now);
 bool timer_collection_snooze(TimerCollection *collection, unsigned slot, uint32_t now);
+bool timer_collection_acknowledge(TimerCollection *collection, unsigned slot);
 uint8_t timer_collection_finish_due(TimerCollection *collection, uint32_t now);
 bool timer_collection_reconfirm(TimerCollection *collection, unsigned slot, uint32_t now);
 /* Raise the collection-wide phone revision floor before reconfirming/sending

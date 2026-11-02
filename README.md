@@ -4,22 +4,54 @@ A native timer for **stock PebbleOS**, with activity sharing for compatible
 watchfaces such as [Dynamic](https://github.com/xefensor/dynamic-watchface).
 The first target is Pebble Time 2 (`emery`, 200 × 228).
 
-Timer 0.4.0 is a [GitHub development prerelease](https://github.com/xefensor/pebble-app-timer/releases/tag/v0.4.0)
-with the approved hourglass design implemented natively. Paused timers hide
+Timer 0.5.0 is a [GitHub development prerelease](https://github.com/xefensor/pebble-app-timer/releases/tag/v0.5.0)
+with a compact watchface activity, durable Done acknowledgement, preserved repeat
+durations and a live countdown in the app list. Paused timers hide
 from compatible watchfaces after five minutes and remain saved in Timer.
-Download the [PBW](https://github.com/xefensor/pebble-app-timer/releases/download/v0.4.0/Timer-0.4.0.pbw),
-[source archive](https://github.com/xefensor/pebble-app-timer/releases/download/v0.4.0/Timer-0.4.0-source.zip)
-and [checksums](https://github.com/xefensor/pebble-app-timer/releases/download/v0.4.0/SHA256SUMS.txt).
+Download the [PBW](https://github.com/xefensor/pebble-app-timer/releases/download/v0.5.0/Timer-0.5.0.pbw),
+[source archive](https://github.com/xefensor/pebble-app-timer/releases/download/v0.5.0/Timer-0.5.0-source.zip)
+and [checksums](https://github.com/xefensor/pebble-app-timer/releases/download/v0.5.0/SHA256SUMS.txt).
 See [validation](docs/VALIDATION.md) for the native emulator and packaged-runtime
 checks; actual phone and physical-watch checks remain.
-The [earlier 0.2.0 release](https://github.com/xefensor/pebble-app-timer/releases/tag/v0.2.0)
+The [previous 0.4.0](https://github.com/xefensor/pebble-app-timer/releases/tag/v0.4.0)
+and [earlier 0.2.0 release](https://github.com/xefensor/pebble-app-timer/releases/tag/v0.2.0)
 and its historical validation remain unchanged.
 
-![Timer 0.4.0 native Emery screens](docs/images/native-overview.png)
+![Timer 0.5.0 native Emery screens and launcher countdown](docs/images/native-overview.png)
 
-These are actual native emulator captures from this release, displayed at
+These are actual 0.5.0 native emulator captures, displayed at
 twice their 200 × 228 pixel size. The [approved browser concept](docs/design/Timer-UI-Preview.html)
 is retained separately; it is not native or physical-watch verification.
+
+## Version 0.5.0
+
+- Show a compact Timer activity: remaining time and one identity caption.
+  Keep elapsed in the Timer detail; generic activity supporting values remain
+  available through the shared library's detailed projection.
+- Done, Select and Back acknowledge an alarm durably. The completed run receives
+  a newer source revision with its result hidden; reopening or reconnecting
+  cannot renew a finished result's original visibility. Acknowledgement reaches
+  a consumer through the existing phone sharing path when available.
+- Preserve the saved repeat duration across one-minute snoozes and changes to
+  remaining time. Remaining-time edits preserve elapsed progress; saving an
+  unchanged editor leaves the existing deadline untouched. Editing a Ready
+  timer changes its saved repeat duration without starting an alarm.
+- Put running and paused timers before reusable Ready entries. List focus follows
+  the same stable timer slot. When all eight slots are occupied, explicit Add
+  can replace the oldest acknowledged Ready timer after an editor warning;
+  running, paused and unacknowledged alarms are never reclaimed.
+- Start common duration edits on Minutes. Select acknowledges the alarm; Up
+  snoozes. The prior Down acknowledgement remains supported.
+- Use native App Glance deadline templates for the app-list countdown after
+  Timer closes, including the next running timer when an earlier deadline
+  expires. Pause, acknowledgement and deletion clear or replace the glance.
+  Launcher position remains controlled by PebbleOS.
+- Coalesce same-second launcher changes and flush the latest state before a
+  normal Back exit. This avoids the firmware rejecting a pause/clear update
+  with the same creation timestamp as its preceding running countdown.
+- Safely migrate the original single timer and pre-0.5.0 eight-slot storage
+  banks. Preserve UUIDs, keys, saved timers, revision floors, native Wakeup
+  ownership and five-minute paused visibility. Pin Activities 0.2.1.
 
 ## Version 0.4.0
 
@@ -124,18 +156,37 @@ phone-mediated snapshot, not direct access to another watchapp's memory.
 | --- | --- | --- | --- | --- |
 | Timer list | Previous row | Open timer / add from + | Next row | Exit to watchface |
 | Set timer | Increase selected field | Next field / start | Decrease selected field | Previous field / list |
-| Timer detail | Adjust duration | Pause / resume / restart finished | More options | Timer list |
+| Timer detail | Change remaining / saved duration | Pause / resume / repeat Ready | More options | Timer list |
 | More options | Previous option | Choose option | Next option | Timer detail |
 | Delete confirmation | Keep | Confirm selected choice | Delete | Keep |
-| Time’s up | Snooze one minute | — | Dismiss | Timer list |
+| Time’s up | Snooze one minute | Done | Done (compatibility) | Done / timer list |
 
 The editor sets hours, minutes and seconds, from five seconds to 24 hours.
 The native app owns every deadline and alarm. Leaving the app or losing phone
 connectivity does not cancel a successfully scheduled Wakeup.
 
-The detail screen shows the remaining countdown, hourglass and Elapsed from one native time read.
-Elapsed excludes paused time within the current duration setting. Edit resets
-that setting and its progress baseline; it is not a lifetime session counter.
+The detail screen shows the remaining countdown, hourglass and Elapsed from one
+native time read. Elapsed excludes paused time. Changing the remaining time keeps
+the elapsed portion and adjusts the run's progress span; an unchanged save keeps
+the deadline. The original saved repeat duration stays separate, including after
+a one-minute snooze. Ready timers retain that saved duration for their next run.
+
+## Countdown in the app list
+
+While a timer is running, its native deadline supplies an
+[App Glance](https://developer.repebble.com/guides/user-interfaces/appglance-c/)
+subtitle. PebbleOS updates the countdown while Timer is closed, without phone
+JavaScript or a background worker. With several running timers, the earliest
+deadline appears first and queued slices expire into the next running timer.
+Paused or acknowledged saved timers do not leave a stale countdown behind.
+
+The public SDK does not offer a temporary top-of-list position. The current
+[launcher ordering implementation](https://github.com/coredevices/PebbleOS/blob/main/fw/process_management/app_menu_data_source.c)
+reserves automatic promotion for specific system applications. This app updates
+its subtitle and preserves the user's launcher order.
+To keep Timer at the top manually, drag it upward in the phone app's
+**My Apps** list, as described in
+[Pebble's app organisation guide](https://help.repebble.com/en/articles/14166032-adding-watchfaces-apps).
 
 The timer respects Quiet Time for vibration. PebbleOS controls missed-Wakeup
 notifications. A scheduling failure displays “Alarm not set; keep open”
@@ -163,7 +214,9 @@ a fresh visible state. Revisions and the PKJS handshake prevent queued old state
 from replacing a newer run, including after native app data resets. Cancelled
 and completed records are terminal state, not new consumer alerts. Schema 1
 removes both terminal states. Schema 2 can display the native completed result
-for its original, bounded validity; cancellation still clears it. Native alarm
+for its original, bounded validity while unacknowledged. Done publishes a newer,
+hidden completed result; the saved timer remains reusable. Reconnection and
+reopening never extend terminal validity. Cancellation still clears it. Native alarm
 vibration remains owned by Timer, independently of either display source.
 
 ## Build and check
@@ -176,11 +229,11 @@ npm test
 npm run build
 ```
 
-The dependency is installed from `vendor/pebble-activities-0.2.0.tgz`; its
+The dependency is installed from `vendor/pebble-activities-0.2.1.tgz`; its
 provenance and SHA-256 are recorded in [vendor/README.md](vendor/README.md).
 
 The distribution build clears the SDK cache so dependency updates cannot leave
-stale phone JavaScript in the PBW. It writes `dist/Timer-0.4.0.pbw` and its checksum. It bundles the provider
+stale phone JavaScript in the PBW. It writes `dist/Timer-0.5.0.pbw` and its checksum. It bundles the provider
 JavaScript and sets `manifestVersion: 2`, including `plugin.js` alongside PKJS
 and the watch binary. A plain `pebble build` creates a development PBW without
 that extra provider bundle; use `npm run build` for an installable shared-activity

@@ -1,5 +1,66 @@
 # Timer validation
 
+## 0.5.0 activity acknowledgement, timer UX and app-list countdown
+
+This development prerelease implements the user's review of the watchface and
+Timer together. Published 0.4.0 and older tags, PBWs and source archives stay
+unchanged. Both app identities, the provider namespace, existing keys, eight
+stable slots, native Wakeup broker and five-minute paused visibility remain.
+
+- Six strict portable C suites and 15 JavaScript tests pass. New cases cover
+  original/repeat duration versus current-run span, snooze, remaining-time edits,
+  no-op deadlines, acknowledged completion, terminal reconfirmation, active-first
+  stable-slot ordering, Ready reuse, arithmetic overflow and launcher deadlines.
+- The original 44-byte singleton and 372-byte collection decode into version 2
+  models/banks, preserving pending versus acknowledged alarms. In-place and
+  unaligned migration, invalid input and failure atomicity have regression cases.
+  Native banks remain verified in bounded chunks before their header commits.
+- The SDK 4.33.1 Emery distribution build passes. Its final PBW contains native
+  code, PKJS, independently callable provider, matching symbolic/numeric keys,
+  the exact Activities 0.2.1 package and licences. All 35 Python release-helper
+  tests pass. Packaged scripts verify compact projection, completion visibility,
+  cold reload and stale-completion rejection using the actual bundled scripts.
+- The [exact font audit](qa/0.5.0/font-audit.json) checks all seven native font
+  resources and linked Fredoka outlines against the reviewed sources/licences.
+  The [static stack audit](qa/0.5.0/stack-audit.json) compares ARM compiler frames
+  with 12 actual ELF prologues; all selected frames agree. The actual native
+  header SDK tuple is (5,106), classified as 4.x with a nominal 4 KiB Emery
+  stack in the identified PebbleOS source, independently of `PBL_SDK_3`.
+  Those totals exclude SDK, event-loop, libc and syscall overhead and are not a
+  runtime stack high-water measurement.
+- SDK static RAM footprint is 35,421 bytes; resources are 26,719 bytes. The SDK's
+  95,651-byte pre-startup heap figure does not measure live free heap or battery
+  use. Migration/save/completion scratch avoids nested full-collection copies.
+
+Focused actual native evidence is recorded in
+[the 0.5.0 Emery report](qa/0.5.0/native/ux.json), with exact final PBW/native
+hashes and unmodified raw screenshots. Its Python AppMessage harness requests
+native state and sends matching receipts; this is explicitly separate from
+phone JavaScript and the real phone/provider transport. Native alarms run under
+Timer's own Wakeup scheduling. App Glance uses OS countdown templates rather
+than a worker or repeated phone updates; launcher position remains OS-owned.
+
+All six native phases pass and all **48 raw screenshots** were hash-verified and
+visually reviewed. They cover old singleton/bank migration, pending and
+acknowledged results, snooze/repeat/edit behaviour, all-eight Ready reuse,
+actual native background alarms and equal/nearby Wakeups. The OS app-list
+countdown ticks after Timer closes; paused, deleted and finished entries clear.
+A real same-UTC-second start/resume and pause followed by Back also clears it.
+The public App Glance database rejects equal creation timestamps, so unchanged
+projections skip writes and changed projections coalesce until the next second.
+Normal Back permits a bounded one-second flush; failure or clock rollback never
+traps navigation. The derived checkpoint at key 2104 is not an alarm or source
+delivery receipt. Fake-SDK tests explicitly model timestamp rejection, limited
+slice capacity, timer/persistence/slice failures and rollback.
+
+Final PBW SHA-256:
+`1f08e804ec8c4246fb4e9dbf0aacd07cb5aafc54de0f7fc3277049350a7b5351`.
+
+Physical-watch appearance, vibration, Quiet Time transitions, real Bluetooth
+loss/reconnection, live plugin delivery and battery use remain device checks.
+An offline acknowledgement is durable locally and shared when the existing
+phone path is available; it cannot directly message another native app.
+
 ## 0.4.0 native hourglass prerelease — 2 November 2026
 
 The approved [interactive concept](design/Timer-UI-Preview.html) is implemented

@@ -1,0 +1,15 @@
+{
+  "name": "timer-ux-seed",
+  "version": "0.1.0",
+  "private": true,
+  "author": "Xef",
+  "pebble": {
+    "displayName": "Timer UX Seed",
+    "uuid": "50e9ef12-a5ab-4369-a3b5-3447bfba5151",
+    "sdkVersion": "3",
+    "projectType": "native",
+    "targetPlatforms": ["emery"],
+    "watchapp": {"watchface": false},
+    "resources": {"media": []}
+  }
+}

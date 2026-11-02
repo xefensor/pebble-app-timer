@@ -23,12 +23,19 @@ service. Keep timer behaviour independent of Dynamic's presentation.
 - Back remains available when disconnected, storage fails or sharing is pending.
   Scheduling failure must remain visible; do not claim an alarm was secured.
 - Keep a single AppMessage queue. A transport ACK is not an application receipt.
+- Acknowledgement preserves the completed run and saved repeat duration, advances
+  its source revision and hides its result. Reconfirmation must never renew a
+  terminal observation or validity. Persist acknowledgement and alarm-mask changes
+  in the same verified bank before publication.
+- Keep the saved repeat duration separate from the current run's progress span.
+  Snooze uses a new one-minute run; remaining-time edits preserve elapsed and a
+  no-op editor save preserves the deadline. Ready edits do not start alarms.
 
 ## Dependencies and packaging
 
 - Install with `npm ci --ignore-scripts`. Use the versioned tarball in `vendor/`;
   never rely on a sibling library checkout. Record updated provenance and hashes.
-  Version 0.4.0 pins Activities 0.2.0; `vendor/ACTIVITIES.json` records
+  Version 0.5.0 pins Activities 0.2.1; `vendor/ACTIVITIES.json` records
   its exact reviewed source commit and archive checksum.
 - Use `npm run build` for distribution. Its manifestVersion 2 PBW must contain
   native app, PKJS, independently callable `plugin.js`, licences and notices.
@@ -62,7 +69,11 @@ visible. Restart creates a new run in the same slot with the configured duration
 The app has eight stable native timer slots and an independent list/editor/detail/
 alarm interface. ACTIVITY_SLOT (1021) is an internal bridge key;
 ACTIVITY_TOTAL_DURATION (1022) adds immutable configured-duration metadata without
-changing the persisted native model. Keep the activity/session schema 1 source
+renumbering prior keys. ACTIVITY_SHOW_TERMINAL (1023) explicitly publishes result
+visibility. Version 2 native models add saved repeat duration and acknowledgement;
+keep the exact version 1 record decoder and atomic bank migration. Do not stack
+full collection copies in nested migration/save calls on the app stack; retain a conservative budget for older SDK classifications.
+Keep the activity/session schema 1 source
 alongside activity/card schema 2. The native publication/receipt path remains
 schema 1 plus the optional bridge metadata. Source revisions advance globally
 and dirty slots are published in ascending order.
@@ -71,6 +82,9 @@ and the union of both schemas' properties.
 Keep the earliest-deadline Wakeup broker: separate nearby Wakeups conflict on
 stock PebbleOS. Versioned storage chunks must stay below the SDK’s per-key limit;
 write and verify a new bank before committing it or retiring legacy state.
+App Glance is a launcher subtitle only: queue native running deadlines, respect
+the runtime slice limit, and let the OS tick/expire them. It must not change
+Wakeup ownership, start a worker, reorder the launcher or refresh source validity.
 
 The accompanying PolyForm Noncommercial licence and required attribution apply.
 Preserve third-party notices, including the SDK's Apache 2.0 notice.

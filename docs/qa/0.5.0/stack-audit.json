@@ -1,0 +1,779 @@
+{
+  "checked_at_utc": "2026-11-02T22:37:22.112469+00:00",
+  "method": "Separate ARM GCC -fstack-usage probes with actual SDK flags; selected actual distribution ELF prologues recorded for comparison.",
+  "cflags": [
+    "-std=c99",
+    "-mcpu=cortex-m3",
+    "-mthumb",
+    "-ffunction-sections",
+    "-fdata-sections",
+    "-fcommon",
+    "-g",
+    "-fPIE",
+    "-Os",
+    "-D_TIME_H_",
+    "-Dtime_t=long",
+    "-Wall",
+    "-Wextra",
+    "-Werror",
+    "-Wno-unused-parameter",
+    "-Wno-error=unused-function",
+    "-Wno-error=unused-variable",
+    "-Wno-error=builtin-declaration-mismatch",
+    "-Wno-error=format-truncation",
+    "-Wno-error=expansion-to-defined",
+    "-Wno-error=zero-length-bounds",
+    "-Wno-error=cast-function-type",
+    "-Wno-error=unused-value"
+  ],
+  "defines": [
+    "RELEASE",
+    "PBL_PLATFORM_EMERY",
+    "PBL_COLOR",
+    "PBL_RECT",
+    "PBL_MICROPHONE",
+    "PBL_SMARTSTRAP",
+    "PBL_HEALTH",
+    "PBL_SMARTSTRAP_POWER",
+    "PBL_COMPASS",
+    "PBL_TOUCH",
+    "PBL_RGB_BACKLIGHT",
+    "PBL_SPEAKER",
+    "PBL_DISPLAY_WIDTH=200",
+    "PBL_DISPLAY_HEIGHT=228",
+    "PBL_SDK_3"
+  ],
+  "source_sha256": {
+    "src/c/main.c": "b16e8dfa9b3fcddc42720bd879765cfb42bd4049957eb912f024bacbb2405357",
+    "src/c/timer_model.c": "45aaebf48d5f8ea677b8d562fc6658c90d4a767593becc71ad33feb56d9fa138",
+    "src/c/timer_collection.c": "81a4851fc2cd39970646d1cb16289d137ae8097514ac7856a0890dbee5547ae5",
+    "src/c/timer_glance.c": "a4b8daf7567d86226ed94982c09666ec8c45e3cc70e6f7e93920236f7e9f305a"
+  },
+  "elf_sha256": "4fb872a14190e3c1c324fc7f10c694f1ebb384ecfe9b7ee076ff0512bb387342",
+  "frames": {
+    "prv_u32": {
+      "bytes": 0,
+      "kind": "static",
+      "location": "/home/xela/Projekty/Pebble/pebble-app-timer/src/c/main.c:197:13:prv_u32"
+    },
+    "prv_stop_motion": {
+      "bytes": 24,
+      "kind": "static",
+      "location": "/home/xela/Projekty/Pebble/pebble-app-timer/src/c/main.c:565:13:prv_stop_motion"
+    },
+    "prv_string": {
+      "bytes": 16,
+      "kind": "static",
+      "location": "/home/xela/Projekty/Pebble/pebble-app-timer/src/c/main.c:216:20:prv_string"
+    },
+    "prv_click_config": {
+      "bytes": 8,
+      "kind": "static",
+      "location": "/home/xela/Projekty/Pebble/pebble-app-timer/src/c/main.c:757:13:prv_click_config"
+    },
+    "prv_motion_tick": {
+      "bytes": 40,
+      "kind": "static",
+      "location": "/home/xela/Projekty/Pebble/pebble-app-timer/src/c/main.c:571:13:prv_motion_tick"
+    },
+    "prv_now": {
+      "bytes": 0,
+      "kind": "static",
+      "location": "/home/xela/Projekty/Pebble/pebble-app-timer/src/c/main.c:70:17:prv_now"
+    },
+    "prv_view": {
+      "bytes": 48,
+      "kind": "static",
+      "location": "/home/xela/Projekty/Pebble/pebble-app-timer/src/c/main.c:523:20:prv_view"
+    },
+    "prv_draw": {
+      "bytes": 64,
+      "kind": "static",
+      "location": "/home/xela/Projekty/Pebble/pebble-app-timer/src/c/main.c:536:13:prv_draw"
+    },
+    "prv_schedule_alarm": {
+      "bytes": 32,
+      "kind": "static",
+      "location": "/home/xela/Projekty/Pebble/pebble-app-timer/src/c/main.c:265:13:prv_schedule_alarm"
+    },
+    "prv_refresh": {
+      "bytes": 24,
+      "kind": "static",
+      "location": "/home/xela/Projekty/Pebble/pebble-app-timer/src/c/main.c:554:13:prv_refresh"
+    },
+    "prv_begin_edit": {
+      "bytes": 16,
+      "kind": "static",
+      "location": "/home/xela/Projekty/Pebble/pebble-app-timer/src/c/main.c:603:13:prv_begin_edit"
+    },
+    "prv_exit_after_glance": {
+      "bytes": 0,
+      "kind": "static",
+      "location": "/home/xela/Projekty/Pebble/pebble-app-timer/src/c/main.c:632:13:prv_exit_after_glance"
+    },
+    "prv_will_focus": {
+      "bytes": 0,
+      "kind": "static",
+      "location": "/home/xela/Projekty/Pebble/pebble-app-timer/src/c/main.c:597:13:prv_will_focus"
+    },
+    "prv_flush": {
+      "bytes": 168,
+      "kind": "static",
+      "location": "/home/xela/Projekty/Pebble/pebble-app-timer/src/c/main.c:358:13:prv_flush"
+    },
+    "prv_connection": {
+      "bytes": 16,
+      "kind": "static",
+      "location": "/home/xela/Projekty/Pebble/pebble-app-timer/src/c/main.c:504:13:prv_connection"
+    },
+    "prv_retry": {
+      "bytes": 8,
+      "kind": "static",
+      "location": "/home/xela/Projekty/Pebble/pebble-app-timer/src/c/main.c:340:13:prv_retry"
+    },
+    "prv_outbox_failed": {
+      "bytes": 16,
+      "kind": "static",
+      "location": "/home/xela/Projekty/Pebble/pebble-app-timer/src/c/main.c:436:13:prv_outbox_failed"
+    },
+    "prv_outbox_sent": {
+      "bytes": 16,
+      "kind": "static",
+      "location": "/home/xela/Projekty/Pebble/pebble-app-timer/src/c/main.c:424:13:prv_outbox_sent"
+    },
+    "prv_save": {
+      "bytes": 64,
+      "kind": "static",
+      "location": "/home/xela/Projekty/Pebble/pebble-app-timer/src/c/main.c:85:13:prv_save"
+    },
+    "prv_apply": {
+      "bytes": 32,
+      "kind": "static",
+      "location": "/home/xela/Projekty/Pebble/pebble-app-timer/src/c/main.c:294:13:prv_apply"
+    },
+    "prv_transition": {
+      "bytes": 16,
+      "kind": "static",
+      "location": "/home/xela/Projekty/Pebble/pebble-app-timer/src/c/main.c:583:13:prv_transition"
+    },
+    "prv_open_alarm": {
+      "bytes": 0,
+      "kind": "static",
+      "location": "/home/xela/Projekty/Pebble/pebble-app-timer/src/c/main.c:254:13:prv_open_alarm"
+    },
+    "prv_finish_at": {
+      "bytes": 24,
+      "kind": "static",
+      "location": "/home/xela/Projekty/Pebble/pebble-app-timer/src/c/main.c:318:13:prv_finish_at"
+    },
+    "prv_finish": {
+      "bytes": 8,
+      "kind": "static",
+      "location": "/home/xela/Projekty/Pebble/pebble-app-timer/src/c/main.c:338:13:prv_finish"
+    },
+    "prv_focus": {
+      "bytes": 8,
+      "kind": "static",
+      "location": "/home/xela/Projekty/Pebble/pebble-app-timer/src/c/main.c:591:13:prv_focus"
+    },
+    "prv_wakeup": {
+      "bytes": 8,
+      "kind": "static",
+      "location": "/home/xela/Projekty/Pebble/pebble-app-timer/src/c/main.c:772:13:prv_wakeup"
+    },
+    "prv_tick": {
+      "bytes": 64,
+      "kind": "static",
+      "location": "/home/xela/Projekty/Pebble/pebble-app-timer/src/c/main.c:765:13:prv_tick"
+    },
+    "prv_inbox": {
+      "bytes": 488,
+      "kind": "static",
+      "location": "/home/xela/Projekty/Pebble/pebble-app-timer/src/c/main.c:458:13:prv_inbox"
+    },
+    "prv_alarm_dismiss": {
+      "bytes": 16,
+      "kind": "static",
+      "location": "/home/xela/Projekty/Pebble/pebble-app-timer/src/c/main.c:614:13:prv_alarm_dismiss"
+    },
+    "prv_press": {
+      "bytes": 464,
+      "kind": "static",
+      "location": "/home/xela/Projekty/Pebble/pebble-app-timer/src/c/main.c:640:13:prv_press"
+    },
+    "prv_click": {
+      "bytes": 16,
+      "kind": "static",
+      "location": "/home/xela/Projekty/Pebble/pebble-app-timer/src/c/main.c:746:13:prv_click"
+    },
+    "main": {
+      "bytes": 184,
+      "kind": "static",
+      "location": "/home/xela/Projekty/Pebble/pebble-app-timer/src/c/main.c:825:5:main"
+    },
+    "activity_timer_init": {
+      "bytes": 16,
+      "kind": "static",
+      "location": "/home/xela/Projekty/Pebble/pebble-app-timer/src/c/timer_model.c:17:6:activity_timer_init"
+    },
+    "activity_timer_valid": {
+      "bytes": 8,
+      "kind": "static",
+      "location": "/home/xela/Projekty/Pebble/pebble-app-timer/src/c/timer_model.c:30:6:activity_timer_valid"
+    },
+    "activity_timer_decode": {
+      "bytes": 80,
+      "kind": "static",
+      "location": "/home/xela/Projekty/Pebble/pebble-app-timer/src/c/timer_model.c:56:6:activity_timer_decode"
+    },
+    "activity_timer_remaining": {
+      "bytes": 0,
+      "kind": "static",
+      "location": "/home/xela/Projekty/Pebble/pebble-app-timer/src/c/timer_model.c:75:10:activity_timer_remaining"
+    },
+    "activity_timer_elapsed": {
+      "bytes": 8,
+      "kind": "static",
+      "location": "/home/xela/Projekty/Pebble/pebble-app-timer/src/c/timer_model.c:84:10:activity_timer_elapsed"
+    },
+    "activity_timer_start": {
+      "bytes": 16,
+      "kind": "static",
+      "location": "/home/xela/Projekty/Pebble/pebble-app-timer/src/c/timer_model.c:90:6:activity_timer_start"
+    },
+    "activity_timer_pause": {
+      "bytes": 16,
+      "kind": "static",
+      "location": "/home/xela/Projekty/Pebble/pebble-app-timer/src/c/timer_model.c:107:6:activity_timer_pause"
+    },
+    "activity_timer_resume": {
+      "bytes": 8,
+      "kind": "static",
+      "location": "/home/xela/Projekty/Pebble/pebble-app-timer/src/c/timer_model.c:118:6:activity_timer_resume"
+    },
+    "activity_timer_extend": {
+      "bytes": 16,
+      "kind": "static",
+      "location": "/home/xela/Projekty/Pebble/pebble-app-timer/src/c/timer_model.c:128:6:activity_timer_extend"
+    },
+    "activity_timer_cancel": {
+      "bytes": 0,
+      "kind": "static",
+      "location": "/home/xela/Projekty/Pebble/pebble-app-timer/src/c/timer_model.c:147:6:activity_timer_cancel"
+    },
+    "activity_timer_reconfirm": {
+      "bytes": 0,
+      "kind": "static",
+      "location": "/home/xela/Projekty/Pebble/pebble-app-timer/src/c/timer_model.c:157:6:activity_timer_reconfirm"
+    },
+    "activity_timer_acknowledge": {
+      "bytes": 0,
+      "kind": "static",
+      "location": "/home/xela/Projekty/Pebble/pebble-app-timer/src/c/timer_model.c:182:6:activity_timer_acknowledge"
+    },
+    "activity_timer_finish_if_due": {
+      "bytes": 0,
+      "kind": "static",
+      "location": "/home/xela/Projekty/Pebble/pebble-app-timer/src/c/timer_model.c:192:6:activity_timer_finish_if_due"
+    },
+    "slot_ready": {
+      "bytes": 0,
+      "kind": "static",
+      "location": "/home/xela/Projekty/Pebble/pebble-app-timer/src/c/timer_collection.c:10:13:slot_ready"
+    },
+    "commit": {
+      "bytes": 24,
+      "kind": "static",
+      "location": "/home/xela/Projekty/Pebble/pebble-app-timer/src/c/timer_collection.c:15:13:commit"
+    },
+    "timer_collection_init": {
+      "bytes": 32,
+      "kind": "static",
+      "location": "/home/xela/Projekty/Pebble/pebble-app-timer/src/c/timer_collection.c:23:6:timer_collection_init"
+    },
+    "timer_collection_migrate": {
+      "bytes": 24,
+      "kind": "static",
+      "location": "/home/xela/Projekty/Pebble/pebble-app-timer/src/c/timer_collection.c:35:6:timer_collection_migrate"
+    },
+    "timer_collection_valid": {
+      "bytes": 24,
+      "kind": "static",
+      "location": "/home/xela/Projekty/Pebble/pebble-app-timer/src/c/timer_collection.c:45:6:timer_collection_valid"
+    },
+    "timer_collection_decode": {
+      "bytes": 160,
+      "kind": "static",
+      "location": "/home/xela/Projekty/Pebble/pebble-app-timer/src/c/timer_collection.c:60:6:timer_collection_decode"
+    },
+    "timer_collection_visible": {
+      "bytes": 0,
+      "kind": "static",
+      "location": "/home/xela/Projekty/Pebble/pebble-app-timer/src/c/timer_collection.c:112:6:timer_collection_visible"
+    },
+    "timer_collection_count": {
+      "bytes": 16,
+      "kind": "static",
+      "location": "/home/xela/Projekty/Pebble/pebble-app-timer/src/c/timer_collection.c:105:10:timer_collection_count"
+    },
+    "create_slot": {
+      "bytes": 16,
+      "kind": "static",
+      "location": "/home/xela/Projekty/Pebble/pebble-app-timer/src/c/timer_collection.c:140:12:create_slot"
+    },
+    "timer_collection_visible_slot": {
+      "bytes": 72,
+      "kind": "static",
+      "location": "/home/xela/Projekty/Pebble/pebble-app-timer/src/c/timer_collection.c:117:5:timer_collection_visible_slot"
+    },
+    "timer_collection_can_create": {
+      "bytes": 8,
+      "kind": "static",
+      "location": "/home/xela/Projekty/Pebble/pebble-app-timer/src/c/timer_collection.c:153:6:timer_collection_can_create"
+    },
+    "timer_collection_create": {
+      "bytes": 88,
+      "kind": "static",
+      "location": "/home/xela/Projekty/Pebble/pebble-app-timer/src/c/timer_collection.c:157:5:timer_collection_create"
+    },
+    "timer_collection_edit": {
+      "bytes": 88,
+      "kind": "static",
+      "location": "/home/xela/Projekty/Pebble/pebble-app-timer/src/c/timer_collection.c:169:6:timer_collection_edit"
+    },
+    "timer_collection_pause": {
+      "bytes": 80,
+      "kind": "static",
+      "location": "/home/xela/Projekty/Pebble/pebble-app-timer/src/c/timer_collection.c:204:6:timer_collection_pause"
+    },
+    "timer_collection_restart": {
+      "bytes": 80,
+      "kind": "static",
+      "location": "/home/xela/Projekty/Pebble/pebble-app-timer/src/c/timer_collection.c:211:6:timer_collection_restart"
+    },
+    "timer_collection_resume": {
+      "bytes": 80,
+      "kind": "static",
+      "location": "/home/xela/Projekty/Pebble/pebble-app-timer/src/c/timer_collection.c:224:6:timer_collection_resume"
+    },
+    "timer_collection_delete": {
+      "bytes": 80,
+      "kind": "static",
+      "location": "/home/xela/Projekty/Pebble/pebble-app-timer/src/c/timer_collection.c:231:6:timer_collection_delete"
+    },
+    "timer_collection_snooze": {
+      "bytes": 80,
+      "kind": "static",
+      "location": "/home/xela/Projekty/Pebble/pebble-app-timer/src/c/timer_collection.c:247:6:timer_collection_snooze"
+    },
+    "timer_collection_acknowledge": {
+      "bytes": 80,
+      "kind": "static",
+      "location": "/home/xela/Projekty/Pebble/pebble-app-timer/src/c/timer_collection.c:258:6:timer_collection_acknowledge"
+    },
+    "timer_collection_finish_due": {
+      "bytes": 96,
+      "kind": "static",
+      "location": "/home/xela/Projekty/Pebble/pebble-app-timer/src/c/timer_collection.c:267:9:timer_collection_finish_due"
+    },
+    "timer_collection_reconfirm": {
+      "bytes": 80,
+      "kind": "static",
+      "location": "/home/xela/Projekty/Pebble/pebble-app-timer/src/c/timer_collection.c:280:6:timer_collection_reconfirm"
+    },
+    "timer_collection_raise_floor": {
+      "bytes": 0,
+      "kind": "static",
+      "location": "/home/xela/Projekty/Pebble/pebble-app-timer/src/c/timer_collection.c:287:6:timer_collection_raise_floor"
+    },
+    "timer_glance_prune": {
+      "bytes": 24,
+      "kind": "static",
+      "location": "/home/xela/Projekty/Pebble/pebble-app-timer/src/c/timer_glance_plan.h:36:20:timer_glance_prune"
+    },
+    "prv_cancel": {
+      "bytes": 8,
+      "kind": "static",
+      "location": "/home/xela/Projekty/Pebble/pebble-app-timer/src/c/timer_glance.c:65:13:prv_cancel"
+    },
+    "prv_release_exit": {
+      "bytes": 8,
+      "kind": "static",
+      "location": "/home/xela/Projekty/Pebble/pebble-app-timer/src/c/timer_glance.c:70:13:prv_release_exit"
+    },
+    "prv_reload": {
+      "bytes": 192,
+      "kind": "static",
+      "location": "/home/xela/Projekty/Pebble/pebble-app-timer/src/c/timer_glance.c:99:13:prv_reload"
+    },
+    "prv_try_update": {
+      "bytes": 72,
+      "kind": "static",
+      "location": "/home/xela/Projekty/Pebble/pebble-app-timer/src/c/timer_glance.c:130:13:prv_try_update"
+    },
+    "prv_update_timer": {
+      "bytes": 0,
+      "kind": "static",
+      "location": "/home/xela/Projekty/Pebble/pebble-app-timer/src/c/timer_glance.c:78:13:prv_update_timer"
+    },
+    "prv_exit_timeout": {
+      "bytes": 8,
+      "kind": "static",
+      "location": "/home/xela/Projekty/Pebble/pebble-app-timer/src/c/timer_glance.c:181:13:prv_exit_timeout"
+    },
+    "timer_glance_update": {
+      "bytes": 64,
+      "kind": "static",
+      "location": "/home/xela/Projekty/Pebble/pebble-app-timer/src/c/timer_glance.c:172:6:timer_glance_update"
+    },
+    "timer_glance_request_exit": {
+      "bytes": 16,
+      "kind": "static",
+      "location": "/home/xela/Projekty/Pebble/pebble-app-timer/src/c/timer_glance.c:189:6:timer_glance_request_exit"
+    },
+    "timer_glance_deinit": {
+      "bytes": 8,
+      "kind": "static",
+      "location": "/home/xela/Projekty/Pebble/pebble-app-timer/src/c/timer_glance.c:197:6:timer_glance_deinit"
+    }
+  },
+  "selected_actual_elf_prologues": {
+    "main": {
+      "probe_bytes": 184,
+      "actual_elf_prologue": [
+        "1ad4:\te92d 4ff0 \tstmdb\tsp!, {r4, r5, r6, r7, r8, r9, sl, fp, lr}",
+        "    1ad8:\tf04f 33ff \tmov.w\tr3, #4294967295\t@ 0xffffffff",
+        "    1adc:\t2400      \tmovs\tr4, #0",
+        "    1ade:\tb0a5      \tsub\tsp, #148\t@ 0x94",
+        "    1ae0:\ta902      \tadd\tr1, sp, #8",
+        "    1ae2:\ta801      \tadd\tr0, sp, #4",
+        "    1ae4:\te9cd 3401 \tstrd\tr3, r4, [sp, #4]",
+        "    1ae8:\t4625      \tmov\tr5, r4",
+        "    1aea:\tf003 f99f \tbl\t4e2c <wakeup_get_launch_event>",
+        "    1aee:\t4fcb      \tldr\tr7, [pc, #812]\t@ (1e1c <main+0x348>)",
+        "    1af0:\tae04      \tadd\tr6, sp, #16",
+        "    1af2:\t447f      \tadd\tr7, pc",
+        "    1af4:\t2218      \tmovs\tr2, #24",
+        "    1af6:\t4631      \tmov\tr1, r6",
+        "    1af8:\tf605 0048 \taddw\tr0, r5, #2120\t@ 0x848",
+        "    1afc:\tf003 f978 \tbl\t4df0 <persist_read_data>",
+        "    1b00:\t2818      \tcmp\tr0, #24",
+        "    1b02:\td155      \tbne.n\t1bb0 <main+0xdc>",
+        "    1b04:\t9b04      \tldr\tr3, [sp, #16]",
+        "    1b06:\t4ac2      \tldr\tr2, [pc, #776]\t@ (1e10 <main+0x33c>)"
+      ],
+      "actual_elf_frame_bytes": 184,
+      "matches_probe": true
+    },
+    "prv_press": {
+      "probe_bytes": 464,
+      "actual_elf_prologue": [
+        "155c:\te92d 41f0 \tstmdb\tsp!, {r4, r5, r6, r7, r8, lr}",
+        "    1560:\tf8df 342c \tldr.w\tr3, [pc, #1068]\t@ 1990 <prv_press+0x434>",
+        "    1564:\t4604      \tmov\tr4, r0",
+        "    1566:\t447b      \tadd\tr3, pc",
+        "    1568:\t781b      \tldrb\tr3, [r3, #0]",
+        "    156a:\tb0ee      \tsub\tsp, #440\t@ 0x1b8",
+        "    156c:\t2b00      \tcmp\tr3, #0",
+        "    156e:\tf040 80d6 \tbne.w\t171e <prv_press+0x1c2>",
+        "    1572:\tf7ff fdf1 \tbl\t1158 <prv_finish>",
+        "    1576:\tf8df 341c \tldr.w\tr3, [pc, #1052]\t@ 1994 <prv_press+0x438>",
+        "    157a:\t447b      \tadd\tr3, pc",
+        "    157c:\t781b      \tldrb\tr3, [r3, #0]",
+        "    157e:\tb110      \tcbz\tr0, 1586 <prv_press+0x2a>",
+        "    1580:\t2b03      \tcmp\tr3, #3",
+        "    1582:\tf000 80cc \tbeq.w\t171e <prv_press+0x1c2>",
+        "    1586:\t2b05      \tcmp\tr3, #5",
+        "    1588:\tf200 818d \tbhi.w\t18a6 <prv_press+0x34a>",
+        "    158c:\te8df f013 \ttbh\t[pc, r3, lsl #1]",
+        "    1590:\t005a0027 \t.word\t0x005a0027",
+        "    1594:\t0006018b \t.word\t0x0006018b"
+      ],
+      "actual_elf_frame_bytes": 464,
+      "matches_probe": true
+    },
+    "prv_alarm_dismiss": {
+      "probe_bytes": 16,
+      "actual_elf_prologue": [
+        "14a8:\tb570      \tpush\t{r4, r5, r6, lr}",
+        "    14aa:\t4604      \tmov\tr4, r0",
+        "    14ac:\t4e22      \tldr\tr6, [pc, #136]\t@ (1538 <prv_alarm_dismiss+0x90>)",
+        "    14ae:\t4b23      \tldr\tr3, [pc, #140]\t@ (153c <prv_alarm_dismiss+0x94>)",
+        "    14b0:\t4923      \tldr\tr1, [pc, #140]\t@ (1540 <prv_alarm_dismiss+0x98>)",
+        "    14b2:\t447e      \tadd\tr6, pc",
+        "    14b4:\t447b      \tadd\tr3, pc",
+        "    14b6:\tf44f 72da \tmov.w\tr2, #436\t@ 0x1b4",
+        "    14ba:\t4630      \tmov\tr0, r6",
+        "    14bc:\t4479      \tadd\tr1, pc",
+        "    14be:\t681d      \tldr\tr5, [r3, #0]",
+        "    14c0:\tf003 fbe2 \tbl\t4c88 <memcpy>",
+        "    14c4:\tb1f4      \tcbz\tr4, 1504 <prv_alarm_dismiss+0x5c>",
+        "    14c6:\tf7fe ff47 \tbl\t358 <prv_now>",
+        "    14ca:\t4629      \tmov\tr1, r5",
+        "    14cc:\t4602      \tmov\tr2, r0",
+        "    14ce:\t4630      \tmov\tr0, r6",
+        "    14d0:\tf001 f903 \tbl\t26da <timer_collection_snooze>",
+        "    14d4:\tf080 0301 \teor.w\tr3, r0, #1",
+        "    14d8:\tb2db      \tuxtb\tr3, r3"
+      ],
+      "actual_elf_frame_bytes": 16,
+      "matches_probe": true
+    },
+    "prv_finish_at": {
+      "probe_bytes": 24,
+      "actual_elf_prologue": [
+        "10e8:\tb5f8      \tpush\t{r3, r4, r5, r6, r7, lr}",
+        "    10ea:\t4604      \tmov\tr4, r0",
+        "    10ec:\t4d17      \tldr\tr5, [pc, #92]\t@ (114c <prv_finish_at+0x64>)",
+        "    10ee:\t4f18      \tldr\tr7, [pc, #96]\t@ (1150 <prv_finish_at+0x68>)",
+        "    10f0:\t447d      \tadd\tr5, pc",
+        "    10f2:\t447f      \tadd\tr7, pc",
+        "    10f4:\tf44f 72da \tmov.w\tr2, #436\t@ 0x1b4",
+        "    10f8:\t4639      \tmov\tr1, r7",
+        "    10fa:\t4628      \tmov\tr0, r5",
+        "    10fc:\tf003 fdc4 \tbl\t4c88 <memcpy>",
+        "    1100:\t4621      \tmov\tr1, r4",
+        "    1102:\t4628      \tmov\tr0, r5",
+        "    1104:\tf001 fb4a \tbl\t279c <timer_collection_finish_due>",
+        "    1108:\t4604      \tmov\tr4, r0",
+        "    110a:\tb1e8      \tcbz\tr0, 1148 <prv_finish_at+0x60>",
+        "    110c:\t4e11      \tldr\tr6, [pc, #68]\t@ (1154 <prv_finish_at+0x6c>)",
+        "    110e:\t447e      \tadd\tr6, pc",
+        "    1110:\t7831      \tldrb\tr1, [r6, #0]",
+        "    1112:\t4301      \torrs\tr1, r0",
+        "    1114:\tb2c9      \tuxtb\tr1, r1"
+      ],
+      "actual_elf_frame_bytes": 24,
+      "matches_probe": true
+    },
+    "prv_apply": {
+      "probe_bytes": 32,
+      "actual_elf_prologue": [
+        "ee0:\te92d 47f0 \tstmdb\tsp!, {r4, r5, r6, r7, r8, r9, sl, lr}",
+        "     ee4:\t4606      \tmov\tr6, r0",
+        "     ee6:\t4688      \tmov\tr8, r1",
+        "     ee8:\tf7ff ff5a \tbl\tda0 <prv_save>",
+        "     eec:\t4605      \tmov\tr5, r0",
+        "     eee:\tb920      \tcbnz\tr0, efa <prv_apply+0x1a>",
+        "     ef0:\tf7ff fb82 \tbl\t5f8 <prv_refresh>",
+        "     ef4:\t4628      \tmov\tr0, r5",
+        "     ef6:\te8bd 87f0 \tldmia.w\tsp!, {r4, r5, r6, r7, r8, r9, sl, pc}",
+        "     efa:\t4b38      \tldr\tr3, [pc, #224]\t@ (fdc <prv_apply+0xfc>)",
+        "     efc:\t447b      \tadd\tr3, pc",
+        "     efe:\t781b      \tldrb\tr3, [r3, #0]",
+        "     f00:\t2b00      \tcmp\tr3, #0",
+        "     f02:\td168      \tbne.n\tfd6 <prv_apply+0xf6>",
+        "     f04:\t4b36      \tldr\tr3, [pc, #216]\t@ (fe0 <prv_apply+0x100>)",
+        "     f06:\t447b      \tadd\tr3, pc",
+        "     f08:\t6819      \tldr\tr1, [r3, #0]",
+        "     f0a:\t2900      \tcmp\tr1, #0",
+        "     f0c:\td063      \tbeq.n\tfd6 <prv_apply+0xf6>",
+        "     f0e:\t4835      \tldr\tr0, [pc, #212]\t@ (fe4 <prv_apply+0x104>)"
+      ],
+      "actual_elf_frame_bytes": 32,
+      "matches_probe": true
+    },
+    "prv_save": {
+      "probe_bytes": 64,
+      "actual_elf_prologue": [
+        "da0:\te92d 4ff0 \tstmdb\tsp!, {r4, r5, r6, r7, r8, r9, sl, fp, lr}",
+        "     da4:\tb087      \tsub\tsp, #28",
+        "     da6:\t4605      \tmov\tr5, r0",
+        "     da8:\t4688      \tmov\tr8, r1",
+        "     daa:\tf001 f971 \tbl\t2090 <timer_collection_valid>",
+        "     dae:\t4607      \tmov\tr7, r0",
+        "     db0:\tb120      \tcbz\tr0, dbc <prv_save+0x1c>",
+        "     db2:\t4b43      \tldr\tr3, [pc, #268]\t@ (ec0 <prv_save+0x120>)",
+        "     db4:\t447b      \tadd\tr3, pc",
+        "     db6:\t681c      \tldr\tr4, [r3, #0]",
+        "     db8:\t1c61      \tadds\tr1, r4, #1",
+        "     dba:\td108      \tbne.n\tdce <prv_save+0x2e>",
+        "     dbc:\t2301      \tmovs\tr3, #1",
+        "     dbe:\t2700      \tmovs\tr7, #0",
+        "     dc0:\t4638      \tmov\tr0, r7",
+        "     dc2:\t4a40      \tldr\tr2, [pc, #256]\t@ (ec4 <prv_save+0x124>)",
+        "     dc4:\t447a      \tadd\tr2, pc",
+        "     dc6:\t7013      \tstrb\tr3, [r2, #0]",
+        "     dc8:\tb007      \tadd\tsp, #28",
+        "     dca:\te8bd 8ff0 \tldmia.w\tsp!, {r4, r5, r6, r7, r8, r9, sl, fp, pc}"
+      ],
+      "actual_elf_frame_bytes": 64,
+      "matches_probe": true
+    },
+    "prv_reload": {
+      "probe_bytes": 192,
+      "actual_elf_prologue": [
+        "3010:\te92d 4ff0 \tstmdb\tsp!, {r4, r5, r6, r7, r8, r9, sl, fp, lr}",
+        "    3014:\t4688      \tmov\tr8, r1",
+        "    3016:\t4614      \tmov\tr4, r2",
+        "    3018:\t2600      \tmovs\tr6, #0",
+        "    301a:\tf8df a0b0 \tldr.w\tsl, [pc, #176]\t@ 30cc <prv_reload+0xbc>",
+        "    301e:\tf8df b0b0 \tldr.w\tfp, [pc, #176]\t@ 30d0 <prv_reload+0xc0>",
+        "    3022:\tb0a7      \tsub\tsp, #156\t@ 0x9c",
+        "    3024:\t6815      \tldr\tr5, [r2, #0]",
+        "    3026:\t9001      \tstr\tr0, [sp, #4]",
+        "    3028:\t44fa      \tadd\tsl, pc",
+        "    302a:\t44fb      \tadd\tfp, pc",
+        "    302c:\tf10d 0918 \tadd.w\tr9, sp, #24",
+        "    3030:\t4546      \tcmp\tr6, r8",
+        "    3032:\tf8da 0000 \tldr.w\tr0, [sl]",
+        "    3036:\td01e      \tbeq.n\t3076 <prv_reload+0x66>",
+        "    3038:\t2e08      \tcmp\tr6, #8",
+        "    303a:\td01c      \tbeq.n\t3076 <prv_reload+0x66>",
+        "    303c:\t2808      \tcmp\tr0, #8",
+        "    303e:\td81a      \tbhi.n\t3076 <prv_reload+0x66>",
+        "    3040:\t2200      \tmovs\tr2, #0"
+      ],
+      "actual_elf_frame_bytes": 192,
+      "matches_probe": true
+    },
+    "prv_try_update": {
+      "probe_bytes": 72,
+      "actual_elf_prologue": [
+        "30dc:\te92d 43f0 \tstmdb\tsp!, {r4, r5, r6, r7, r8, r9, lr}",
+        "    30e0:\t4b66      \tldr\tr3, [pc, #408]\t@ (327c <prv_try_update+0x1a0>)",
+        "    30e2:\tb08b      \tsub\tsp, #44\t@ 0x2c",
+        "    30e4:\t447b      \tadd\tr3, pc",
+        "    30e6:\t781b      \tldrb\tr3, [r3, #0]",
+        "    30e8:\tb11b      \tcbz\tr3, 30f2 <prv_try_update+0x16>",
+        "    30ea:\t4b65      \tldr\tr3, [pc, #404]\t@ (3280 <prv_try_update+0x1a4>)",
+        "    30ec:\t447b      \tadd\tr3, pc",
+        "    30ee:\t781b      \tldrb\tr3, [r3, #0]",
+        "    30f0:\tb923      \tcbnz\tr3, 30fc <prv_try_update+0x20>",
+        "    30f2:\tb00b      \tadd\tsp, #44\t@ 0x2c",
+        "    30f4:\te8bd 43f0 \tldmia.w\tsp!, {r4, r5, r6, r7, r8, r9, lr}",
+        "    30f8:\tf7ff bf76 \tb.w\t2fe8 <prv_release_exit>",
+        "    30fc:\t2000      \tmovs\tr0, #0",
+        "    30fe:\tf001 fed1 \tbl\t4ea4 <time>",
+        "    3102:\t4e60      \tldr\tr6, [pc, #384]\t@ (3284 <prv_try_update+0x1a8>)",
+        "    3104:\tf8df 8180 \tldr.w\tr8, [pc, #384]\t@ 3288 <prv_try_update+0x1ac>",
+        "    3108:\t447e      \tadd\tr6, pc",
+        "    310a:\t4601      \tmov\tr1, r0",
+        "    310c:\t4607      \tmov\tr7, r0"
+      ],
+      "actual_elf_frame_bytes": 72,
+      "matches_probe": true
+    },
+    "timer_glance_update": {
+      "probe_bytes": 64,
+      "actual_elf_prologue": [
+        "3300:\te92d 41f0 \tstmdb\tsp!, {r4, r5, r6, r7, r8, lr}",
+        "    3304:\tb08a      \tsub\tsp, #40\t@ 0x28",
+        "    3306:\t4607      \tmov\tr7, r0",
+        "    3308:\t460e      \tmov\tr6, r1",
+        "    330a:\tf7fe fec1 \tbl\t2090 <timer_collection_valid>",
+        "    330e:\t2800      \tcmp\tr0, #0",
+        "    3310:\tf000 80a2 \tbeq.w\t3458 <timer_glance_update+0x158>",
+        "    3314:\tac01      \tadd\tr4, sp, #4",
+        "    3316:\t2224      \tmovs\tr2, #36\t@ 0x24",
+        "    3318:\t2100      \tmovs\tr1, #0",
+        "    331a:\t4620      \tmov\tr0, r4",
+        "    331c:\tf001 fcc0 \tbl\t4ca0 <memset>",
+        "    3320:\t46b8      \tmov\tr8, r7",
+        "    3322:\t2500      \tmovs\tr5, #0",
+        "    3324:\t4629      \tmov\tr1, r5",
+        "    3326:\t4638      \tmov\tr0, r7",
+        "    3328:\tf7fe ffaa \tbl\t2280 <timer_collection_visible>",
+        "    332c:\tb1c8      \tcbz\tr0, 3362 <timer_glance_update+0x62>",
+        "    332e:\tf8d8 3028 \tldr.w\tr3, [r8, #40]\t@ 0x28",
+        "    3332:\t2b01      \tcmp\tr3, #1"
+      ],
+      "actual_elf_frame_bytes": 64,
+      "matches_probe": true
+    },
+    "timer_glance_request_exit": {
+      "probe_bytes": 16,
+      "actual_elf_prologue": [
+        "3490:\tb538      \tpush\t{r3, r4, r5, lr}",
+        "    3492:\tb1b8      \tcbz\tr0, 34c4 <timer_glance_request_exit+0x34>",
+        "    3494:\t4c0c      \tldr\tr4, [pc, #48]\t@ (34c8 <timer_glance_request_exit+0x38>)",
+        "    3496:\t447c      \tadd\tr4, pc",
+        "    3498:\t6822      \tldr\tr2, [r4, #0]",
+        "    349a:\tb99a      \tcbnz\tr2, 34c4 <timer_glance_request_exit+0x34>",
+        "    349c:\t490b      \tldr\tr1, [pc, #44]\t@ (34cc <timer_glance_request_exit+0x3c>)",
+        "    349e:\t6020      \tstr\tr0, [r4, #0]",
+        "    34a0:\t4479      \tadd\tr1, pc",
+        "    34a2:\tf44f 707a \tmov.w\tr0, #1000\t@ 0x3e8",
+        "    34a6:\tf001 fb6b \tbl\t4b80 <app_timer_register>",
+        "    34aa:\t4d09      \tldr\tr5, [pc, #36]\t@ (34d0 <timer_glance_request_exit+0x40>)",
+        "    34ac:\t447d      \tadd\tr5, pc",
+        "    34ae:\t6028      \tstr\tr0, [r5, #0]",
+        "    34b0:\tf7ff fe14 \tbl\t30dc <prv_try_update>",
+        "    34b4:\t6823      \tldr\tr3, [r4, #0]",
+        "    34b6:\tb12b      \tcbz\tr3, 34c4 <timer_glance_request_exit+0x34>",
+        "    34b8:\t682b      \tldr\tr3, [r5, #0]",
+        "    34ba:\tb91b      \tcbnz\tr3, 34c4 <timer_glance_request_exit+0x34>",
+        "    34bc:\te8bd 4038 \tldmia.w\tsp!, {r3, r4, r5, lr}"
+      ],
+      "actual_elf_frame_bytes": 16,
+      "matches_probe": true
+    },
+    "timer_collection_decode": {
+      "probe_bytes": 160,
+      "actual_elf_prologue": [
+        "2110:\te92d 4ff0 \tstmdb\tsp!, {r4, r5, r6, r7, r8, r9, sl, fp, lr}",
+        "    2114:\t460d      \tmov\tr5, r1",
+        "    2116:\t4616      \tmov\tr6, r2",
+        "    2118:\t469a      \tmov\tsl, r3",
+        "    211a:\t4604      \tmov\tr4, r0",
+        "    211c:\tb09f      \tsub\tsp, #124\t@ 0x7c",
+        "    211e:\t2800      \tcmp\tr0, #0",
+        "    2120:\td077      \tbeq.n\t2212 <timer_collection_decode+0x102>",
+        "    2122:\t2900      \tcmp\tr1, #0",
+        "    2124:\td075      \tbeq.n\t2212 <timer_collection_decode+0x102>",
+        "    2126:\tf5b2 7fba \tcmp.w\tr2, #372\t@ 0x174",
+        "    212a:\td002      \tbeq.n\t2132 <timer_collection_decode+0x22>",
+        "    212c:\tf5b2 7fda \tcmp.w\tr2, #436\t@ 0x1b4",
+        "    2130:\td16f      \tbne.n\t2212 <timer_collection_decode+0x102>",
+        "    2132:\t462b      \tmov\tr3, r5",
+        "    2134:\taa04      \tadd\tr2, sp, #16",
+        "    2136:\tf105 0c10 \tadd.w\tip, r5, #16",
+        "    213a:\t4617      \tmov\tr7, r2",
+        "    213c:\t6818      \tldr\tr0, [r3, #0]",
+        "    213e:\t6859      \tldr\tr1, [r3, #4]"
+      ],
+      "actual_elf_frame_bytes": 160,
+      "matches_probe": true
+    },
+    "activity_timer_decode": {
+      "probe_bytes": 80,
+      "actual_elf_prologue": [
+        "364c:\tb5f0      \tpush\t{r4, r5, r6, r7, lr}",
+        "    364e:\t4604      \tmov\tr4, r0",
+        "    3650:\tb08f      \tsub\tsp, #60\t@ 0x3c",
+        "    3652:\tb918      \tcbnz\tr0, 365c <activity_timer_decode+0x10>",
+        "    3654:\t2600      \tmovs\tr6, #0",
+        "    3656:\t4630      \tmov\tr0, r6",
+        "    3658:\tb00f      \tadd\tsp, #60\t@ 0x3c",
+        "    365a:\tbdf0      \tpop\t{r4, r5, r6, r7, pc}",
+        "    365c:\t2900      \tcmp\tr1, #0",
+        "    365e:\td0f9      \tbeq.n\t3654 <activity_timer_decode+0x8>",
+        "    3660:\t2a34      \tcmp\tr2, #52\t@ 0x34",
+        "    3662:\td123      \tbne.n\t36ac <activity_timer_decode+0x60>",
+        "    3664:\t460a      \tmov\tr2, r1",
+        "    3666:\tab01      \tadd\tr3, sp, #4",
+        "    3668:\tf101 0630 \tadd.w\tr6, r1, #48\t@ 0x30",
+        "    366c:\t461d      \tmov\tr5, r3",
+        "    366e:\t6810      \tldr\tr0, [r2, #0]",
+        "    3670:\t6851      \tldr\tr1, [r2, #4]",
+        "    3672:\t3208      \tadds\tr2, #8",
+        "    3674:\tc503      \tstmia\tr5!, {r0, r1}"
+      ],
+      "actual_elf_frame_bytes": 80,
+      "matches_probe": true
+    }
+  },
+  "candidate_native_sdk_tuple": [
+    5,
+    106
+  ],
+  "sdk_classification": "4.x in identified PebbleOS source; first4.x tuple(5,80), independent of PBL_SDK_3 C define",
+  "nominal_emery_app_stack_bytes_in_identified_source": 4096,
+  "firmware_source": "https://github.com/coredevices/PebbleOS/blob/c01b565ac51ca19a3c5f79c5279c4c6cbc529ab4/fw/process_management/app_manager.c",
+  "limitations": [
+    "Identified source is not a binary provenance match for emulator firmware build8d1765c163246194d1b03976e61397e07d795557.",
+    "Compiler frames exclude SDK,event-loop,libc,syscalls and stack guard.",
+    "No runtime stack high-water,heap or battery measurement is claimed."
+  ],
+  "selected_elf_prologues_match_probe": true
+}

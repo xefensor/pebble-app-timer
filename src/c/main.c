@@ -7,6 +7,7 @@
 #include "timer_collection.h"
 #include "timer_ui.h"
 #include "timer_fonts.h"
+#include "timer_glance.h"
 
 #define LEGACY_MODEL_KEY 2100
 #define WAKEUP_KEY 2101
@@ -41,8 +42,10 @@ static Screen s_screen = SCREEN_LIST;
 static unsigned s_menu, s_selected;
 static int s_edit_slot = -1;
 static uint32_t s_edit[3] = {0, 10, 0};
+static uint32_t s_edit_initial_seconds;
 static unsigned s_edit_field, s_option, s_confirm_choice;
 static bool s_focused, s_ready, s_ticks_active;
+static bool s_exit_pending;
 static AppTimer *s_motion_timer;
 static uint32_t s_motion_started;
 static Screen s_repeat_screen;
@@ -66,11 +69,15 @@ static bool prv_load_bank(unsigned bank, TimerCollection *collection, SavedHeade
 
 static uint32_t prv_now(void) { return (uint32_t)time(NULL); }
 
-static uint32_t prv_checksum(const TimerCollection *collection, uint32_t alarms) {
-  const uint8_t *bytes = (const uint8_t *)collection;
+static uint32_t prv_checksum_bytes(const void *data, size_t length, uint32_t alarms) {
+  const uint8_t *bytes = data;
   uint32_t value = UINT32_C(2166136261) ^ alarms;
-  for (size_t i = 0; i < sizeof(*collection); ++i) value = (value ^ bytes[i]) * UINT32_C(16777619);
+  for (size_t i = 0; i < length; ++i) value = (value ^ bytes[i]) * UINT32_C(16777619);
   return value;
+}
+
+static uint32_t prv_checksum(const TimerCollection *collection, uint32_t alarms) {
+  return prv_checksum_bytes(collection, sizeof(*collection), alarms);
 }
 
 /* Commit a complete bank only after every bounded chunk was written. A failed
@@ -93,7 +100,9 @@ static bool prv_save(const TimerCollection *next, uint8_t alarms) {
   /* Verify the candidate data before the header makes it authoritative. A
    * post-commit verification failure must never report an unchanged timer in
    * RAM while reboot would restore the newly committed operation. */
-  TimerCollection verified;
+  /* Persistence is serialized on Pebble's event loop. Keep full-bank scratch
+   * off the 2 KiB app stack, including during nested model/UI operations. */
+  static TimerCollection verified;
   uint8_t *verified_bytes = (uint8_t *)&verified;
   for (size_t offset = 0, chunk = 0; offset < sizeof(verified); offset += CHUNK_BYTES, ++chunk) {
     const size_t count = sizeof(verified) - offset < CHUNK_BYTES ? sizeof(verified) - offset : CHUNK_BYTES;
@@ -121,32 +130,38 @@ static bool prv_save(const TimerCollection *next, uint8_t alarms) {
 
 static bool prv_load_bank(unsigned bank, TimerCollection *collection, SavedHeader *header) {
   if (persist_read_data(BANK_HEADER_KEY + bank, header, sizeof(*header)) != (int)sizeof(*header) ||
-      header->magic != TIMER_COLLECTION_MAGIC || header->version != TIMER_COLLECTION_VERSION ||
-      header->bytes != sizeof(*collection) || !header->generation || header->alarms > 255) return false;
-  uint8_t *bytes = (uint8_t *)collection;
-  for (size_t offset = 0, chunk = 0; offset < sizeof(*collection); offset += CHUNK_BYTES, ++chunk) {
-    const size_t count = sizeof(*collection) - offset < CHUNK_BYTES ? sizeof(*collection) - offset : CHUNK_BYTES;
+      header->magic != TIMER_COLLECTION_MAGIC ||
+      (header->version != 1 && header->version != TIMER_COLLECTION_VERSION) ||
+      header->bytes > sizeof(*collection) || header->bytes < 20 ||
+      !header->generation || header->alarms > 255) return false;
+  static uint8_t bytes[sizeof(*collection)];
+  for (size_t offset = 0, chunk = 0; offset < header->bytes; offset += CHUNK_BYTES, ++chunk) {
+    const size_t count = header->bytes - offset < CHUNK_BYTES ? header->bytes - offset : CHUNK_BYTES;
     if (persist_read_data(BANK_DATA_KEY + bank * BANK_STRIDE + chunk,
         bytes + offset, count) != (int)count) return false;
   }
-  if (!timer_collection_valid(collection) || header->checksum != prv_checksum(collection, header->alarms)) return false;
-  for (unsigned i = 0; i < TIMER_COLLECTION_CAPACITY; ++i)
-    if ((header->alarms & (1u << i)) && collection->slots[i].state != ACTIVITY_TIMER_FINISHED) return false;
-  return true;
+  uint32_t version;
+  memcpy(&version, bytes + sizeof(uint32_t), sizeof(version));
+  return version == header->version &&
+      header->checksum == prv_checksum_bytes(bytes, header->bytes, header->alarms) &&
+      timer_collection_decode(collection, bytes, header->bytes, (uint8_t)header->alarms);
 }
 
 static void prv_load(void) {
-  TimerCollection candidate;
+  static TimerCollection candidate;
   SavedHeader header;
+  bool upgrade = false;
   for (unsigned bank = 0; bank < 2; ++bank) {
     if (prv_load_bank(bank, &candidate, &header) && header.generation > s_generation) {
       s_collection = candidate;
       s_generation = header.generation;
       s_bank = bank;
       s_alarm_mask = (uint8_t)header.alarms;
+      upgrade = header.version != TIMER_COLLECTION_VERSION;
     }
   }
   if (s_generation) {
+    if (upgrade && !prv_save(&s_collection, s_alarm_mask)) return;
     if (persist_write_int(MIGRATION_KEY, 1) >= 0 && persist_read_int(MIGRATION_KEY) == 1)
       persist_delete(LEGACY_MODEL_KEY);
     return;
@@ -159,7 +174,9 @@ static void prv_load(void) {
     return;
   }
   ActivityTimerModel legacy;
-  if (persist_read_data(LEGACY_MODEL_KEY, &legacy, sizeof(legacy)) == (int)sizeof(legacy) &&
+  uint8_t legacy_bytes[sizeof(legacy)];
+  const int legacy_length = persist_read_data(LEGACY_MODEL_KEY, legacy_bytes, sizeof(legacy_bytes));
+  if (legacy_length > 0 && activity_timer_decode(&legacy, legacy_bytes, (size_t)legacy_length, true) &&
       timer_collection_migrate(&s_collection, &legacy, prv_now())) {
     /* A previously finished timer already alerted under the previous app. */
     s_alarm_mask = 0;
@@ -217,13 +234,13 @@ static void prv_format(uint32_t seconds, char *text, size_t size) {
 }
 
 static void prv_name(const ActivityTimerModel *timer, char *text, size_t size) {
-  if (!(timer->configured_seconds % 3600))
-    snprintf(text, size, "%lu h timer", (unsigned long)(timer->configured_seconds / 3600));
-  else if (!(timer->configured_seconds % 60))
-    snprintf(text, size, "%lu min timer", (unsigned long)(timer->configured_seconds / 60));
+  if (!(timer->repeat_seconds % 3600))
+    snprintf(text, size, "%lu h timer", (unsigned long)(timer->repeat_seconds / 3600));
+  else if (!(timer->repeat_seconds % 60))
+    snprintf(text, size, "%lu min timer", (unsigned long)(timer->repeat_seconds / 60));
   else {
     char duration[16];
-    prv_format(timer->configured_seconds, duration, sizeof(duration));
+    prv_format(timer->repeat_seconds, duration, sizeof(duration));
     snprintf(text, size, "%s timer", duration);
   }
 }
@@ -276,20 +293,33 @@ static void prv_schedule_alarm(void) {
 
 static bool prv_apply(const TimerCollection *next, uint8_t alarms) {
   if (!prv_save(next, alarms)) { prv_refresh(); return false; }
+  const int focused=s_screen==SCREEN_LIST&&s_menu?
+      timer_collection_visible_slot(&s_collection,s_menu-1):-1;
   for (unsigned i = 0; i < TIMER_COLLECTION_CAPACITY; ++i)
     if (s_accepted[i] != next->slots[i].revision) s_dirty |= (uint8_t)(1u << i);
   s_collection = *next;
   s_alarm_mask = alarms;
+  if (focused>=0) {
+    s_menu=timer_collection_count(&s_collection)?1:0;
+    for (unsigned row=0;row<timer_collection_count(&s_collection);++row)
+      if (timer_collection_visible_slot(&s_collection,row)==focused) {
+        s_menu=row+1;break;
+      }
+  }
   s_retries = 0;
   s_share_error = false;
   prv_schedule_alarm();
+  timer_glance_update(&s_collection, prv_now());
   prv_flush();
   prv_refresh();
   return true;
 }
 
 static bool prv_finish_at(uint32_t now) {
-  TimerCollection next = s_collection;
+  /* Completion can run under either a button or inbox transaction frame.
+   * Keep its collection scratch off the SDK's 2 KiB stack as well. */
+  static TimerCollection next;
+  next = s_collection;
   const uint8_t finished = timer_collection_finish_due(&next, now);
   if (!finished) return false;
   if (!prv_apply(&next, s_alarm_mask | finished)) {
@@ -377,6 +407,8 @@ static void prv_flush(void) {
   dict_write_uint32(out, MESSAGE_KEY_ACTIVITY_DURATION, timer->state == ACTIVITY_TIMER_PAUSED ? timer->remaining_seconds : 0);
   dict_write_uint32(out, MESSAGE_KEY_ACTIVITY_CLOCK_AT, 0);
   dict_write_uint32(out, MESSAGE_KEY_ACTIVITY_TOTAL_DURATION, timer->configured_seconds);
+  dict_write_uint8(out, MESSAGE_KEY_ACTIVITY_SHOW_TERMINAL,
+      timer->state == ACTIVITY_TIMER_FINISHED && !timer->acknowledged);
   dict_write_uint8(out, MESSAGE_KEY_ACTIVITY_PRIVATE, 0);
   dict_write_end(out);
   s_transport_busy = true;
@@ -493,6 +525,9 @@ static TimerUiView prv_view(void) {
       .menu=s_menu,.selected=s_selected,.edit_field=s_edit_field,
       .option=s_option,.confirm_choice=s_confirm_choice,.edit=s_edit,
       .editing_new=s_edit_slot<0,.now=prv_now(),
+      .editing_ready=s_edit_slot>=0&&
+          s_collection.slots[s_edit_slot].state==ACTIVITY_TIMER_FINISHED&&
+          s_collection.slots[s_edit_slot].acknowledged,
       .issue=s_storage_error?"Storage failed; keep open":
           s_alarm_error?"Alarm not set; keep open":NULL,
       .status=prv_status()};
@@ -568,33 +603,54 @@ static void prv_will_focus(bool focused) {
 static void prv_begin_edit(int slot) {
   s_edit_slot=slot;
   uint32_t seconds=slot<0?600:activity_timer_remaining(&s_collection.slots[slot],prv_now());
-  if (slot>=0 && !seconds) seconds=s_collection.slots[slot].configured_seconds;
+  if (slot>=0 && !seconds) seconds=s_collection.slots[slot].repeat_seconds;
+  s_edit_initial_seconds=seconds;
   s_edit[0]=seconds/3600;s_edit[1]=(seconds/60)%60;s_edit[2]=seconds%60;
-  s_edit_field=0;
+  s_edit_field=seconds>=3600?0:1;
   s_screen=SCREEN_EDITOR;
   prv_refresh();
 }
 
 static void prv_alarm_dismiss(bool snooze) {
   const unsigned slot=s_selected;
-  TimerCollection next=s_collection;
-  if (snooze && !timer_collection_snooze(&next,slot,prv_now())) return;
+  /* The button dispatcher already owns a collection-sized transaction frame.
+   * Keep this second transaction off the 2 KiB stack. Events are serialized;
+   * no callback retains the pointer after prv_apply returns. */
+  static TimerCollection next;
+  next=s_collection;
+  if (snooze ? !timer_collection_snooze(&next,slot,prv_now()) :
+      !timer_collection_acknowledge(&next,slot)) return;
   if (!prv_apply(&next,s_alarm_mask & (uint8_t)~(1u<<slot))) return;
   if (s_alarm_mask) prv_open_alarm();
-  else s_screen=snooze?SCREEN_DETAIL:SCREEN_LIST;
+  else {
+    s_screen=snooze?SCREEN_DETAIL:SCREEN_LIST;
+    if (!snooze) s_menu=timer_collection_count(&s_collection)?1:0;
+  }
   prv_refresh();
 }
 
+static void prv_exit_after_glance(void) {
+  if (!s_exit_pending) return;
+  s_exit_pending=false;
+  /* A real deadline may arrive during the sub-second glance flush. Keep its
+   * alarm on screen rather than closing over newly pending native attention. */
+  if (s_screen==SCREEN_LIST) window_stack_pop(true);
+}
+
 static void prv_press(ButtonId button) {
+  if (s_exit_pending) return;
   if (prv_finish() && s_screen==SCREEN_ALARM) return;
   if (s_screen==SCREEN_ALARM) {
     if (button==BUTTON_ID_UP) prv_alarm_dismiss(true);
-    else if (button==BUTTON_ID_DOWN) prv_alarm_dismiss(false);
+    else if (button==BUTTON_ID_SELECT || button==BUTTON_ID_DOWN) prv_alarm_dismiss(false);
     else if (button==BUTTON_ID_BACK) {
-      /* Navigation never depends on saving a dismissal. An undismissed alarm
-       * remains recorded and is shown on the next launch. */
-      s_screen = SCREEN_LIST;
-      prv_refresh();
+      /* Back acknowledges like Done. On a storage error it still permits
+       * leaving this view; the unsaved pending alarm remains recoverable. */
+      prv_alarm_dismiss(false);
+      if (s_screen == SCREEN_ALARM && s_storage_error) {
+        s_screen = SCREEN_LIST;
+        prv_refresh();
+      }
     }
     return;
   }
@@ -603,13 +659,17 @@ static void prv_press(ButtonId button) {
     if (button==BUTTON_ID_UP && s_menu) --s_menu;
     if (button==BUTTON_ID_DOWN && s_menu<count) ++s_menu;
     if (button==BUTTON_ID_SELECT) {
-      if (!s_menu) { if (count<TIMER_COLLECTION_CAPACITY)prv_begin_edit(-1); else vibes_short_pulse(); }
+      if (!s_menu) { if (timer_collection_can_create(&s_collection))prv_begin_edit(-1); else vibes_short_pulse(); }
       else {
         const int slot=timer_collection_visible_slot(&s_collection,s_menu-1);
         if (slot>=0) { s_selected=(unsigned)slot;s_screen=SCREEN_DETAIL; }
       }
     }
-    if (button==BUTTON_ID_BACK) { window_stack_pop(true); return; }
+    if (button==BUTTON_ID_BACK) {
+      s_exit_pending=true;
+      timer_glance_request_exit(prv_exit_after_glance);
+      return;
+    }
   } else if (s_screen==SCREEN_EDITOR) {
     if (button==BUTTON_ID_UP || button==BUTTON_ID_DOWN) {
       const unsigned max=s_edit_field?(s_edit[0]==24?0:59):24;
@@ -625,6 +685,9 @@ static void prv_press(ButtonId button) {
         if (seconds<ACTIVITY_TIMER_MIN_SECONDS) { vibes_short_pulse();prv_refresh();return; }
         TimerCollection next=s_collection;
         int slot=s_edit_slot;
+        if (slot>=0 && seconds==s_edit_initial_seconds) {
+          s_screen=SCREEN_DETAIL;prv_refresh();return;
+        }
         if (slot<0)slot=timer_collection_create(&next,seconds,prv_now());
         else if (!timer_collection_edit(&next,(unsigned)slot,seconds,prv_now()))slot=-1;
         if (slot>=0 && prv_apply(&next,s_alarm_mask & (uint8_t)~(1u<<slot))) {
@@ -660,7 +723,13 @@ static void prv_press(ButtonId button) {
   } else {
     TimerCollection next=s_collection;
     if (button==BUTTON_ID_UP)prv_begin_edit((int)s_selected);
-    else if (button==BUTTON_ID_BACK)s_screen=SCREEN_LIST;
+    else if (button==BUTTON_ID_BACK) {
+      s_screen=SCREEN_LIST;
+      for (unsigned row=0;row<timer_collection_count(&s_collection);++row)
+        if (timer_collection_visible_slot(&s_collection,row)==(int)s_selected) {
+          s_menu=row+1;break;
+        }
+    }
     else if (button==BUTTON_ID_DOWN) {
       s_option=0;s_screen=SCREEN_OPTIONS;
     } else if (button==BUTTON_ID_SELECT) {
@@ -712,6 +781,7 @@ static void prv_init(void) {
   TIMER_DIAG("launch reason=%d wakeup=%d id=%ld cookie=%ld",(int)launch_reason(),wakeup_launch,(long)launch_id,(long)cookie);
   (void)wakeup_launch;(void)launch_id;(void)cookie;
   prv_load();
+  timer_glance_update(&s_collection, prv_now());
   if (persist_exists(WAKEUP_KEY))s_wakeup=persist_read_int(WAKEUP_KEY);
   uint32_t previous_ticket=0;persist_read_data(PUBLICATION_KEY,&previous_ticket,sizeof(previous_ticket));
   pa_publisher_init(&s_publisher,previous_ticket,connection_service_peek_pebble_app_connection());
@@ -744,6 +814,7 @@ static void prv_init(void) {
 static void prv_deinit(void) {
   TIMER_DIAG("exit alarm=%ld deadline=%lu dirty=%u",(long)s_wakeup,(unsigned long)s_alarm_deadline,s_dirty);
   s_ready=false;prv_stop_motion();
+  timer_glance_deinit();
   if (s_retry_timer)app_timer_cancel(s_retry_timer);
   app_focus_service_unsubscribe();
   tick_timer_service_unsubscribe();connection_service_unsubscribe();app_message_deregister_callbacks();

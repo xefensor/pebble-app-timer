@@ -22,6 +22,7 @@ assert.equal(appinfo.manifestVersion, 2);
 assert.equal(appinfo.watchapp.watchface, false);
 assert.equal(keys.ACTIVITY_SLOT, 1021, 'Timer slot key changed');
 assert.equal(keys.ACTIVITY_TOTAL_DURATION, 1022, 'Timer total-duration key changed');
+assert.equal(keys.ACTIVITY_SHOW_TERMINAL, 1023, 'Timer result-visibility key changed');
 assert.equal(appinfo.plugin.sources.filter(source => source.category === 'activity').length, 1,
   'PBW must declare one activity category covering both source items');
 assert.deepEqual(appinfo.plugin.sources.find(source => source.category === 'activity').items,
@@ -135,8 +136,14 @@ function verifyPkjs() {
     assert.equal(accepted.ACTIVITY_PUBLISH_SESSION, ticket);
     assert.equal(accepted.ACTIVITY_ERROR, undefined);
   }
+  return function publish(overrides) {
+    context.__incoming = {payload: {...pkjsDictionary(native), ...overrides}};
+    vm.runInContext('__events.appmessage(__incoming)', context, {timeout:1000});
+    assert.equal(outgoing.length, 1);
+    return pkjsDictionary(outgoing.shift());
+  };
 }
-verifyPkjs();
+const publishNative = verifyPkjs();
 
 // The PKJS execution above is no longer used. The provider must work in a new
 // context with only the saved strings, not variables from the watchapp's JS.
@@ -202,12 +209,8 @@ assert.equal(card.main_type.shortText.text, 'clock');
 assert.equal(card.main_clock.shortText.text, 'deadline');
 assert.equal(card.main_running.boolean.value, true);
 assert.equal(card.main_base.numericValue.value - (NOW_SECONDS-card.main_anchor.timestamp.value), 600);
-assert.equal(card.support_type.shortText.text, 'clock');
-assert.equal(card.support_clock.shortText.text, 'elapsed');
-assert.equal(card.support_running.boolean.value, true);
-assert.equal(card.support_base.numericValue.value + (NOW_SECONDS-card.support_anchor.timestamp.value), 600);
-assert.equal(card.support_observed_at.timestamp.value, observedAt);
-assert.equal(card.support_valid_until.timestamp.value, validUntil);
+assert.equal(card.main_label.longText.text, card.caption.longText.text);
+assert.equal(card.support_type, undefined, 'Timer must expose its compact projection');
 assert.equal(card.unconfirmed.boolean.value, true);
 for (const [name, value] of Object.entries(card)) {
   for (const shape of Object.keys(value)) {
@@ -215,4 +218,24 @@ for (const [name, value] of Object.entries(card)) {
       `Card emitted an undeclared property/shape: ${name}/${shape}`);
   }
 }
-console.log('Packaged timer PKJS, numeric keys, multi-slot receipts, offline replacement and cold session/card providers passed.');
+const completed = {ACTIVITY_REVISION:revision+3, ACTIVITY_STATE:'completed',
+  ACTIVITY_CLOCK:'none', ACTIVITY_DEADLINE:0, ACTIVITY_OBSERVED_AT:NOW_SECONDS,
+  ACTIVITY_VALID_UNTIL:NOW_SECONDS+60, ACTIVITY_SHOW_TERMINAL:1};
+assert.equal(publishNative(completed).ACTIVITY_ACCEPTED_REVISION, revision+3);
+vm.runInContext('__handler(__request, __respond)', context, {timeout:1000});
+assert.equal(response.instances[0].properties.show_terminal.boolean.value, true);
+assert.equal(publishNative({...completed, ACTIVITY_REVISION:revision+4,
+  ACTIVITY_SHOW_TERMINAL:0}).ACTIVITY_ACCEPTED_REVISION, revision+4);
+vm.runInContext('__handler(__request, __respond)', context, {timeout:1000});
+assert.equal(response.instances[0].properties.state.shortText.text, 'completed');
+assert.equal(response.instances[0].properties.show_terminal.boolean.value, false);
+assert.ok(publishNative(completed).ACTIVITY_ERROR, 'Stale completion resurrected an acknowledged result');
+const cold = vm.createContext({Pebble:{registerSourceHandler(callback){handler=callback;}},
+  localStorage:storage, Date:FixedDate, console});
+vm.runInContext(fs.readFileSync(path.join(root, appinfo.plugin.script), 'utf8'), cold,
+  {filename:'cold-acknowledged-plugin.js',timeout:1000});
+cold.__handler=handler;cold.__request={category:'activity',item:'card'};
+cold.__respond={data(value){response=value;},error(code){throw new Error(code);}};
+vm.runInContext('__handler(__request, __respond)',cold,{timeout:1000});
+assert.equal(response.instances[0].properties.show_terminal.boolean.value, false);
+console.log('Packaged Timer PKJS, numeric keys, compact source, multi-slot replacement, completion acknowledgement and cold reload passed.');

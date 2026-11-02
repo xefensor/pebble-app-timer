@@ -22,6 +22,7 @@ typedef struct {
   unsigned confirm_choice;
   const uint32_t *edit;
   bool editing_new;
+  bool editing_ready;
   uint32_t now;
   const char *status;
   const char *issue;
