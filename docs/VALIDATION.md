@@ -101,6 +101,6 @@ snooze, dismissal, Quiet Time and competing system Wakeups. With Bluetooth
 actually disabled and the phone absent, verify automatic launch and physical
 alarm vibration. Measure power use separately if required.
 
-No physical watch or phone was accessible in this execution environment; USB
-and ADB access were unavailable. Emulator and packaged-runtime results do not
+No physical watch or phone was accessible in this execution environment; the
+final ADB check listed no attached devices. Emulator and packaged-runtime results do not
 certify Bluetooth behavior, physical vibration, phone delivery or battery use.
