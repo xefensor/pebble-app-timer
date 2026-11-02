@@ -1,0 +1,12 @@
+{
+  "repository": "xefensor/pebble-app-timer",
+  "kind": "timer",
+  "display_name": "Timer",
+  "tag_prefix": "v",
+  "prerelease": true,
+  "app_uuid": "50e9ef12-a5ab-4369-a3b5-3447bfba5151",
+  "assets": ["releases/Timer-{version}.pbw", "releases/Timer-{version}-source.zip"],
+  "checksums_file": "releases/SHA256SUMS.txt",
+  "source_archive": {"path": "releases/Timer-{version}-source.zip", "prefix": ""},
+  "notes": {"path": "README.md", "heading": "## Version {version}"}
+}

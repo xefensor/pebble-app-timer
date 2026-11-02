@@ -1,0 +1,45 @@
+# Timer maintainer notes
+
+This repository owns the native Timer watchapp and its bundled phone-side
+PKJS/provider plugin. It targets stock PebbleOS on Emery (Pebble Time 2).
+`pebble-activities` is a pinned shared dependency, not a separate installed
+service. Keep timer behaviour independent of Dynamic's presentation.
+
+## Identity and native ownership
+
+- Preserve app UUID `50e9ef12-a5ab-4369-a3b5-3447bfba5151`, native persistence
+  keys/model compatibility, plugin UUID and shared storage namespace when
+  updating Activity Timer installations.
+- The native timer owns saved state, deadlines and Wakeup alarms. Phone receipt
+  means accepted shared state, not an alarm or a disk-flush guarantee.
+- Preserve source/run identity, revisions, transport handshakes and observation
+  time. Polling a saved snapshot must not renew its native observation. Zero is
+  not proof of native completion.
+- Back remains available when disconnected, storage fails or sharing is pending.
+  Scheduling failure must remain visible; do not claim an alarm was secured.
+- Keep a single AppMessage queue. A transport ACK is not an application receipt.
+
+## Dependencies and packaging
+
+- Install with `npm ci --ignore-scripts`. Use the versioned tarball in `vendor/`;
+  never rely on a sibling library checkout. Record updated provenance and hashes.
+- Use `npm run build` for distribution. Its manifestVersion 2 PBW must contain
+  native app, PKJS, independently callable `plugin.js`, licences and notices.
+  A plain SDK development PBW lacks the additional provider packaging.
+- Do not copy upstream Pebble Timer code or assets without checking its actual
+  reuse terms. It is currently a design reference, not a bundled dependency.
+- Preserve published artifacts and tags. Changed bytes require a new version.
+
+## Verification
+
+Run `npm test`, build the app and run the release artifact checks. Check the
+actual packaged PKJS/provider handoff, symbolic and numeric message keys, native
+identity and resource integrity. Record emulator results separately from real
+phone and physical-watch checks; never describe unperformed checks as passed.
+Check affected layouts on an actual emulator when changing native rendering.
+
+The proposed multi-timer/Pebble-inspired UI is separate work. This repository
+split preserves the existing single-timer behaviour.
+
+The accompanying PolyForm Noncommercial licence and required attribution apply.
+Preserve third-party notices, including the SDK's Apache 2.0 notice.
