@@ -4,20 +4,20 @@ A native timer for **stock PebbleOS**, with activity sharing for compatible
 watchfaces such as [Dynamic](https://github.com/xefensor/dynamic-watchface).
 The first target is Pebble Time 2 (`emery`, 200 × 228).
 
-Timer 0.4.0 is an unpublished local candidate with the approved hourglass design
-implemented natively. Paused timers hide from compatible watchfaces after five
-minutes and remain saved in Timer. The [candidate PBW](releases/Timer-0.4.0.pbw) and
-[validation](docs/VALIDATION.md) are prepared locally. Actual phone and
-physical-watch checks remain.
-The last published testing release is 0.2.0; download its
-[PBW](https://github.com/xefensor/pebble-app-timer/releases/download/v0.2.0/Timer-0.2.0.pbw),
-[source archive](https://github.com/xefensor/pebble-app-timer/releases/download/v0.2.0/Timer-0.2.0-source.zip)
-and [checksums](https://github.com/xefensor/pebble-app-timer/releases/download/v0.2.0/SHA256SUMS.txt).
-That 0.2.0 release and its historical validation remain unchanged.
+Timer 0.4.0 is a [GitHub development prerelease](https://github.com/xefensor/pebble-app-timer/releases/tag/v0.4.0)
+with the approved hourglass design implemented natively. Paused timers hide
+from compatible watchfaces after five minutes and remain saved in Timer.
+Download the [PBW](https://github.com/xefensor/pebble-app-timer/releases/download/v0.4.0/Timer-0.4.0.pbw),
+[source archive](https://github.com/xefensor/pebble-app-timer/releases/download/v0.4.0/Timer-0.4.0-source.zip)
+and [checksums](https://github.com/xefensor/pebble-app-timer/releases/download/v0.4.0/SHA256SUMS.txt).
+See [validation](docs/VALIDATION.md) for the native emulator and packaged-runtime
+checks; actual phone and physical-watch checks remain.
+The [earlier 0.2.0 release](https://github.com/xefensor/pebble-app-timer/releases/tag/v0.2.0)
+and its historical validation remain unchanged.
 
 ![Timer 0.4.0 native Emery screens](docs/images/native-overview.png)
 
-These are actual native emulator captures from the candidate, displayed at
+These are actual native emulator captures from this release, displayed at
 twice their 200 × 228 pixel size. The [approved browser concept](docs/design/Timer-UI-Preview.html)
 is retained separately; it is not native or physical-watch verification.
 

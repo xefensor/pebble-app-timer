@@ -28,7 +28,7 @@ service. Keep timer behaviour independent of Dynamic's presentation.
 
 - Install with `npm ci --ignore-scripts`. Use the versioned tarball in `vendor/`;
   never rely on a sibling library checkout. Record updated provenance and hashes.
-  The 0.4.0 candidate pins Activities 0.2.0; `vendor/ACTIVITIES.json` records
+  Version 0.4.0 pins Activities 0.2.0; `vendor/ACTIVITIES.json` records
   its exact reviewed source commit and archive checksum.
 - Use `npm run build` for distribution. Its manifestVersion 2 PBW must contain
   native app, PKJS, independently callable `plugin.js`, licences and notices.

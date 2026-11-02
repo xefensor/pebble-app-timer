@@ -1,12 +1,15 @@
 # Timer validation
 
-## 0.4.0 native hourglass candidate — 2 November 2026
+## 0.4.0 native hourglass prerelease — 2 November 2026
 
 The approved [interactive concept](design/Timer-UI-Preview.html) is implemented
 in the native Emery watchapp. Its browser images remain the design reference;
 the actual native evidence is recorded separately under `qa/0.4.0/`.
-The candidate is local and unpublished. Older PBWs, source archives and their
-validation retain their original scope.
+Version 0.4.0 is published as a GitHub development prerelease from commit
+`c907ef39b5defc01e4217ef8b3cea98779a4d115`. Both GitHub workflows passed and all
+three downloaded release assets match the prepared bytes and checksums.
+Publication-status documentation updates leave those artifacts unchanged.
+Older PBWs, source archives and their validation retain their original scope.
 
 The native composition uses the reviewed Fredoka outlines and Roboto Condensed
 bitmap fonts in a 166px content area with a 34px action bar. Main countdowns
