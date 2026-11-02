@@ -28,7 +28,7 @@ service. Keep timer behaviour independent of Dynamic's presentation.
 
 - Install with `npm ci --ignore-scripts`. Use the versioned tarball in `vendor/`;
   never rely on a sibling library checkout. Record updated provenance and hashes.
-  The 0.3.1 candidate pins Activities 0.2.0; `vendor/ACTIVITIES.json` records
+  The 0.4.0 candidate pins Activities 0.2.0; `vendor/ACTIVITIES.json` records
   its exact reviewed source commit and archive checksum.
 - Use `npm run build` for distribution. Its manifestVersion 2 PBW must contain
   native app, PKJS, independently callable `plugin.js`, licences and notices.
@@ -44,6 +44,20 @@ actual packaged PKJS/provider handoff, symbolic and numeric message keys, native
 identity and resource integrity. Record emulator results separately from real
 phone and physical-watch checks; never describe unperformed checks as passed.
 Check affected layouts on an actual emulator when changing native rendering.
+
+The approved hourglass reference is in `docs/design/`; those browser images
+remain design evidence, not native captures. `src/c/timer_ui.c` owns the native
+166px content/34px action-bar composition. `timer_fonts.c` uses the reviewed
+Dynamic Fredoka outlines and native Roboto bitmap fonts; preserve their SIL
+notices in both the source and PBW. `scripts/check-timer-fonts.py` verifies
+packaged resources and linked outlines against their exact source assets.
+Keep digits stable, sand proportional, paused views still and transitions
+bounded. Preserve initial launch focus and cancel decorative work under a
+covering window. All eight saved timers retain native deadline ownership.
+More options owns Restart and confirmed Delete; Keep is the initial choice.
+Held buttons must not act again after their first press changes screens.
+Normal sharing status belongs in More options; alarm/storage failures stay
+visible. Restart creates a new run in the same slot with the configured duration.
 
 The app has eight stable native timer slots and an independent list/editor/detail/
 alarm interface. ACTIVITY_SLOT (1021) is an internal bridge key;

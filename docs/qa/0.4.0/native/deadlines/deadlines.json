@@ -1,0 +1,194 @@
+{
+  "version": "0.4.0",
+  "scope": "Native-only Emery QEMU buttons and background Wakeup; no phone runtime or physical watch",
+  "environment": "Emery QEMU over isolated local FIFOs; no phone JavaScript, real phone or physical watch",
+  "phoneJavascriptExecuted": false,
+  "nativeOnlyPbwSha256": "f614e37cf6710dc6bca6549ce29371217809f443ff888f091e5aa0fdb65aa7bc",
+  "candidatePbwSha256": "769a7690fca5cc7930e22f728fd9fde4ad2aca3d6a937f98785129dced2eae5d",
+  "deadlineOffsetsSeconds": [
+    0,
+    5
+  ],
+  "durationSeconds": 20,
+  "setup": "Native persistence fixture seeds two running timers before Timer schedules its own Wakeup. The watch clock is not changed during scheduled alarms.",
+  "captures": [
+    {
+      "name": "legacy-migrated-list",
+      "file": "legacy-migrated-list.png",
+      "sha256": "a36978330f2b1235c3d9453ea41bdb409e7a90f2a054ccce65e41d0298a22b24",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false
+    },
+    {
+      "name": "empty-starting-list",
+      "file": "empty-starting-list.png",
+      "sha256": "a238854cf7d465e3363ceb8417443d6393b0d4a79e06ffc10328ffe46530d869",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false
+    },
+    {
+      "name": "simultaneous-running-list",
+      "file": "simultaneous-running-list.png",
+      "sha256": "a38a8e8807d7f8f923372fb64d84f2056d1d6a0d26a8e872788ff88ebdbff24c",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false
+    },
+    {
+      "name": "simultaneous-background-first-alarm",
+      "file": "simultaneous-background-first-alarm.png",
+      "sha256": "61213edb9b419678b710ae1f2afd265a5f043c433873c20431a684e0736d8b46",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false
+    },
+    {
+      "name": "simultaneous-second-alarm",
+      "file": "simultaneous-second-alarm.png",
+      "sha256": "61213edb9b419678b710ae1f2afd265a5f043c433873c20431a684e0736d8b46",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false
+    },
+    {
+      "name": "simultaneous-dismissed-list",
+      "file": "simultaneous-dismissed-list.png",
+      "sha256": "20bcf1256bb8695a54ee517bbb4d4428d0011a2bb6d4f78e51a67fbf549bd857",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false
+    },
+    {
+      "name": "nearby-running-list",
+      "file": "nearby-running-list.png",
+      "sha256": "03a85497792c687fafff6d0eee2963f040a0bdb0155b11834e6e201667431f9f",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false
+    },
+    {
+      "name": "nearby-background-first-alarm",
+      "file": "nearby-background-first-alarm.png",
+      "sha256": "61213edb9b419678b710ae1f2afd265a5f043c433873c20431a684e0736d8b46",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false
+    },
+    {
+      "name": "nearby-second-alarm",
+      "file": "nearby-second-alarm.png",
+      "sha256": "3dcc06fbb85f06a37b2bfd6a3771ed613a471933760fd08df2c4bf0424865703",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false
+    },
+    {
+      "name": "nearby-dismissed-list",
+      "file": "nearby-dismissed-list.png",
+      "sha256": "b4e1a924f5ad29af126ae4ec3721f8ec31363c810a03aec6aadc204e4367eaaa",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false
+    },
+    {
+      "name": "cleanup-eight-full",
+      "file": "cleanup-eight-full.png",
+      "sha256": "6b7d7294ed0efaa838e47de9fddd12d091e0e7d8be7918d38671e4d578e39159",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false
+    },
+    {
+      "name": "cleanup-empty-list",
+      "file": "cleanup-empty-list.png",
+      "sha256": "a238854cf7d465e3363ceb8417443d6393b0d4a79e06ffc10328ffe46530d869",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false
+    },
+    {
+      "name": "cleanup-background-alarm",
+      "file": "cleanup-background-alarm.png",
+      "sha256": "4e886054bca0703bb84f17388b4ab66e3784f9302b01c6f9be27443628d9c312",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false
+    },
+    {
+      "name": "cleanup-final-empty-list",
+      "file": "cleanup-final-empty-list.png",
+      "sha256": "a238854cf7d465e3363ceb8417443d6393b0d4a79e06ffc10328ffe46530d869",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false
+    }
+  ],
+  "alarmDismissHoldSeconds": 0.65,
+  "result": "PASS",
+  "visualReview": {
+    "reviewed": true,
+    "reviewer": "Codex",
+    "date": "2026-11-02",
+    "frames": [
+      "legacy-migrated-list",
+      "empty-starting-list",
+      "simultaneous-running-list",
+      "simultaneous-background-first-alarm",
+      "simultaneous-second-alarm",
+      "simultaneous-dismissed-list",
+      "nearby-running-list",
+      "nearby-background-first-alarm",
+      "nearby-second-alarm",
+      "nearby-dismissed-list",
+      "cleanup-eight-full",
+      "cleanup-empty-list",
+      "cleanup-background-alarm",
+      "cleanup-final-empty-list"
+    ],
+    "scope": "All recorded frames inspected directly from hash-named raw copies. Native timer captures are distinct from the explicitly named emulator-only fixture screens.",
+    "nativePixelsModified": false,
+    "physicalWatchVerification": false
+  },
+  "alarmHoldDoesNotDismissSecond": true,
+  "cleanup": {
+    "initial": "empty-starting-list.png",
+    "afterEightSlots": "cleanup-empty-list.png",
+    "afterBackgroundAlarm": "cleanup-final-empty-list.png",
+    "rgbEqual": true
+  },
+  "nativePayloadSha256": {
+    "emery/app_resources.pbpack": "7c33059be8dd8d5379ca467ce430225778ae5b576d19db66ad978c835110c7df",
+    "emery/manifest.json": "b877b72ad81b3930ed942b227be259bc7b83814a69c8c8ab4318889cdbded0dd",
+    "emery/pebble-app.bin": "f4fff36f5bbc1a6e47fef18a0542903592549fd99b8f9245ec8f1e51aa82c86e"
+  }
+}

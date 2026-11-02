@@ -130,6 +130,42 @@ class TimerReleaseTests(unittest.TestCase):
             with self.subTest(member=name), self.assertRaises(ValueError):
                 self.validate({**self.pbw, name: b"stale"})
 
+    def with_custom_fonts(self):
+        resources = {"media": [{"type": "font", "name": "FONT_BODY_16",
+                                "file": "fonts/RobotoCondensed-Bold.ttf"}]}
+        self.package["pebble"]["resources"] = resources
+        self.write("package.json", json.dumps(self.package).encode())
+        files = dict(self.pbw)
+        info = json.loads(files["appinfo.json"])
+        info["resources"] = resources
+        files["appinfo.json"] = json.dumps(info).encode()
+        for notice in ("OFL-Fredoka.txt", "OFL-RobotoCondensed.txt"):
+            content = ("fixture original " + notice).encode()
+            self.write("resources/fonts/" + notice, content)
+            files["licenses/" + notice] = content
+        self.commit_sha = self.commit()
+        return files
+
+    def test_custom_font_notices_are_mandatory_and_exact_when_fonts_are_declared(self):
+        files = self.with_custom_fonts()
+        self.validate(files)
+        for name in ("licenses/OFL-Fredoka.txt", "licenses/OFL-RobotoCondensed.txt"):
+            for missing in (False, True):
+                with self.subTest(name=name, missing=missing), self.assertRaisesRegex(ValueError, "font license"):
+                    changed = dict(files)
+                    if missing:
+                        del changed[name]
+                    else:
+                        changed[name] = b"stale font license"
+                    self.validate(changed)
+
+    def test_custom_font_manifest_cannot_drift_from_committed_resource_definitions(self):
+        files = self.with_custom_fonts()
+        info = json.loads(files["appinfo.json"])
+        info["resources"]["media"][0]["name"] = "FONT_BODY_24"
+        with self.assertRaisesRegex(ValueError, "font resource metadata"):
+            self.validate({**files, "appinfo.json": json.dumps(info).encode()})
+
     def test_pkjs_map_and_executed_module_both_must_match(self):
         # Workspace-local SDK installs emit a relative source path. Normalizing
         # that SDK module name retains duplicate and compiled-code checks.

@@ -1,6 +1,6 @@
 # Pinned dependencies
 
-Timer 0.3.1 is an unpublished local candidate pinned to
+Timer 0.4.0 is an unpublished local candidate pinned to
 `pebble-activities-0.2.0.tgz`. Its exact provenance is also recorded in
 [ACTIVITIES.json](ACTIVITIES.json):
 

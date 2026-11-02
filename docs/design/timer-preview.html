@@ -1,0 +1,329 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>Timer — hourglass preview</title>
+<style>
+@font-face{font-family:FredokaClock;src:url('./fonts/Fredoka-Bold-Clock.woff') format('woff');font-weight:700;font-display:block}
+@font-face{font-family:RobotoCondensed;src:url('./fonts/RobotoCondensed-Bold.woff') format('woff');font-weight:700;font-display:block}
+:root{font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#202321;background:#f1f1ed;font-synthesis:none}
+*{box-sizing:border-box}
+body{margin:0;min-width:320px}
+button,select{font:inherit}
+button{cursor:pointer}
+button:focus-visible,select:focus-visible,a:focus-visible{outline:3px solid #2475c8;outline-offset:4px}
+.page{max-width:1060px;margin:auto;padding:44px 32px 30px}
+.topline{display:flex;justify-content:space-between;align-items:center;gap:20px;border-bottom:1px solid #d9dad3;padding-bottom:18px}
+.wordmark{display:flex;align-items:center;gap:10px;font-size:14px;font-weight:750;letter-spacing:.01em}
+.wordmark svg{width:20px;height:26px}
+.study{font-size:11px;letter-spacing:.12em;font-weight:650;text-transform:uppercase;color:#6f736a}
+h1{font-size:clamp(29px,4vw,42px);font-weight:650;letter-spacing:-.05em;line-height:1.12;margin:29px 0 12px}
+.intro{max-width:590px;font-size:15px;line-height:1.65;color:#656a61;margin:0}
+.workspace{display:grid;grid-template-columns:minmax(300px,1fr) minmax(270px,.85fr);gap:65px;align-items:center;padding:38px 5px 36px}
+.watch-column{display:flex;flex-direction:column;align-items:center;min-width:0}
+.watch-stage{padding:18px 15px 20px;min-height:288px;display:flex;align-items:center;justify-content:safe center;width:100%;overflow-x:auto}
+.device{--zoom:2;position:relative;isolation:isolate;flex-shrink:0;width:calc(200px * var(--zoom) + 32px);height:calc(228px * var(--zoom) + 32px);padding:16px;background:#242622;border-radius:22px;box-shadow:0 0 0 1px #10130f,0 0 0 4px #d4d7cd,0 14px 28px #222b181a}
+.display{display:block;width:calc(200px * var(--zoom));height:calc(228px * var(--zoom));background:#fff;border-radius:3px;overflow:hidden}
+.side{position:absolute;width:16px;height:34px;background:#343831;border:1px solid #151a12;border-radius:5px;z-index:-1;box-shadow:inset 0 0 0 2px #454a40;color:transparent;padding:0}
+.side:hover{background:#59634e}
+.side:active{transform:translateX(-2px)}
+.side.up{right:-12px;top:calc(16px + 44px * var(--zoom) - 17px)}
+.side.select{right:-12px;top:calc(16px + 114px * var(--zoom) - 17px)}
+.side.down{right:-12px;top:calc(16px + 184px * var(--zoom) - 17px)}
+.side.back{left:-12px;top:calc(16px + 65px * var(--zoom) - 17px)}
+.side.back:active{transform:translateX(2px)}
+.size-row{display:flex;align-items:center;justify-content:center;gap:12px;margin-top:11px;font-size:11px;color:#6f7469}
+.size-switch{display:flex;gap:3px;padding:3px;background:#e5e7df;border-radius:7px}
+.size-switch button{border:0;border-radius:5px;background:transparent;padding:6px 10px;font-size:11px;color:#59604f}
+.size-switch button[aria-pressed=true]{background:white;color:#252b21;box-shadow:0 1px 3px #0001}
+.keyboard{margin:18px 0 0;font-size:11px;color:#73796d;text-align:center;line-height:1.8}
+kbd{font-family:inherit;border:1px solid #cdd2c3;border-radius:3px;min-width:18px;padding:1px 4px;background:#f9faf5;font-size:10px}
+.review-panel{padding:12px 0 18px}
+.eyebrow{font-size:11px;letter-spacing:.12em;text-transform:uppercase;font-weight:650;color:#777d6e;margin:0 0 13px}
+.state-name{font-size:25px;line-height:1.2;letter-spacing:-.03em;font-weight:650;margin:0 0 10px}
+.state-copy{font-size:14px;line-height:1.7;color:#62695c;margin:0 0 24px;min-height:73px}
+.presets{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:26px}
+.preset{border:1px solid #d2d7c9;background:transparent;color:#535c48;border-radius:999px;font-size:12px;padding:8px 12px;transition:background .12s,border-color .12s,color .12s}
+.preset:hover{background:#e6eadd}
+.preset[aria-pressed=true]{background:#263220;color:white;border-color:#263220}
+.button-guide{border-top:1px solid #d8ddce;border-bottom:1px solid #d8ddce;padding:12px 0;display:grid;gap:5px}
+.guide-key{display:flex;align-items:center;justify-content:space-between;text-align:left;gap:14px;width:100%;border:0;background:transparent;padding:8px 0;color:#303a26;font-size:12px}
+.guide-key:hover{color:#145b9b}
+.guide-key span:first-child{display:flex;gap:9px;align-items:center;color:#79816f;font-size:11px;min-width:65px}
+.guide-key b{font-weight:550}
+.guide-key kbd{display:inline-flex;align-items:center;justify-content:center;width:24px;height:23px;font-size:12px}
+.preview-note{font-size:11px;line-height:1.7;color:#808675;margin:17px 0 0;max-width:320px}
+.footer{display:flex;justify-content:space-between;gap:20px;padding-top:19px;border-top:1px solid #d9dad3;font-size:11px;line-height:1.6;color:#818775}
+.footer a{color:#68715c;text-underline-offset:3px}
+.watch-font{font-family:RobotoCondensed,sans-serif;font-weight:700}
+.clock-font{font-family:FredokaClock,sans-serif;font-weight:700}
+@media(max-width:850px){.workspace{grid-template-columns:1fr;gap:28px;padding-top:25px}.review-panel{max-width:440px;width:100%;margin:auto}.watch-stage{padding-top:12px}.state-copy{min-height:0}.page{padding:26px 22px 24px}.footer{flex-direction:column;gap:6px}}
+@media(max-width:460px){.device{--zoom:1}.page{padding-inline:20px}.study{max-width:130px;text-align:right;line-height:1.6}.workspace{padding-inline:0}.watch-stage{padding-inline:12px}.intro{font-size:14px}.footer{font-size:10px}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+<main class="page">
+  <header class="topline">
+    <div class="wordmark"><svg viewBox="0 0 24 30" aria-hidden="true"><path d="M3 2h18M3 28h18M5 3c0 6 3 9 7 12-4 3-7 6-7 12h14c0-6-3-9-7-12 4-3 7-6 7-12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>Timer</div>
+    <span class="study">Interactive design preview</span>
+  </header>
+  <h1>A little more life in every minute.</h1>
+  <p class="intro">A clear countdown, a quiet flow of sand, and the same familiar controls. Explore the proposed watch screens below.</p>
+  <div class="workspace">
+    <section class="watch-column" aria-label="Interactive watch preview">
+      <div class="watch-stage">
+        <div class="device" id="device">
+          <svg class="display" id="watch" width="200" height="228" viewBox="0 0 200 228" tabindex="0" role="img" aria-label="Running timer, eight minutes forty-two seconds">
+            <defs id="watch-defs"></defs><g id="watch-body"></g>
+          </svg>
+          <button class="side back" data-button="back" aria-label="Back">Back</button>
+          <button class="side up" data-button="up" aria-label="Up">Up</button>
+          <button class="side select" data-button="select" aria-label="Select">Select</button>
+          <button class="side down" data-button="down" aria-label="Down">Down</button>
+        </div>
+      </div>
+      <div class="size-row"><span>200 × 228 display</span><div class="size-switch" aria-label="Preview scale"><button data-scale="1" aria-pressed="false">Actual size</button><button data-scale="2" aria-pressed="true">2× view</button></div></div>
+      <p class="keyboard">Use the side buttons, or <kbd>↑</kbd> <kbd>↓</kbd> <kbd>Enter</kbd> <kbd>Esc</kbd>.</p>
+    </section>
+    <section class="review-panel" aria-label="Preview controls">
+      <p class="eyebrow">One timer, from start to finish</p>
+      <h2 class="state-name" id="state-name">Time in motion</h2>
+      <p class="state-copy" id="state-copy">The time stays easy to read. The hourglass shows how much of the timer remains, with a small stream while it runs.</p>
+      <nav class="presets" aria-label="Example screens">
+        <button class="preset" data-state="running" aria-pressed="true">Running</button>
+        <button class="preset" data-state="paused" aria-pressed="false">Paused</button>
+        <button class="preset" data-state="list" aria-pressed="false">Timer list</button>
+        <button class="preset" data-state="editor" aria-pressed="false">Set timer</button>
+        <button class="preset" data-state="finished" aria-pressed="false">Finished</button>
+        <button class="preset" data-state="24h" aria-pressed="false">24 hours</button>
+      </nav>
+      <div class="button-guide" aria-label="Current button actions">
+        <button class="guide-key" data-button="up"><span><kbd>↑</kbd>Up</span><b id="action-up">Adjust duration</b></button>
+        <button class="guide-key" data-button="select"><span><kbd>↵</kbd>Select</span><b id="action-select">Pause</b></button>
+        <button class="guide-key" data-button="down"><span><kbd>↓</kbd>Down</span><b id="action-down">More options</b></button>
+        <button class="guide-key" data-button="back"><span><kbd>Esc</kbd>Back</span><b id="action-back">Timer list</b></button>
+      </div>
+      <p class="preview-note">Illustrative browser preview. The screen uses the proposed 200 × 228 layout and Dynamic’s font shapes. Native rendering, movement and battery use will be checked on the watch.</p>
+    </section>
+  </div>
+  <footer class="footer"><span>Hourglass concept · Pebble Time 2</span><span>Demo timers only · <a href="../VALIDATION.md">Current app validation</a></span></footer>
+</main>
+<script>
+(() => {
+  'use strict';
+  const BLUE='#55aaff', AMBER='#ffaa00', INK='#000000', WHITE='#ffffff', GRAY='#aaaaaa';
+  const svg=document.getElementById('watch'), body=document.getElementById('watch-body');
+  const prefersReduced=window.matchMedia('(prefers-reduced-motion: reduce)');
+  const descriptions={
+    running:['Time in motion','The time stays easy to read. The hourglass shows how much of the timer remains, with a small stream while it runs.'],
+    paused:['A proper pause','The sand and countdown stop together. A clear amber label makes the state obvious, while Resume stays one press away.'],
+    list:['Your timers, together','A simple list keeps running and paused timers easy to find. Select a timer to open it, or choose the plus row to start another.'],
+    editor:['Set it, then start it','Adjust hours, minutes and seconds with Up and Down. Select advances the highlighted field; the final press starts the timer.'],
+    finished:['A clear finish','The sand is settled and the screen changes with it. Snooze for a minute, or dismiss the finished timer.'],
+    options:['The less frequent actions','Adjust and pause stay close at hand. Restart and delete live here, so an accidental button press cannot erase a timer.'],
+    confirm:['Make deletion deliberate','Deleting a saved timer takes an explicit choice. Back always returns without deleting anything.']
+  };
+  const makeTimer=(total,remaining,running=false)=>({total,remaining,running,deadline:running?Date.now()+remaining*1000:0});
+  let timers=[makeTimer(600,522,true),makeTimer(480,480,false),makeTimer(120,73,false)];
+  let selected=0,screen='running',menu=1,option=0,confirmChoice=0;
+  let editing=null,parts=[0,10,0],field=0,lastTick=-1,tickHandle=null,screenTransition=null;
+  const escape=value=>String(value).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const text=(value,x,y,size=16,fill=INK,anchor='middle',extra='')=>`<text class="watch-font" x="${x}" y="${y}" font-size="${size}" fill="${fill}" text-anchor="${anchor}" ${extra}>${escape(value)}</text>`;
+  const line=(x1,y1,x2,y2,stroke=INK,width=1)=>`<path d="M${x1} ${y1}H${x2}" stroke="${stroke}" stroke-width="${width}"/>`;
+  const remaining=t=>t.running?Math.max(0,Math.ceil((t.deadline-Date.now())/1000)):t.remaining;
+  const clock=seconds=>{const h=Math.floor(seconds/3600),m=Math.floor(seconds%3600/60),s=seconds%60;return h?`${h}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`:`${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;};
+  const duration=seconds=>seconds%3600===0?`${seconds/3600} HOUR TIMER`:seconds%60===0?`${seconds/60} MIN TIMER`:`${clock(seconds)} TIMER`;
+  function digits(value,cx,baseline,size,fill=INK){
+    const chars=Array.from(value),advance=c=>(c===':'?.25:.58)*size;
+    let x=cx-chars.reduce((n,c)=>n+advance(c),0)/2;
+    return chars.map(c=>{const a=advance(c),out=`<text class="clock-font" x="${(x+a/2).toFixed(2)}" y="${baseline}" font-size="${size}" fill="${fill}" text-anchor="middle">${escape(c)}</text>`;x+=a;return out;}).join('');
+  }
+  function icon(name,x,y,color=WHITE){
+    const attrs=`fill="none" stroke="${color}" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"`;
+    const shapes={
+      edit:`<path d="M-7 6L4-5L8-1L-3 10L-8 11Z M2-3L6 1" ${attrs}/>`,
+      pause:`<path d="M-5-7V7M5-7V7" fill="none" stroke="${color}" stroke-width="4"/>`,
+      play:`<path d="M-5-8L8 0L-5 8Z" fill="${color}"/>`,
+      more:`<circle cx="-7" cy="0" r="2.2" fill="${color}"/><circle cy="0" r="2.2" fill="${color}"/><circle cx="7" cy="0" r="2.2" fill="${color}"/>`,
+      plus:`<path d="M-7 0H7M0-7V7" ${attrs}/>`,minus:`<path d="M-7 0H7" ${attrs}/>`,
+      next:`<path d="M-7 0H7M1-6L7 0L1 6" ${attrs}/>`,
+      check:`<path d="M-8 0L-2 6L9-7" ${attrs}/>`,
+      snooze:`<path d="M-7-3A8 8 0 1 1-1 8M-8-8V-1H-1M0-5V0L4 2" ${attrs}/>`,
+      up:`<path d="M-6 3L0-3L6 3" ${attrs}/>`,down:`<path d="M-6-3L0 3L6-3" ${attrs}/>`,
+      trash:`<path d="M-7-5H7M-5-4V8H5V-4M-2-8H2M-2-1V5M2-1V5" ${attrs}/>`
+    };
+    return `<g transform="translate(${x} ${y})">${shapes[name]||''}</g>`;
+  }
+  function bar(up,select,down,bg=INK){return `<rect x="166" width="34" height="228" fill="${bg}"/>${icon(up,183,44)}${icon(select,183,114)}${icon(down,183,184)}`;}
+  function hourglass(fraction,{x=83,y=99,scale=1,color=BLUE,outline=INK,running=false,id='main'}={}){
+    fraction=Math.max(0,Math.min(1,fraction));
+    const topY=4+31*(1-Math.sqrt(fraction));
+    const bottomY=44+31*Math.sqrt(fraction);
+    const phase=Math.floor(Date.now()/1000)%2;
+    const stream=running&&fraction>0?`<path d="M0 36V43" stroke="${color}" stroke-width="2"/><rect x="-1" y="${phase?47:51}" width="2" height="3" fill="${color}"/><rect x="-1" y="${phase?55:59}" width="2" height="2" fill="${color}"/>`:'';
+    return `<g transform="translate(${x} ${y}) scale(${scale})" data-hourglass="${id}">
+      <defs><clipPath id="top-${id}"><path d="M-25 4H25C24 16 18 24 2 35H-2C-18 24-24 16-25 4Z"/></clipPath><clipPath id="bottom-${id}"><path d="M-2 44H2C18 55 24 63 25 75H-25C-24 63-18 55-2 44Z"/></clipPath></defs>
+      <rect x="-27" y="${topY.toFixed(2)}" width="54" height="37" fill="${color}" clip-path="url(#top-${id})"/>
+      <rect x="-27" y="${bottomY.toFixed(2)}" width="54" height="78" fill="${color}" clip-path="url(#bottom-${id})"/>
+      ${stream}<path d="M-29 0H29M-29 79H29M-27 1C-27 19-20 26-3 38C-2 39-2 40-3 41C-20 53-27 60-27 78H27C27 60 20 53 3 41C2 40 2 39 3 38C20 26 27 19 27 1" fill="none" stroke="${outline}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </g>`;
+  }
+  function mainScreen(){
+    const t=timers[selected],left=remaining(t),paused=screen==='paused',y=paused?8:0;
+    let out=`<rect width="200" height="228" fill="${WHITE}"/>${bar('edit',paused?'play':'pause','more')}`;
+    if(paused)out+=`<rect width="166" height="27" fill="${AMBER}"/>${text('PAUSED',83,19,14)}`;
+    out+=text(duration(t.total),83,paused?46:23,15,INK,'middle','letter-spacing=".5"');
+    out+=digits(clock(left),83,82+y,left>=3600?36:58);
+    out+=hourglass(t.total?left/t.total:0,{y:99+y,color:paused?AMBER:BLUE,running:!paused&&t.running});
+    out+=text(`Elapsed ${clock(Math.max(0,t.total-left))}`,83,211,16);
+    return out;
+  }
+  function listScreen(){
+    let out=`<rect width="200" height="228" fill="${WHITE}"/>${bar('up',menu?'next':timers.length<8?'plus':'','down')}`;
+    const onNew=menu===0;
+    out+=`<rect width="166" height="37" fill="${onNew?BLUE:WHITE}"/>${text(timers.length<8?'TIMERS':'8 TIMERS · FULL',12,24,timers.length<8?16:14,INK,'start')}${timers.length<8?icon('plus',147,18,INK):''}${line(9,36,157,36,'#dddddd')}`;
+    if(!timers.length)return out+hourglass(1,{y:77,scale:.7})+text('Start a little time',83,178,17);
+    const first=Math.max(0,menu-3);
+    for(let i=first;i<timers.length&&i<first+3;i++){
+      const t=timers[i],left=remaining(t),active=menu===i+1,y=40+(i-first)*56,fg=active?WHITE:INK;
+      out+=`<rect x="0" y="${y}" width="166" height="54" fill="${active?INK:WHITE}"/>`;
+      out+=text(clock(left),13,y+29,left>=3600?24:30,fg,'start','style="font-family:FredokaClock"');
+      out+=text(`${t.running?'Running':left?'Paused':'Finished'} · ${duration(t.total).replace(' TIMER','').toLowerCase()}`,13,y+47,13,active?'#aaaaaa':'#555555','start');
+      const fraction=t.total?left/t.total:0;
+      out+=`<rect x="145" y="${y+13}" width="4" height="29" rx="2" fill="${active?'#555555':'#dddddd'}"/><rect x="145" y="${y+13+29*(1-fraction)}" width="4" height="${29*fraction}" rx="2" fill="${t.running?BLUE:AMBER}"/>`;
+    }
+    out+=text(`${timers.length} / 8 saved`,83,223,12,'#555555');
+    return out;
+  }
+  function editorScreen(){
+    const total=parts[0]*3600+parts[1]*60+parts[2],zero=total<5;
+    let out=`<rect width="200" height="228" fill="${WHITE}"/>${bar('plus',field<2?'next':'check','minus')}${text(editing===null?'NEW TIMER':'ADJUST TIMER',83,24,15,INK,'middle','letter-spacing=".5"')}`;
+    out+=hourglass(total?1:0,{x:83,y:43,scale:.5,color:BLUE,id:'editor'});
+    const labels=['HOURS','MIN','SEC'];
+    for(let i=0;i<3;i++){
+      const x=5+i*53;
+      out+=`<rect x="${x}" y="104" width="50" height="45" rx="3" fill="${field===i?BLUE:WHITE}"/>`;
+      out+=digits(String(parts[i]).padStart(2,'0'),x+25,138,36);
+      out+=text(labels[i],x+25,168,12,field===i?INK:'#777777');
+    }
+    out+=text(zero?'Minimum 5 seconds':field<2?'Select for next field':editing===null?'Select to start':'Select to save',83,206,16);
+    return out;
+  }
+  function finishedScreen(){
+    const t=timers[selected];
+    return `<rect width="200" height="228" fill="${INK}"/>${bar('snooze','','check','#222222')}${text('TIME’S UP',83,28,23,WHITE)}${digits(clock(t.total),83,77,t.total>=3600?32:47,WHITE)}${hourglass(0,{y:96,color:BLUE,outline:WHITE})}${text('Snooze 1 min / Done',83,208,15,WHITE)}`;
+  }
+  function optionsScreen(){
+    const labels=['Adjust duration','Restart timer','Delete timer'];
+    let out=`<rect width="200" height="228" fill="${WHITE}"/>${bar('up','check','down')}${text('TIMER OPTIONS',83,25,16)}${line(10,37,156,37,'#dddddd')}`;
+    labels.forEach((label,i)=>{const y=53+i*46,active=option===i;out+=`<rect y="${y}" width="166" height="43" fill="${active?INK:WHITE}"/>${text(label,13,y+28,19,active?WHITE:INK,'start')}`;});
+    return out+text('Back to keep timing',83,214,14,'#555555');
+  }
+  function confirmScreen(){
+    return `<rect width="200" height="228" fill="${WHITE}"/>${bar('up','check','down')}${icon('trash',83,43,INK)}${text('Delete this timer?',83,89,23)}${text('This cannot be undone.',83,113,15,'#555555')}<rect y="141" width="166" height="32" fill="${confirmChoice===0?INK:WHITE}"/>${text('Keep timer',83,163,18,confirmChoice===0?WHITE:INK)}<rect y="177" width="166" height="32" fill="${confirmChoice===1?AMBER:WHITE}"/>${text('Delete timer',83,199,18)}`;
+  }
+  function actions(){
+    if(screen==='list')return ['Previous timer',menu?(timers[menu-1]?'Open timer':'Open'):(timers.length<8?'New timer':'Eight timers saved'),'Next timer','Stay in preview'];
+    if(screen==='editor')return ['Increase '+['hours','minutes','seconds'][field],field<2?'Next field':editing===null?'Start timer':'Save changes','Decrease '+['hours','minutes','seconds'][field],field?'Previous field':'Cancel'];
+    if(screen==='finished')return ['Snooze · 1 minute','—','Dismiss','Timer list'];
+    if(screen==='options')return ['Previous option',['Adjust duration','Restart timer','Delete timer'][option],'Next option','Return to timer'];
+    if(screen==='confirm')return ['Keep timer',confirmChoice?'Delete timer':'Keep timer','Delete timer','Keep timer'];
+    return ['Adjust duration',screen==='paused'?'Resume':'Pause','More options','Timer list'];
+  }
+  function render(transition=false){
+    const draw={running:mainScreen,paused:mainScreen,list:listScreen,editor:editorScreen,finished:finishedScreen,options:optionsScreen,confirm:confirmScreen};
+    body.innerHTML=draw[screen]();
+    if(screenTransition){screenTransition.cancel();screenTransition=null;}
+    if(transition&&!prefersReduced.matches&&!document.hidden){
+      screenTransition=body.animate([{opacity:.35,transform:'translateY(3px)'},{opacity:1,transform:'translateY(0)'}],{duration:180,easing:'cubic-bezier(.2,.7,.3,1)'});
+    }
+    const desc=descriptions[screen];document.getElementById('state-name').textContent=desc[0];document.getElementById('state-copy').textContent=desc[1];
+    const a=actions();['up','select','down','back'].forEach((name,i)=>{document.getElementById('action-'+name).textContent=a[i];document.querySelector('.side.'+name).setAttribute('aria-label',name+': '+a[i]);});
+    const preset=screen==='running'&&timers[selected].total===86400?'24h':screen;
+    document.querySelectorAll('[data-state]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.state===preset)));
+    const t=timers[selected];svg.setAttribute('aria-label',screen==='running'||screen==='paused'?`${screen} timer, ${clock(remaining(t))} remaining`:desc[0]);
+    svg.dataset.state=screen;
+  }
+  function detail(){screen=remaining(timers[selected])===0?'finished':timers[selected].running?'running':'paused';}
+  function beginEdit(index){editing=index;const sec=index===null?600:remaining(timers[index])||timers[index].total;parts=[Math.floor(sec/3600),Math.floor(sec%3600/60),sec%60];field=0;screen='editor';}
+  function startEditor(){
+    const seconds=parts[0]*3600+parts[1]*60+parts[2];if(seconds<5)return;
+    if(editing===null){if(timers.length>=8)return;timers.push(makeTimer(seconds,seconds,true));selected=timers.length-1;}
+    else{selected=editing;const wasRunning=timers[selected].running;timers[selected]=makeTimer(seconds,seconds,wasRunning);}
+    menu=selected+1;screen=timers[selected].running?'running':'paused';
+  }
+  function press(button){
+    if(!['up','select','down','back'].includes(button))return getState();
+    if(screen==='list'){
+      if(button==='up')menu=Math.max(0,menu-1);
+      if(button==='down')menu=Math.min(timers.length,menu+1);
+      if(button==='select'){if(menu===0){if(timers.length<8)beginEdit(null);}else{selected=menu-1;detail();}}
+    }else if(screen==='editor'){
+      if(button==='up'||button==='down'){const max=field===0?24:parts[0]===24?0:59;parts[field]=(parts[field]+(button==='up'?1:max))%(max+1);if(parts[0]===24)parts[1]=parts[2]=0;}
+      if(button==='select'){if(field<2)field++;else startEditor();}
+      if(button==='back'){if(field)field--;else if(editing===null)screen='list';else detail();}
+    }else if(screen==='finished'){
+      if(button==='up'){timers[selected]=makeTimer(60,60,true);screen='running';}
+      if(button==='down'||button==='back'){screen='list';menu=selected+1;}
+    }else if(screen==='options'){
+      if(button==='up')option=Math.max(0,option-1);
+      if(button==='down')option=Math.min(2,option+1);
+      if(button==='back')detail();
+      if(button==='select'){if(option===0)beginEdit(selected);else if(option===1){const total=timers[selected].total;timers[selected]=makeTimer(total,total,true);screen='running';}else{screen='confirm';confirmChoice=0;}}
+    }else if(screen==='confirm'){
+      if(button==='up')confirmChoice=0;if(button==='down')confirmChoice=1;
+      if(button==='back'||button==='select'&&confirmChoice===0)detail();
+      else if(button==='select'&&confirmChoice===1){timers.splice(selected,1);selected=Math.max(0,Math.min(selected,timers.length-1));menu=timers.length?selected+1:0;screen='list';}
+    }else{
+      const t=timers[selected];
+      if(button==='up')beginEdit(selected);
+      if(button==='select'){if(t.running){t.remaining=remaining(t);t.running=false;t.deadline=0;screen='paused';}else{t.deadline=Date.now()+t.remaining*1000;t.running=true;screen='running';}}
+      if(button==='down'){option=0;screen='options';}
+      if(button==='back'){screen='list';menu=selected+1;}
+    }
+    render(true);schedule();return getState();
+  }
+  function show(state){
+    if(!['running','paused','list','editor','finished','options','confirm','24h'].includes(state))return getState();
+    if(!timers.length){timers=[makeTimer(600,522,false)];selected=0;}
+    selected=Math.min(selected,timers.length-1);
+    if(state==='running'||state==='paused'||state==='finished'||state==='24h'){
+      const total=state==='24h'?86400:600,left=state==='24h'?86400:state==='finished'?0:522;
+      timers[selected]=makeTimer(total,left,state==='running'||state==='24h');screen=state==='24h'?'running':state;
+    }else if(state==='editor')beginEdit(null);
+    else{screen=state;if(state==='list')menu=selected+1;if(state==='options')option=0;if(state==='confirm')confirmChoice=0;}
+    render(true);schedule();return getState();
+  }
+  function setTime(seconds,total){
+    seconds=Math.max(0,Math.min(86400,Math.floor(Number(seconds)||0)));
+    if(!timers.length){timers.push(makeTimer(600,0));selected=0;}
+    const t=timers[selected],max=Math.max(seconds,Math.min(86400,Math.floor(Number(total)||t.total||seconds||5)));
+    t.total=max;t.remaining=seconds;t.deadline=t.running?Date.now()+seconds*1000:0;
+    if(seconds===0){t.running=false;screen='finished';}
+    render();schedule();return getState();
+  }
+  function getState(){const t=timers[selected];return {screen,state:screen,remaining:t?remaining(t):0,total:t?t.total:0,running:!!(t&&t.running),selected,menuIndex:menu,editField:field,editParts:parts.slice(),optionsIndex:option,confirmation:confirmChoice,count:timers.length,timers:timers.map(t=>({total:t.total,remaining:remaining(t),running:t.running}))};}
+  function tick(){
+    tickHandle=null;const now=Math.floor(Date.now()/1000);let finished=-1;
+    timers.forEach((t,i)=>{if(t.running&&remaining(t)===0){t.running=false;t.remaining=0;t.deadline=0;if(finished<0)finished=i;}});
+    if(finished>=0){selected=finished;screen='finished';render(true);}
+    else if(lastTick!==now&&(screen==='list'||screen==='running'))render();
+    lastTick=now;schedule();
+  }
+  function schedule(){if(tickHandle!==null)clearTimeout(tickHandle);tickHandle=null;if(!document.hidden&&timers.some(t=>t.running))tickHandle=setTimeout(tick,1000-Date.now()%1000+8);}
+  document.querySelectorAll('[data-button]').forEach(b=>b.addEventListener('click',()=>{press(b.dataset.button);svg.focus({preventScroll:true});}));
+  document.querySelectorAll('[data-state]').forEach(b=>b.addEventListener('click',()=>{show(b.dataset.state);svg.focus({preventScroll:true});}));
+  const setScale=scale=>{document.getElementById('device').style.setProperty('--zoom',scale);document.querySelectorAll('[data-scale]').forEach(b=>b.setAttribute('aria-pressed',String(Number(b.dataset.scale)===scale)));};
+  document.querySelectorAll('[data-scale]').forEach(b=>b.addEventListener('click',()=>setScale(Number(b.dataset.scale))));
+  document.addEventListener('keydown',event=>{if(event.altKey||event.ctrlKey||event.metaKey)return;const map={ArrowUp:'up',ArrowDown:'down',Enter:'select',Escape:'back'};if(!map[event.key]||/^(INPUT|SELECT|TEXTAREA)$/.test(event.target.tagName))return;if(event.target.tagName==='BUTTON'&&event.key==='Enter')return;event.preventDefault();press(map[event.key]);});
+  document.addEventListener('visibilitychange',()=>{if(document.hidden){if(screenTransition)screenTransition.cancel();schedule();}else tick();});
+  prefersReduced.addEventListener('change',()=>{if(prefersReduced.matches&&screenTransition){screenTransition.cancel();screenTransition=null;}});
+  window.TimerPreview={show,getState,press,setTime};
+  setScale(window.innerWidth<=500?1:2);render();schedule();
+})();
+</script>
+</body>
+</html>

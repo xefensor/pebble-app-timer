@@ -239,6 +239,14 @@ def validate_timer(root, config, commit, package, files):
     require(files.get("licenses/pebble-activities-LICENSE.txt") == dependency["LICENSE"], "Activities license differs")
     for notice in ("THIRD-PARTY-NOTICES.md", "licenses/Apache-2.0.txt"):
         require(files.get(notice) == committed(root, commit, notice), "Timer SDK notice differs: " + notice)
+    font_media = [item for item in expected.get("resources", {}).get("media", [])
+                  if item.get("type") == "font"]
+    if font_media:
+        require(info.get("resources") == expected["resources"], "Timer font resource metadata differs")
+        for notice in ("OFL-Fredoka.txt", "OFL-RobotoCondensed.txt"):
+            require(files.get("licenses/" + notice) ==
+                    committed(root, commit, "resources/fonts/" + notice),
+                    "Timer font license differs: " + notice)
     platforms = expected["targetPlatforms"]
     require({name.split("/")[0] for name in files if name.endswith("/manifest.json")} == set(platforms),
             "Timer platform set differs")

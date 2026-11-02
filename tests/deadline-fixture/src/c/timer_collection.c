@@ -124,6 +124,19 @@ bool timer_collection_pause(TimerCollection *collection, unsigned slot, uint32_t
   return activity_timer_pause(&next, now) && commit(collection, slot, &next);
 }
 
+bool timer_collection_restart(TimerCollection *collection, unsigned slot, uint32_t now) {
+  if (!slot_ready(collection, slot) || !timer_collection_visible(collection, slot)) return false;
+  ActivityTimerModel next = collection->slots[slot];
+  next.revision = collection->revision;
+  /* Only the committed replacement is published. Keep the configured duration
+   * and stable slot, while giving the restarted countdown a new run identity. */
+  if (next.state == ACTIVITY_TIMER_RUNNING || next.state == ACTIVITY_TIMER_PAUSED) {
+    if (!activity_timer_cancel(&next, now)) return false;
+  }
+  return activity_timer_start(&next, next.configured_seconds, now) &&
+      commit(collection, slot, &next);
+}
+
 bool timer_collection_resume(TimerCollection *collection, unsigned slot, uint32_t now) {
   if (!slot_ready(collection, slot) || !timer_collection_visible(collection, slot)) return false;
   ActivityTimerModel next = collection->slots[slot];

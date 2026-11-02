@@ -22,4 +22,12 @@ with tempfile.TemporaryDirectory(prefix="timer-collection-test-") as scratch:
         str(root / "tests/test_timer_collection.c"), "-o", str(binary)
     ], check=True)
     subprocess.run([str(binary)], check=True)
+with tempfile.TemporaryDirectory(prefix="timer-ui-test-") as scratch:
+    for name in ("timer_fonts", "timer_ui"):
+        binary = Path(scratch) / name
+        subprocess.run([
+            os.environ.get("CC", "cc"), "-std=c99", "-Wall", "-Wextra", "-Werror", "-pedantic",
+            str(root / ("tests/test_" + name + ".c")), "-o", str(binary)
+        ], check=True)
+        subprocess.run([str(binary)], check=True)
 subprocess.run(["node", "--test", str(root / "tests/handoff.test.js")], check=True)

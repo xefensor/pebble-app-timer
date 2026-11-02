@@ -1,0 +1,16 @@
+{
+  "name": "timer-wakeup-conflict-fixture",
+  "version": "0.1.0",
+  "author": "Xef",
+  "private": true,
+  "license": "SEE LICENSE IN LICENSE",
+  "pebble": {
+    "displayName": "Timer QA conflict",
+    "uuid": "d012c8aa-b7ce-4fc3-82f7-f45c8a58f4d1",
+    "sdkVersion": "3",
+    "projectType": "native",
+    "targetPlatforms": ["emery"],
+    "watchapp": {"watchface": false},
+    "resources": {"media": []}
+  }
+}

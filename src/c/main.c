@@ -5,6 +5,8 @@
 #include <string.h>
 
 #include "timer_collection.h"
+#include "timer_ui.h"
+#include "timer_fonts.h"
 
 #define LEGACY_MODEL_KEY 2100
 #define WAKEUP_KEY 2101
@@ -24,7 +26,6 @@
 #define TIMER_DIAG(...) ((void)0)
 #endif
 
-typedef enum { SCREEN_LIST, SCREEN_EDITOR, SCREEN_DETAIL, SCREEN_ALARM } Screen;
 typedef struct {
   uint32_t magic, version, generation, bytes, checksum, alarms;
 } SavedHeader;
@@ -39,8 +40,12 @@ static uint32_t s_generation;
 static Screen s_screen = SCREEN_LIST;
 static unsigned s_menu, s_selected;
 static int s_edit_slot = -1;
-static uint32_t s_edit[3] = {0, 5, 0};
-static unsigned s_edit_field;
+static uint32_t s_edit[3] = {0, 10, 0};
+static unsigned s_edit_field, s_option, s_confirm_choice;
+static bool s_focused, s_ready, s_ticks_active;
+static AppTimer *s_motion_timer;
+static uint32_t s_motion_started;
+static Screen s_repeat_screen;
 static PaPublisher s_publisher;
 static ActivityTimerModel s_flight_model;
 static unsigned s_flight_slot;
@@ -55,10 +60,11 @@ static uint32_t s_alarm_deadline;
 static void prv_flush(void);
 static void prv_refresh(void);
 static void prv_schedule_alarm(void);
+static void prv_tick(struct tm *tick_time, TimeUnits units_changed);
+static void prv_transition(void);
 static bool prv_load_bank(unsigned bank, TimerCollection *collection, SavedHeader *header);
 
 static uint32_t prv_now(void) { return (uint32_t)time(NULL); }
-static GColor prv_accent(void) { return PBL_IF_COLOR_ELSE(GColorPictonBlue, GColorBlack); }
 
 static uint32_t prv_checksum(const TimerCollection *collection, uint32_t alarms) {
   const uint8_t *bytes = (const uint8_t *)collection;
@@ -230,7 +236,11 @@ static unsigned prv_first_alarm(void) {
 
 static void prv_open_alarm(void) {
   const unsigned slot = prv_first_alarm();
-  if (slot < TIMER_COLLECTION_CAPACITY) { s_selected = slot; s_screen = SCREEN_ALARM; }
+  if (slot < TIMER_COLLECTION_CAPACITY) {
+    const bool changed = s_screen != SCREEN_ALARM || s_selected != slot;
+    s_selected = slot; s_screen = SCREEN_ALARM;
+    if (changed) prv_transition();
+  }
 }
 
 /* Only the earliest deadline needs a native Wakeup. Reconciling all due models
@@ -469,177 +479,95 @@ static void prv_connection(bool connected) {
   prv_refresh();
 }
 
-static void prv_text(GContext *ctx, const char *text, const char *font, GRect box, GColor color, GTextAlignment align) {
-  graphics_context_set_text_color(ctx, color);
-  graphics_draw_text(ctx, text, fonts_get_system_font(font), box, GTextOverflowModeTrailingEllipsis, align, NULL);
-}
-
-static void prv_line(GContext *ctx, int x1, int y1, int x2, int y2) {
-  graphics_draw_line(ctx, GPoint(x1, y1), GPoint(x2, y2));
-}
-
-static void prv_icon(GContext *ctx, int which, int x, int y) {
-  graphics_context_set_stroke_color(ctx, GColorWhite);
-  graphics_context_set_fill_color(ctx, GColorWhite);
-  graphics_context_set_stroke_width(ctx, 2);
-  if (which == 0) { /* edit */
-    prv_line(ctx, x-6, y+6, x+5, y-5); prv_line(ctx, x-4, y+8, x+7, y-3);
-    prv_line(ctx, x-6, y+6, x-7, y+9); prv_line(ctx, x-7, y+9, x-4, y+8);
-    prv_line(ctx, x+4, y-6, x+8, y-2);
-  } else if (which == 1) { /* pause */
-    graphics_fill_rect(ctx, GRect(x-6,y-7,4,14), 0, GCornerNone);
-    graphics_fill_rect(ctx, GRect(x+2,y-7,4,14), 0, GCornerNone);
-  } else if (which == 2) { /* play */
-    for (int row = -7; row <= 7; ++row) prv_line(ctx, x-4,y+row,x+7-abs(row)*11/7,y+row);
-  } else if (which == 3) { /* trash */
-    graphics_draw_rect(ctx, GRect(x-6,y-4,12,12)); prv_line(ctx,x-8,y-7,x+8,y-7);
-    prv_line(ctx,x-3,y-9,x+3,y-9); prv_line(ctx,x-2,y-1,x-2,y+5); prv_line(ctx,x+2,y-1,x+2,y+5);
-  } else if (which == 4) { /* plus */
-    prv_line(ctx,x-7,y,x+7,y); prv_line(ctx,x,y-7,x,y+7);
-  } else if (which == 5) { /* minus */
-    prv_line(ctx,x-7,y,x+7,y);
-  } else if (which == 6) { /* advance */
-    prv_line(ctx,x-7,y,x+7,y); prv_line(ctx,x+2,y-5,x+7,y); prv_line(ctx,x+2,y+5,x+7,y);
-  } else if (which == 7) { /* snooze */
-    graphics_draw_circle(ctx,GPoint(x,y),7); prv_line(ctx,x-7,y-7,x-7,y-2); prv_line(ctx,x-7,y-2,x-2,y-2);
-  } else if (which == 8) { /* dismiss */
-    prv_line(ctx,x-7,y,x-2,y+6); prv_line(ctx,x-2,y+6,x+8,y-6);
-  }
-  graphics_context_set_stroke_width(ctx, 1);
-}
-
-static void prv_bar(GContext *ctx, int up, int select, int down) {
-  graphics_context_set_fill_color(ctx, GColorBlack);
-  graphics_fill_rect(ctx, GRect(CONTENT_WIDTH,0,BAR_WIDTH,228),0,GCornerNone);
-  if (up >= 0) prv_icon(ctx,up,183,44);
-  if (select >= 0) prv_icon(ctx,select,183,107);
-  if (down >= 0) prv_icon(ctx,down,183,170);
-}
-
 static const char *prv_status(void) {
-  if (s_storage_error) return "Storage failed; keep open";
-  if (s_alarm_error) return "Alarm not set; keep open";
   if (!connection_service_peek_pebble_app_connection()) return "Phone disconnected";
   if (s_share_error) return "Sharing unavailable";
   if (!s_phone_ready) return "Waiting to share";
-  if (s_screen != SCREEN_LIST && s_accepted[s_selected] == s_collection.slots[s_selected].revision) return "Shared with phone";
+  if (s_screen != SCREEN_LIST && s_accepted[s_selected] == s_collection.slots[s_selected].revision)
+    return "Shared with phone";
   return s_dirty ? "Waiting to share" : "Shared with phone";
 }
 
-static void prv_draw_list(GContext *ctx) {
-  const unsigned count = timer_collection_count(&s_collection);
-  if (s_menu > count) s_menu = count;
-  const bool plus = s_menu == 0;
-  graphics_context_set_fill_color(ctx, plus ? GColorBlack : GColorWhite);
-  graphics_fill_rect(ctx,GRect(0,0,200,40),0,GCornerNone);
-  graphics_context_set_stroke_color(ctx,plus?GColorWhite:GColorBlack);
-  graphics_context_set_stroke_width(ctx,2);
-  if (count < TIMER_COLLECTION_CAPACITY) {
-    prv_line(ctx,93,20,107,20); prv_line(ctx,100,13,100,27);
-  } else prv_text(ctx,"8 timers · full",FONT_KEY_GOTHIC_18_BOLD,GRect(5,7,190,29),
-      plus?GColorWhite:GColorBlack,GTextAlignmentCenter);
-  graphics_context_set_stroke_width(ctx,1);
-  graphics_context_set_stroke_color(ctx,GColorBlack);
-  prv_line(ctx,0,39,200,39);
-  if (!count) {
-    prv_text(ctx,"New timer",FONT_KEY_GOTHIC_24_BOLD,GRect(10,91,180,38),GColorBlack,GTextAlignmentCenter);
-  } else {
-    const unsigned first = s_menu > 2 ? s_menu - 2 : 0;
-    for (unsigned row = first; row < count && row < first + 2; ++row) {
-      const int slot = timer_collection_visible_slot(&s_collection,row);
-      const ActivityTimerModel *timer = &s_collection.slots[slot];
-      const int y = 40 + (int)(row-first)*74;
-      const bool selected = s_menu == row+1;
-      graphics_context_set_fill_color(ctx,selected?GColorBlack:GColorWhite);
-      graphics_fill_rect(ctx,GRect(0,y,200,74),0,GCornerNone);
-      const GColor ink = selected?GColorWhite:GColorBlack;
-      char remaining[20], name[32], detail[52];
-      prv_format(activity_timer_remaining(timer,prv_now()),remaining,sizeof(remaining));
-      prv_name(timer,name,sizeof(name));
-      snprintf(detail,sizeof(detail),"%s · %s",timer->state==ACTIVITY_TIMER_RUNNING?"Running":
-          timer->state==ACTIVITY_TIMER_PAUSED?"Paused":"Finished",name);
-      prv_text(ctx,remaining,FONT_KEY_BITHAM_30_BLACK,GRect(10,y+2,180,39),ink,GTextAlignmentLeft);
-      prv_text(ctx,detail,FONT_KEY_GOTHIC_18,GRect(10,y+40,180,27),ink,GTextAlignmentLeft);
-      graphics_context_set_stroke_color(ctx,GColorLightGray); prv_line(ctx,0,y+73,200,y+73);
-    }
-    if (count > 2) {
-      char position[32];
-      snprintf(position,sizeof(position),"%u / %u",s_menu?s_menu:1,count);
-      prv_text(ctx,position,FONT_KEY_GOTHIC_14,GRect(10,190,180,19),GColorDarkGray,GTextAlignmentCenter);
-    }
-  }
-  prv_text(ctx,prv_status(),FONT_KEY_GOTHIC_14,GRect(4,209,192,18),GColorDarkGray,GTextAlignmentCenter);
+static TimerUiView prv_view(void) {
+  return (TimerUiView){.screen=s_screen,.collection=&s_collection,
+      .menu=s_menu,.selected=s_selected,.edit_field=s_edit_field,
+      .option=s_option,.confirm_choice=s_confirm_choice,.edit=s_edit,
+      .editing_new=s_edit_slot<0,.now=prv_now(),
+      .issue=s_storage_error?"Storage failed; keep open":
+          s_alarm_error?"Alarm not set; keep open":NULL,
+      .status=prv_status()};
 }
 
 static void prv_draw(Layer *layer, GContext *ctx) {
   (void)layer;
-  graphics_context_set_fill_color(ctx,GColorWhite); graphics_fill_rect(ctx,GRect(0,0,200,228),0,GCornerNone);
-  if (s_screen == SCREEN_LIST) { prv_draw_list(ctx); return; }
-  const ActivityTimerModel *timer = &s_collection.slots[s_selected];
-  if (s_screen == SCREEN_EDITOR) {
-    prv_bar(ctx,4,s_edit_field<2?6:2,5);
-    prv_text(ctx,s_edit_slot<0?"New timer":"Edit timer",FONT_KEY_GOTHIC_24_BOLD,
-        GRect(6,10,154,33),GColorBlack,GTextAlignmentCenter);
-    const char *units[] = {"HOURS","MIN","SEC"};
-    for (unsigned i = 0; i < 3; ++i) {
-      char number[4]; snprintf(number,sizeof(number),"%02lu",(unsigned long)s_edit[i]);
-      const int x = 8+(int)i*51;
-      graphics_context_set_fill_color(ctx,i==s_edit_field?GColorBlack:GColorWhite);
-      graphics_fill_rect(ctx,GRect(x,83,47,41),0,GCornerNone);
-      prv_text(ctx,number,FONT_KEY_BITHAM_30_BLACK,GRect(x,81,47,43),
-          i==s_edit_field?GColorWhite:GColorBlack,GTextAlignmentCenter);
-      prv_text(ctx,units[i],FONT_KEY_GOTHIC_14_BOLD,GRect(x,128,47,20),GColorDarkGray,GTextAlignmentCenter);
-    }
-    const uint32_t seconds=s_edit[0]*3600+s_edit[1]*60+s_edit[2];
-    if (seconds > 900) {
-      time_t end=(time_t)(prv_now()+seconds);struct tm *clock=localtime(&end);
-      char text[24];strftime(text,sizeof(text),"Ends %H:%M",clock);
-      prv_text(ctx,text,FONT_KEY_GOTHIC_18,GRect(6,159,154,25),GColorDarkGray,GTextAlignmentCenter);
-    } else if (seconds < ACTIVITY_TIMER_MIN_SECONDS)
-      prv_text(ctx,"Minimum 5 seconds",FONT_KEY_GOTHIC_18,GRect(6,166,154,27),GColorDarkGray,GTextAlignmentCenter);
-    if (s_edit[0] == 24)
-      prv_text(ctx,"Maximum 24 hours",FONT_KEY_GOTHIC_18,GRect(6,184,154,24),GColorDarkGray,GTextAlignmentCenter);
-  } else if (s_screen == SCREEN_ALARM) {
-    prv_bar(ctx,7,-1,8);
-    graphics_context_set_stroke_color(ctx,GColorBlack);graphics_context_set_stroke_width(ctx,3);
-    graphics_draw_circle(ctx,GPoint(83,51),20);prv_line(ctx,83,51,83,37);prv_line(ctx,83,51,94,57);
-    prv_line(ctx,65,30,59,36);prv_line(ctx,101,30,107,36);graphics_context_set_stroke_width(ctx,1);
-    prv_text(ctx,"Time’s Up!",FONT_KEY_GOTHIC_28_BOLD,GRect(4,87,158,42),GColorBlack,GTextAlignmentCenter);
-    char duration[20];prv_format(timer->configured_seconds,duration,sizeof(duration));
-    prv_text(ctx,duration,FONT_KEY_BITHAM_34_MEDIUM_NUMBERS,GRect(4,136,158,46),GColorBlack,GTextAlignmentCenter);
-    prv_text(ctx,"Timer complete",FONT_KEY_GOTHIC_18,GRect(4,183,158,25),GColorDarkGray,GTextAlignmentCenter);
-  } else {
-    const bool running=timer->state==ACTIVITY_TIMER_RUNNING;
-    prv_bar(ctx,0,running?1:2,3);
-    char name[32],remaining[20];prv_name(timer,name,sizeof(name));
-    const uint32_t now=prv_now();
-    const uint32_t seconds=activity_timer_remaining(timer,now);prv_format(seconds,remaining,sizeof(remaining));
-    prv_text(ctx,name,FONT_KEY_GOTHIC_24_BOLD,GRect(5,7,156,37),GColorBlack,GTextAlignmentCenter);
-    prv_text(ctx,"Remaining",FONT_KEY_GOTHIC_14,GRect(5,48,156,19),GColorDarkGray,GTextAlignmentCenter);
-    prv_text(ctx,remaining,seconds>=3600?FONT_KEY_BITHAM_34_MEDIUM_NUMBERS:FONT_KEY_BITHAM_42_BOLD,
-        GRect(3,69,160,59),GColorBlack,GTextAlignmentCenter);
-    prv_text(ctx,running?"Running":timer->state==ACTIVITY_TIMER_PAUSED?"Paused":"Finished",
-        FONT_KEY_GOTHIC_18_BOLD,GRect(5,125,156,28),GColorDarkGray,GTextAlignmentCenter);
-    char elapsed[20],support[36];
-    prv_format(activity_timer_elapsed(timer,now),elapsed,sizeof(elapsed));
-    snprintf(support,sizeof(support),"Elapsed %s",elapsed);
-    prv_text(ctx,support,FONT_KEY_GOTHIC_18,GRect(5,154,156,26),GColorBlack,GTextAlignmentCenter);
-    unsigned lit=timer->configured_seconds?(seconds*10+timer->configured_seconds/2)/timer->configured_seconds:0;
-    if (lit>10)lit=10;
-    for (unsigned i=0;i<10;++i) {
-      graphics_context_set_fill_color(ctx,i<lit?prv_accent():GColorLightGray);
-      graphics_fill_circle(ctx,GPoint(24+(int)(i%5)*29,186+(int)(i/5)*15),6);
-    }
-  }
-  if (s_screen != SCREEN_EDITOR || s_storage_error || s_alarm_error)
-    prv_text(ctx,prv_status(),FONT_KEY_GOTHIC_14,GRect(3,209,160,18),GColorDarkGray,GTextAlignmentCenter);
+  const TimerUiView view = prv_view();
+  timer_ui_draw(ctx, &view);
 }
 
-static void prv_refresh(void) { if (s_canvas) layer_mark_dirty(s_canvas); }
+static void prv_update_ticks(void) {
+  if (!s_ready) return;
+  bool needed = false;
+  for (unsigned i=0;i<TIMER_COLLECTION_CAPACITY;++i)
+    if (timer_collection_visible(&s_collection,i) &&
+        s_collection.slots[i].state==ACTIVITY_TIMER_RUNNING) needed=true;
+  if (needed==s_ticks_active) return;
+  s_ticks_active=needed;
+  if (needed) tick_timer_service_subscribe(SECOND_UNIT,prv_tick);
+  else tick_timer_service_unsubscribe();
+}
+
+static void prv_refresh(void) {
+  prv_update_ticks();
+  if (s_canvas) layer_mark_dirty(s_canvas);
+}
+
+static uint32_t prv_millis(void) {
+  time_t seconds;uint16_t milliseconds;
+  time_ms(&seconds,&milliseconds);
+  return (uint32_t)seconds*1000u+milliseconds;
+}
+
+static void prv_stop_motion(void) {
+  if (s_motion_timer) { app_timer_cancel(s_motion_timer);s_motion_timer=NULL; }
+  if (s_canvas && s_window)
+    layer_set_frame(s_canvas,layer_get_bounds(window_get_root_layer(s_window)));
+}
+
+static void prv_motion_tick(void *context) {
+  (void)context;s_motion_timer=NULL;
+  const uint32_t elapsed=prv_millis()-s_motion_started;
+  if (!s_focused || elapsed>=180u) { prv_stop_motion();return; }
+  GRect frame=layer_get_bounds(window_get_root_layer(s_window));
+  const uint32_t left=180u-elapsed;
+  frame.origin.y=(int16_t)((3u*left*left+16200u)/32400u);
+  layer_set_frame(s_canvas,frame);
+  s_motion_timer=app_timer_register(30,prv_motion_tick,NULL);
+  if (!s_motion_timer) prv_stop_motion();
+}
+
+static void prv_transition(void) {
+  prv_stop_motion();
+  if (s_window) window_set_background_color(s_window,s_screen==SCREEN_ALARM?GColorBlack:GColorWhite);
+  prv_refresh();
+  if (!s_focused || !s_canvas) return;
+  s_motion_started=prv_millis();prv_motion_tick(NULL);
+}
+
+static void prv_focus(bool focused) {
+  s_focused=focused;
+  if (!focused) prv_stop_motion();
+  else { prv_finish();prv_refresh(); }
+}
+
+static void prv_will_focus(bool focused) {
+  /* Stop decorative work as soon as a covering window starts moving in.
+   * Resuming waits for did_focus, once the app is fully visible again. */
+  if (!focused) prv_focus(false);
+}
 
 static void prv_begin_edit(int slot) {
   s_edit_slot=slot;
-  uint32_t seconds=slot<0?300:activity_timer_remaining(&s_collection.slots[slot],prv_now());
+  uint32_t seconds=slot<0?600:activity_timer_remaining(&s_collection.slots[slot],prv_now());
   if (slot>=0 && !seconds) seconds=s_collection.slots[slot].configured_seconds;
   s_edit[0]=seconds/3600;s_edit[1]=(seconds/60)%60;s_edit[2]=seconds%60;
   s_edit_field=0;
@@ -704,21 +632,42 @@ static void prv_press(ButtonId button) {
         }
       }
     }
+  } else if (s_screen==SCREEN_OPTIONS) {
+    if (button==BUTTON_ID_UP && s_option) --s_option;
+    else if (button==BUTTON_ID_DOWN && s_option<2) ++s_option;
+    else if (button==BUTTON_ID_BACK) s_screen=SCREEN_DETAIL;
+    else if (button==BUTTON_ID_SELECT) {
+      if (s_option==0) prv_begin_edit((int)s_selected);
+      else if (s_option==1) {
+        TimerCollection next=s_collection;
+        if (timer_collection_restart(&next,s_selected,prv_now()) &&
+            prv_apply(&next,s_alarm_mask & (uint8_t)~(1u<<s_selected))) s_screen=SCREEN_DETAIL;
+      } else { s_confirm_choice=0;s_screen=SCREEN_CONFIRM; }
+    }
+  } else if (s_screen==SCREEN_CONFIRM) {
+    if (button==BUTTON_ID_UP) s_confirm_choice=0;
+    else if (button==BUTTON_ID_DOWN) s_confirm_choice=1;
+    else if (button==BUTTON_ID_BACK || (button==BUTTON_ID_SELECT && !s_confirm_choice))
+      s_screen=SCREEN_DETAIL;
+    else if (button==BUTTON_ID_SELECT) {
+      TimerCollection next=s_collection;
+      if (timer_collection_delete(&next,s_selected,prv_now()) &&
+          prv_apply(&next,s_alarm_mask & (uint8_t)~(1u<<s_selected))) {
+        s_screen=SCREEN_LIST;
+        if (s_menu>timer_collection_count(&s_collection)) s_menu=timer_collection_count(&s_collection);
+      }
+    }
   } else {
     TimerCollection next=s_collection;
     if (button==BUTTON_ID_UP)prv_begin_edit((int)s_selected);
     else if (button==BUTTON_ID_BACK)s_screen=SCREEN_LIST;
     else if (button==BUTTON_ID_DOWN) {
-      if (timer_collection_delete(&next,s_selected,prv_now()) &&
-          prv_apply(&next,s_alarm_mask & (uint8_t)~(1u<<s_selected))) {
-        s_screen=SCREEN_LIST;
-        if (s_menu>timer_collection_count(&s_collection))s_menu=timer_collection_count(&s_collection);
-      }
+      s_option=0;s_screen=SCREEN_OPTIONS;
     } else if (button==BUTTON_ID_SELECT) {
       bool changed=next.slots[s_selected].state==ACTIVITY_TIMER_RUNNING?
           timer_collection_pause(&next,s_selected,prv_now()):next.slots[s_selected].state==ACTIVITY_TIMER_PAUSED?
           timer_collection_resume(&next,s_selected,prv_now()):
-          timer_collection_edit(&next,s_selected,next.slots[s_selected].configured_seconds,prv_now());
+          timer_collection_restart(&next,s_selected,prv_now());
       if (changed)prv_apply(&next,s_alarm_mask & (uint8_t)~(1u<<s_selected));
     }
   }
@@ -727,7 +676,13 @@ static void prv_press(ButtonId button) {
 
 static void prv_click(ClickRecognizerRef recognizer, void *context) {
   (void)context;
-  prv_press(click_recognizer_get_button_id(recognizer));
+  const ButtonId button=click_recognizer_get_button_id(recognizer);
+  if (!click_recognizer_is_repeating(recognizer)) s_repeat_screen=s_screen;
+  else if (s_repeat_screen!=s_screen || (s_screen!=SCREEN_LIST &&
+      s_screen!=SCREEN_EDITOR && s_screen!=SCREEN_OPTIONS)) return;
+  const Screen before=s_screen;
+  prv_press(button);
+  if (s_screen!=before) prv_transition();
 }
 
 static void prv_click_config(void *context) {
@@ -740,7 +695,9 @@ static void prv_click_config(void *context) {
 
 static void prv_tick(struct tm *tick_time, TimeUnits units_changed) {
   (void)tick_time;(void)units_changed;
-  prv_finish();prv_refresh();
+  const bool finished=prv_finish();
+  const TimerUiView view=prv_view();
+  if (!finished && s_focused && timer_ui_needs_tick(&view)) prv_refresh();
 }
 
 static void prv_wakeup(WakeupId id,int32_t cookie) {
@@ -758,6 +715,7 @@ static void prv_init(void) {
   if (persist_exists(WAKEUP_KEY))s_wakeup=persist_read_int(WAKEUP_KEY);
   uint32_t previous_ticket=0;persist_read_data(PUBLICATION_KEY,&previous_ticket,sizeof(previous_ticket));
   pa_publisher_init(&s_publisher,previous_ticket,connection_service_peek_pebble_app_connection());
+  timer_fonts_init();
   s_window=window_create();
   window_set_background_color(s_window,GColorWhite);
   window_set_click_config_provider(s_window,prv_click_config);
@@ -770,19 +728,27 @@ static void prv_init(void) {
   app_message_open(512,1024);
   connection_service_subscribe((ConnectionHandlers){.pebble_app_connection_handler=prv_connection});
   wakeup_service_subscribe(prv_wakeup);
-  tick_timer_service_subscribe(SECOND_UNIT,prv_tick);
+  app_focus_service_subscribe_handlers((AppFocusHandlers){
+      .will_focus=prv_will_focus,.did_focus=prv_focus});
+  s_ready=true;
   prv_finish();
   if (s_alarm_mask)prv_open_alarm();
   else if (timer_collection_count(&s_collection))s_menu=1;
   prv_schedule_alarm();prv_refresh();
+  /* Initial foreground launch may precede focus subscription. Later cover/
+   * reveal callbacks keep this in sync without requiring a launch callback. */
+  s_focused=true;
   window_stack_push(s_window,true);
 }
 
 static void prv_deinit(void) {
   TIMER_DIAG("exit alarm=%ld deadline=%lu dirty=%u",(long)s_wakeup,(unsigned long)s_alarm_deadline,s_dirty);
+  s_ready=false;prv_stop_motion();
   if (s_retry_timer)app_timer_cancel(s_retry_timer);
+  app_focus_service_unsubscribe();
   tick_timer_service_unsubscribe();connection_service_unsubscribe();app_message_deregister_callbacks();
   layer_destroy(s_canvas);window_destroy(s_window);
+  timer_fonts_deinit();
 }
 
 int main(void) { prv_init();app_event_loop();prv_deinit(); }

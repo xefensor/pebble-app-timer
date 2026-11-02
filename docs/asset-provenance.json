@@ -1,0 +1,198 @@
+{
+  "version": "0.4.0",
+  "pbw": {
+    "file": "Timer-0.4.0.pbw",
+    "sha256": "769a7690fca5cc7930e22f728fd9fde4ad2aca3d6a937f98785129dced2eae5d"
+  },
+  "nativePayloadSha256": {
+    "appinfo.json": "6a830ff0476080973a3f415156e4a2b9970b86baf7428ef2abdeade3e9b0ee98",
+    "emery/pebble-app.bin": "f4fff36f5bbc1a6e47fef18a0542903592549fd99b8f9245ec8f1e51aa82c86e",
+    "emery/app_resources.pbpack": "7c33059be8dd8d5379ca467ce430225778ae5b576d19db66ad978c835110c7df",
+    "emery/manifest.json": "b877b72ad81b3930ed942b227be259bc7b83814a69c8c8ab4318889cdbded0dd"
+  },
+  "activities": {
+    "package": "pebble-activities",
+    "version": "0.2.0",
+    "repository": "https://github.com/xefensor/pebble-activities",
+    "artifact": "pebble-activities-0.2.0.tgz",
+    "sha256": "2d2b3056bdb7c39d8b3d533928a98bcdc74a8172585b88cb2a19df00430e10ae",
+    "integrity": "sha512-2G938yCyVUF/NLv7z/PCm2iRjbHfTf7Dy+fZDH3BYuwhoGK12QBL2n9WB0IjzmnzG+wSvCsIgYn/6C/ap5WQ/Q==",
+    "sdk": "4.33.1",
+    "platforms": [
+      "emery"
+    ],
+    "source_commit": "af6c48f727c33cd16ded003347a7a4639fd99901"
+  },
+  "fontSources": "resources/fonts/font-provenance.json",
+  "fontAudit": "docs/qa/0.4.0/font-audit.json",
+  "nativeSourceSha256": {
+    "src/c/font_raster.h": "87651103df94931391886f0268769d59df99e3c14f872a686ec78bdca5a01336",
+    "src/c/generated_clock_glyphs.h": "38706b17a17fc394aea44b6446ff4a22bc52627cae4fe5744d6014354da325ec",
+    "src/c/main.c": "b0ba08f1156ec5fa72f4f06bc83660151f3572be7ae5af4ac1f0ad99850a59ef",
+    "src/c/timer_collection.c": "20aa8d3e844f69582db324825207f3058327401bd00e3a31376ba53ac3245edc",
+    "src/c/timer_collection.h": "c3f97fef111a49793d387035189d49c30752234b716e0e9c5a7079832623d139",
+    "src/c/timer_fonts.c": "a0f63757b8bbb2801b6c5824f03f76df1d54565d1d23d94374c943d8ded5796d",
+    "src/c/timer_fonts.h": "24c0b9be2691506e4c74f753203f6a3098da1b661d71c8712f7972ba5d61868c",
+    "src/c/timer_hourglass.h": "ab3563b7aef1ee6049d46adb1a8289352756079de70c7c9d8ac57ee197544566",
+    "src/c/timer_model.c": "c5bf946884c7f8ec449c8ca1591a695d731688c10de2ffdb63e6c78593e800c8",
+    "src/c/timer_model.h": "3404287ae815bbea97f4cfc4246d08d120a0e3af3dbf893fa6926702fc521c09",
+    "src/c/timer_ui.c": "613ec954f305ad044f3ada7564a9da77955161cda889803481525cf81e10df99",
+    "src/c/timer_ui.h": "2f72d228172fbe73db574fd5040876a748cf24884151aafa8387a2d028477ac6"
+  },
+  "images": [
+    {
+      "file": "docs/images/running.png",
+      "source": "docs/qa/0.4.0/native/running.png",
+      "sha256": "cc1658f3fd5b6d2dd1c1fca06723679910a5d6668b9ab27b2abf43cd5e2abedb",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false
+    },
+    {
+      "file": "docs/images/paused.png",
+      "source": "docs/qa/0.4.0/native/paused.png",
+      "sha256": "76f86b38bb4ee25371f25cd2677f09ce3e8e255197405fdf722d0881a28abbe9",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false
+    },
+    {
+      "file": "docs/images/list.png",
+      "source": "docs/qa/0.4.0/native/multiple-list.png",
+      "sha256": "be5621ceecb773952d9783288786ffbfb9de4a7be0e52a022a920db9a5108aa9",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false
+    },
+    {
+      "file": "docs/images/editor.png",
+      "source": "docs/qa/0.4.0/native/new-editor.png",
+      "sha256": "a6622d7d19979a9a7fd14d7d05bb475cdecc84587dc7460f2d625b2e73f7ef8c",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false
+    },
+    {
+      "file": "docs/images/finished.png",
+      "source": "docs/qa/0.4.0/native/alarm.png",
+      "sha256": "f96466f377ef10bfed332861dbaa6fef3296523b173684d704011f6141cb9e9d",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false
+    },
+    {
+      "file": "docs/images/long-duration.png",
+      "source": "docs/qa/0.4.0/native/detail-24h.png",
+      "sha256": "ed360463ca0c489847c01f5c9f010eb984204eeb55ec0eedb005eafdd1473a73",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false
+    }
+  ],
+  "reports": {
+    "docs/qa/0.4.0/native/emulator.json": {
+      "captures": 46,
+      "sha256": "9bad639a30b89b7eac23136bd0a827ccea3c408b607c03b40df7e852d9176ddc",
+      "visualReview": {
+        "reviewed": true,
+        "reviewer": "Codex",
+        "date": "2026-11-02",
+        "frames": [
+          "migration-list",
+          "migration-detail",
+          "running",
+          "running-tick",
+          "paused",
+          "paused-hold",
+          "editor",
+          "new-editor",
+          "editor-24h",
+          "detail-24h",
+          "options",
+          "held-down-options",
+          "delete-confirmation",
+          "restarted-running",
+          "multiple-list",
+          "eight-timers-last-row",
+          "short-halfway",
+          "alarm",
+          "empty-list",
+          "native-only-background-wakeup",
+          "running-stream-a",
+          "running-stream-b"
+        ],
+        "scope": "22 representative native UI/motion/background frames inspected directly from hash-named raw copies. Includes fonts, long clocks, editor, options, full-list, halfway sand, alarm and explicit sand-stream phase change.",
+        "nativePixelsModified": false,
+        "physicalWatchVerification": false
+      }
+    },
+    "docs/qa/0.4.0/native/errors/errors.json": {
+      "captures": 7,
+      "sha256": "6fe459bd0d733d8bc525f53abc0f48cef81e9a588f115eabe5ce6b9461d7dcb5",
+      "visualReview": {
+        "reviewed": true,
+        "reviewer": "Codex",
+        "date": "2026-11-02",
+        "frames": [
+          "empty-before-conflict",
+          "external-wakeup-fixture",
+          "alarm-not-set",
+          "alarm-not-set-options",
+          "fixture-cleared",
+          "alarm-recovered",
+          "empty-after-recovery"
+        ],
+        "scope": "All recorded frames inspected directly from hash-named raw copies. Native timer captures are distinct from the explicitly named emulator-only fixture screens.",
+        "nativePixelsModified": false,
+        "physicalWatchVerification": false
+      }
+    },
+    "docs/qa/0.4.0/native/deadlines/deadlines.json": {
+      "captures": 14,
+      "sha256": "df243b96646c4b863d459e8ab6fb9100fc0309a229034f7ebcd579e82ecf6f1d",
+      "visualReview": {
+        "reviewed": true,
+        "reviewer": "Codex",
+        "date": "2026-11-02",
+        "frames": [
+          "legacy-migrated-list",
+          "empty-starting-list",
+          "simultaneous-running-list",
+          "simultaneous-background-first-alarm",
+          "simultaneous-second-alarm",
+          "simultaneous-dismissed-list",
+          "nearby-running-list",
+          "nearby-background-first-alarm",
+          "nearby-second-alarm",
+          "nearby-dismissed-list",
+          "cleanup-eight-full",
+          "cleanup-empty-list",
+          "cleanup-background-alarm",
+          "cleanup-final-empty-list"
+        ],
+        "scope": "All recorded frames inspected directly from hash-named raw copies. Native timer captures are distinct from the explicitly named emulator-only fixture screens.",
+        "nativePixelsModified": false,
+        "physicalWatchVerification": false
+      }
+    }
+  },
+  "nativeCaptureCount": 67,
+  "scope": "Actual Emery QEMU native screenshots and fixture/control-driven validation of exact candidate bytes. Browser design remains a separate approved reference. Physical watch appearance, vibration, battery and live phone delivery are unverified.",
+  "overview": {
+    "file": "docs/images/native-overview.png",
+    "sha256": "2801dd7d14974a7f8ffbff2bb922e6ac688cfc43f70f10846ff57db756049fdb",
+    "kind": "Six raw native screenshots arranged at integer 2x scale with captions; the overview itself is not a native screen capture."
+  }
+}

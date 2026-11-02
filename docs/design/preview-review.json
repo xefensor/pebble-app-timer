@@ -1,0 +1,110 @@
+{
+  "scope": "Browser design preview only; not a native Pebble build or hardware validation.",
+  "result": "PASS",
+  "browser": "Chrome/156.0.8078.73",
+  "checks": [
+    "Both bundled fonts load offline",
+    "Eight states have no text outside the 166x228 content region",
+    "Pause freezes countdown and hourglass markup",
+    "Resume advances from the saved remaining time",
+    "Editing a pause preserves its paused state",
+    "Delete confirmation defaults to keeping the timer",
+    "Explicit deletion removes only the selected timer",
+    "Eight-timer limit is visible and prevents a ninth timer",
+    "Snooze starts the one-minute demo timer",
+    "Countdown completion reaches the finished screen",
+    "Viewport 320px: no page overflow; exact 200x228 actual-size mode",
+    "Viewport 390px: no page overflow; exact 200x228 actual-size mode",
+    "Viewport 1180px: no page overflow; exact 200x228 actual-size mode",
+    "Keyboard Select activates pause",
+    "Reduced motion suppresses screen transitions",
+    "Self-contained HTML loads its embedded fonts and controls without sibling files"
+  ],
+  "captures": [
+    {
+      "name": "running",
+      "state": "running",
+      "file": "screens/running.png",
+      "pixels": [
+        400,
+        456
+      ],
+      "sha256": "f846b7e3bb00e48766e0b9017adbe999c8fa960d28ae86496e74f2dca737499c"
+    },
+    {
+      "name": "paused",
+      "state": "paused",
+      "file": "screens/paused.png",
+      "pixels": [
+        400,
+        456
+      ],
+      "sha256": "5a5fa951920f6cf035c9a290803e0ce400343b8724ee6b88333892892780809e"
+    },
+    {
+      "name": "timer-list",
+      "state": "list",
+      "file": "screens/timer-list.png",
+      "pixels": [
+        400,
+        456
+      ],
+      "sha256": "05d1bde6272c6aed38dda3c33ab240e1069cac94d6b0005037b0871e0c617d8f"
+    },
+    {
+      "name": "set-timer",
+      "state": "editor",
+      "file": "screens/set-timer.png",
+      "pixels": [
+        400,
+        456
+      ],
+      "sha256": "de6d9462692c25cb2a429b4b2ff099b5e4c063b5084ddc740a0cff8cfd39c9e0"
+    },
+    {
+      "name": "finished",
+      "state": "finished",
+      "file": "screens/finished.png",
+      "pixels": [
+        400,
+        456
+      ],
+      "sha256": "a4e798b426b4fb09e1ac50d7eba7d27b613334bc85f8930c76b42f97b6e766ce"
+    },
+    {
+      "name": "24-hours",
+      "state": "24h",
+      "file": "screens/24-hours.png",
+      "pixels": [
+        400,
+        456
+      ],
+      "sha256": "c47f24c74c128704e65b790cae19cf308c2223057af22a8216577de0103ba369"
+    },
+    {
+      "name": "options",
+      "state": "options",
+      "file": "screens/options.png",
+      "pixels": [
+        400,
+        456
+      ],
+      "sha256": "c35a62e822e25a2460bc52b6c1b4be36945e15303eaa4e4df6ed21a8e4715dc5"
+    },
+    {
+      "name": "delete-confirmation",
+      "state": "confirm",
+      "file": "screens/delete-confirmation.png",
+      "pixels": [
+        400,
+        456
+      ],
+      "sha256": "6fd6d2817b6c4f465f561fd1f7b8403285d9df1cc22036c7157e55ce04ca161f"
+    }
+  ],
+  "standalonePreview": "Timer-UI-Preview.html",
+  "standaloneSha256": "e3deb79ca5bcdfe5f0d948c917af510d49b85c16d8e487b8e7ba94c3af755870",
+  "overview": "timer-preview-overview.png",
+  "nativeAppChanged": false,
+  "overviewSha256": "c59ccd7fcdbc9b86542d03485882fecbb8bc969dd9d84597b31cb1e7cc239017"
+}

@@ -1,0 +1,107 @@
+{
+  "candidate": "769a7690fca5cc7930e22f728fd9fde4ad2aca3d6a937f98785129dced2eae5d",
+  "images": [
+    {
+      "name": "migration-list",
+      "path": "/tmp/timer-native-ui-final-review/migration-list-a36978330f2b1235.png",
+      "sha256": "a36978330f2b1235c3d9453ea41bdb409e7a90f2a054ccce65e41d0298a22b24"
+    },
+    {
+      "name": "migration-detail",
+      "path": "/tmp/timer-native-ui-final-review/migration-detail-fad63f1012ca5505.png",
+      "sha256": "fad63f1012ca5505cea70be728bc5728a351d2a31b1c7c48461c963c9da4ef20"
+    },
+    {
+      "name": "running",
+      "path": "/tmp/timer-native-ui-final-review/running-cc1658f3fd5b6d2d.png",
+      "sha256": "cc1658f3fd5b6d2dd1c1fca06723679910a5d6668b9ab27b2abf43cd5e2abedb"
+    },
+    {
+      "name": "running-tick",
+      "path": "/tmp/timer-native-ui-final-review/running-tick-2df94916d24b8289.png",
+      "sha256": "2df94916d24b82895fe63b50fe260267dd13147c3fd86ea6cb145a313bb30148"
+    },
+    {
+      "name": "paused",
+      "path": "/tmp/timer-native-ui-final-review/paused-76f86b38bb4ee253.png",
+      "sha256": "76f86b38bb4ee25371f25cd2677f09ce3e8e255197405fdf722d0881a28abbe9"
+    },
+    {
+      "name": "paused-hold",
+      "path": "/tmp/timer-native-ui-final-review/paused-hold-76f86b38bb4ee253.png",
+      "sha256": "76f86b38bb4ee25371f25cd2677f09ce3e8e255197405fdf722d0881a28abbe9"
+    },
+    {
+      "name": "editor",
+      "path": "/tmp/timer-native-ui-final-review/editor-0d0e5d93d45fa586.png",
+      "sha256": "0d0e5d93d45fa5869ccc720af22fea0e4f6a574c7096f3160a9e76d4f07d301c"
+    },
+    {
+      "name": "options",
+      "path": "/tmp/timer-native-ui-final-review/options-bbcf035065e01bd2.png",
+      "sha256": "bbcf035065e01bd29eb2d110cec7f927a6a38e84dc0ff752fa5782c3467cf260"
+    },
+    {
+      "name": "delete-confirmation",
+      "path": "/tmp/timer-native-ui-final-review/delete-confirmation-f024bfdd5767aa45.png",
+      "sha256": "f024bfdd5767aa452724afe6b48fcecb123909828cab95800c7a446b1f8433ef"
+    },
+    {
+      "name": "delete-kept-detail",
+      "path": "/tmp/timer-native-ui-final-review/delete-kept-detail-76f86b38bb4ee253.png",
+      "sha256": "76f86b38bb4ee25371f25cd2677f09ce3e8e255197405fdf722d0881a28abbe9"
+    },
+    {
+      "name": "restarted-paused",
+      "path": "/tmp/timer-native-ui-final-review/restarted-paused-5e9d1d7382785c7b.png",
+      "sha256": "5e9d1d7382785c7baf71acda43109b4089172f2a272704ce1ca1d97f1b4a2d8d"
+    },
+    {
+      "name": "editor-24h",
+      "path": "/tmp/timer-native-ui-final-review/editor-24h-5e99331ae8006bce.png",
+      "sha256": "5e99331ae8006bce95544eca4b5d99fae6a7476b274fd8084d372e23a75ba8bc"
+    },
+    {
+      "name": "detail-24h",
+      "path": "/tmp/timer-native-ui-final-review/detail-24h-ed360463ca0c4898.png",
+      "sha256": "ed360463ca0c489847c01f5c9f010eb984204eeb55ec0eedb005eafdd1473a73"
+    },
+    {
+      "name": "alarm",
+      "path": "/tmp/timer-native-ui-final-review/alarm-f96466f377ef10bf.png",
+      "sha256": "f96466f377ef10bfed332861dbaa6fef3296523b173684d704011f6141cb9e9d"
+    },
+    {
+      "name": "short-halfway",
+      "path": "/tmp/timer-native-ui-final-review/short-halfway-018f6f1f7cca3e9a.png",
+      "sha256": "018f6f1f7cca3e9abb57839d988bb0028c5f702b57ba13aab2ed2e235b0bc17e"
+    },
+    {
+      "name": "eight-timers-full-header",
+      "path": "/tmp/timer-native-ui-final-review/eight-timers-full-header-61364c01fc8602b0.png",
+      "sha256": "61364c01fc8602b0e749f2f17f7fba623a9061e5cde97adea0cbcfe302f89436"
+    },
+    {
+      "name": "eight-timers-last-row",
+      "path": "/tmp/timer-native-ui-final-review/eight-timers-last-row-a0def3f3a1a09a2d.png",
+      "sha256": "a0def3f3a1a09a2dcefbe8943c1f699b8c53b724739dc408bb82476ca1205cfd"
+    }
+  ],
+  "errorImages": [
+    {
+      "name": "alarm-not-set",
+      "path": "/tmp/timer-native-ui-final-review/alarm-not-set-e3186d6b245f4b96.png",
+      "sha256": "e3186d6b245f4b9630491991a124883de04706b51c958be35fd6fb5f3a852f0f"
+    },
+    {
+      "name": "alarm-not-set-options",
+      "path": "/tmp/timer-native-ui-final-review/alarm-not-set-options-b195e07a2cf8d9ce.png",
+      "sha256": "b195e07a2cf8d9ce944d5303821796600886296ee2d3018c5ce98add5e16dc4b"
+    },
+    {
+      "name": "alarm-recovered",
+      "path": "/tmp/timer-native-ui-final-review/alarm-recovered-226df2d1dbdd8fc1.png",
+      "sha256": "226df2d1dbdd8fc1eb67da85b842bec48ee07c5502f0cde3fd8d93a39d9da076"
+    }
+  ]
+}

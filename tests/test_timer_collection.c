@@ -221,6 +221,43 @@ static void paused_visibility_and_restore(void) {
   assert(timer_collection_valid(&restored));
 }
 
+static void restart_is_a_new_run(void) {
+  TimerCollection collection;
+  timer_collection_init(&collection, 456, 1000);
+  assert(timer_collection_create(&collection, 600, 1000) == 0);
+  assert(timer_collection_create(&collection, 900, 1000) == 1);
+  ActivityTimerModel other = collection.slots[1];
+  uint32_t run = collection.slots[0].run;
+  assert(timer_collection_restart(&collection, 0, 1120));
+  assert(collection.slots[0].run == ++run);
+  assert(collection.slots[0].deadline == 1720);
+  assert(collection.slots[0].configured_seconds == 600);
+  assert(activity_timer_elapsed(&collection.slots[0], 1120) == 0);
+  assert(!memcmp(&other, &collection.slots[1], sizeof(other)));
+  assert(timer_collection_pause(&collection, 0, 1130));
+  assert(timer_collection_restart(&collection, 0, 1150));
+  assert(collection.slots[0].run == ++run);
+  assert(collection.slots[0].state == ACTIVITY_TIMER_RUNNING);
+  assert(collection.slots[0].deadline == 1750);
+  assert(timer_collection_finish_due(&collection, 1750) == 1);
+  assert(timer_collection_restart(&collection, 0, 1751));
+  assert(collection.slots[0].run == ++run);
+  assert(collection.slots[0].deadline == 2351);
+  assert(collection.slots[0].valid_until == 2411);
+  assert(timer_collection_valid(&collection));
+  assert(!memcmp(&other, &collection.slots[1], sizeof(other)));
+
+  collection.slots[0].run = UINT32_MAX;
+  TimerCollection previous = collection;
+  assert(!timer_collection_restart(&collection, 0, 1800));
+  assert(!memcmp(&previous, &collection, sizeof(collection)));
+  collection.slots[0].run = run;
+  collection.revision = UINT32_MAX - 1;
+  previous = collection;
+  assert(!timer_collection_restart(&collection, 0, 1800));
+  assert(!memcmp(&previous, &collection, sizeof(collection)));
+}
+
 int main(void) {
   legacy_migration();
   independent_timers();
@@ -229,6 +266,7 @@ int main(void) {
   revision_floor_and_persistence();
   elapsed_duration_baseline();
   paused_visibility_and_restore();
+  restart_is_a_new_run();
   puts("timer collection: migration, eight slots, clocks, revisions, editing and persistence passed");
   return 0;
 }

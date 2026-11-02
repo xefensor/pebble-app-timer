@@ -31,6 +31,8 @@ bool timer_collection_visible(const TimerCollection *collection, unsigned slot);
 int timer_collection_create(TimerCollection *collection, uint32_t seconds, uint32_t now);
 bool timer_collection_edit(TimerCollection *collection, unsigned slot,
                             uint32_t seconds, uint32_t now);
+/* Restart this stable slot as a new run with its configured duration. */
+bool timer_collection_restart(TimerCollection *collection, unsigned slot, uint32_t now);
 bool timer_collection_pause(TimerCollection *collection, unsigned slot, uint32_t now);
 bool timer_collection_resume(TimerCollection *collection, unsigned slot, uint32_t now);
 bool timer_collection_delete(TimerCollection *collection, unsigned slot, uint32_t now);

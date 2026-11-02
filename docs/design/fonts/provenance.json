@@ -1,0 +1,21 @@
+{
+  "scope": "Browser design preview assets; existing Dynamic fonts in WOFF containers. Browser rasterization is not proof of native Pebble rendering.",
+  "fonts": [
+    {
+      "file": "Fredoka-Bold-Clock.woff",
+      "sha256": "f8887d8716a818b97bc7b261db95615c450114378baa7d50e6ee93da483ed5f2",
+      "source": "../dynamic-watchface/resources/fonts/Fredoka-Bold-Clock.ttf",
+      "sourceSha256": "526d2361818275d1f9d1df6ce1835095058b84ec989e50e22f271237cc304000",
+      "conversion": "WOFF container; no glyph subset, outline or advance changes",
+      "verifiedGlyphOutlineAndAdvanceParity": 26
+    },
+    {
+      "file": "RobotoCondensed-Bold.woff",
+      "sha256": "dc822da5f7e3fe32fc69e69ac24cc3e0a0264247af28db1445b915fdf74e79e7",
+      "source": "../dynamic-watchface/resources/fonts/RobotoCondensed-Bold.ttf",
+      "sourceSha256": "6e949e8aa3f6e0b4db88aacafccf0c0e55e708c4564c8f3d145792adbbf80ef6",
+      "conversion": "WOFF container; no glyph subset, outline or advance changes",
+      "verifiedGlyphOutlineAndAdvanceParity": 1016
+    }
+  ]
+}

@@ -33,6 +33,9 @@ entries["LICENSE"] = (root / "LICENSE").read_bytes()
 entries["licenses/pebble-activities-LICENSE.txt"] = (library / "LICENSE").read_bytes()
 entries["THIRD-PARTY-NOTICES.md"] = (root / "THIRD-PARTY-NOTICES.md").read_bytes()
 entries["licenses/Apache-2.0.txt"] = (root / "licenses/Apache-2.0.txt").read_bytes()
+if any(media.get("type") == "font" for media in package["pebble"].get("resources", {}).get("media", [])):
+    for notice in ("OFL-Fredoka.txt", "OFL-RobotoCondensed.txt"):
+        entries["licenses/" + notice] = (root / "resources/fonts" / notice).read_bytes()
 destination = root / "dist" / ("Timer-" + package["version"] + ".pbw")
 destination.parent.mkdir(exist_ok=True)
 with zipfile.ZipFile(destination, "w", zipfile.ZIP_DEFLATED) as output:

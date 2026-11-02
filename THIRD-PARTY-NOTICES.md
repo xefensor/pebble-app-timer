@@ -3,11 +3,11 @@
 Timer uses the repository's PolyForm Noncommercial License 1.0.0 and required
 attribution, carried in `LICENSE` in the source checkout and packaged PBW.
 
-## Pebble Activities 0.1.2
+## Pebble Activities 0.2.0
 
 The app bundles shared native and JavaScript helpers from
 [xefensor/pebble-activities](https://github.com/xefensor/pebble-activities), pinned
-to the published 0.1.2 tarball in `vendor/`. That dependency uses the PolyForm
+to the reviewed 0.2.0 candidate tarball in `vendor/`. That dependency uses the PolyForm
 Noncommercial License 1.0.0 with its required attribution. Its original licence
 is retained in `licenses/pebble-activities-LICENSE.txt` in the packaged PBW and
 inside the vendored source tarball. See [vendor/README.md](vendor/README.md) for
@@ -25,5 +25,23 @@ licence is carried in `licenses/Apache-2.0.txt` in the PBW and source checkout.
 The injected component is unmodified. It adds Pebble event aliases and error
 reporting and is supplied by the Pebble SDK.
 
-Timer uses the watch's built-in fonts and bundles no external font, image or
-audio assets. No source or assets from `coredevices/pebble-timer` are included.
+## Fredoka and Roboto Condensed
+
+Timer's rounded numerals use Fredoka Bold outlines. Supporting text uses Roboto
+Condensed Bold. These are the same reviewed source fonts as Dynamic; Timer's
+resources and generated outlines keep their source geometry and attribution.
+
+- Fredoka: Copyright 2016 The Fredoka Project Authors
+  (<https://github.com/hafontia/Fredoka-One>).
+- Roboto Condensed: Copyright 2011 The Roboto Project Authors
+  (<https://github.com/googlefonts/roboto-classic>).
+
+Both fonts use the SIL Open Font License, Version 1.1. The original font license
+texts accompany the source fonts under `resources/fonts/` and are included in
+each standalone PBW as `licenses/OFL-Fredoka.txt` and
+`licenses/OFL-RobotoCondensed.txt`. Font source checksums and the reused outline
+provenance are recorded in `resources/fonts/font-provenance.json`.
+
+Timer bundles no external image or audio assets. Its hourglass and action icons
+are drawn procedurally. No source or assets from `coredevices/pebble-timer` are
+included.

@@ -1,0 +1,129 @@
+{
+  "schemaVersion": 1,
+  "source": "Same reviewed Fredoka Bold and Roboto Condensed Bold source fonts as Dynamic 0.9.0.",
+  "dynamicSourceCommit": "25724d4dc561ec61d5d887b4c37d5e237d95b222",
+  "files": [
+    {
+      "file": "resources/fonts/Fredoka-Bold-Clock.ttf",
+      "bytes": 5480,
+      "sha256": "526d2361818275d1f9d1df6ce1835095058b84ec989e50e22f271237cc304000"
+    },
+    {
+      "file": "resources/fonts/RobotoCondensed-Bold.ttf",
+      "bytes": 112580,
+      "sha256": "6e949e8aa3f6e0b4db88aacafccf0c0e55e708c4564c8f3d145792adbbf80ef6"
+    },
+    {
+      "file": "resources/fonts/OFL-Fredoka.txt",
+      "bytes": 4388,
+      "sha256": "5c9e7eee5c6b25f4b05b8d53b2e470ea4962f9ced742d044a98f7d95d1375bab"
+    },
+    {
+      "file": "resources/fonts/OFL-RobotoCondensed.txt",
+      "bytes": 4393,
+      "sha256": "0e4cc6ece88573545be2ed25835363662a6182ba4a4c1b5c8feda52add30e8a6"
+    }
+  ],
+  "clock": {
+    "outlineHeader": "src/c/generated_clock_glyphs.h",
+    "outlineHeaderSha256": "38706b17a17fc394aea44b6446ff4a22bc52627cae4fe5744d6014354da325ec",
+    "glyphCount": 20,
+    "points": 1607,
+    "contours": 33,
+    "raster": "Exact Dynamic 4x4 subpixel scanline source; stable Timer cells are 0.58em digits and 0.25em colons."
+  },
+  "bodyResources": [
+    {
+      "type": "font",
+      "name": "FONT_BODY_14",
+      "file": "fonts/RobotoCondensed-Bold.ttf",
+      "characterRegex": "[\\u0020-\\u007E\\u00B7\\u2019]"
+    },
+    {
+      "type": "font",
+      "name": "FONT_BODY_15",
+      "file": "fonts/RobotoCondensed-Bold.ttf",
+      "characterRegex": "[\\u0020-\\u007E\\u00B7\\u2019]"
+    },
+    {
+      "type": "font",
+      "name": "FONT_BODY_16",
+      "file": "fonts/RobotoCondensed-Bold.ttf",
+      "characterRegex": "[\\u0020-\\u007E\\u00B7\\u2019]"
+    },
+    {
+      "type": "font",
+      "name": "FONT_BODY_18",
+      "file": "fonts/RobotoCondensed-Bold.ttf",
+      "characterRegex": "[\\u0020-\\u007E\\u00B7\\u2019]"
+    },
+    {
+      "type": "font",
+      "name": "FONT_BODY_19",
+      "file": "fonts/RobotoCondensed-Bold.ttf",
+      "characterRegex": "[\\u0020-\\u007E\\u00B7\\u2019]"
+    },
+    {
+      "type": "font",
+      "name": "FONT_BODY_23",
+      "file": "fonts/RobotoCondensed-Bold.ttf",
+      "characterRegex": "[\\u0020-\\u007E\\u00B7\\u2019]"
+    },
+    {
+      "type": "font",
+      "name": "FONT_BODY_24",
+      "file": "fonts/RobotoCondensed-Bold.ttf",
+      "characterRegex": "[\\u0020-\\u007E\\u00B7\\u2019]"
+    }
+  ],
+  "sdk": {
+    "version": "4.33.1",
+    "platform": "emery",
+    "generatorSha256": "1c2ec0637d626113a210fa872ecf7f59c159b5082b3434733f161f9bea4c4766",
+    "standalonePfoSamples": [
+      {
+        "point": 14,
+        "bytes": 2749,
+        "sha256": "45efe516ed2b649e37da83212cf91a4a0d7df0abebe0b70c73feba9ce862d116",
+        "glyphCount": 99
+      },
+      {
+        "point": 15,
+        "bytes": 2857,
+        "sha256": "378cd8baf998f0b2eb3f6f74b53699e786b993733a920081623a89280bd45bfc",
+        "glyphCount": 99
+      },
+      {
+        "point": 16,
+        "bytes": 2909,
+        "sha256": "6e34990792d5a899116eaba6a117f8b05d434b3290ac4f0d8c62275be6f2b09a",
+        "glyphCount": 99
+      },
+      {
+        "point": 18,
+        "bytes": 3137,
+        "sha256": "a20d74aaa5d3492d49cf204f32260a31ddb9e28eb61ce2749815205cdb851d36",
+        "glyphCount": 99
+      },
+      {
+        "point": 19,
+        "bytes": 3261,
+        "sha256": "7f4d050395d1079a11abf0eec09e93a0286cd27737e06f4d882d1f8fbda59a3e",
+        "glyphCount": 99
+      },
+      {
+        "point": 23,
+        "bytes": 3781,
+        "sha256": "2c2695c889a2bc4990f538aa028ae0b413d14ae881dd7fc619e9d4b191a83ef0",
+        "glyphCount": 99
+      },
+      {
+        "point": 24,
+        "bytes": 3917,
+        "sha256": "2ec25117dc06d25e37c9c185cafb188cec1a499d2caefa3a6733ec62921897d5",
+        "glyphCount": 99
+      }
+    ]
+  },
+  "scope": "Source geometry, SDK font identity and coverage; native captures separately establish physical pixel fitting. No arbitrary Unicode coverage is claimed."
+}

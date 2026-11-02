@@ -1,6 +1,88 @@
 # Timer validation
 
-## 0.3.1 paused visibility candidate — 2 November 2026
+## 0.4.0 native hourglass candidate — 2 November 2026
+
+The approved [interactive concept](design/Timer-UI-Preview.html) is implemented
+in the native Emery watchapp. Its browser images remain the design reference;
+the actual native evidence is recorded separately under `qa/0.4.0/`.
+The candidate is local and unpublished. Older PBWs, source archives and their
+validation retain their original scope.
+
+The native composition uses the reviewed Fredoka outlines and Roboto Condensed
+bitmap fonts in a 166px content area with a 34px action bar. Main countdowns
+use fixed character cells, with a separate size for hour-long values through
+24 hours. Sand transfers between the curved chambers using the authoritative
+remaining/configured duration; it is not simulated elapsed time. The chamber
+contains 1,073 discrete pixels, conserved across the two halves.
+
+Pause freezes the stream and countdown. Screen transitions use a bounded
+180ms animation and are cancelled under a covering window or on exit. Scheduled
+second-by-second redraws cover changing visible content; native deadline checks and
+Wakeup ownership remain independent of decorative motion. Initial foreground
+launch, pause/resume and covered-screen lifecycle are handled explicitly.
+The three-row list, highlighted duration fields, dark alarm, Options and safe
+Delete confirmation all use the same native typography. Sharing status lives
+in Options; storage and alarm errors retain a prominent warning footer.
+
+| Check | Result and scope |
+| --- | --- |
+| `npm test` | Four strict C99 suites and all 14 JavaScript handoff tests pass |
+| Font corpus | Every second from zero through 24 hours: 86,401 countdown layouts, fixed-cell bounds and digit ink; all ten digit raster samples pass |
+| Sand geometry | Exact conserved area, curved silhouette bounds, monotonic transfer, start/end and long-duration arithmetic pass |
+| Native ownership | Restart gets a new run ID in the same slot; paused visibility, restored timers, per-slot isolation and failure immutability pass |
+| Release regressions | All 35 Python release-helper tests pass, including exact mandatory font notices and resource declarations |
+| SDK build | SDK 4.33.1 builds the Emery native app, PKJS, callable provider and notices |
+| Exact native font audit | [Font audit](qa/0.4.0/font-audit.json) verifies all seven PFO resources against standalone SDK generation, linked Fredoka points/contours/glyphs, source hashes, generated IDs and both SIL licences |
+
+The SDK reports a 29,389-byte RAM footprint and 101,683 bytes of heap before
+startup allocations. Native process metadata reports 26,712 loaded bytes and a
+29,392-byte aligned virtual extent. The complete binary is 26,828 bytes,
+including 29 four-byte relocation entries. Resources are 26,719 bytes. These
+figures do not measure runtime free heap, stack high-water or battery use.
+The rasterizer uses bounded static scratch; drawing does not allocate per frame.
+
+Final distribution PBW SHA-256:
+
+`769a7690fca5cc7930e22f728fd9fde4ad2aca3d6a937f98785129dced2eae5d`
+
+The final native capture reports are
+[UI, ticking and background smoke](qa/0.4.0/native/emulator.json),
+[simultaneous/nearby deadlines](qa/0.4.0/native/deadlines/deadlines.json), and
+[actual scheduling error/recovery](qa/0.4.0/native/errors/errors.json).
+Their source PBW, exact native payload and raw 200 × 228 screenshot hashes bind
+them to this build. Phone JavaScript is omitted from native capture installs;
+packaged scripts and both provider schemas are checked separately.
+
+All **67 native capture hashes** were verified: 46 UI/motion/background frames,
+seven actual scheduling-error/recovery frames and 14 deadline frames. Direct
+visual review covers 43 representative frames, with an additional independent
+review of 20 capture records. The long countdown, 24-hour limit hint, three-row
+list, safe confirmation, elapsed footer, dark alarm and critical warnings fit
+and remain readable. The confirmation was shortened to “Delete timer?” after
+checking the actual native font width.
+
+No-input proofs show the countdown changing, the sand stream changing in its
+own small region and a paused screen remaining pixel-identical. Holding Down
+from detail does not scroll the newly opened Options screen; holding alarm
+dismissal does not dismiss a second pending alarm. The full eight-slot header
+and count remain stable when Select cannot create a ninth timer. Background
+Wakeup works with phone JavaScript omitted, and equal/five-second-separated
+deadlines each produce both alarm states before exact empty-list cleanup.
+The external-Wakeup fixture produces an actual scheduling failure: the amber
+warning stays visible in detail and Options, then clears after explicit fixture
+cleanup and successful native recovery. This is separate from a flash-failure
+injection test; no native storage-failure injection is claimed.
+
+[Asset provenance](asset-provenance.json) records exact final native payloads,
+source/font hashes, report hashes and unmodified product screenshot copies.
+
+Actual phone/plugin delivery, physical vibration, display appearance under
+real lighting, button feel and battery use remain phone/watch checks. No
+physical-device result is implied by the browser concept or emulator captures.
+The README procedure includes the unchanged five-minute paused visibility
+behavior and both the live Timer-to-Dynamic sharing path and native alarms.
+
+## 0.3.1 paused visibility candidate — historical
 
 Paused timers advertise a five-minute native validity window. Both session and
 card sources stop returning them at that original expiry; Dynamic's existing

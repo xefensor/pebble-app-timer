@@ -4,9 +4,9 @@ A native timer for **stock PebbleOS**, with activity sharing for compatible
 watchfaces such as [Dynamic](https://github.com/xefensor/dynamic-watchface).
 The first target is Pebble Time 2 (`emery`, 200 × 228).
 
-Timer 0.3.1 is an unpublished local candidate for the bounded two-item activity
-design. Paused timers hide from compatible watchfaces after five minutes and
-remain saved in Timer. The [candidate PBW](releases/Timer-0.3.1.pbw) and
+Timer 0.4.0 is an unpublished local candidate with the approved hourglass design
+implemented natively. Paused timers hide from compatible watchfaces after five
+minutes and remain saved in Timer. The [candidate PBW](releases/Timer-0.4.0.pbw) and
 [validation](docs/VALIDATION.md) are prepared locally. Actual phone and
 physical-watch checks remain.
 The last published testing release is 0.2.0; download its
@@ -14,6 +14,33 @@ The last published testing release is 0.2.0; download its
 [source archive](https://github.com/xefensor/pebble-app-timer/releases/download/v0.2.0/Timer-0.2.0-source.zip)
 and [checksums](https://github.com/xefensor/pebble-app-timer/releases/download/v0.2.0/SHA256SUMS.txt).
 That 0.2.0 release and its historical validation remain unchanged.
+
+![Timer 0.4.0 native Emery screens](docs/images/native-overview.png)
+
+These are actual native emulator captures from the candidate, displayed at
+twice their 200 × 228 pixel size. The [approved browser concept](docs/design/Timer-UI-Preview.html)
+is retained separately; it is not native or physical-watch verification.
+
+## Version 0.4.0
+
+- Bring the approved hourglass concept onto the native watch: rounded Fredoka
+  countdowns, Roboto Condensed labels, a blue running hourglass, an amber paused
+  state and a dark completion screen. The curved chambers transfer a fixed
+  quantity of sand according to actual remaining time.
+- Keep digits in fixed cells, with a separate size for long durations through
+  24 hours. The three-row list shows progress and state; the duration editor
+  highlights its current field. New timers default to ten minutes.
+- Keep pause/resume one button away. More options contains Adjust, Restart
+  and Delete; deleting requires confirmation, with Keep selected first.
+  Restart preserves the slot and duration while creating a new run identity.
+- Use short, bounded screen transitions and a one-second running stream.
+  Paused content stays still, and covered screens stop decorative work.
+  Deadlines and native Wakeup alarms remain authoritative.
+- Put sharing status in More options. Storage and alarm scheduling failures
+  remain visible on the relevant screen. Saved timers, eight slots, the
+  five-minute paused visibility window and both source schemas are retained.
+- Bundle the reviewed font sources and SIL notices. Native captures and
+  release-specific checks are recorded in [validation](docs/VALIDATION.md).
 
 ## Version 0.3.1
 
@@ -97,19 +124,21 @@ phone-mediated snapshot, not direct access to another watchapp's memory.
 | --- | --- | --- | --- | --- |
 | Timer list | Previous row | Open timer / add from + | Next row | Exit to watchface |
 | Set timer | Increase selected field | Next field / start | Decrease selected field | Previous field / list |
-| Timer detail | Edit | Pause / resume | Delete | Timer list |
+| Timer detail | Adjust duration | Pause / resume / restart finished | More options | Timer list |
+| More options | Previous option | Choose option | Next option | Timer detail |
+| Delete confirmation | Keep | Confirm selected choice | Delete | Keep |
 | Time’s up | Snooze one minute | — | Dismiss | Timer list |
 
 The editor sets hours, minutes and seconds, from five seconds to 24 hours.
 The native app owns every deadline and alarm. Leaving the app or losing phone
 connectivity does not cancel a successfully scheduled Wakeup.
 
-The detail screen shows Remaining, state and Elapsed from one native time read.
+The detail screen shows the remaining countdown, hourglass and Elapsed from one native time read.
 Elapsed excludes paused time within the current duration setting. Edit resets
 that setting and its progress baseline; it is not a lifetime session counter.
 
 The timer respects Quiet Time for vibration. PebbleOS controls missed-Wakeup
-notifications. A scheduling failure displays “Alarm not set; keep app open”
+notifications. A scheduling failure displays “Alarm not set; keep open”
 instead of claiming a background alarm was secured.
 
 ## Sharing and freshness
@@ -117,6 +146,8 @@ instead of claiming a background alarm was secured.
 “Shared with phone” means that PKJS saved and read back the current revision and
 returned a matching application receipt. It does not mean Dynamic has received
 it. A native AppMessage transport ACK alone is insufficient.
+Open More options to see this status; normal sharing messages do not cover the
+countdown or hourglass. Storage and alarm failures stay visible while timing.
 
 The provider marks its data as **last reported / unconfirmed**. Polling the
 snapshot or reconnecting the phone cannot prove the watch timer has not changed
@@ -149,7 +180,7 @@ The dependency is installed from `vendor/pebble-activities-0.2.0.tgz`; its
 provenance and SHA-256 are recorded in [vendor/README.md](vendor/README.md).
 
 The distribution build clears the SDK cache so dependency updates cannot leave
-stale phone JavaScript in the PBW. It writes `dist/Timer-0.3.1.pbw` and its checksum. It bundles the provider
+stale phone JavaScript in the PBW. It writes `dist/Timer-0.4.0.pbw` and its checksum. It bundles the provider
 JavaScript and sets `manifestVersion: 2`, including `plugin.js` alongside PKJS
 and the watch binary. A plain `pebble build` creates a development PBW without
 that extra provider bundle; use `npm run build` for an installable shared-activity
@@ -176,8 +207,9 @@ been completed for this release**.
    Pebble phone app. Install Timer and a compatible Dynamic PBW on the same
    Time 2. When upgrading Activity Timer, verify the existing saved timer is
    retained and only one launcher entry remains.
-2. Add a timer from the + row, choose a duration and start it. Wait for “Shared with phone”, then return
-   to Dynamic. Its countdown should use the same deadline.
+2. Add a timer from the + row, choose a duration and start it. Open More options
+   and wait for “Shared with phone”, then return to Dynamic. Its countdown
+   should use the same deadline.
 3. Reopen Timer, pause, and return. Dynamic should show a fixed remaining time
    for five minutes, then hide it. Reopen Timer and return without editing;
    the paused timer must remain saved there and stay hidden on Dynamic. Resume
