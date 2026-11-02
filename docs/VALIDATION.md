@@ -28,6 +28,11 @@ The SDK/tool state was isolated in the common recovery workspace. The SDK report
 heap bytes before runtime allocations. The packaged native binary is 14,700
 bytes. These are build measurements, not battery or runtime-heap measurements.
 
+Release preparation also accepts the SDK-injected source module when its
+source-map name has a directory prefix. Regression checks retain duplicate
+rejection and exact compiled-module/source comparison. This portability fix
+changes release validation, not the packaged runtime.
+
 ### Current native evidence
 
 [Fresh emulator report](qa/0.2.0/local-recovery/emulator.json) records the exact

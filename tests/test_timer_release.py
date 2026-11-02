@@ -131,6 +131,15 @@ class TimerReleaseTests(unittest.TestCase):
                 self.validate({**self.pbw, name: b"stale"})
 
     def test_pkjs_map_and_executed_module_both_must_match(self):
+        # Workspace-local SDK installs emit a relative source path. Normalizing
+        # that SDK module name retains duplicate and compiled-code checks.
+        mapping = json.loads(self.pbw["pebble-js-app.js.map"])
+        mapping["sources"][0] = "../sdk/pebble/common/include/_pkjs_shared_additions.js"
+        self.validate({**self.pbw, "pebble-js-app.js.map": json.dumps(mapping).encode()})
+        mapping["sources"].append("_pkjs_shared_additions.js")
+        mapping["sourcesContent"].append(mapping["sourcesContent"][0])
+        with self.assertRaisesRegex(ValueError, "Duplicate timer PKJS source"):
+            self.validate({**self.pbw, "pebble-js-app.js.map": json.dumps(mapping).encode()})
         for name in ["pebble-js-app.js", "pebble-js-app.js.map"]:
             with self.subTest(member=name), self.assertRaises(ValueError):
                 self.validate({**self.pbw, name: self.pbw[name].replace(b"version:1", b"version:2")})

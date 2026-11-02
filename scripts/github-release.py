@@ -161,6 +161,8 @@ def validate_timer_pkjs(root, commit, prefix, files, dependency=None):
     for path, text in zip(mapping["sources"], mapping["sourcesContent"]):
         if path.startswith("webpack/bootstrap "):
             continue
+        if PurePosixPath(path).name == "_pkjs_shared_additions.js":
+            path = "_pkjs_shared_additions.js"
         require(path in expected or path == "_pkjs_shared_additions.js", "Unexpected timer PKJS module: " + path)
         require(path not in mapped, "Duplicate timer PKJS source: " + path)
         module = re.search(r"\n// module id = ([0-9]+)\n", text)
