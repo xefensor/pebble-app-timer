@@ -4,7 +4,8 @@ var activities = require('pebble-activities/publisher');
 var publisher = activities.createPublisher({
   storage: localStorage,
   pluginUuid: '50e9ef12-a5ab-4369-a3b5-3447bfba5151',
-  private: false
+  private: false,
+  maxRecords: 8
 });
 
 // Timer owns one transport queue. Saving a snapshot and delivering its

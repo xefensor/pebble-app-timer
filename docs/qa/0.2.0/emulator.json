@@ -1,0 +1,340 @@
+{
+  "version": "0.2.0",
+  "verification": "Fresh run after recovery; final distribution candidate",
+  "environment": "Emery QEMU and pypkjs; not a real phone or physical watch",
+  "candidatePbwSha256": "d2be85ba4601a90ae32c1a3bf7f44a54315f28d2c6625960aa2c9ed1891e971d",
+  "nativePayloadSha256": {
+    "emery/app_resources.pbpack": "b58d8f0fc04367f823045aafa7724dee47b1fe6674411d117e32909b3f527a31",
+    "emery/manifest.json": "f320151ad592355626ff52b1f7cc46e10db382f82133e9453498e85a3adc437c",
+    "emery/pebble-app.bin": "3bf11caece811862469a38c91540f0d4418034026582ea6fc4673d76a3ae629e"
+  },
+  "legacyMigration": {
+    "seededBy": "emulator-only fixture source legacy-fixture.c",
+    "modelBytes": 44,
+    "origin": "6b49d200",
+    "run": 1,
+    "state": "paused",
+    "remainingSeconds": 298,
+    "oldStorageKey": 2100,
+    "newStorageKeysClearedByFixture": [
+      2103,
+      2120,
+      2121,
+      2130,
+      2131,
+      2132,
+      2133,
+      2134,
+      2135,
+      2136,
+      2137,
+      2138,
+      2139,
+      2140,
+      2141,
+      2142,
+      2143,
+      2144,
+      2145
+    ],
+    "publicationTicket2102Preserved": true
+  },
+  "nativeBackgroundAlarm": {
+    "phoneJavascriptOmitted": true,
+    "nativeBytesMatchFinalCandidate": true,
+    "bluetoothDisconnectedRequested": true,
+    "note": "Direct SDK transport stays connected; this is bridge-free native Wakeup proof, not a real Bluetooth disconnection test."
+  },
+  "captures": [
+    {
+      "name": "legacy-fixture-paused",
+      "file": "legacy-fixture-paused.png",
+      "sha256": "b47823c802b068c3f8a22bebb937388a86f383e388fb7a2555deb2f903af70bc",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false
+    },
+    {
+      "name": "migration-list",
+      "file": "migration-list.png",
+      "sha256": "e8d172e8c52303705a29df3a4073bf11fe7dbd5558c2e340c3fd1c2ee16d6bea",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false
+    },
+    {
+      "name": "migration-detail",
+      "file": "migration-detail.png",
+      "sha256": "db182814da7e228ca3330a14c212da10169cc873620e2b33401083c7bf7262d8",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false
+    },
+    {
+      "name": "running",
+      "file": "running.png",
+      "sha256": "5e2503aea14b29ae960ba66699e6bd11c239574c272a5ab6fcb13d34794fd375",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false
+    },
+    {
+      "name": "paused",
+      "file": "paused.png",
+      "sha256": "e14f1ff739828d002c4c33b13af84fae901ae922df6b52aeefaa66628ab5fe15",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false
+    },
+    {
+      "name": "editor",
+      "file": "editor.png",
+      "sha256": "dff75eb97417e39f2871082b9980906d3228297c5b1e52b0df7d1c317472475e",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false
+    },
+    {
+      "name": "new-editor",
+      "file": "new-editor.png",
+      "sha256": "395ab04abbed757794d3198539381e906bbfd48ab82e47abf876098cfe262ae5",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false
+    },
+    {
+      "name": "second-running",
+      "file": "second-running.png",
+      "sha256": "49fd0417f785b71af2698675981b0cedfabfe3cf29944acc4b5472b1c7aa77b3",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false
+    },
+    {
+      "name": "multiple-list",
+      "file": "multiple-list.png",
+      "sha256": "af98225c74e577c14a7f39c841f2cef7bec8dbb29f77c3f1748e0fef205cbba7",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false
+    },
+    {
+      "name": "editor-24h",
+      "file": "editor-24h.png",
+      "sha256": "011afc88bffe7989af4192a136eae99c1b5f34d7f6f8f7a9b191d12223e007f7",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false
+    },
+    {
+      "name": "detail-24h",
+      "file": "detail-24h.png",
+      "sha256": "82fdf7ccf67fd536feea90ade9be03a5e1dd45e5a4dec63f6417ee5da48969ed",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false
+    },
+    {
+      "name": "deleted-list",
+      "file": "deleted-list.png",
+      "sha256": "9af731636a0594cf50eec66bf0caad9c5d81d2a05f279d8875e38f4f449b5118",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false
+    },
+    {
+      "name": "short-running",
+      "file": "short-running.png",
+      "sha256": "528af00c47b76fce5aa137412bbf60e89fea10df6c0c5c9b70db2ce034d8ceb2",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false
+    },
+    {
+      "name": "alarm",
+      "file": "alarm.png",
+      "sha256": "8909dc138a83bd5915e45cc3aac0860f68f5ada1ab9c401d1d8646ae113f9dd3",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false
+    },
+    {
+      "name": "snoozed",
+      "file": "snoozed.png",
+      "sha256": "d77c8b132bbeea7e0bbebd92a593c807ed468d2c1b53a151c6e62ea990e6920e",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false
+    },
+    {
+      "name": "snoozed-paused",
+      "file": "snoozed-paused.png",
+      "sha256": "01c03cb7cc36c80d7d827d7b07f08c07aed2baf72a86cf6d1d3237ae68f23a2b",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false
+    },
+    {
+      "name": "alarm-dismiss-test",
+      "file": "alarm-dismiss-test.png",
+      "sha256": "8909dc138a83bd5915e45cc3aac0860f68f5ada1ab9c401d1d8646ae113f9dd3",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false
+    },
+    {
+      "name": "dismissed-list",
+      "file": "dismissed-list.png",
+      "sha256": "45232efbe275b201823c5e57c3a05a6769184e83689fe121c50f4b8fa9c06cf7",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false
+    },
+    {
+      "name": "reopened-list",
+      "file": "reopened-list.png",
+      "sha256": "234d90e09ae8a952ad19a4c89ec93902c82fe54f18c95b515a40ce5dbff3ef1c",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false
+    },
+    {
+      "name": "eight-timers-full",
+      "file": "eight-timers-full.png",
+      "sha256": "2dc7b5061a3ef22d958b76b9c187fe913528eef68ae6d16e03228ce0030ec21d",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false
+    },
+    {
+      "name": "eight-timers-last-row",
+      "file": "eight-timers-last-row.png",
+      "sha256": "754529053b9cce3bea396f7087c16b5988132b28de156386c546e7ad66568ed0",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false
+    },
+    {
+      "name": "slot-deleted",
+      "file": "slot-deleted.png",
+      "sha256": "5616b445197876f8a18179a6b028bc4ee1b3fa0458389c81506b75611039803d",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false
+    },
+    {
+      "name": "slot-reused",
+      "file": "slot-reused.png",
+      "sha256": "d77c8b132bbeea7e0bbebd92a593c807ed468d2c1b53a151c6e62ea990e6920e",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false
+    },
+    {
+      "name": "eight-timers-after-reuse",
+      "file": "eight-timers-after-reuse.png",
+      "sha256": "7a9e8192f3aa3bc5aedd3e03367a4ea16f8021fb683910e545f177477e1104cc",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false
+    },
+    {
+      "name": "empty-list",
+      "file": "empty-list.png",
+      "sha256": "487d3056e101ee86dec400b5c93b22c461f91538db42ba941f68cd829667c38f",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false
+    },
+    {
+      "name": "native-only-no-js-list",
+      "file": "native-only-no-js-list.png",
+      "sha256": "52d2e763381cb70755837270350632f787580864b0405a0ca6b3f06807eb42ed",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false
+    },
+    {
+      "name": "native-only-short-running",
+      "file": "native-only-short-running.png",
+      "sha256": "6797f8ac6444fe324a28ff6423653a5e92c5049444d2e7f776d0a39183fb46ed",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false
+    },
+    {
+      "name": "native-only-background-wakeup",
+      "file": "native-only-background-wakeup.png",
+      "sha256": "1e73fc56f2de2f5261692be010a14a3ca42a4779a4a10bf6e73b2c0795945c1a",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false
+    },
+    {
+      "name": "final-empty-list",
+      "file": "final-empty-list.png",
+      "sha256": "52ccd430ee56cb0873240d8727171799827f2ccdabe701b58703068d40504192",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false
+    }
+  ]
+}

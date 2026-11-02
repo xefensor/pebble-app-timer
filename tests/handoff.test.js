@@ -128,3 +128,42 @@ test('polling does not renew the original native lease', () => {
   const provider = helpers.createProvider({storage: shared, pluginUuid: uuid, now: () => (now + 661) * 1000});
   assert.deepEqual(provider.source({}).instances, []);
 });
+
+test('timer slots survive cold reads and replace old offline runs independently', () => {
+  const shared = storage();
+  const pkjs = runtime('src/pkjs/index.js', shared);
+  pkjs.events.appmessage({payload: snapshot({ACTIVITY_SLOT:0})});
+  pkjs.events.appmessage({payload: snapshot({ACTIVITY_SLOT:7, ACTIVITY_RUN:'timer-eight:1',
+    ACTIVITY_REVISION:5, ACTIVITY_DEADLINE:now + 120})});
+  const read = () => {
+    let answer;
+    runtime('src/plugin/index.js', shared).source({category:'activity', item:'session'},
+      {data(value) { answer = value; }});
+    return answer.instances;
+  };
+  assert.deepEqual(Array.from(read(), item => item.instanceId), ['6b49d200:00000001', 'timer-eight:1']);
+  // Reusing a slot while disconnected must replace its previous run without
+  // requiring an intermediate cancellation to have reached the phone.
+  pkjs.events.appmessage({payload: snapshot({ACTIVITY_SLOT:7, ACTIVITY_RUN:'timer-eight:2',
+    ACTIVITY_REVISION:6, ACTIVITY_DEADLINE:now + 180})});
+  assert.deepEqual(Array.from(read(), item => item.instanceId), ['6b49d200:00000001', 'timer-eight:2']);
+  pkjs.events.appmessage({payload: snapshot({ACTIVITY_SLOT:0, ACTIVITY_REVISION:7,
+    ACTIVITY_STATE:'paused', ACTIVITY_DEADLINE:0, ACTIVITY_DURATION:321})});
+  assert.equal(read()[0].properties.duration.numericValue.value, 321);
+  assert.equal(read()[1].properties.deadline.timestamp.value, now + 180);
+  const restart = runtime('src/pkjs/index.js', shared);
+  restart.events.ready();
+  assert.equal(restart.sent[0].ACTIVITY_LAST_REVISION, 7);
+});
+
+test('invalid native slot cannot acknowledge or replace another timer', () => {
+  const shared = storage();
+  const pkjs = runtime('src/pkjs/index.js', shared);
+  pkjs.events.appmessage({payload: snapshot({ACTIVITY_SLOT:0})});
+  pkjs.events.appmessage({payload: snapshot({ACTIVITY_SLOT:8, ACTIVITY_REVISION:5})});
+  assert.ok(pkjs.sent.at(-1).ACTIVITY_ERROR);
+  assert.equal(pkjs.sent.at(-1).ACTIVITY_ACCEPTED_REVISION, undefined);
+  const provider = helpers.createProvider({storage:shared, pluginUuid:uuid, now:() => now * 1000});
+  assert.equal(provider.source({}).instances.length, 1);
+  assert.equal(provider.source({}).instances[0].properties.revision.numericValue.value, 4);
+});

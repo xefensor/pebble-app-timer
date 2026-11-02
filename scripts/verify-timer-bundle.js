@@ -20,6 +20,7 @@ assert.deepEqual(appinfo.appKeys, keys, 'PBW numeric and symbolic key maps diffe
 assert.equal(appinfo.uuid, '50e9ef12-a5ab-4369-a3b5-3447bfba5151');
 assert.equal(appinfo.manifestVersion, 2);
 assert.equal(appinfo.watchapp.watchface, false);
+assert.equal(keys.ACTIVITY_SLOT, 1021, 'Timer slot key changed');
 
 const reverse = {};
 for (const [name, value] of Object.entries(keys)) {
@@ -91,6 +92,7 @@ function verifyPkjs() {
 
   const native = nativeDictionary({
     ACTIVITY_SCHEMA_VERSION: 1,
+    ACTIVITY_SLOT: 0,
     ACTIVITY_RUN: run,
     ACTIVITY_REVISION: revision,
     ACTIVITY_STATE: 'active',
@@ -116,6 +118,17 @@ function verifyPkjs() {
   assert.equal(receipt.ACTIVITY_PUBLISH_SESSION, ticket);
   assert.equal(receipt.ACTIVITY_ERROR, undefined);
   assert.ok(saved.size, 'Receipt arrived without any shared phone-side state');
+  for (const [id, nextRevision] of [['second-slot:1', revision + 1], ['second-slot:2', revision + 2]]) {
+    context.__incoming = {payload: {...pkjsDictionary(native), ACTIVITY_SLOT:7,
+      ACTIVITY_RUN:id, ACTIVITY_REVISION:nextRevision}};
+    vm.runInContext('__events.appmessage(__incoming)', context, {timeout:1000});
+    assert.equal(outgoing.length, 1);
+    const accepted = pkjsDictionary(outgoing.shift());
+    assert.equal(accepted.ACTIVITY_ACCEPTED_RUN, id);
+    assert.equal(accepted.ACTIVITY_ACCEPTED_REVISION, nextRevision);
+    assert.equal(accepted.ACTIVITY_PUBLISH_SESSION, ticket);
+    assert.equal(accepted.ACTIVITY_ERROR, undefined);
+  }
 }
 verifyPkjs();
 
@@ -144,8 +157,10 @@ context.__respond = {
 vm.runInContext('__handler(__request, __respond)', context, {timeout: 1000});
 assert.equal(sourceError, undefined);
 assert.ok(response && response.validUntilMs > NOW_MS, 'Plugin did not return available source data');
-assert.equal(response.instances.length, 1);
+assert.equal(response.instances.length, 2);
 assert.equal(response.instances[0].instanceId, run);
+assert.equal(response.instances[1].instanceId, 'second-slot:2', 'An obsolete offline run remained visible');
+assert.equal(response.instances[1].properties.revision.numericValue.value, revision + 2);
 const properties = response.instances[0].properties;
 assert.equal(properties.schema_version.numericValue.value, 1);
 assert.equal(properties.revision.numericValue.value, revision);
@@ -162,4 +177,4 @@ for (const [name, value] of Object.entries(properties)) {
       `Plugin emitted an undeclared property/shape: ${name}/${shape}`);
   }
 }
-console.log('Packaged timer PKJS, numeric key mapping, accepted receipt and cold provider passed.');
+console.log('Packaged timer PKJS, numeric keys, multi-slot receipts, offline replacement and cold provider passed.');

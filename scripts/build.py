@@ -9,6 +9,9 @@ import zipfile
 root = Path(__file__).resolve().parents[1]
 library = root / "node_modules/pebble-activities"
 package = json.loads((root / "package.json").read_text())
+# SDK incremental JS signatures do not include transitive npm source changes.
+# Distribution builds must rebundle the pinned dependency as well as native code.
+subprocess.run(["pebble", "clean"], check=True, cwd=root)
 build = root / "build"
 build.mkdir(exist_ok=True)
 subprocess.run([

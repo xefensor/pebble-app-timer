@@ -38,8 +38,13 @@ identity and resource integrity. Record emulator results separately from real
 phone and physical-watch checks; never describe unperformed checks as passed.
 Check affected layouts on an actual emulator when changing native rendering.
 
-The proposed multi-timer/Pebble-inspired UI is separate work. This repository
-split preserves the existing single-timer behaviour.
+The app has eight stable native timer slots and an independent list/editor/detail/
+alarm interface. ACTIVITY_SLOT (1021) is an internal bridge key; the public
+activity/session convention and ACT1 consumer transport are unchanged. Source
+revisions advance globally and dirty slots are published in ascending order.
+Keep the earliest-deadline Wakeup broker: separate nearby Wakeups conflict on
+stock PebbleOS. Versioned storage chunks must stay below the SDK’s per-key limit;
+write and verify a new bank before committing it or retiring legacy state.
 
 The accompanying PolyForm Noncommercial licence and required attribution apply.
 Preserve third-party notices, including the SDK's Apache 2.0 notice.

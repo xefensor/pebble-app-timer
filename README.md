@@ -4,10 +4,24 @@ A native timer for **stock PebbleOS**, with activity sharing for compatible
 watchfaces such as [Dynamic](https://github.com/xefensor/dynamic-watchface).
 The first target is Pebble Time 2 (`emery`, 200 × 228).
 
-Download [Timer 0.1.1](https://github.com/xefensor/pebble-app-timer/releases/download/v0.1.1/Timer-0.1.1.pbw)
-and verify it against [SHA256SUMS.txt](https://github.com/xefensor/pebble-app-timer/releases/download/v0.1.1/SHA256SUMS.txt).
+Download [Timer 0.2.0](https://github.com/xefensor/pebble-app-timer/releases/download/v0.2.0/Timer-0.2.0.pbw)
+and verify it against [SHA256SUMS.txt](https://github.com/xefensor/pebble-app-timer/releases/download/v0.2.0/SHA256SUMS.txt).
 This is a development prerelease. Real-phone and physical-watch checks remain
 separate from portable tests and emulator checks.
+
+## Version 0.2.0
+
+- Up to eight saved timers, a timer list and a hours/minutes/seconds editor.
+- Large countdown, progress bubbles and a right-hand action bar for editing,
+  pausing, resuming and deleting. Completed timers offer one-minute snooze.
+- Native deadlines share one earliest-deadline Wakeup, avoiding conflicts when
+  several timers end close together. Every due timer is checked on the watch.
+- Migrate the previous saved timer without changing the app UUID. Versioned,
+  checksummed storage banks preserve the prior committed state on a failed save.
+- Share eight independent logical slots through pinned Pebble Activities 0.1.2.
+  Reusing a slot while offline replaces its old phone snapshot on reconnection.
+- The interface is independently implemented; no upstream Pebble Timer source,
+  fonts or image assets are incorporated.
 
 ## Version 0.1.1
 
@@ -38,11 +52,16 @@ phone-mediated snapshot, not direct access to another watchapp's memory.
 
 ## Controls
 
-- **Select:** start the chosen duration, pause, or resume.
-- **Up:** add one minute before or during a timer.
-- **Down:** reduce the chosen duration before starting, to a minimum of five
-  seconds; cancel an active or paused timer.
-- **Back:** exit. A successfully scheduled native Wakeup remains active.
+| Screen | Up | Select | Down | Back |
+| --- | --- | --- | --- | --- |
+| Timer list | Previous row | Open timer / add from + | Next row | Exit to watchface |
+| Set timer | Increase selected field | Next field / start | Decrease selected field | Previous field / list |
+| Timer detail | Edit | Pause / resume | Delete | Timer list |
+| Time’s up | Snooze one minute | — | Dismiss | Timer list |
+
+The editor sets hours, minutes and seconds, from five seconds to 24 hours.
+The native app owns every deadline and alarm. Leaving the app or losing phone
+connectivity does not cancel a successfully scheduled Wakeup.
 
 The timer respects Quiet Time for vibration. PebbleOS controls missed-Wakeup
 notifications. A scheduling failure displays “Alarm not set; keep app open”
@@ -75,10 +94,11 @@ npm test
 npm run build
 ```
 
-The dependency is installed from `vendor/pebble-activities-0.1.0.tgz`; its
+The dependency is installed from `vendor/pebble-activities-0.1.2.tgz`; its
 provenance and SHA-256 are recorded in [vendor/README.md](vendor/README.md).
 
-The build writes `dist/Timer-0.1.1.pbw` and its checksum. It bundles the provider
+The distribution build clears the SDK cache so dependency updates cannot leave
+stale phone JavaScript in the PBW. It writes `dist/Timer-0.2.0.pbw` and its checksum. It bundles the provider
 JavaScript and sets `manifestVersion: 2`, including `plugin.js` alongside PKJS
 and the watch binary. A plain `pebble build` creates a development PBW without
 that extra provider bundle; use `npm run build` for an installable shared-activity
@@ -88,9 +108,13 @@ Portable tests check the native timer model and isolated PKJS/storage/provider
 handoff. Artifact checks exercise the packaged scripts. These do not substitute
 for the actual phone or watch checks below.
 
-For this extraction, the portable timer model and bridge suites passed, and an
-isolated checkout installed the pinned dependency and built the SDK PBW. No
-real-phone or physical-watch verification is claimed for version 0.1.1.
+Run the release-helper tests with
+`python3 -m unittest discover -s tests -p 'test_*release.py'`. After building,
+`python3 scripts/package-release.py` freezes the PBW, standalone source archive
+and checksums. Committed artifacts are validated before GitHub publication.
+
+See [validation](docs/VALIDATION.md) for the current release’s portable tests,
+actual emulator captures and remaining physical-watch/real-phone checks.
 
 ## Actual phone and watch checks
 
@@ -101,10 +125,10 @@ been completed for this release**.
    Pebble phone app. Install Timer and a compatible Dynamic PBW on the same
    Time 2. When upgrading Activity Timer, verify the existing saved timer is
    retained and only one launcher entry remains.
-2. Choose a duration and press Select. Wait for “Shared with phone”, then return
+2. Add a timer from the + row, choose a duration and start it. Wait for “Shared with phone”, then return
    to Dynamic. Its countdown should use the same deadline.
 3. Reopen Timer, pause, and return. Dynamic should show a fixed remaining time.
-   Resume, extend and cancel in turn; each operation should update or clear the
+   Resume, edit and delete in turn; each operation should update or clear the
    same run without replaying a completion.
 4. Start another run and immediately exit before the application receipt. Timer
    must remain usable, and an old receipt must not acknowledge the new run.
@@ -112,7 +136,7 @@ been completed for this release**.
    usable. An accepted native Wakeup should still alert; Dynamic must not invent
    an unsent state or infer that the alarm rang.
 6. Reconnect and reopen Timer. The current native state should replace the phone
-   snapshot, including after restarting the phone app. Check competing Wakeups
+   snapshot, including after restarting the phone app. Test multiple nearby deadlines and competing Wakeups
    and the five-second minimum on the actual firmware.
 
 For local alarm diagnosis, run `ACTIVITY_TIMER_DIAGNOSTICS=1 pebble build`.
@@ -123,9 +147,11 @@ automatic launch.
 
 ## Design direction
 
-The next interface is intended to follow the familiar list, editor and button
-flow of [Pebble Timer](https://github.com/coredevices/pebble-timer). This extraction
-does not import that project's source or implement the proposed redesign.
+The interface follows the familiar list, editor and button flow discussed with
+[Pebble Timer](https://github.com/coredevices/pebble-timer) as a design reference.
+It uses independently written rendering and the watch’s built-in fonts. Dynamic
+owns its own grouped activity-clock presentation; Timer does not dictate a
+watchface layout.
 
 ## Licence
 
