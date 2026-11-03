@@ -263,9 +263,12 @@ static void list_screen(GContext *ctx, const TimerUiView *view) {
   const unsigned menu=view->menu>count?count:view->menu;
   const bool full=!timer_collection_can_create(view->collection);
   const bool replacing=!full&&count==TIMER_COLLECTION_CAPACITY;
-  bar(ctx,ICON_UP,menu?ICON_NEXT:full?ICON_NONE:ICON_PLUS,ICON_DOWN,GColorBlack);
-  if(!menu)rect(ctx,GRect(0,0,UI_WIDTH,37),BLUE);
-  timer_fonts_text(ctx,full?"8 TIMERS · FULL":menu?"TIMERS":"NEW TIMER",full?14:16,12,24,144,GColorBlack,GTextAlignmentLeft);
+  const unsigned first_menu=full&&count?1:0;
+  bar(ctx,menu>first_menu?ICON_UP:ICON_NONE,menu?ICON_NEXT:full?ICON_NONE:ICON_PLUS,
+      menu<count?ICON_DOWN:ICON_NONE,GColorBlack);
+  if(full)rect(ctx,GRect(0,0,UI_WIDTH,37),AMBER);
+  else if(!menu)rect(ctx,GRect(0,0,UI_WIDTH,37),BLUE);
+  timer_fonts_text(ctx,full?"TIMERS FULL":menu?"TIMERS":"NEW TIMER",16,12,24,144,GColorBlack,GTextAlignmentLeft);
   if(!full)icon(ctx,ICON_PLUS,147,18,GColorBlack);
   graphics_context_set_stroke_color(ctx,GColorLightGray);
   segment(ctx,9,36,157,36);
@@ -273,8 +276,10 @@ static void list_screen(GContext *ctx, const TimerUiView *view) {
     hourglass(ctx,1,1,UI_CENTER,77,70,BLUE,GColorBlack,false,view->now);
     text(ctx,"Start a timer",18,178,GColorBlack);
   } else {
-    const unsigned first=menu>3?menu-3:0;
-    for(unsigned row=first;row<count&&row<first+3;++row) {
+    const unsigned rows=view->issue&&view->issue[0]?2:3;
+    unsigned first=menu>1?menu-2:0;
+    if(first+rows>count)first=count>rows?count-rows:0;
+    for(unsigned row=first;row<count&&row<first+rows;++row) {
       const int slot=timer_collection_visible_slot(view->collection,row);
       if(slot<0)continue;
       const ActivityTimerModel *timer=&view->collection->slots[slot];
@@ -300,15 +305,30 @@ static void list_screen(GContext *ctx, const TimerUiView *view) {
       rect(ctx,GRect(145,y+13,4,29),selected?GColorDarkGray:GColorLightGray);
       if(bounded)rect(ctx,GRect(145,y+13+29-bounded,4,bounded),timer->state==ACTIVITY_TIMER_PAUSED?AMBER:BLUE);
     }
+    if(count>rows) {
+      const unsigned height=rows*56-5;
+      const unsigned thumb=(height*rows+count/2)/count;
+      const unsigned offset=first*(height-thumb)/(count-rows);
+      rect(ctx,GRect(159,43,2,height),GColorLightGray);
+      rect(ctx,GRect(159,43+offset,2,thumb),GColorBlack);
+    }
   }
-  char position[24];snprintf(position,sizeof(position),"%u / 8 saved",count);
-  text(ctx,replacing&&!menu?"Replaces oldest ready":position,14,223,GColorDarkGray);
+  char position[32];
+  if(menu)snprintf(position,sizeof(position),"Timer %u of %u",menu,count);
+  else if(count)snprintf(position,sizeof(position),"%u of 8 saved",count);
+  else snprintf(position,sizeof(position),"Select to create");
+  text(ctx,replacing&&!menu?"Replaces oldest ready":position,
+       replacing&&!menu?14:16,222,GColorDarkGray);
 }
 
 static void editor_screen(GContext *ctx, const TimerUiView *view) {
   static const char *labels[]={"HOURS","MIN","SEC"};
   const uint32_t total=view->edit[0]*3600+view->edit[1]*60+view->edit[2];
-  bar(ctx,ICON_PLUS,view->edit_field<2?ICON_NEXT:ICON_CHECK,ICON_MINUS,GColorBlack);
+  const bool locked=view->edit[0]==24&&view->edit_field>0;
+  const bool invalid=total<ACTIVITY_TIMER_MIN_SECONDS;
+  bar(ctx,locked?ICON_NONE:ICON_PLUS,
+      view->edit_field<2?ICON_NEXT:invalid?ICON_NONE:ICON_CHECK,
+      locked?ICON_NONE:ICON_MINUS,GColorBlack);
   const bool reuse=view->editing_new&&timer_collection_count(view->collection)==TIMER_COLLECTION_CAPACITY;
   text(ctx,view->editing_new?(reuse?"REPLACE SAVED":"NEW TIMER"):
        view->editing_ready?"EDIT SAVED TIMER":"CHANGE REMAINING",15,24,GColorBlack);
@@ -316,7 +336,7 @@ static void editor_screen(GContext *ctx, const TimerUiView *view) {
   for(unsigned field=0;field<3;++field) {
     const int x=5+(int)field*53;
     const bool selected=view->edit_field==field;
-    const GColor background=selected?BLUE:GColorWhite;
+    const GColor background=selected?(locked?GColorLightGray:invalid&&field==2?AMBER:BLUE):GColorWhite;
     if(selected) {
       graphics_context_set_fill_color(ctx,background);
       graphics_fill_rect(ctx,GRect(x,104,50,45),3,GCornersAll);
@@ -329,7 +349,7 @@ static void editor_screen(GContext *ctx, const TimerUiView *view) {
   else if(reuse)text(ctx,"Replaces oldest ready",14,186,GColorDarkGray);
   else text(ctx,view->edit_field==0?"Back to cancel":
       view->edit_field==1?"Back for hours":"Back for minutes",14,186,GColorDarkGray);
-  text(ctx,total<ACTIVITY_TIMER_MIN_SECONDS?"Minimum 5 seconds":
+  text(ctx,invalid?"Set at least 5 seconds":
        view->edit_field<2?"Select for next field":view->editing_new?"Select to start":"Select to save",
        16,206,GColorBlack);
 }
@@ -337,13 +357,15 @@ static void editor_screen(GContext *ctx, const TimerUiView *view) {
 static void alarm_screen(GContext *ctx, const TimerUiView *view) {
   rect(ctx,GRect(0,0,200,228),GColorBlack);
   bar(ctx,ICON_SNOOZE,ICON_CHECK,ICON_NONE,GColorDarkGray);
-  text(ctx,"TIME’S UP",23,28,GColorWhite);
+  const bool issue=view->issue&&view->issue[0];
+  text(ctx,"TIME’S UP",issue?19:23,issue?24:28,GColorWhite);
   const ActivityTimerModel *timer=&view->collection->slots[view->selected];
   char duration[20];clock_text(timer->repeat_seconds,duration,sizeof(duration));
-  timer_fonts_digits(ctx,duration,UI_CENTER,77,timer->repeat_seconds>=3600?32:47,GColorWhite,GColorBlack);
-  hourglass(ctx,0,1,UI_CENTER,96,100,BLUE,GColorWhite,false,view->now);
-  text(ctx,"Select: Done",15,200,GColorWhite);
-  text(ctx,"Up: Snooze 1 min",14,217,GColorWhite);
+  timer_fonts_digits(ctx,duration,UI_CENTER,issue?65:77,
+      timer->repeat_seconds>=3600?(issue?28:32):(issue?36:47),GColorWhite,GColorBlack);
+  hourglass(ctx,0,1,UI_CENTER,issue?80:96,issue?85:100,BLUE,GColorWhite,false,view->now);
+  text(ctx,"Select: Done",15,issue?167:200,GColorWhite);
+  text(ctx,"Up: Snooze 1 min",14,issue?183:217,GColorWhite);
 }
 
 static void options_screen(GContext *ctx, const TimerUiView *view) {
@@ -353,23 +375,36 @@ static void options_screen(GContext *ctx, const TimerUiView *view) {
   snprintf(restart,sizeof(restart),"Restart %s",duration);
   const char *options[]={timer->state==ACTIVITY_TIMER_FINISHED&&timer->acknowledged?
       "Change duration":"Change remaining",restart,"Delete timer"};
-  bar(ctx,ICON_UP,ICON_CHECK,ICON_DOWN,GColorBlack);
-  text(ctx,"TIMER OPTIONS",16,25,GColorBlack);
-  graphics_context_set_stroke_color(ctx,GColorLightGray);segment(ctx,10,37,156,37);
+  bar(ctx,view->option?ICON_UP:ICON_NONE,ICON_CHECK,view->option<2?ICON_DOWN:ICON_NONE,GColorBlack);
+  const unsigned count=timer_collection_count(view->collection);
+  unsigned position=1;
+  for(unsigned row=0;row<count;++row)
+    if(timer_collection_visible_slot(view->collection,row)==(int)view->selected)position=row+1;
+  char heading[32],context[40];
+  if(count>1)snprintf(heading,sizeof(heading),"TIMER %u OF %u",position,count);
+  else snprintf(heading,sizeof(heading),"TIMER OPTIONS");
+  snprintf(context,sizeof(context),"%s · %s",duration,
+      timer->state==ACTIVITY_TIMER_RUNNING?"Running":timer->state==ACTIVITY_TIMER_PAUSED?"Paused":
+      timer->acknowledged?"Ready":"Time’s up");
+  text(ctx,heading,16,24,GColorBlack);
+  text(ctx,context,14,43,GColorDarkGray);
+  graphics_context_set_stroke_color(ctx,GColorLightGray);segment(ctx,10,49,156,49);
   for(unsigned row=0;row<3;++row) {
-    const int y=53+(int)row*46;
+    const int y=58+(int)row*43;
     const bool selected=view->option==row;
-    if(selected)rect(ctx,GRect(0,y,UI_WIDTH,43),GColorBlack);
+    if(selected)rect(ctx,GRect(0,y,UI_WIDTH,41),GColorBlack);
     timer_fonts_text(ctx,options[row],19,13,y+28,149,selected?GColorWhite:GColorBlack,GTextAlignmentLeft);
   }
   text(ctx,view->status&&view->status[0]?view->status:"Back to keep timing",14,214,GColorDarkGray);
 }
 
 static void confirm_screen(GContext *ctx, const TimerUiView *view) {
-  bar(ctx,ICON_UP,ICON_CHECK,ICON_DOWN,GColorBlack);
-  icon(ctx,ICON_TRASH,UI_CENTER,43,GColorBlack);
-  text(ctx,"Delete timer?",23,89,GColorBlack);
-  text(ctx,"This cannot be undone.",15,113,GColorDarkGray);
+  const bool issue=view->issue&&view->issue[0];
+  bar(ctx,view->confirm_choice?ICON_UP:ICON_NONE,ICON_CHECK,
+      view->confirm_choice?ICON_NONE:ICON_DOWN,GColorBlack);
+  icon(ctx,ICON_TRASH,UI_CENTER,issue?55:43,GColorBlack);
+  text(ctx,"Delete timer?",23,issue?95:89,GColorBlack);
+  text(ctx,"This cannot be undone.",15,issue?119:113,GColorDarkGray);
   rect(ctx,GRect(0,141,UI_WIDTH,32),view->confirm_choice?GColorWhite:GColorBlack);
   text(ctx,"Keep timer",18,163,view->confirm_choice?GColorBlack:GColorWhite);
   if(view->confirm_choice)rect(ctx,GRect(0,177,UI_WIDTH,32),AMBER);
@@ -388,8 +423,10 @@ void timer_ui_draw(GContext *ctx, const TimerUiView *view) {
     default:main_screen(ctx,view);break;
   }
   if(view->issue&&view->issue[0]) {
-    rect(ctx,GRect(0,195,UI_WIDTH,33),AMBER);
-    text(ctx,view->issue,14,216,GColorBlack);
+    const bool confirm=view->screen==SCREEN_CONFIRM;
+    rect(ctx,GRect(0,confirm?0:187,UI_WIDTH,confirm?35:41),AMBER);
+    text(ctx,view->issue,14,confirm?14:202,GColorBlack);
+    text(ctx,"Keep Timer open",14,confirm?30:220,GColorBlack);
   }
 }
 

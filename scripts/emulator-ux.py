@@ -201,6 +201,9 @@ def seed(mode):
     report.setdefault('fixtures', {})[str(mode)] = {'pbwSha256': digest(fixture.read_bytes()),
         'sourceSha256': digest((ROOT / 'tests/ux-fixture/src/c/main.c').read_bytes()), 'version': 1, 'collectionBytes': 372}
     install(fixture)
+    if mode==6:
+        shot('storage-generation-fixture')
+        report['captures'][-1]['source']='Isolated exhausted-generation V1 bank fixture, not Timer native binary'
     install(NATIVE)
 
 def add():
@@ -351,6 +354,68 @@ elif PHASE == 'fields':
     assert all(value[1003]=='cancelled' for value in empty.values())
     report['proofs']['secondsField']={'secondsHintCaptured':True,'cancelPreservesEmpty':True}
 
+elif PHASE == 'uxpass':
+    seed(5)
+    before=handshake()
+    assert sum(value[1003]=='active' for value in before.values())==3
+    assert sum(value[1003]=='paused' for value in before.values())==2
+    shot('uxpass-mixed-list-first')
+    button('Down');shot('uxpass-mixed-list-second-identical-timer')
+    button('Select');button('Down')
+    shot('uxpass-options-identical-duration-context')
+    button('Back');button('Select');button('Down')
+    shot('uxpass-options-paused-context')
+    button('Back',2);button('Down',8)
+    shot('uxpass-mixed-list-last-position')
+    add();button('Down',10);button('Select')
+    shot('uxpass-editor-zero-no-commit')
+    button('Up',4);shot('uxpass-editor-four-seconds-no-commit')
+    button('Select')
+    same=handshake()
+    assert all(same[slot][1001]==before[slot][1001] for slot in before)
+    button('Up');shot('uxpass-editor-five-seconds-valid')
+    button('Back',3)
+    add();button('Back');button('Up',24);button('Select')
+    locked_before=shot('uxpass-editor-24h-minutes-locked')
+    button('Up');button('Down')
+    locked_after=shot('uxpass-editor-24h-minutes-unchanged')
+    assert locked_before==locked_after
+    button('Select');shot('uxpass-editor-24h-seconds-locked')
+    button('Back',3)
+    seed(0);handshake();shot('uxpass-empty-single-create-action')
+    report['proofs']['uxPass']={'mixedStates':before,'invalidCommitPreservesRuns':True,
+        'locked24hFieldsDoNotChange':True,'allEightPositionsReachable':True,
+        'identicalDurationOptionsContext':True,'emptyListHasOnlyCreateAffordance':True}
+
+elif PHASE == 'storage':
+    # An actual exhausted-bank-generation write refusal in isolated QEMU,
+    # not a diagnostic Timer. The fixture supplies a valid V1 bank at the
+    # maximum generation; the exact candidate cannot commit another bank.
+    seed(6)
+    first=shot('storage-not-saved-list')
+    assert first[(200*200+1)*3:(200*200+1)*3+3]==bytes((255,170,0))
+    button('Select');shot('storage-not-saved-detail')
+    button('Down');shot('storage-not-saved-options')
+    button('Down',2);button('Select')
+    confirm=shot('storage-not-saved-delete-keeps-actions')
+    assert confirm[(1*200+1)*3:(1*200+1)*3+3]==bytes((255,170,0))
+    assert confirm[(180*200+1)*3:(180*200+1)*3+3]!=bytes((255,170,0))
+    button('Back',2)
+    until=time.monotonic()+35
+    while time.monotonic()<until:
+        pixels=b''.join(Screenshot(p).grab_image())
+        if pixels[:3]==bytes((0,0,0)):
+            break
+        time.sleep(.3)
+    else:raise AssertionError('Expected actual native completion while storage cannot commit')
+    shot('storage-not-saved-native-alarm-actions-visible')
+    button('Select');shot('storage-done-cannot-hide-unsaved-alarm')
+    button('Back');shot('storage-back-remains-available')
+    report['proofs']['storageFailure']={'fixtureMode':6,'actualExhaustedGenerationWriteRefusal':True,
+        'nativeBinaryUnmodified':True,'alarmActionsVisibleWithCriticalMessage':True,
+        'failedAcknowledgmentRemainsAlarm':True,'backRemainsAvailable':True}
+    seed(0)
+
 elif PHASE == 'settings':
     seed(0)
     handshake()
@@ -413,7 +478,8 @@ elif PHASE == 'settings':
         'directEditCancelRun':unchanged,'optionsEditCancelCursorRestored':True,
         'deleteKeepAndBackReturnToOptionsCursor':True,'remainingEdit':edited,
         'deleteCancelKeepsRun':intact,'restartUsesSavedRepeat':restarted,
-        'replacementCancelPreservesEightReady':True,'fullSelectPreservesEightRuns':True}
+        'replacementCancelPreservesEightReady':True,'fullSelectPreservesEightRuns':True,
+        'fullListSkipsDisabledAddAndOpensSelectedTimer':True}
     seed(0)
 
 elif PHASE == 'launcher':

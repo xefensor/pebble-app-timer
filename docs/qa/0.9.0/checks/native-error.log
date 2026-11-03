@@ -1,0 +1,39 @@
+Emery QEMU connected through local FIFOs; no phone runtime
+N/A%[=                                                      ]   0.0 B/s 0:00:00
+N/A%[=                                                    ]  83.2 KiB/s 0:00:00
+N/A%[=                                                    ]  68.0 KiB/s 0:00:00
+N/A%[=                                                      ]   0.0 B/s 0:00:00
+N/A%[=                                                    ]  71.8 KiB/s 0:00:00
+N/A%[=                                                    ] 136.8 KiB/s 0:00:00
+N/A%[=                                                    ] 157.0 KiB/s 0:00:00
+N/A%[=                                                    ] 141.7 KiB/s 0:00:00
+N/A%[=                                                    ] 155.2 KiB/s 0:00:00
+N/A%[=                                                    ] 141.4 KiB/s 0:00:00
+empty-before-conflict
+N/A%[=                                                      ]   0.0 B/s 0:00:00
+N/A%[=                                                    ]  16.3 KiB/s 0:00:00
+N/A%[=                                                    ]  59.0 KiB/s 0:00:00
+external-wakeup-fixture
+N/A%[=                                                      ]   0.0 B/s 0:00:00
+N/A%[=                                                    ]  66.9 KiB/s 0:00:00
+N/A%[=                                                    ] 129.9 KiB/s 0:00:00
+N/A%[=                                                    ] 148.4 KiB/s 0:00:00
+N/A%[=                                                    ] 135.7 KiB/s 0:00:00
+N/A%[=                                                    ] 151.1 KiB/s 0:00:00
+N/A%[=                                                    ] 141.2 KiB/s 0:00:00
+alarm-not-set
+alarm-not-set-options
+N/A%[=                                                      ]   0.0 B/s 0:00:00
+N/A%[=                                                    ]  48.7 KiB/s 0:00:00
+N/A%[=                                                    ]  64.2 KiB/s 0:00:00
+fixture-cleared
+N/A%[=                                                      ]   0.0 B/s 0:00:00
+N/A%[=                                                    ]  67.0 KiB/s 0:00:00
+N/A%[=                                                    ] 132.7 KiB/s 0:00:00
+N/A%[=                                                    ] 152.9 KiB/s 0:00:00
+N/A%[=                                                    ] 139.8 KiB/s 0:00:00
+N/A%[=                                                    ] 152.9 KiB/s 0:00:00
+N/A%[=                                                    ] 141.3 KiB/s 0:00:00
+alarm-recovered
+empty-after-recovery
+Alarm-scheduling error and recovery captured; fixture Wakeup cleared

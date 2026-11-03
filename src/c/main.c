@@ -529,8 +529,8 @@ static TimerUiView prv_view(void) {
       .editing_ready=s_edit_slot>=0&&
           s_collection.slots[s_edit_slot].state==ACTIVITY_TIMER_FINISHED&&
           s_collection.slots[s_edit_slot].acknowledged,
-      .issue=s_storage_error?"Storage failed; keep open":
-          s_alarm_error?"Alarm not set; keep open":NULL,
+      .issue=s_storage_error?"Changes not saved":
+          s_alarm_error?"Alarm not set":NULL,
       .status=prv_status()};
 }
 
@@ -553,6 +553,8 @@ static void prv_update_ticks(void) {
 }
 
 static void prv_refresh(void) {
+  if (s_screen==SCREEN_LIST && !s_menu && timer_collection_count(&s_collection) &&
+      !timer_collection_can_create(&s_collection)) s_menu=1;
   prv_update_ticks();
   if (s_canvas) layer_mark_dirty(s_canvas);
 }
@@ -659,7 +661,8 @@ static void prv_press(ButtonId button) {
   }
   if (s_screen==SCREEN_LIST) {
     const unsigned count=timer_collection_count(&s_collection);
-    if (button==BUTTON_ID_UP && s_menu) --s_menu;
+    const unsigned first_menu=timer_collection_can_create(&s_collection)?0:count?1:0;
+    if (button==BUTTON_ID_UP && s_menu>first_menu) --s_menu;
     if (button==BUTTON_ID_DOWN && s_menu<count) ++s_menu;
     if (button==BUTTON_ID_SELECT) {
       if (!s_menu) { if (timer_collection_can_create(&s_collection))prv_begin_edit(-1); else vibes_short_pulse(); }

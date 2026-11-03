@@ -1,0 +1,28 @@
+Emery QEMU connected through local FIFOs; no phone runtime
+N/A%[=                                                      ]   0.0 B/s 0:00:00
+N/A%[=                                                    ]  85.7 KiB/s 0:00:00
+N/A%[=                                                    ]  70.3 KiB/s 0:00:00
+storage-generation-fixture
+N/A%[=                                                      ]   0.0 B/s 0:00:00
+N/A%[=                                                    ]  74.4 KiB/s 0:00:00
+N/A%[=                                                    ] 137.4 KiB/s 0:00:00
+N/A%[=                                                    ] 150.1 KiB/s 0:00:00
+N/A%[=                                                    ] 142.7 KiB/s 0:00:00
+storage-not-saved-list
+storage-not-saved-detail
+storage-not-saved-options
+storage-not-saved-delete-keeps-actions
+storage-not-saved-native-alarm-actions-visible
+storage-done-cannot-hide-unsaved-alarm
+storage-back-remains-available
+N/A%[=                                                      ]   0.0 B/s 0:00:00
+N/A%[=                                                    ]  55.6 KiB/s 0:00:00
+N/A%[=                                                    ]  65.1 KiB/s 0:00:00
+N/A%[=                                                      ]   0.0 B/s 0:00:00
+N/A%[=                                                    ]  75.8 KiB/s 0:00:00
+N/A%[=                                                    ] 140.3 KiB/s 0:00:00
+N/A%[=                                                    ] 158.9 KiB/s 0:00:00
+N/A%[=                                                    ] 143.4 KiB/s 0:00:00
+N/A%[=                                                    ] 156.3 KiB/s 0:00:00
+N/A%[=                                                    ] 143.0 KiB/s 0:00:00
+Timer native phase completed: storage

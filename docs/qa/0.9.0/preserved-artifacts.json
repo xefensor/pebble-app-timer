@@ -1,0 +1,98 @@
+{
+  "result": "PASS",
+  "baseline": "00b81981423afe27c19835fa56c303e9fd87d091",
+  "artifacts": [
+    {
+      "file": "releases/Timer-0.1.1-source.zip",
+      "sha256": "9959b5e00e5ffd28fffe546a2a2ad3217aa7caea430c7008def63e37a14f6e42"
+    },
+    {
+      "file": "releases/Timer-0.1.1.pbw",
+      "sha256": "b5061e79013d51c9d9a1c6104a7ebdd2ff285265607e2fc7be62444816a4e918"
+    },
+    {
+      "file": "releases/Timer-0.2.0-source.zip",
+      "sha256": "5cc32a83d9b1725e9242e6cd8890bcef53204e14885f0f55f88cc9f1da5c4826"
+    },
+    {
+      "file": "releases/Timer-0.2.0.pbw",
+      "sha256": "4e5d6e0caa1b92e36016da753c6a6d68d4f6651e6a222343040b1431eea1c7f2"
+    },
+    {
+      "file": "releases/Timer-0.3.0-source.zip",
+      "sha256": "a338bf68b7dfb7f718ab1866c20a5c17adead394c45dbcff92b63f68de169acb"
+    },
+    {
+      "file": "releases/Timer-0.3.0.pbw",
+      "sha256": "fbf6de60e1704132a973f5c608279cc4710710f6438133320df22cc95991be16"
+    },
+    {
+      "file": "releases/Timer-0.3.1-source.zip",
+      "sha256": "b0d9331931ac4e5d6472b48c6973ce4d55b42af2fa38b9bd8e668b0cc729cc25"
+    },
+    {
+      "file": "releases/Timer-0.3.1.pbw",
+      "sha256": "af6eaf21a2ee12a524537d3ae274acfdfc0b55826ee1877a4b5e7bf36998a00d"
+    },
+    {
+      "file": "releases/Timer-0.4.0-source.zip",
+      "sha256": "a6399ff2ea751582a4e7c030bdea4d1d8b94c526aceeee8601b08b2ca5f485f2"
+    },
+    {
+      "file": "releases/Timer-0.4.0.pbw",
+      "sha256": "769a7690fca5cc7930e22f728fd9fde4ad2aca3d6a937f98785129dced2eae5d"
+    },
+    {
+      "file": "releases/Timer-0.5.0-source.zip",
+      "sha256": "06f2bc72e5fc7967864fda430660f8f93a1278bfadd0b790bd9eaf6b57b5857a"
+    },
+    {
+      "file": "releases/Timer-0.5.0.pbw",
+      "sha256": "1f08e804ec8c4246fb4e9dbf0aacd07cb5aafc54de0f7fc3277049350a7b5351"
+    },
+    {
+      "file": "releases/Timer-0.6.0-source.zip",
+      "sha256": "0a58bc70aa23b49dd7ab732bbab1df257afa5582346d2e38402eb80bbfe3ea44"
+    },
+    {
+      "file": "releases/Timer-0.6.0.pbw",
+      "sha256": "f5ce5d3c7f16668046113fbf20a3b790b2c42d44b784f08d021c9be284123814"
+    },
+    {
+      "file": "releases/Timer-0.7.0-source.zip",
+      "sha256": "fdafa20e24f355701df377a013351491c951672d9406df818c4f5eca156f0057"
+    },
+    {
+      "file": "releases/Timer-0.7.0.pbw",
+      "sha256": "946f019bdccd6fbdb1a25a24268fb30a7367c2f34c2c7433bd777a161c2cbff9"
+    },
+    {
+      "file": "releases/Timer-0.8.0-source.zip",
+      "sha256": "6d97d476e6a7bd9ee4c2d0e1a9f6cd22cbee120ffe390ba64a17b78817389f8e"
+    },
+    {
+      "file": "releases/Timer-0.8.0.pbw",
+      "sha256": "b80010c2d83bec6f6986f39815fa87d5a72bcf3a37f11df6a8e5349ca4b0ba9e"
+    },
+    {
+      "file": "vendor/pebble-activities-0.1.2.tgz",
+      "sha256": "dd49a628fa14c319648bb782eb15502a485cf225c77f5f709e86c74aa57be0f6"
+    },
+    {
+      "file": "vendor/pebble-activities-0.2.0.tgz",
+      "sha256": "2d2b3056bdb7c39d8b3d533928a98bcdc74a8172585b88cb2a19df00430e10ae"
+    },
+    {
+      "file": "vendor/pebble-activities-0.2.1.tgz",
+      "sha256": "2dfaf5cd7dd69b9bf850cc56248500278d80ca47a00a3d836b8608d14cf9c17a"
+    },
+    {
+      "file": "vendor/pebble-activities-0.3.0.tgz",
+      "sha256": "882df4cf462d19a14baf7aebacb06c7f0c807a86b183614a6ba95d6a776cc92c"
+    },
+    {
+      "file": "vendor/pebble-activities-0.4.0.tgz",
+      "sha256": "9e640aea91d08633e91e59dab3d1e0ee6243efe0109d971e42d356a4d67affbe"
+    }
+  ]
+}

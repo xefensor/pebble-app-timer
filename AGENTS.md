@@ -35,7 +35,7 @@ service. Keep timer behaviour independent of Dynamic's presentation.
 
 - Install with `npm ci --ignore-scripts`. Use the versioned tarball in `vendor/`;
   never rely on a sibling library checkout. Record updated provenance and hashes.
-  Version 0.8.0 keeps Activities 0.4.0; `vendor/ACTIVITIES.json` records
+  Version 0.9.0 keeps Activities 0.4.0; `vendor/ACTIVITIES.json` records
   its exact reviewed source commit and archive checksum.
 - Use `npm run build` for distribution. Its manifestVersion 2 PBW must contain
   native app, PKJS, independently callable `plugin.js`, licences and notices.
@@ -69,6 +69,13 @@ Restart names the saved repeat duration, independent of remaining/snoozed time.
 When New timer will reuse the oldest acknowledged Ready slot, warn in the list
 before entry and in the editor before starting. Eight active slots remain Full.
 Held buttons must not act again after their first press changes screens.
+Full lists skip the disabled Add row; normal lists retain New timer focus.
+Keep the selected row visible with a position label and static scroll indicator.
+Only advertise actions available in the current state: hide boundary arrows,
+the invalid seconds commit check and 24-hour locked-field plus/minus icons.
+Critical warnings must preserve list rows, both Delete choices and the alarm's
+Done/Snooze hints. Error fixtures may exercise an exhausted bank generation or
+an external Wakeup conflict, but shipping native code must remain unmodified.
 Normal sharing status belongs in More options; alarm/storage failures stay
 visible. Restart creates a new run in the same slot with the configured duration.
 

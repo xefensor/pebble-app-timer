@@ -1,0 +1,12 @@
+{
+  "result": "PASS",
+  "allContactTilesPixelIdenticalToRawSources": true,
+  "mainTimerFrames": 53,
+  "errorAndFixtureFrames": 15,
+  "reviewPreviewBounds": {
+    "columns": 3,
+    "maxWidth": 630,
+    "maxHeight": 1008
+  },
+  "scope": "Pixel equality of stored contact sheets and raw PNGs. Suspect large-image previews were checked against original individual PNGs; no screenshot file is edited."
+}

@@ -1,0 +1,31 @@
+{
+  "version": "0.9.0",
+  "referenceCommit": "00b81981423afe27c19835fa56c303e9fd87d091",
+  "reference": "releases/Timer-0.8.0.pbw",
+  "pbwSha256": "44a2b09ce5a72455ae65694b8e22b05d5b5ab5276e0bd4891fc743b4e7ae0e3a",
+  "nativeUiChanged": true,
+  "unchangedOwnerGlanceFontsBridgeAndPin": {
+    "src/c/timer_model.c": "45aaebf48d5f8ea677b8d562fc6658c90d4a767593becc71ad33feb56d9fa138",
+    "src/c/timer_model.h": "9924ab3cfe71e05bb1f712f653f118930e0062666089a62707a860978fc4fedb",
+    "src/c/timer_collection.c": "81a4851fc2cd39970646d1cb16289d137ae8097514ac7856a0890dbee5547ae5",
+    "src/c/timer_collection.h": "ada8e410ec5ae721368dcb5e0aad804d7f3a57dc7da8e345e4c67e63828c00ce",
+    "src/c/timer_glance.c": "a4b8daf7567d86226ed94982c09666ec8c45e3cc70e6f7e93920236f7e9f305a",
+    "src/c/timer_glance.h": "dd48e7b1563bc8262393b97d1307efc681542b0ae7b7c332bcc1d7a48318bb6b",
+    "src/c/timer_glance_plan.h": "78dca0f56f9a38e0a89c49b0024c4670f0db28cb9082adb2236c0e9993c3db23",
+    "src/c/timer_fonts.c": "a0f63757b8bbb2801b6c5824f03f76df1d54565d1d23d94374c943d8ded5796d",
+    "src/c/timer_fonts.h": "24c0b9be2691506e4c74f753203f6a3098da1b661d71c8712f7972ba5d61868c",
+    "src/c/timer_hourglass.h": "ab3563b7aef1ee6049d46adb1a8289352756079de70c7c9d8ac57ee197544566",
+    "src/pkjs/index.js": "0509cf549422cb6bec86f11e639b95b4aa5bb9d2633fb54e76aace916c83bb79",
+    "src/plugin/index.js": "0b200c65a1765baa19247e6a5ce29143dad9e44cae80f063b0a829dec2f11af4",
+    "vendor/ACTIVITIES.json": "3e9be0afbeb7150cc1f4eb4beaef86a0ea4c2c5a501639de9eb0aa6bdf44ddf2"
+  },
+  "resourcesByteIdentical": true,
+  "phoneBundlesByteIdentical": true,
+  "nativePayloadSha256": {
+    "appinfo.json": "762de117e9d93ebb9abcb41f514354179b06501e1273c9cb4a88a114aa55a79b",
+    "emery/app_resources.pbpack": "7c33059be8dd8d5379ca467ce430225778ae5b576d19db66ad978c835110c7df",
+    "emery/manifest.json": "46d12e44c0b028e8ab37f9bf0528620179cd4a575b4a063c66da71c0095419f1",
+    "emery/pebble-app.bin": "f2d7c43c16ddfa7c88a336e5ec6c359e44eba3d5a8723291c8d7017c078d9b64"
+  },
+  "scope": "UI drawing and Full-list focus changes only; owner, banks, Glance, fonts, phone publisher/provider and dependency source identity verified. Native binary changed and has fresh captures."
+}

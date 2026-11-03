@@ -4,33 +4,61 @@ A native timer for **stock PebbleOS**, with activity sharing for compatible
 watchfaces such as [Dynamic](https://github.com/xefensor/dynamic-watchface).
 The first target is Pebble Time 2 (`emery`, 200 × 228).
 
-Timer **0.8.0** improves the on-watch options and duration
-editor: cancellation returns to its starting screen, Restart shows the saved
-duration, and replacing an old Ready timer is explained before starting.
-Activities, saved models, native alarms and the launcher countdown retain their
-existing ownership.
+Timer **0.9.0** improves orientation and feedback throughout the watch UI.
+Lists show the selected timer's position and a scroll indicator; Full focuses a
+real timer. Options identifies the selected timer and its state. Invalid and
+locked editor fields match the available button actions. Critical warnings stay
+readable while preserving alarm and delete controls. The familiar hourglass,
+saved models, native alarms and launcher countdown retain their ownership.
 
-Timer 0.8.0 is a [GitHub development prerelease](https://github.com/xefensor/pebble-app-timer/releases/tag/v0.8.0)
+Timer 0.9.0 is a [GitHub development prerelease](https://github.com/xefensor/pebble-app-timer/releases/tag/v0.9.0)
 with a typed summary activity source, durable Done acknowledgement,
 preserved repeat durations and a live countdown in the app list. Paused timers hide
 from compatible watchfaces after five minutes and remain saved in Timer.
-Download the [PBW](https://github.com/xefensor/pebble-app-timer/releases/download/v0.8.0/Timer-0.8.0.pbw),
-[source archive](https://github.com/xefensor/pebble-app-timer/releases/download/v0.8.0/Timer-0.8.0-source.zip)
-and [checksums](https://github.com/xefensor/pebble-app-timer/releases/download/v0.8.0/SHA256SUMS.txt).
+Download the [PBW](https://github.com/xefensor/pebble-app-timer/releases/download/v0.9.0/Timer-0.9.0.pbw),
+[source archive](https://github.com/xefensor/pebble-app-timer/releases/download/v0.9.0/Timer-0.9.0-source.zip)
+and [checksums](https://github.com/xefensor/pebble-app-timer/releases/download/v0.9.0/SHA256SUMS.txt).
 See [validation](docs/VALIDATION.md) for the native emulator and packaged-runtime
 checks; actual phone and physical-watch checks remain.
-The [previous 0.6.0](https://github.com/xefensor/pebble-app-timer/releases/tag/v0.6.0),
+The [previous 0.8.0](https://github.com/xefensor/pebble-app-timer/releases/tag/v0.8.0),
+[0.6.0](https://github.com/xefensor/pebble-app-timer/releases/tag/v0.6.0),
 [0.5.0](https://github.com/xefensor/pebble-app-timer/releases/tag/v0.5.0)
 and [0.4.0](https://github.com/xefensor/pebble-app-timer/releases/tag/v0.4.0)
 and [earlier 0.2.0 release](https://github.com/xefensor/pebble-app-timer/releases/tag/v0.2.0)
 and its historical validation remain unchanged.
 
-![Timer 0.8.0 native options and editor](docs/images/settings-overview.png)
+![Timer 0.9.0 native UI and navigation](docs/images/settings-overview.png)
 
-These are actual 0.8.0 Emery captures with synthetic saved timers. The full
+These are actual 0.9.0 Emery captures with synthetic saved timers. The full
 [0.5.0 native overview](docs/images/native-overview.png) retains its historical
 alarm and launcher scope. The [approved browser concept](docs/design/Timer-UI-Preview.html)
 remains design evidence, not a native or physical-watch capture.
+
+Use [Dynamic 0.15.0](https://github.com/xefensor/dynamic-watchface/releases/tag/v0.15.0)
+for activity presentation and [Open Activity 0.1.4](https://github.com/xefensor/pebble-app-open-activity/releases/tag/v0.1.4)
+for the separately configured Primary/Secondary shortcuts. Install each app
+separately; the Activities library is already bundled.
+
+## Version 0.9.0
+
+- Keep the selected timer in view while browsing mixed lists. Show Timer N of M
+  and a scroll thumb, with larger footer text. A Full list focuses an existing
+  timer and opens it with Select; the disabled add row is skipped.
+- Match action icons to available navigation: omit arrows at list/menu bounds,
+  hide the commit check below five seconds, and hide plus/minus on the locked
+  minutes/seconds fields at 24 hours. Invalid seconds use an amber highlight
+  and an explicit minimum-duration hint.
+- Give Options the selected timer's list position, repeat duration and state,
+  so its Restart and Delete actions retain context even for equal-duration timers.
+- Split alarm/storage errors into a readable heading and Keep Timer open.
+  Reserve room for list rows, retain both Delete choices, and keep Done/Snooze
+  visible in the compact error-alarm composition. Back remains available.
+- Preserve the hourglass, normal running/paused/Ready detail, safe Keep default,
+  cancellation paths, native owner/banks/Wakeups, all eight slots and activity
+  leases. No new phone settings page, provider API or dependency update is added.
+- Capture actual final-candidate native flows, Wakeup-conflict recovery and a
+  valid exhausted-generation fixture that exercises the real write refusal.
+  Emulator and simulated transport evidence remain separate from device checks.
 
 ## Version 0.8.0
 
@@ -298,7 +326,7 @@ The dependency is installed from `vendor/pebble-activities-0.4.0.tgz`; its
 provenance and SHA-256 are recorded in [vendor/README.md](vendor/README.md).
 
 The distribution build clears the SDK cache so dependency updates cannot leave
-stale phone JavaScript in the PBW. It writes `dist/Timer-0.8.0.pbw` and its checksum. It bundles the provider
+stale phone JavaScript in the PBW. It writes `dist/Timer-0.9.0.pbw` and its checksum. It bundles the provider
 JavaScript and sets `manifestVersion: 2`, including `plugin.js` alongside PKJS
 and the watch binary. A plain `pebble build` creates a development PBW without
 that extra provider bundle; use `npm run build` for an installable shared-activity

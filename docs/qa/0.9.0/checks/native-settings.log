@@ -1,0 +1,49 @@
+Emery QEMU connected through local FIFOs; no phone runtime
+N/A%[=                                                      ]   0.0 B/s 0:00:00
+N/A%[=                                                    ]  45.5 KiB/s 0:00:00
+N/A%[=                                                    ]  54.7 KiB/s 0:00:00
+N/A%[=                                                      ]   0.0 B/s 0:00:00
+N/A%[=                                                    ]  36.1 KiB/s 0:00:00
+N/A%[=                                                    ] 125.4 KiB/s 0:00:00
+N/A%[=                                                    ] 145.1 KiB/s 0:00:00
+N/A%[=                                                    ] 134.9 KiB/s 0:00:00
+N/A%[=                                                    ] 149.8 KiB/s 0:00:00
+N/A%[=                                                    ] 137.6 KiB/s 0:00:00
+settings-empty-new-timer
+settings-new-editor-minutes
+settings-hours-cancel-hint
+settings-new-cancel-returns-list
+settings-running-detail
+settings-direct-edit-cancel-returns-detail
+settings-options-change-selected
+settings-options-edit-cancel-returns-options
+settings-delete-keep-default
+settings-keep-returns-options-delete-selected
+settings-delete-back-returns-options-delete-selected
+settings-restart-shows-saved-duration
+settings-paused-detail
+N/A%[=                                                      ]   0.0 B/s 0:00:00
+N/A%[=                                                    ]  45.3 KiB/s 0:00:00
+N/A%[=                                                    ]  52.1 KiB/s 0:00:00
+N/A%[=                                                      ]   0.0 B/s 0:00:00
+N/A%[=                                                    ]  36.5 KiB/s 0:00:00
+N/A%[=                                                    ] 126.8 KiB/s 0:00:00
+N/A%[=                                                    ] 147.5 KiB/s 0:00:00
+N/A%[=                                                    ] 137.6 KiB/s 0:00:00
+N/A%[=                                                    ] 138.5 KiB/s 0:00:00
+settings-eight-ready-replacement-list-warning
+settings-eight-ready-replacement-editor-warning
+settings-replacement-cancel-preserves-eight-ready
+settings-eight-running-full
+settings-full-select-preserves-runs
+N/A%[=                                                      ]   0.0 B/s 0:00:00
+N/A%[=                                                    ]  18.5 KiB/s 0:00:00
+N/A%[=                                                    ]  50.2 KiB/s 0:00:00
+N/A%[=                                                      ]   0.0 B/s 0:00:00
+N/A%[=                                                    ]  35.0 KiB/s 0:00:00
+N/A%[=                                                    ] 124.2 KiB/s 0:00:00
+N/A%[=                                                    ] 142.9 KiB/s 0:00:00
+N/A%[=                                                    ] 134.0 KiB/s 0:00:00
+N/A%[=                                                    ] 149.6 KiB/s 0:00:00
+N/A%[=                                                    ] 136.2 KiB/s 0:00:00
+Timer native phase completed: settings

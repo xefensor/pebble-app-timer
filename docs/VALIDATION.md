@@ -1,5 +1,73 @@
 # Timer validation
 
+## 0.9.0 complete watch UI/UX pass
+
+This pass improves list orientation, Options context, editor affordances and
+critical error layouts while keeping the normal hourglass/detail composition.
+Full lists focus an existing timer; unavailable navigation icons are omitted.
+The selected timer stays visible with a larger position footer and scroll thumb.
+Invalid seconds and locked 24-hour fields match the available Select/Up/Down
+actions. Options retains duration/state and selected-timer context. Two-line
+critical warnings leave Delete choices and alarm Done/Snooze hints readable.
+
+- **22 JavaScript checks, six portable C suites and 38 Python regressions pass.**
+  The actual packaged PKJS/provider also pass numeric/symbolic messages, schema4,
+  acknowledgement, original leases, compatibility sources and cold snapshots in
+  isolated VMs. Font/resource and license identity checks pass.
+- **SDK 4.33.1 Emery build passes:** resources remain 26,719 bytes; the SDK RAM
+  footprint is 36,501 bytes with 94,571 available heap bytes before startup
+  allocation. These are static SDK figures, not runtime peak/battery measurements.
+  The only compiler/linker warning is the existing SDK RWX load segment notice.
+- **53 actual final-candidate native frames pass** across focused UI, settings,
+  all editor fields, normal native UX and eight-slot capacity phases. Checks
+  cover mixed states, equal-duration Options context, first/last list position,
+  invalid 0/4 seconds versus valid 5 seconds, unchanged locked 24-hour fields,
+  cancellation/Keep return paths, Ready replacement, Full opening an actual
+  selected timer, background Wakeup, Snooze, no-op edit, elapsed-preserving edits,
+  original-duration Restart, durable Done and explicit repeat.
+- **Seven actual Timer storage-error frames pass.** An isolated fixture writes a
+  valid V1 bank at generation `UINT32_MAX`. The unmodified final Timer binary
+  then executes its real refusal to commit another bank. List/Detail/Options
+  warnings fit, Delete keeps both choices visible, native completion retains
+  Done/Snooze hints, failed Done stays pending, and Back remains available.
+  The fixture screen is separately labelled and is not a Timer capture.
+- **Five actual Timer scheduling-error/recovery frames pass.** A different-UUID
+  fixture owns a conflicting native Wakeup. Timer displays Alarm not set / Keep
+  Timer open in Detail and Options, then clears the warning after the fixture
+  explicitly cancels its Wakeup. Both fixture screens are labelled separately.
+- All **65 Timer frames** use the exact final native binary/resources and were
+  visually reviewed; the three fixture frames retain their separate scope.
+  Contact sheets and the current eight-frame product overview arrange raw
+  screenshots with captions outside. Native pixels are not altered.
+- Timer models, collection/banks, Glance, fonts/hourglass, phone publisher/provider
+  and the Activities 0.4.0 pin match 0.8.0 source bytes. Packaged phone bundles and
+  resources are byte-identical to 0.8.0. Only native UI drawing, issue labels and
+  Full-list navigation change; UUID, keys, leases and native alarm ownership stay.
+- The final suite handoff executes Dynamic 0.15.0, Timer 0.9.0 and Open Activity
+  0.1.4 scripts. Six privacy/role cases cover 48 selected launches, 48 expired
+  closures and 336 unselected attempts without a subscription or invocation.
+  SDK/native presentation/gesture/confirmation and clocks are simulated.
+
+Evidence: [checks](qa/0.9.0/checks.json),
+[normal/UI/native report](qa/0.9.0/native/ux.json),
+[storage refusal](qa/0.9.0/native-storage/ux.json),
+[scheduling failure/recovery](qa/0.9.0/native-error/errors/errors.json),
+[focused review](qa/0.9.0/review-focused.png),
+[font audit](qa/0.9.0/font-audit.json),
+[packaged runtime](qa/0.9.0/packaged-runtime.json),
+[packaged suite handoff](qa/0.9.0/packaged-handoff.json),
+[owner/Glance/bridge identity](qa/0.9.0/native-identity.json) and
+[UX review](UX-REVIEW.md).
+
+Final PBW SHA-256:
+`44a2b09ce5a72455ae65694b8e22b05d5b5ab5276e0bd4891fc743b4e7ae0e3a`.
+
+Native tests run in isolated Emery QEMU with synthetic saved data and direct
+Python requests/receipts. They establish neither physical button feel nor real
+phone/plugin delivery, vibration or battery use. Prior migration/Glance evidence
+retains its original version scope unless explicitly repeated above. Earlier
+release archives and QA remain preserved.
+
 ## 0.8.0 on-watch Options and editor UX
 
 This update improves list guidance and cancellation paths. Timer has no

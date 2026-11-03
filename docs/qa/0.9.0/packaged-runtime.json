@@ -1,0 +1,6 @@
+{
+  "result": "PASS",
+  "pbwSha256": "44a2b09ce5a72455ae65694b8e22b05d5b5ab5276e0bd4891fc743b4e7ae0e3a",
+  "output": "Packaged Timer PKJS, numeric keys, schema 4 owner snapshots/navigation, compatibility sources, multi-slot replacement, acknowledgement and cold reload passed.\n",
+  "scope": "Actual packaged PKJS/provider in isolated VMs, simulated SDK/storage/transport, no physical-watch or real-phone claim."
+}

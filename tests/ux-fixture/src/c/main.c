@@ -47,6 +47,21 @@ int main(void) {
       timer->deadline=now+duration;timer->valid_until=timer->deadline+60;
       collection.visible_mask|=1u<<i;
     }
+    if (UX_FIXTURE_MODE==5) {
+      timer->configured_seconds=600;timer->run=1;
+      timer->state=i<2||i==7?1:i<4?2:3;
+      timer->deadline=timer->state==1?now+(i==7?86400:600):0;
+      if(i==7)timer->configured_seconds=86400;
+      timer->remaining_seconds=timer->state==2?480:0;
+      timer->observed_at=timer->state==3?now-100:now;
+      timer->valid_until=timer->state==1?timer->deadline+60:timer->observed_at+(timer->state==2?300:60);
+      collection.visible_mask|=1u<<i;
+    }
+    if (UX_FIXTURE_MODE==6 && !i) {
+      timer->configured_seconds=30;timer->run=1;timer->state=1;
+      timer->deadline=now+30;timer->valid_until=timer->deadline+60;
+      collection.visible_mask|=1u<<i;
+    }
   }
   const uint8_t *bytes=(const uint8_t *)&collection;
   uint32_t checksum=UINT32_C(2166136261)^alarms;
@@ -56,14 +71,16 @@ int main(void) {
     const size_t count=sizeof(collection)-offset<200?sizeof(collection)-offset:200;
     saved=saved && persist_write_data(2130+chunk,bytes+offset,count)==(int)count;
   }
-  const Header header={UINT32_C(0x54434f4c),1,1,sizeof(collection),checksum,alarms};
+  const Header header={UINT32_C(0x54434f4c),1,UX_FIXTURE_MODE==6?UINT32_MAX:1,sizeof(collection),checksum,alarms};
   saved=saved && persist_write_data(2120,&header,sizeof(header))==(int)sizeof(header);
   saved=saved && persist_write_int(2103,1)>=0;
   window=window_create();window_set_background_color(window,GColorWhite);
   label=text_layer_create(GRect(5,55,190,120));
   text_layer_set_font(label,fonts_get_system_font(FONT_KEY_GOTHIC_24_BOLD));
   text_layer_set_text_alignment(label,GTextAlignmentCenter);
-  static char caption[80];snprintf(caption,sizeof(caption),saved?"V1 UX fixture %u\n372-byte bank":"Fixture write failed",UX_FIXTURE_MODE);
+  static char caption[80];snprintf(caption,sizeof(caption),saved?
+      (UX_FIXTURE_MODE==6?"V1 UX fixture %u\nGeneration exhausted":"V1 UX fixture %u\n372-byte bank"):
+      "Fixture write failed",UX_FIXTURE_MODE);
   text_layer_set_text(label,caption);
   layer_add_child(window_get_root_layer(window),text_layer_get_layer(label));
   window_stack_push(window,false);app_event_loop();text_layer_destroy(label);window_destroy(window);

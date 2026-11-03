@@ -9,6 +9,7 @@ import argparse
 import hashlib
 import json
 from os import environ
+import sys
 import time
 import uuid
 import zipfile
@@ -26,7 +27,7 @@ VERSION = json.loads((ROOT / 'package.json').read_text())['version']
 OUT = Path(environ.get('TIMER_QA_OUTPUT', str(ROOT / 'docs/qa' / VERSION / 'native'))) / 'errors'
 OUT.mkdir(parents=True, exist_ok=True)
 FINAL = ROOT / 'dist' / ('Timer-' + VERSION + '.pbw')
-NATIVE = ROOT / 'build/timer-native-only-candidate.pbw'
+NATIVE = Path(environ.get('TIMER_QA_NATIVE_PBW', ROOT / 'build/timer-error-native-only.pbw'))
 FIXTURE = ROOT / 'tests/wakeup-conflict-fixture/build/wakeup-conflict-fixture.pbw'
 TARGET = uuid.UUID('50e9ef12-a5ab-4369-a3b5-3447bfba5151')
 CONFLICT = uuid.UUID('d012c8aa-b7ce-4fc3-82f7-f45c8a58f4d1')
@@ -36,9 +37,14 @@ class Connection(PebbleCommand):
     valid_connections = {'emulator'}
 
 
-command = Connection()
-command._set_debugging(0)
-p = command._connect(argparse.Namespace(v=0, emulator='emery', sdk=None, vnc=False, sunlight=False))
+if environ.get('TIMER_QA_PIPE') == '1':
+    sys.path.insert(0, str(ROOT.parent / 'recovery-validation'))
+    from pipe_emulator import connect
+    p = connect()
+else:
+    command = Connection()
+    command._set_debugging(0)
+    p = command._connect(argparse.Namespace(v=0, emulator='emery', sdk=None, vnc=False, sunlight=False))
 captures = []
 report = {
     'version': VERSION,
@@ -50,12 +56,13 @@ report = {
     'captures': captures, 'fixtureCleanupCompleted': False, 'result': 'INCOMPLETE',
     'visualReview': {'reviewed': False},
 }
-with zipfile.ZipFile(FINAL) as distribution, zipfile.ZipFile(NATIVE) as native:
+with zipfile.ZipFile(FINAL) as distribution, zipfile.ZipFile(NATIVE, 'w') as native:
     report['nativePayloadSha256'] = {}
     for name in distribution.namelist():
         if name.startswith('emery/'):
-            assert distribution.read(name) == native.read(name)
-            report['nativePayloadSha256'][name] = hashlib.sha256(native.read(name)).hexdigest()
+            report['nativePayloadSha256'][name] = hashlib.sha256(distribution.read(name)).hexdigest()
+        if name == 'appinfo.json' or name.startswith('emery/'):
+            native.writestr(name, distribution.read(name))
 
 
 def launch(app=TARGET):
@@ -92,7 +99,8 @@ def shot(name):
     path = OUT / (name + '.png')
     Image.frombytes('RGB', (200, 228), b''.join(Screenshot(p).grab_image())).save(path)
     captures.append({'name': name, 'file': path.name, 'sha256': hashlib.sha256(path.read_bytes()).hexdigest(),
-                     'pixels': [200, 228], 'nativePixelsModified': False})
+                     'pixels': [200, 228], 'nativePixelsModified': False,
+                     'source': 'External Wakeup fixture, not Timer' if name in ('external-wakeup-fixture', 'fixture-cleared') else 'Exact candidate Timer native binary'})
     save()
     print(name, flush=True)
     return Image.open(path).convert('RGB')
@@ -108,9 +116,9 @@ try:
     install(FIXTURE, CONFLICT)
     shot('external-wakeup-fixture')
     install(NATIVE)
-    # Empty list: Select opens the default 10-minute editor, three Select
-    # presses confirm hours/minutes/seconds and start the native timer.
-    button('Select', 4)
+    # Empty list: Select opens the default editor at Minutes; two more Select
+    # presses advance to Seconds and start. A fourth press would pause it.
+    button('Select', 3)
     failed = shot('alarm-not-set')
     assert failed.getpixel((1, 200)) == (255, 170, 0), 'Expected the actual Timer critical-warning footer'
     button('Down')

@@ -1,0 +1,37 @@
+{
+  "version": "0.9.0",
+  "result": "PASS",
+  "pbwSha256": "44a2b09ce5a72455ae65694b8e22b05d5b5ab5276e0bd4891fc743b4e7ae0e3a",
+  "commands": [
+    {
+      "command": "npm test",
+      "javascriptTests": 22,
+      "portableCSuites": 6,
+      "log": "checks/portable.log"
+    },
+    {
+      "command": "python3 -m unittest discover -s tests -p 'test_*.py'",
+      "pythonRegressions": 38,
+      "log": "checks/python.log"
+    },
+    {
+      "command": "npm run build",
+      "sdk": "4.33.1",
+      "platform": "emery",
+      "log": "checks/sdk.log"
+    },
+    {
+      "command": "python3 scripts/check-timer-fonts.py --pbw dist/Timer-0.9.0.pbw",
+      "report": "font-audit.json"
+    }
+  ],
+  "nativeOrdinaryAndUiFrames": 53,
+  "nativeGenerationErrorFrames": 7,
+  "nativeSchedulingErrorFrames": 5,
+  "separateFixtureFrames": 3,
+  "nativeTimerFrames": 65,
+  "packagedRuntime": "packaged-runtime.json",
+  "packagedHandoff": "packaged-handoff.json",
+  "scope": "SDK/portable/isolated native and simulated packaged transport; no real-phone or physical-watch claim.",
+  "rootVisualReview": "PASS"
+}

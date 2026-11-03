@@ -1,0 +1,26 @@
+Emery QEMU connected through local FIFOs; no phone runtime
+N/A%[=                                                      ]   0.0 B/s 0:00:00
+N/A%[=                                                    ]  19.2 KiB/s 0:00:00
+N/A%[=                                                    ]  47.9 KiB/s 0:00:00
+N/A%[=                                                      ]   0.0 B/s 0:00:00
+N/A%[=                                                    ]  31.7 KiB/s 0:00:00
+N/A%[=                                                    ] 119.1 KiB/s 0:00:00
+N/A%[=                                                    ] 142.9 KiB/s 0:00:00
+N/A%[=                                                    ] 134.9 KiB/s 0:00:00
+N/A%[=                                                    ] 136.2 KiB/s 0:00:00
+eight-ready-list
+eight-ready-replacement-warning
+ready-slot-replaced-running
+second-replacement-warning
+two-running-six-ready
+N/A%[=                                                      ]   0.0 B/s 0:00:00
+N/A%[=                                                    ]  18.7 KiB/s 0:00:00
+N/A%[=                                                    ]  51.7 KiB/s 0:00:00
+N/A%[=                                                      ]   0.0 B/s 0:00:00
+N/A%[=                                                    ]  32.8 KiB/s 0:00:00
+N/A%[=                                                    ] 119.6 KiB/s 0:00:00
+N/A%[=                                                    ] 139.9 KiB/s 0:00:00
+N/A%[=                                                    ] 132.1 KiB/s 0:00:00
+N/A%[=                                                    ] 148.6 KiB/s 0:00:00
+N/A%[=                                                    ] 135.8 KiB/s 0:00:00
+Timer native phase completed: capacity

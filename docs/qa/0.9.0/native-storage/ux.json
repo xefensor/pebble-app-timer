@@ -1,0 +1,173 @@
+{
+  "version": "0.9.0",
+  "environment": "Actual Emery QEMU; no phone JavaScript, real phone or physical watch",
+  "candidatePbwSha256": "44a2b09ce5a72455ae65694b8e22b05d5b5ab5276e0bd4891fc743b4e7ae0e3a",
+  "nativeOnlyPbwSha256": "84264396af6e6a998b1def32b5bc344384d24bfc4ce88638448bd42d27c88342",
+  "nativePayloadSha256": {
+    "emery/app_resources.pbpack": "7c33059be8dd8d5379ca467ce430225778ae5b576d19db66ad978c835110c7df",
+    "emery/manifest.json": "46d12e44c0b028e8ab37f9bf0528620179cd4a575b4a063c66da71c0095419f1",
+    "emery/pebble-app.bin": "f2d7c43c16ddfa7c88a336e5ec6c359e44eba3d5a8723291c8d7017c078d9b64"
+  },
+  "phoneJavascriptExecuted": false,
+  "directQaAppMessageFixture": true,
+  "directQaAppMessageNote": "Python requests native state and sends application receipts; this is not the real phone PKJS/provider transport.",
+  "captures": [
+    {
+      "name": "storage-generation-fixture",
+      "file": "storage-generation-fixture.png",
+      "sha256": "2be9dba7ea50818b3ec07925be44a150abb43a451891ef95572d96a2df3b8d21",
+      "rgbSha256": "f295b0119a6769a90ed503c69878be708bd5e9d861d2b2f0d4007c30ab8f89bc",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false,
+      "phase": "storage",
+      "source": "Isolated exhausted-generation V1 bank fixture, not Timer native binary"
+    },
+    {
+      "name": "storage-not-saved-list",
+      "file": "storage-not-saved-list.png",
+      "sha256": "f27310e73012bb0f2c27925e73a0e350b109726cd813e8adaab13e12090f47c7",
+      "rgbSha256": "cce575c99fcb1a79142b8dd8f1655fab23a515e7c0fe46096bd69ff969745dd6",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false,
+      "phase": "storage"
+    },
+    {
+      "name": "storage-not-saved-detail",
+      "file": "storage-not-saved-detail.png",
+      "sha256": "f6b63ed4880303af69725ef3d60273416e815b5c87a02aef8e8d7f84011cf2d1",
+      "rgbSha256": "f32f7e591a8f9fbabb4ea82729f230808b178d0dbd6a683467d0dfe0d6b07c9a",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false,
+      "phase": "storage"
+    },
+    {
+      "name": "storage-not-saved-options",
+      "file": "storage-not-saved-options.png",
+      "sha256": "5420b56517cd24a1106a81b0981abba8ec18cb70a0ae134b3ec250c2fc3a071c",
+      "rgbSha256": "746cf6313da941eaac1326cc947dbfe1da46728775227d47d3ce292fb813cc00",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false,
+      "phase": "storage"
+    },
+    {
+      "name": "storage-not-saved-delete-keeps-actions",
+      "file": "storage-not-saved-delete-keeps-actions.png",
+      "sha256": "065ad46f6baf9f4b92d2196b3a3b09b9b3670a5595aebe6a3950f86a9aedcfda",
+      "rgbSha256": "72cb1a8bf5153cbd8d73b1231e8dbd076622493d783f14e133368ffc40f88093",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false,
+      "phase": "storage"
+    },
+    {
+      "name": "storage-not-saved-native-alarm-actions-visible",
+      "file": "storage-not-saved-native-alarm-actions-visible.png",
+      "sha256": "657a0c5a87af97c11f5eb442e4db4220381ab95c5407f9afbcbbae2f36a1dcc3",
+      "rgbSha256": "49c4b3ff482ca132d9299d47c9d39369a9d2d2fd3bc7902322169e1ea39d7001",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false,
+      "phase": "storage"
+    },
+    {
+      "name": "storage-done-cannot-hide-unsaved-alarm",
+      "file": "storage-done-cannot-hide-unsaved-alarm.png",
+      "sha256": "657a0c5a87af97c11f5eb442e4db4220381ab95c5407f9afbcbbae2f36a1dcc3",
+      "rgbSha256": "49c4b3ff482ca132d9299d47c9d39369a9d2d2fd3bc7902322169e1ea39d7001",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false,
+      "phase": "storage"
+    },
+    {
+      "name": "storage-back-remains-available",
+      "file": "storage-back-remains-available.png",
+      "sha256": "f461d4cdd2260ec51a1de7ee619b318769f330e68449e24f5d57c7f740a565f9",
+      "rgbSha256": "9466c632334c542af9d66d75276e9ddd70dd99417b8016838ac51223df3b1e03",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false,
+      "phase": "storage"
+    }
+  ],
+  "proofs": {
+    "storageFailure": {
+      "fixtureMode": 6,
+      "actualExhaustedGenerationWriteRefusal": true,
+      "nativeBinaryUnmodified": true,
+      "alarmActionsVisibleWithCriticalMessage": true,
+      "failedAcknowledgmentRemainsAlarm": true,
+      "backRemainsAvailable": true
+    }
+  },
+  "completedPhases": [
+    "storage"
+  ],
+  "result": "PASS",
+  "visualReview": {
+    "reviewed": true,
+    "reviewer": "ux_timer and root",
+    "result": "PASS",
+    "files": [
+      "review-storage.png"
+    ],
+    "rootReview": {
+      "result": "PASS",
+      "reviewedAtUtc": "2026-11-03T19:34:02.798913+00:00",
+      "scope": "Small original-pixel contact sheets, flagged individual PNGs and focused edge frames;65Timer and3labelledfixtureviews."
+    }
+  },
+  "requiredPhases": [
+    "storage"
+  ],
+  "fixtures": {
+    "6": {
+      "pbwSha256": "644635c890ee72dc491b61a58d36dc43fc92352eef90357359f048296d50c01e",
+      "sourceSha256": "4cc6823c4821adb5745729d1c0250994bf348765311ea12440990ff8b02f0c5c",
+      "version": 1,
+      "collectionBytes": 372
+    },
+    "0": {
+      "pbwSha256": "c50b9a0aeaa55c2a76777eadf4000ff746869c0a66dc7a6d5d49eb02a28ec1df",
+      "sourceSha256": "4cc6823c4821adb5745729d1c0250994bf348765311ea12440990ff8b02f0c5c",
+      "version": 1,
+      "collectionBytes": 372
+    }
+  },
+  "nativeMessages": {
+    "storage": []
+  },
+  "firmwareLogs": {
+    "storage": {
+      "path": "/tmp/timer-qa-firmware-logs/storage-d000b24a85298b72.log",
+      "sha256": "d000b24a85298b72e722c2bed83f7035db084341bc68061a056eb547a7ff57ea"
+    }
+  },
+  "phaseEnvironments": {
+    "storage": {
+      "flash": "shared workspace emulator flash",
+      "isolatedTimerStockDerivedFlash": false,
+      "watchClockChangedDuringPhase": false
+    }
+  }
+}
