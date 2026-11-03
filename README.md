@@ -4,23 +4,23 @@ A native timer for **stock PebbleOS**, with activity sharing for compatible
 watchfaces such as [Dynamic](https://github.com/xefensor/dynamic-watchface).
 The first target is Pebble Time 2 (`emery`, 200 × 228).
 
-The local **0.8.0** implementation improves Timer's on-watch options and duration
+Timer **0.8.0** improves the on-watch options and duration
 editor: cancellation returns to its starting screen, Restart shows the saved
 duration, and replacing an old Ready timer is explained before starting.
 Activities, saved models, native alarms and the launcher countdown retain their
-existing ownership. This version is validated locally; the published download
-below remains 0.6.0.
+existing ownership.
 
-Timer 0.6.0 is a [GitHub development prerelease](https://github.com/xefensor/pebble-app-timer/releases/tag/v0.6.0)
-with a simple notification-style activity source, durable Done acknowledgement,
+Timer 0.8.0 is a [GitHub development prerelease](https://github.com/xefensor/pebble-app-timer/releases/tag/v0.8.0)
+with a typed summary activity source, durable Done acknowledgement,
 preserved repeat durations and a live countdown in the app list. Paused timers hide
 from compatible watchfaces after five minutes and remain saved in Timer.
-Download the [PBW](https://github.com/xefensor/pebble-app-timer/releases/download/v0.6.0/Timer-0.6.0.pbw),
-[source archive](https://github.com/xefensor/pebble-app-timer/releases/download/v0.6.0/Timer-0.6.0-source.zip)
-and [checksums](https://github.com/xefensor/pebble-app-timer/releases/download/v0.6.0/SHA256SUMS.txt).
+Download the [PBW](https://github.com/xefensor/pebble-app-timer/releases/download/v0.8.0/Timer-0.8.0.pbw),
+[source archive](https://github.com/xefensor/pebble-app-timer/releases/download/v0.8.0/Timer-0.8.0-source.zip)
+and [checksums](https://github.com/xefensor/pebble-app-timer/releases/download/v0.8.0/SHA256SUMS.txt).
 See [validation](docs/VALIDATION.md) for the native emulator and packaged-runtime
 checks; actual phone and physical-watch checks remain.
-The [previous 0.5.0](https://github.com/xefensor/pebble-app-timer/releases/tag/v0.5.0)
+The [previous 0.6.0](https://github.com/xefensor/pebble-app-timer/releases/tag/v0.6.0),
+[0.5.0](https://github.com/xefensor/pebble-app-timer/releases/tag/v0.5.0)
 and [0.4.0](https://github.com/xefensor/pebble-app-timer/releases/tag/v0.4.0)
 and [earlier 0.2.0 release](https://github.com/xefensor/pebble-app-timer/releases/tag/v0.2.0)
 and its historical validation remain unchanged.

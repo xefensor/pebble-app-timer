@@ -4,6 +4,10 @@
   "display_name": "Timer",
   "tag_prefix": "v",
   "prerelease": true,
+  "bootstrap": {
+    "version": "0.8.0",
+    "source_commit": "984e05690684a3676124dd358760979726bd9c26"
+  },
   "app_uuid": "50e9ef12-a5ab-4369-a3b5-3447bfba5151",
   "assets": ["releases/Timer-{version}.pbw", "releases/Timer-{version}-source.zip"],
   "checksums_file": "releases/SHA256SUMS.txt",

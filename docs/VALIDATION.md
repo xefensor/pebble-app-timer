@@ -2,7 +2,7 @@
 
 ## 0.8.0 on-watch Options and editor UX
 
-This local update improves list guidance and cancellation paths. Timer has no
+This update improves list guidance and cancellation paths. Timer has no
 phone configuration form: Options and the duration editor are its settings
 surface. The native model, collection, Glance and phone bridge sources retain
 their exact 0.7.0 bytes. Activities stays pinned at 0.4.0; UUIDs, keys, banks,
@@ -53,13 +53,20 @@ The emulator uses synthetic saved timers and direct Python snapshot requests/
 receipts while executing actual native Timer operations. This is separate from
 real phone/plugin delivery and physical-watch testing. Earlier migration,
 launcher, failure and hold captures remain historical unless explicitly
-repeated for this version. Nothing has been pushed or published.
+repeated for this version.
+
+Version 0.8.0 is a [GitHub development prerelease](https://github.com/xefensor/pebble-app-timer/releases/tag/v0.8.0)
+from commit `984e05690684a3676124dd358760979726bd9c26`. GitHub's portable Checks
+and release validation/publication workflows passed. Downloaded PBW, source ZIP
+and checksums match the prepared artifacts; published bytes and the artifact
+tag are preserved separately from later documentation updates.
 
 ## 0.7.0 typed summary snapshots and app navigation
 
 This local version publishes `activity/summary` schema 4 through the pinned
 Activities 0.4.0 package. It retains live/session/card compatibility sources.
-It has not been pushed or published.
+It was validated as a local candidate; its source changes are now included in
+the published 0.8.0 release. No separate 0.7.0 release was published.
 
 - **22 JavaScript cases, six portable C suites and 38 Python release-helper
   regressions pass.** New cold-plugin cases preserve the native countdown,
