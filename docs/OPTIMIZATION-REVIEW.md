@@ -1,6 +1,6 @@
 # Timer 0.10.0 optimization review
 
-This local candidate preserves the approved Timer UI and activity API. It cuts
+Version 0.10.0 preserves the approved Timer UI and activity API. It cuts
 unnecessary rendering, removes unused font data and reduces installed phone
 scripts. Published 0.9.0 bytes and tags remain unchanged.
 

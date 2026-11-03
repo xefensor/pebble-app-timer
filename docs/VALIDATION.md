@@ -1,5 +1,14 @@
 # Timer validation
 
+## Publication — 3 November 2026
+
+The [0.10.0 development prerelease](https://github.com/xefensor/pebble-app-timer/releases/tag/v0.10.0)
+was published from tested source
+[`e652563356cdbc8b1a85a328eb9a3e9695b4bd63`](https://github.com/xefensor/pebble-app-timer/tree/e652563356cdbc8b1a85a328eb9a3e9695b4bd63).
+The documentation follow-up preserves the tag, PBW, source/debug ZIPs and checksums.
+Repeated release checks use `prepare --commit` with that tested commit; the
+original validation below is unchanged.
+
 ## 0.10.0 optimization candidate
 
 The [optimization review](OPTIMIZATION-REVIEW.md) records the implementation,

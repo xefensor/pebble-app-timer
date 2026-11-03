@@ -4,20 +4,21 @@ A native timer for **stock PebbleOS**, with activity sharing for compatible
 watchfaces such as [Dynamic](https://github.com/xefensor/dynamic-watchface).
 The first target is Pebble Time 2 (`emery`, 200 × 228).
 
-Timer **0.10.0** is a local optimization candidate with the approved 0.9 UI.
+Timer **0.10.0** is a [GitHub development prerelease](https://github.com/xefensor/pebble-app-timer/releases/tag/v0.10.0)
+with the approved 0.9 UI.
 Sharing acknowledgements no longer redraw an unchanged screen, and offscreen
 countdowns do not repaint the list. Unused font data is removed. Phone scripts
 are minified reproducibly; source maps and original bundles remain available in
 a separate debugging archive. Native timers, alarms and activity leases retain
 their ownership. See the [optimization review](docs/OPTIMIZATION-REVIEW.md).
 
-Local candidate: [PBW](releases/Timer-0.10.0.pbw),
-[source](releases/Timer-0.10.0-source.zip),
-[debugging files](releases/Timer-0.10.0-debug.zip) and
-[checksums](releases/SHA256SUMS.txt). This candidate has not been published.
+Download the [PBW](https://github.com/xefensor/pebble-app-timer/releases/download/v0.10.0/Timer-0.10.0.pbw),
+[source](https://github.com/xefensor/pebble-app-timer/releases/download/v0.10.0/Timer-0.10.0-source.zip),
+[debugging files](https://github.com/xefensor/pebble-app-timer/releases/download/v0.10.0/Timer-0.10.0-debug.zip) and
+[checksums](https://github.com/xefensor/pebble-app-timer/releases/download/v0.10.0/SHA256SUMS.txt).
 
-Timer 0.9.0 is a [GitHub development prerelease](https://github.com/xefensor/pebble-app-timer/releases/tag/v0.9.0)
-with a typed summary activity source, durable Done acknowledgement,
+The previous [Timer 0.9.0 prerelease](https://github.com/xefensor/pebble-app-timer/releases/tag/v0.9.0)
+remains available with a typed summary activity source, durable Done acknowledgement,
 preserved repeat durations and a live countdown in the app list. Paused timers hide
 from compatible watchfaces after five minutes and remain saved in Timer.
 Download the [PBW](https://github.com/xefensor/pebble-app-timer/releases/download/v0.9.0/Timer-0.9.0.pbw),
@@ -39,8 +40,8 @@ These are actual 0.9.0 Emery captures with synthetic saved timers. The full
 alarm and launcher scope. The [approved browser concept](docs/design/Timer-UI-Preview.html)
 remains design evidence, not a native or physical-watch capture.
 
-Use [Dynamic 0.15.0](https://github.com/xefensor/dynamic-watchface/releases/tag/v0.15.0)
-for activity presentation and [Open Activity 0.1.4](https://github.com/xefensor/pebble-app-open-activity/releases/tag/v0.1.4)
+Use [Dynamic 0.16.0](https://github.com/xefensor/dynamic-watchface/releases/tag/v0.16.0)
+for activity presentation and [Open Activity 0.1.5](https://github.com/xefensor/pebble-app-open-activity/releases/tag/v0.1.5)
 for the separately configured Primary/Secondary shortcuts. Install each app
 separately; the Activities library is already bundled.
 
