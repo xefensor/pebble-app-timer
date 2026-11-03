@@ -1,0 +1,7 @@
+{
+  "version": "0.7.0",
+  "pbwSha256": "946f019bdccd6fbdb1a25a24268fb30a7367c2f34c2c7433bd777a161c2cbff9",
+  "result": "PASS",
+  "scope": "Actual packaged PKJS and cold provider scripts with simulated SDK surfaces; no real phone or physical watch",
+  "stdout": "Packaged Timer PKJS, numeric keys, schema 4 owner snapshots/navigation, compatibility sources, multi-slot replacement, acknowledgement and cold reload passed."
+}

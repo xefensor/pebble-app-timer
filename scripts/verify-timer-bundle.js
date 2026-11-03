@@ -26,7 +26,7 @@ assert.equal(keys.ACTIVITY_SHOW_TERMINAL, 1023, 'Timer result-visibility key cha
 assert.equal(appinfo.plugin.sources.filter(source => source.category === 'activity').length, 1,
   'PBW must declare one activity category covering simple and compatibility source items');
 assert.deepEqual(appinfo.plugin.sources.find(source => source.category === 'activity').items,
-  ['live', 'session', 'card']);
+  ['summary', 'live', 'session', 'card']);
 
 const reverse = {};
 for (const [name, value] of Object.entries(keys)) {
@@ -272,4 +272,43 @@ assert.equal(response.instances[0].properties.schema_version.numericValue.value,
 cold.__request={category:'activity',item:'card'};
 vm.runInContext('__handler(__request, __respond)',cold,{timeout:1000});
 assert.equal(response.instances[0].properties.show_terminal.boolean.value,false);
-console.log('Packaged Timer PKJS, numeric keys, simple source, compatibility views, multi-slot replacement, completion acknowledgement and cold reload passed.');
+async function verifySummary() {
+  const declaration = appinfo.plugin.sources.find(item =>
+    item.category === 'activity' && item.items.includes('summary'));
+  assert.ok(declaration, 'PBW does not declare activity/summary');
+  cold.__request = {category:'activity', item:'summary'};
+  response = undefined;
+  await vm.runInContext('__handler(__request, __respond)', cold, {timeout:1000});
+  assert.ok(response, 'Cold summary source did not reply');
+  assert.equal(response.instances[0].instanceId, '@snapshot');
+  assert.equal(response.instances[0].properties.activity_count.numericValue.value, 1,
+    'Acknowledged first slot must be omitted while the other timer remains');
+  assert.equal(response.instances[1].instanceId, 'second-slot:2');
+  const properties = response.instances[1].properties;
+  assert.equal(properties.schema_version.numericValue.value, 4);
+  assert.equal(properties.revision.numericValue.value, revision + 2);
+  assert.equal(properties.observed_at.timestamp.value, observedAt);
+  assert.equal(properties.valid_until.timestamp.value, validUntil);
+  assert.equal(properties.unconfirmed.boolean.value, true);
+  const descriptor = JSON.parse(properties.content.longText.text);
+  assert.equal(descriptor.type, 'standard');
+  assert.equal(descriptor.headline.mode, 'countdown');
+  assert.equal(descriptor.headline.deadline, deadline);
+  assert.equal(descriptor.detail, undefined);
+  assert.deepEqual(JSON.parse(properties.open_app.longText.text), {watchAppUuid:appinfo.uuid});
+  assert.equal(properties.actions, undefined, 'No invented native Timer controls');
+  for (const instance of response.instances) {
+    for (const [name, shapes] of Object.entries(instance.properties)) {
+      for (const shape of Object.keys(shapes)) {
+        assert.ok(declaration.properties[name] && declaration.properties[name].includes(shape),
+          'Summary emitted an undeclared property/shape: ' + name + '/' + shape);
+      }
+    }
+  }
+  const sequence = response.instances[0].properties.snapshot_sequence.numericValue.value;
+  await vm.runInContext('__handler(__request, __respond)', cold, {timeout:1000});
+  assert.ok(response.instances[0].properties.snapshot_sequence.numericValue.value > sequence);
+  assert.equal(response.instances[1].properties.revision.numericValue.value, revision + 2);
+  console.log('Packaged Timer PKJS, numeric keys, schema 4 owner snapshots/navigation, compatibility sources, multi-slot replacement, acknowledgement and cold reload passed.');
+}
+verifySummary().catch(error => { console.error(error); process.exitCode = 1; });

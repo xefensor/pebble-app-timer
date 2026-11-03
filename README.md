@@ -4,6 +4,11 @@ A native timer for **stock PebbleOS**, with activity sharing for compatible
 watchfaces such as [Dynamic](https://github.com/xefensor/dynamic-watchface).
 The first target is Pebble Time 2 (`emery`, 200 × 228).
 
+The local **0.7.0** implementation adds `activity/summary` schema 4 and an
+optional destination for opening Timer from compatible consumers. Its native
+timer UI, alarm ownership and saved models remain unchanged. This version is
+validated locally; the published download below remains 0.6.0.
+
 Timer 0.6.0 is a [GitHub development prerelease](https://github.com/xefensor/pebble-app-timer/releases/tag/v0.6.0)
 with a simple notification-style activity source, durable Done acknowledgement,
 preserved repeat durations and a live countdown in the app list. Paused timers hide
@@ -23,6 +28,18 @@ and its historical validation remain unchanged.
 These are actual 0.5.0 native emulator captures, displayed at
 twice their 200 × 228 pixel size. The [approved browser concept](docs/design/Timer-UI-Preview.html)
 is retained separately; it is not native or physical-watch verification.
+
+## Version 0.7.0
+
+- Publish the new standard summary with a structured countdown and optional
+  Timer app destination. Consumers choose layout and activity priority.
+- Preserve owner revisions, original observations and leases through the
+  snapshot-provider API. Acknowledged results disappear from the complete
+  summary list, and an empty list still carries a newer response sequence.
+- Keep the five-minute paused limit, the active deadline-plus-sixty-second
+  bound, native alarm/storage ownership and eight independent slots.
+- Retain live/session/card sources for older consumers. No native Timer command
+  route is added: opening the app does not select or operate a particular timer.
 
 ## Version 0.6.0
 
@@ -152,14 +169,14 @@ is retained separately; it is not native or physical-watch verification.
 Install **one Timer PBW**. It contains the native watchapp, its PKJS phone bridge
 and a read-only provider plugin. Timer owns its saved timer and native Wakeup
 alarm. The bridge saves the last reported state on the phone, and the plugin
-exposes that state primarily as `activity/live` v3. The simple source contains
-Timer's app identity and one content item: the remaining countdown. A host such
-as Dynamic decides how to draw its normal and compact views; Timer publishes
-data rather than a host-specific layout. There are no required display labels
-or derived elapsed detail in this source.
+exposes that state primarily as `activity/summary` v4. The summary contains one
+structured countdown and a separate optional destination app. A host such as
+Dynamic chooses its primary and one-row secondary presentation. Timer supplies
+no coordinates, mandatory display labels, derived elapsed detail or layout
+selection.
 
-`activity/session` v1 and compact `activity/card` v2 remain available for older
-consumers. One activity category declares all three item names and their
+`activity/live` v3, `activity/session` v1 and compact `activity/card` v2 remain
+available for older consumers. One activity category declares all four items and their
 properties. Every view keeps the original native identity, revision and
 timestamps. Polling cannot renew source observation or validity, and a
 five-minute-old paused timer remains saved in Timer after its activity expires.
@@ -253,11 +270,11 @@ npm test
 npm run build
 ```
 
-The dependency is installed from `vendor/pebble-activities-0.3.0.tgz`; its
+The dependency is installed from `vendor/pebble-activities-0.4.0.tgz`; its
 provenance and SHA-256 are recorded in [vendor/README.md](vendor/README.md).
 
 The distribution build clears the SDK cache so dependency updates cannot leave
-stale phone JavaScript in the PBW. It writes `dist/Timer-0.6.0.pbw` and its checksum. It bundles the provider
+stale phone JavaScript in the PBW. It writes `dist/Timer-0.7.0.pbw` and its checksum. It bundles the provider
 JavaScript and sets `manifestVersion: 2`, including `plugin.js` alongside PKJS
 and the watch binary. A plain `pebble build` creates a development PBW without
 that extra provider bundle; use `npm run build` for an installable shared-activity

@@ -1,5 +1,37 @@
 # Timer validation
 
+## 0.7.0 typed summary snapshots and app navigation
+
+This local version publishes `activity/summary` schema 4 through the pinned
+Activities 0.4.0 package. It retains live/session/card compatibility sources.
+It has not been pushed or published.
+
+- **22 JavaScript cases, six portable C suites and 38 Python release-helper
+  regressions pass.** New cold-plugin cases preserve the native countdown,
+  revision, observation and lease; preserve the original paused expiry; omit
+  acknowledged results; and sequence a complete empty reply after expiry.
+- **SDK 4.33.1 Emery distribution build passes.** The actual packaged PKJS and
+  independently callable provider execute with simulated SDK surfaces. The
+  check covers numeric/symbolic keys, all four declared source items, optional
+  app destination, multi-slot replacement, acknowledgement and cold reload.
+  Timer advertises no invented Pause/Cancel actions.
+- **Native C and PKJS sources remain unchanged from 0.6.0.** Native bytes match
+  after excluding the process metadata and verified GNU build-ID note. Resource
+  bytes are identical. Existing Timer UI, banks, native alarms, Wakeup broker and
+  app-list countdown therefore retain their previous implementation. Earlier
+  native captures remain historical; no new Timer native runtime run is claimed.
+- The exact font audit passes for the same seven bitmap resources, linked
+  Fredoka outlines and required notices. App and provider identity are unchanged.
+
+Evidence: [packaged scripts](qa/0.7.0/packaged-runtime.json),
+[native payload identity](qa/0.7.0/native-identity.json) and
+[font audit](qa/0.7.0/font-audit.json). The exact dependency commit and archive
+checksums are recorded in [the pin](../vendor/ACTIVITIES.json).
+
+These portable, SDK and packaged-script checks do not establish physical-watch
+appearance, live mobile-plugin transport or battery cost. Opening Timer by its
+app destination does not select a specific saved timer.
+
 ## 0.6.0 simple activity publishing — 3 November 2026
 
 Timer now publishes the notification-style `activity/live` schema 3 source

@@ -1,13 +1,13 @@
 # Pinned dependencies
 
-Timer 0.6.0 uses the simple activity API and is pinned to
-`pebble-activities-0.3.0.tgz`. Its exact provenance is also recorded in
+Timer 0.7.0 uses the snapshot summary API and is pinned to
+`pebble-activities-0.4.0.tgz`. Its exact source commit, SHA-256 and SHA-512
+integrity are recorded in
 [ACTIVITIES.json](ACTIVITIES.json):
 
-- Source commit: `dad422a3384864966b60acf6dc3e52ddec296a09`
-- SHA-256: `882df4cf462d19a14baf7aebacb06c7f0c807a86b183614a6ba95d6a776cc92c`
 - SDK: 4.33.1, Emery; the archive contains both ACT1 compatibility and the
-  bounded ACT2 native transport, simple schema3 API, headers and JavaScript source.
+  bounded ACT2/ACT3 native transports, schema 4 summary API, legacy source APIs,
+  headers and JavaScript source.
 - Licence: PolyForm Noncommercial License 1.0.0, including required attribution.
 
 The tarball includes the native SDK package (`dist.zip`) and JavaScript source.
@@ -17,8 +17,12 @@ checkout dependency. Timer's version is independent of the library version.
 Verify the current dependency:
 
 ```sh
-sha256sum vendor/pebble-activities-0.3.0.tgz
+sha256sum vendor/pebble-activities-0.4.0.tgz
 ```
+
+The published Timer 0.6.0 pin remains `pebble-activities-0.3.0.tgz`, source
+`dad422a3384864966b60acf6dc3e52ddec296a09`, SHA-256
+`882df4cf462d19a14baf7aebacb06c7f0c807a86b183614a6ba95d6a776cc92c`.
 
 The following pin belongs to the published Timer 0.2.0 testing release and is
 preserved as historical provenance.

@@ -1,12 +1,12 @@
 {
   "name": "pebble-app-timer",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "author": "Xef",
   "private": true,
   "license": "SEE LICENSE IN LICENSE",
   "description": "A standalone stock PebbleOS timer with native alarms and activity sharing.",
   "dependencies": {
-    "pebble-activities": "file:vendor/pebble-activities-0.3.0.tgz"
+    "pebble-activities": "file:vendor/pebble-activities-0.4.0.tgz"
   },
   "scripts": {
     "test": "python3 scripts/test.py",
@@ -98,7 +98,7 @@
       "ACTIVITY_SHOW_TERMINAL": 1023
     },
     "plugin": {
-      "description": "The latest state reported by this watch's Timer app. The native timer owns its alarm; this source only shares state.",
+      "description": "Native Timer snapshots as activity/summary with an app destination and legacy compatibility sources. Native timers own their alarms; this plugin shares their original state.",
       "script": "plugin.js",
       "sources": [
         {
@@ -106,6 +106,7 @@
           "supportsMultiple": true,
           "suggestedRefreshIntervalSec": 30,
           "items": [
+            "summary",
             "live",
             "session",
             "card"
@@ -258,6 +259,31 @@
             ],
             "detail": [
               "longText"
+            ],
+            "publisher_incarnation": [
+              "longText"
+            ],
+            "snapshot_sequence": [
+              "numericValue"
+            ],
+            "activity_count": [
+              "numericValue"
+            ],
+            "icon": [
+              "image",
+              "icon"
+            ],
+            "entity_ref": [
+              "longText"
+            ],
+            "actions": [
+              "longText"
+            ],
+            "open_app": [
+              "longText"
+            ],
+            "publisher_mode": [
+              "shortText"
             ]
           }
         }

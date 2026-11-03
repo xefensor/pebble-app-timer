@@ -34,17 +34,112 @@ function runtime(file, shared, at = now) {
   };
   const api = {
     createPublisher(options) { return helpers.createPublisher(options); },
-    createProvider(options) { return helpers.createProvider({...options, now: () => at * 1000}); }
+    createProvider(options) { return helpers.createProvider({...options, now: () => at * 1000}); },
+    readSnapshots(options) { return helpers.readSnapshots(options); }
   };
   vm.runInNewContext(fs.readFileSync(path.join(__dirname, '..', file), 'utf8'), {
     Pebble: pebble, localStorage: shared,
     require(name) {
+      if (name === 'pebble-activities/summary') {
+        return {...library.summary, defineSnapshotProvider(options) {
+          return library.summary.defineSnapshotProvider({...options, now: () => at * 1000});
+        }};
+      }
       assert.equal(name, 'pebble-activities/publisher');
       return api;
     }
   }, {filename: file});
   return {events, sent, source};
 }
+
+async function readSummary(shared, at = now) {
+  const plugin = runtime('src/plugin/index.js', shared, at);
+  let answer, error;
+  await plugin.source({category:'activity', item:'summary'}, {
+    data(value) { answer = value; }, error(code) { error = code; }
+  });
+  assert.equal(error, undefined);
+  assert.ok(answer);
+  return answer;
+}
+
+test('schema 4 cold source preserves owner clock and exposes only app navigation', async () => {
+  const shared = storage();
+  runtime('src/pkjs/index.js', shared).events.appmessage({payload:snapshot()});
+  const first = await readSummary(shared);
+  assert.equal(first.instances[0].instanceId, '@snapshot');
+  assert.equal(first.instances[0].properties.activity_count.numericValue.value, 1);
+  const p = first.instances[1].properties;
+  assert.equal(p.schema_version.numericValue.value, 4);
+  assert.equal(p.revision.numericValue.value, 4);
+  assert.equal(p.observed_at.timestamp.value, now);
+  assert.equal(p.valid_until.timestamp.value, now + 660);
+  assert.equal(p.unconfirmed.boolean.value, true);
+  const content = JSON.parse(p.content.longText.text);
+  assert.equal(content.type, 'standard');
+  assert.deepEqual(content.headline, {type:'clock', mode:'countdown', deadline:now + 600});
+  assert.equal(content.icon, 'timer');
+  assert.deepEqual(JSON.parse(p.open_app.longText.text), {watchAppUuid:uuid});
+  assert.equal(p.actions, undefined, 'Timer has no native command route');
+  const second = await readSummary(shared, now + 1);
+  assert.ok(second.instances[0].properties.snapshot_sequence.numericValue.value >
+    first.instances[0].properties.snapshot_sequence.numericValue.value);
+  assert.equal(second.instances[1].properties.revision.numericValue.value, 4);
+  assert.equal(second.instances[1].properties.observed_at.timestamp.value, now);
+});
+
+test('schema 4 empty withdrawal after expiry keeps a newer complete-response header', async () => {
+  const shared = storage();
+  runtime('src/pkjs/index.js', shared).events.appmessage({payload:snapshot()});
+  const active = await readSummary(shared);
+  const expired = await readSummary(shared, now + 661);
+  assert.deepEqual(Array.from(expired.instances, x => x.instanceId), ['@snapshot']);
+  assert.equal(expired.instances[0].properties.activity_count.numericValue.value, 0);
+  assert.ok(expired.instances[0].properties.snapshot_sequence.numericValue.value >
+    active.instances[0].properties.snapshot_sequence.numericValue.value);
+});
+
+test('summary omits exact native duration labels and preserves meaningful instance names', async () => {
+  for (const label of ['1 min timer', '2 h timer', '00:05 timer', '1:00:05 timer', '23:59:59 timer']) {
+    const shared = storage();
+    runtime('src/pkjs/index.js', shared).events.appmessage({payload:snapshot({
+      ACTIVITY_NAME:label, ACTIVITY_FOOTER:label, ACTIVITY_TOTAL_DURATION:61
+    })});
+    const result = await readSummary(shared);
+    const properties = result.instances[1].properties;
+    assert.equal(JSON.parse(properties.content.longText.text).name, undefined, label);
+    assert.equal(properties.app_name.longText.text, 'Timer');
+  }
+  for (const label of ['Tea', 'Pasta', '60 min timer', '1:99:05 timer']) {
+    const shared = storage();
+    runtime('src/pkjs/index.js', shared).events.appmessage({payload:snapshot({ACTIVITY_NAME:label,ACTIVITY_FOOTER:label})});
+    const result = await readSummary(shared);
+    assert.equal(JSON.parse(result.instances[1].properties.content.longText.text).name,label);
+  }
+});
+
+test('schema 4 pause expiry and completion acknowledgement survive cold plugin requests', async () => {
+  const shared = storage();
+  const pkjs = runtime('src/pkjs/index.js', shared);
+  pkjs.events.appmessage({payload:snapshot({ACTIVITY_STATE:'paused', ACTIVITY_DEADLINE:0,
+    ACTIVITY_DURATION:480, ACTIVITY_VALID_UNTIL:now + 300})});
+  const paused = await readSummary(shared, now + 299);
+  assert.deepEqual(JSON.parse(paused.instances[1].properties.content.longText.text).headline,
+    {type:'clock', mode:'countdown', seconds:480});
+  assert.equal((await readSummary(shared, now + 300)).instances.length, 1);
+  pkjs.events.appmessage({payload:snapshot({ACTIVITY_REVISION:5, ACTIVITY_STATE:'completed',
+    ACTIVITY_CLOCK:'none', ACTIVITY_DEADLINE:0, ACTIVITY_SHOW_TERMINAL:1,
+    ACTIVITY_VALID_UNTIL:now + 60})});
+  const completed = await readSummary(shared);
+  assert.equal(JSON.parse(completed.instances[1].properties.content.longText.text).result, true);
+  pkjs.events.appmessage({payload:snapshot({ACTIVITY_REVISION:6, ACTIVITY_STATE:'completed',
+    ACTIVITY_CLOCK:'none', ACTIVITY_DEADLINE:0, ACTIVITY_SHOW_TERMINAL:0,
+    ACTIVITY_VALID_UNTIL:now + 60})});
+  assert.equal((await readSummary(shared)).instances.length, 1);
+  pkjs.events.appmessage({payload:snapshot({ACTIVITY_REVISION:5})});
+  assert.equal(pkjs.sent.at(-1).ACTIVITY_ERROR, 'STALE_REVISION');
+  assert.equal((await readSummary(shared)).instances.length, 1);
+});
 
 function snapshot(changes) {
   return {
@@ -169,7 +264,7 @@ test('invalid native slot cannot acknowledge or replace another timer', () => {
   assert.equal(provider.source({}).instances[0].properties.revision.numericValue.value, 4);
 });
 
-test('one activity manifest declaration covers simple activities and both compatibility sources', () => {
+test('one activity manifest declaration covers summaries and every compatibility source', () => {
   const manifest = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'package.json'), 'utf8'));
   assert.equal(manifest.pebble.messageKeys.ACTIVITY_SLOT, 1021);
   assert.equal(manifest.pebble.messageKeys.ACTIVITY_TOTAL_DURATION, 1022);
@@ -177,10 +272,14 @@ test('one activity manifest declaration covers simple activities and both compat
   const sources = manifest.pebble.plugin.sources.filter(source => source.category === 'activity');
   assert.equal(sources.length, 1, 'Each source category must be declared once');
   const card = sources[0];
-  assert.deepEqual(card.items, ['live', 'session', 'card']);
+  assert.deepEqual(card.items, ['summary', 'live', 'session', 'card']);
   for (const [property, shapes] of Object.entries(library.activity.SOURCE_PROPERTIES)) {
     assert.deepEqual(card.properties[property], shapes,
       'Manifest must declare every simple source shape: ' + property);
+  }
+  for (const [property, shapes] of Object.entries(library.summary.SOURCE_PROPERTIES)) {
+    assert.deepEqual(card.properties[property], shapes,
+      'Manifest must declare every summary source shape: ' + property);
   }
   assert.deepEqual(card.properties.deadline, ['timestamp']);
   assert.deepEqual(card.properties.duration, ['numericValue']);
