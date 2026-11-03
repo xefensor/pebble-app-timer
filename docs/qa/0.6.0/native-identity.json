@@ -1,0 +1,22 @@
+{
+  "version": "0.6.0",
+  "reference": "Timer-0.5.0.pbw",
+  "native_C_and_PKJS_source_unchanged": true,
+  "native_bytes_equal_excluding_metadata": true,
+  "excluded_metadata_ranges": {
+    "process_header": [
+      0,
+      130
+    ],
+    "gnu_build_id_note": [
+      130,
+      168
+    ]
+  },
+  "resources_equal": true,
+  "old_native_sha256": "e91a269744be3d01d10f352bdb00beb381f0a870dcdf89fe6d1f4c048f8a68cc",
+  "new_native_sha256": "4ae887816bd08e7e449542e289d0d81d571e877145e9f3cfee1392933441211a",
+  "normalized_native_sha256": "4baf29e20ea4662e68245f7a81b1853b8dc74cf49238752cebe7616ebeb8f121",
+  "resources_sha256": "7c33059be8dd8d5379ca467ce430225778ae5b576d19db66ad978c835110c7df",
+  "scope": "Exact native payload equality excluding SDK version/time/checksum process metadata and verified GNU build-ID note. Earlier0.5.0 UI/alarm/glance evidence remains historical; no new native runtime run is claimed."
+}

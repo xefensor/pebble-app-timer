@@ -6,6 +6,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const vm = require('node:vm');
 const helpers = require('pebble-activities/publisher');
+const library = require('pebble-activities');
 const uuid = '50e9ef12-a5ab-4369-a3b5-3447bfba5151';
 const now = 1800000000;
 
@@ -168,7 +169,7 @@ test('invalid native slot cannot acknowledge or replace another timer', () => {
   assert.equal(provider.source({}).instances[0].properties.revision.numericValue.value, 4);
 });
 
-test('one activity manifest declaration covers legacy sessions and bounded cards', () => {
+test('one activity manifest declaration covers simple activities and both compatibility sources', () => {
   const manifest = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'package.json'), 'utf8'));
   assert.equal(manifest.pebble.messageKeys.ACTIVITY_SLOT, 1021);
   assert.equal(manifest.pebble.messageKeys.ACTIVITY_TOTAL_DURATION, 1022);
@@ -176,12 +177,97 @@ test('one activity manifest declaration covers legacy sessions and bounded cards
   const sources = manifest.pebble.plugin.sources.filter(source => source.category === 'activity');
   assert.equal(sources.length, 1, 'Each source category must be declared once');
   const card = sources[0];
-  assert.deepEqual(card.items, ['session', 'card']);
+  assert.deepEqual(card.items, ['live', 'session', 'card']);
+  for (const [property, shapes] of Object.entries(library.activity.SOURCE_PROPERTIES)) {
+    assert.deepEqual(card.properties[property], shapes,
+      'Manifest must declare every simple source shape: ' + property);
+  }
   assert.deepEqual(card.properties.deadline, ['timestamp']);
   assert.deepEqual(card.properties.duration, ['numericValue']);
   assert.deepEqual(card.properties.clock_at, ['timestamp']);
   assert.deepEqual(card.properties.main_base, ['numericValue']);
   assert.deepEqual(card.properties.support_anchor, ['timestamp']);
+});
+
+test('cold simple Timer activity supplies one countdown without mandatory display labels or elapsed detail', () => {
+  const shared = storage();
+  runtime('src/pkjs/index.js', shared).events.appmessage({payload:snapshot({ACTIVITY_TOTAL_DURATION:900})});
+  function read(at) {
+    let answer;
+    runtime('src/plugin/index.js',shared,at).source({category:'activity',item:'live'},
+      {data(value){answer=value;},error(code){assert.fail(code);}});
+    return answer;
+  }
+  const first=read(now),later=read(now+120),properties=first.instances[0].properties;
+  assert.equal(properties.schema_version.numericValue.value,3);
+  assert.equal(properties.app_name.longText.text,'Timer');
+  assert.equal(properties.main_label,undefined);
+  assert.equal(properties.support_type,undefined);
+  assert.equal(properties.meter_kind,undefined);
+  assert.equal(properties.detail,undefined);
+  const model=library.activity.sourceCard(first.instances[0],uuid);
+  assert.ok(model);
+  assert.equal(model.content.clock,'countdown');
+  assert.equal(model.content.deadline,now+600);
+  assert.equal(model.detail,null);
+  assert.equal(model.observedAt,now);
+  assert.equal(model.validUntil,now+660);
+  assert.equal(model.unconfirmed,true);
+  assert.equal(model.revision,4);
+  assert.deepEqual(later.instances,first.instances,'Polling must not change any source observation, deadline or revision');
+  const view=library.activity.toView(model);
+  assert.equal(view.main.type,'clock');
+  assert.equal(view.main.baseSeconds,600);
+  assert.equal(view.main.anchorAt,now);
+  assert.equal(view.support,null);
+  assert.equal(view.meter,null);
+  const declaration=JSON.parse(fs.readFileSync(path.join(__dirname,'..','package.json'),'utf8')).pebble.plugin.sources[0];
+  for(const [name,value] of Object.entries(properties))for(const shape of Object.keys(value))
+    assert.ok(declaration.properties[name].includes(shape),'Undeclared simple source shape: '+name+'/'+shape);
+});
+
+test('simple Timer keeps a paused countdown fixed through the original five-minute window', () => {
+  const shared=storage(),pkjs=runtime('src/pkjs/index.js',shared);
+  const paused=snapshot({ACTIVITY_REVISION:5,ACTIVITY_STATE:'paused',ACTIVITY_DEADLINE:0,
+    ACTIVITY_DURATION:480,ACTIVITY_TOTAL_DURATION:600,ACTIVITY_VALID_UNTIL:now+300});
+  pkjs.events.appmessage({payload:paused});
+  function read(at){
+    let answer;runtime('src/plugin/index.js',shared,at).source({category:'activity',item:'live'},
+      {data(value){answer=value;},error(code){assert.fail(code);}});return answer.instances;
+  }
+  const before=read(now+299),model=library.activity.sourceCard(before[0],uuid);
+  assert.equal(model.state,'paused');
+  assert.equal(model.content.clock,'countdown');
+  assert.equal(model.content.seconds,480);
+  assert.equal(model.observedAt,now);
+  assert.equal(model.validUntil,now+300);
+  assert.equal(read(now+300).length,0);
+  pkjs.events.appmessage({payload:{...paused,ACTIVITY_REVISION:6}});
+  assert.equal(read(now+3600).length,0,'Native reconfirmation cannot renew pause visibility');
+  assert.equal(helpers.createPublisher({storage:shared,pluginUuid:uuid,maxRecords:8}).lastRevision(),6);
+});
+
+test('simple Timer completion keeps the acknowledged hidden tombstone through cold reads', () => {
+  const shared=storage(),pkjs=runtime('src/pkjs/index.js',shared);
+  const completed=snapshot({ACTIVITY_STATE:'completed',ACTIVITY_CLOCK:'none',ACTIVITY_DEADLINE:0,
+    ACTIVITY_OBSERVED_AT:now,ACTIVITY_VALID_UNTIL:now+60,ACTIVITY_SHOW_TERMINAL:1});
+  pkjs.events.appmessage({payload:completed});
+  function read(at){
+    let answer;runtime('src/plugin/index.js',shared,at).source({category:'activity',item:'live'},
+      {data(value){answer=value;},error(code){assert.fail(code);}});return answer.instances;
+  }
+  assert.equal(read(now+1)[0].properties.show_terminal.boolean.value,true);
+  pkjs.events.appmessage({payload:{...completed,ACTIVITY_REVISION:5,ACTIVITY_SHOW_TERMINAL:0}});
+  const hidden=read(now+2)[0];
+  assert.equal(hidden.properties.state.shortText.text,'completed');
+  assert.equal(hidden.properties.show_terminal.boolean.value,false);
+  assert.equal(hidden.properties.observed_at.timestamp.value,now);
+  const model=library.activity.sourceCard(hidden,uuid);
+  assert.equal(model.showTerminal,false);
+  assert.equal(model.revision,5);
+  pkjs.events.appmessage({payload:completed});
+  assert.equal(pkjs.sent.at(-1).ACTIVITY_ERROR,'STALE_REVISION');
+  assert.equal(read(now+61).length,0);
 });
 
 test('cold Timer card is compact while detailed providers retain elapsed from the same observation', () => {

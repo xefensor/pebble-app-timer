@@ -1,0 +1,9 @@
+{
+  "version": "0.6.0",
+  "pbw_sha256": "f5ce5d3c7f16668046113fbf20a3b790b2c42d44b784f08d021c9be284123814",
+  "result": "PASS",
+  "actual_packaged_scripts_executed": true,
+  "synthetic_native_snapshot": true,
+  "scope": "Bundled PKJS/native receipt and cold plugin runtime with simulated SDK surfaces; simple live, session/card compatibility, multiple slots, pause expiry and acknowledged tombstones. No real mobile app or physical-watch result.",
+  "output": "Packaged Timer PKJS, numeric keys, simple source, compatibility views, multi-slot replacement, completion acknowledgement and cold reload passed."
+}

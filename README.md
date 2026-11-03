@@ -4,16 +4,17 @@ A native timer for **stock PebbleOS**, with activity sharing for compatible
 watchfaces such as [Dynamic](https://github.com/xefensor/dynamic-watchface).
 The first target is Pebble Time 2 (`emery`, 200 × 228).
 
-Timer 0.5.0 is a [GitHub development prerelease](https://github.com/xefensor/pebble-app-timer/releases/tag/v0.5.0)
-with a compact watchface activity, durable Done acknowledgement, preserved repeat
-durations and a live countdown in the app list. Paused timers hide
+Timer 0.6.0 is a [GitHub development prerelease](https://github.com/xefensor/pebble-app-timer/releases/tag/v0.6.0)
+with a simple notification-style activity source, durable Done acknowledgement,
+preserved repeat durations and a live countdown in the app list. Paused timers hide
 from compatible watchfaces after five minutes and remain saved in Timer.
-Download the [PBW](https://github.com/xefensor/pebble-app-timer/releases/download/v0.5.0/Timer-0.5.0.pbw),
-[source archive](https://github.com/xefensor/pebble-app-timer/releases/download/v0.5.0/Timer-0.5.0-source.zip)
-and [checksums](https://github.com/xefensor/pebble-app-timer/releases/download/v0.5.0/SHA256SUMS.txt).
+Download the [PBW](https://github.com/xefensor/pebble-app-timer/releases/download/v0.6.0/Timer-0.6.0.pbw),
+[source archive](https://github.com/xefensor/pebble-app-timer/releases/download/v0.6.0/Timer-0.6.0-source.zip)
+and [checksums](https://github.com/xefensor/pebble-app-timer/releases/download/v0.6.0/SHA256SUMS.txt).
 See [validation](docs/VALIDATION.md) for the native emulator and packaged-runtime
 checks; actual phone and physical-watch checks remain.
-The [previous 0.4.0](https://github.com/xefensor/pebble-app-timer/releases/tag/v0.4.0)
+The [previous 0.5.0](https://github.com/xefensor/pebble-app-timer/releases/tag/v0.5.0)
+and [0.4.0](https://github.com/xefensor/pebble-app-timer/releases/tag/v0.4.0)
 and [earlier 0.2.0 release](https://github.com/xefensor/pebble-app-timer/releases/tag/v0.2.0)
 and its historical validation remain unchanged.
 
@@ -22,6 +23,21 @@ and its historical validation remain unchanged.
 These are actual 0.5.0 native emulator captures, displayed at
 twice their 200 × 228 pixel size. The [approved browser concept](docs/design/Timer-UI-Preview.html)
 is retained separately; it is not native or physical-watch verification.
+
+## Version 0.6.0
+
+- Publish `activity/live` schema 3 using Activities 0.3.0's simple API: Timer
+  identity and one remaining countdown. The host chooses normal or compact
+  presentation. Timer does not arrange labels, select watchface layouts or
+  provide a meter.
+- Retain `activity/session` and the compact `activity/card` source for compatible
+  older hosts. All three projections preserve the original run, source revision,
+  observation, expiry, paused visibility and acknowledged-result tombstones.
+- Keep the native Timer UI, saved timer/bank formats, alarm scheduling and
+  launcher countdown implementation. This release changes the publishing
+  integration, without changing ownership of any timer or alarm.
+- Preserve all earlier published artifacts and tags. Native screenshots below
+  retain their original 0.5.0 validation scope.
 
 ## Version 0.5.0
 
@@ -136,9 +152,17 @@ is retained separately; it is not native or physical-watch verification.
 Install **one Timer PBW**. It contains the native watchapp, its PKJS phone bridge
 and a read-only provider plugin. Timer owns its saved timer and native Wakeup
 alarm. The bridge saves the last reported state on the phone, and the plugin
-exposes that state as `activity/session` v1 and `activity/card` v2 to compatible
-consumers. One activity category declares both item names and their properties.
-Both views keep the original native identity, revision and timestamps.
+exposes that state primarily as `activity/live` v3. The simple source contains
+Timer's app identity and one content item: the remaining countdown. A host such
+as Dynamic decides how to draw its normal and compact views; Timer publishes
+data rather than a host-specific layout. There are no required display labels
+or derived elapsed detail in this source.
+
+`activity/session` v1 and compact `activity/card` v2 remain available for older
+consumers. One activity category declares all three item names and their
+properties. Every view keeps the original native identity, revision and
+timestamps. Polling cannot renew source observation or validity, and a
+five-minute-old paused timer remains saved in Timer after its activity expires.
 
 [Pebble Activities](https://github.com/xefensor/pebble-activities) supplies the
 shared library and source convention. It is not another installed app or
@@ -229,11 +253,11 @@ npm test
 npm run build
 ```
 
-The dependency is installed from `vendor/pebble-activities-0.2.1.tgz`; its
+The dependency is installed from `vendor/pebble-activities-0.3.0.tgz`; its
 provenance and SHA-256 are recorded in [vendor/README.md](vendor/README.md).
 
 The distribution build clears the SDK cache so dependency updates cannot leave
-stale phone JavaScript in the PBW. It writes `dist/Timer-0.5.0.pbw` and its checksum. It bundles the provider
+stale phone JavaScript in the PBW. It writes `dist/Timer-0.6.0.pbw` and its checksum. It bundles the provider
 JavaScript and sets `manifestVersion: 2`, including `plugin.js` alongside PKJS
 and the watch binary. A plain `pebble build` creates a development PBW without
 that extra provider bundle; use `npm run build` for an installable shared-activity

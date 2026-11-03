@@ -158,6 +158,8 @@ def validate_timer_pkjs(root, commit, prefix, files, dependency=None):
             "./~/pebble-activities/dist/js/wire.js": "src/js/wire.js"}
         if "src/js/view.js" in dependency:
             expected["./~/pebble-activities/dist/js/view.js"] = "src/js/view.js"
+        if "src/js/activity.js" in dependency:
+            expected["./~/pebble-activities/dist/js/activity.js"] = "src/js/activity.js"
     mapped = {}
     originals = {}
     for path, text in zip(mapping["sources"], mapping["sourcesContent"]):
@@ -185,6 +187,7 @@ def validate_timer_pkjs(root, commit, prefix, files, dependency=None):
         def rewrite(match):
             target = ({"pebble-activities/publisher": "./~/pebble-activities/dist/js/publisher.js",
                        "./wire": "./~/pebble-activities/dist/js/wire.js",
+                       "./activity": "./~/pebble-activities/dist/js/activity.js",
                        "./view": "./~/pebble-activities/dist/js/view.js"} if dependency is not None else
                       {"pebble-activities/publisher": "publisher.js", "./wire": "wire.js"}).get(match[2])
             require(target in mapped, "Unsupported timer PKJS import: " + match[2])

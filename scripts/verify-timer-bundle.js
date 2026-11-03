@@ -24,9 +24,9 @@ assert.equal(keys.ACTIVITY_SLOT, 1021, 'Timer slot key changed');
 assert.equal(keys.ACTIVITY_TOTAL_DURATION, 1022, 'Timer total-duration key changed');
 assert.equal(keys.ACTIVITY_SHOW_TERMINAL, 1023, 'Timer result-visibility key changed');
 assert.equal(appinfo.plugin.sources.filter(source => source.category === 'activity').length, 1,
-  'PBW must declare one activity category covering both source items');
+  'PBW must declare one activity category covering simple and compatibility source items');
 assert.deepEqual(appinfo.plugin.sources.find(source => source.category === 'activity').items,
-  ['session', 'card']);
+  ['live', 'session', 'card']);
 
 const reverse = {};
 for (const [name, value] of Object.entries(keys)) {
@@ -218,6 +218,31 @@ for (const [name, value] of Object.entries(card)) {
       `Card emitted an undeclared property/shape: ${name}/${shape}`);
   }
 }
+const liveSource=appinfo.plugin.sources.find(declaration =>
+  declaration.category==='activity'&&declaration.items.includes('live'));
+assert.ok(liveSource,'PBW does not declare activity/live');
+response=undefined;sourceError=undefined;context.__request={category:'activity',item:'live'};
+vm.runInContext('__handler(__request, __respond)',context,{timeout:1000});
+assert.equal(sourceError,undefined);
+assert.equal(response.instances.length,2);
+assert.equal(response.instances[0].instanceId,run);
+assert.equal(response.instances[1].instanceId,'second-slot:2');
+const live=response.instances[0].properties;
+assert.equal(live.schema_version.numericValue.value,3);
+assert.equal(live.app_name.longText.text,'Timer');
+assert.equal(live.observed_at.timestamp.value,observedAt);
+assert.equal(live.valid_until.timestamp.value,validUntil);
+assert.equal(live.unconfirmed.boolean.value,true);
+const content=JSON.parse(live.content.longText.text);
+assert.equal(content.clock,'countdown');
+assert.equal(content.deadline,deadline);
+assert.equal(content.label,undefined,'Simple Timer should not repeat a duration or clock label');
+for(const field of ['main_label','support_type','detail','meter_kind'])
+  assert.equal(live[field],undefined,'Simple source leaked an advanced display field: '+field);
+for(const [name,value] of Object.entries(live))for(const shape of Object.keys(value))
+  assert.ok(liveSource.properties[name]&&liveSource.properties[name].includes(shape),
+    'Simple activity emitted an undeclared property/shape: '+name+'/'+shape);
+context.__request={category:'activity',item:'card'};
 const completed = {ACTIVITY_REVISION:revision+3, ACTIVITY_STATE:'completed',
   ACTIVITY_CLOCK:'none', ACTIVITY_DEADLINE:0, ACTIVITY_OBSERVED_AT:NOW_SECONDS,
   ACTIVITY_VALID_UNTIL:NOW_SECONDS+60, ACTIVITY_SHOW_TERMINAL:1};
@@ -230,12 +255,21 @@ vm.runInContext('__handler(__request, __respond)', context, {timeout:1000});
 assert.equal(response.instances[0].properties.state.shortText.text, 'completed');
 assert.equal(response.instances[0].properties.show_terminal.boolean.value, false);
 assert.ok(publishNative(completed).ACTIVITY_ERROR, 'Stale completion resurrected an acknowledged result');
+context.__request={category:'activity',item:'live'};
+vm.runInContext('__handler(__request, __respond)',context,{timeout:1000});
+assert.equal(response.instances[0].properties.state.shortText.text,'completed');
+assert.equal(response.instances[0].properties.show_terminal.boolean.value,false);
+assert.equal(response.instances[0].properties.observed_at.timestamp.value,NOW_SECONDS);
 const cold = vm.createContext({Pebble:{registerSourceHandler(callback){handler=callback;}},
   localStorage:storage, Date:FixedDate, console});
 vm.runInContext(fs.readFileSync(path.join(root, appinfo.plugin.script), 'utf8'), cold,
   {filename:'cold-acknowledged-plugin.js',timeout:1000});
-cold.__handler=handler;cold.__request={category:'activity',item:'card'};
+cold.__handler=handler;cold.__request={category:'activity',item:'live'};
 cold.__respond={data(value){response=value;},error(code){throw new Error(code);}};
 vm.runInContext('__handler(__request, __respond)',cold,{timeout:1000});
 assert.equal(response.instances[0].properties.show_terminal.boolean.value, false);
-console.log('Packaged Timer PKJS, numeric keys, compact source, multi-slot replacement, completion acknowledgement and cold reload passed.');
+assert.equal(response.instances[0].properties.schema_version.numericValue.value,3);
+cold.__request={category:'activity',item:'card'};
+vm.runInContext('__handler(__request, __respond)',cold,{timeout:1000});
+assert.equal(response.instances[0].properties.show_terminal.boolean.value,false);
+console.log('Packaged Timer PKJS, numeric keys, simple source, compatibility views, multi-slot replacement, completion acknowledgement and cold reload passed.');

@@ -1,13 +1,13 @@
 # Pinned dependencies
 
-Timer 0.5.0 is a local candidate pinned to
-`pebble-activities-0.2.1.tgz`. Its exact provenance is also recorded in
+Timer 0.6.0 uses the simple activity API and is pinned to
+`pebble-activities-0.3.0.tgz`. Its exact provenance is also recorded in
 [ACTIVITIES.json](ACTIVITIES.json):
 
-- Source commit: `d2251a1e4e3d8543ad2e8be01fccc8758e785fb6`
-- SHA-256: `2dfaf5cd7dd69b9bf850cc56248500278d80ca47a00a3d836b8608d14cf9c17a`
+- Source commit: `dad422a3384864966b60acf6dc3e52ddec296a09`
+- SHA-256: `882df4cf462d19a14baf7aebacb06c7f0c807a86b183614a6ba95d6a776cc92c`
 - SDK: 4.33.1, Emery; the archive contains both ACT1 compatibility and the
-  bounded ACT2 native view, headers and JavaScript source.
+  bounded ACT2 native transport, simple schema3 API, headers and JavaScript source.
 - Licence: PolyForm Noncommercial License 1.0.0, including required attribution.
 
 The tarball includes the native SDK package (`dist.zip`) and JavaScript source.
@@ -17,7 +17,7 @@ checkout dependency. Timer's version is independent of the library version.
 Verify the current dependency:
 
 ```sh
-sha256sum vendor/pebble-activities-0.2.1.tgz
+sha256sum vendor/pebble-activities-0.3.0.tgz
 ```
 
 The following pin belongs to the published Timer 0.2.0 testing release and is

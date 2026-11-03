@@ -35,7 +35,7 @@ service. Keep timer behaviour independent of Dynamic's presentation.
 
 - Install with `npm ci --ignore-scripts`. Use the versioned tarball in `vendor/`;
   never rely on a sibling library checkout. Record updated provenance and hashes.
-  Version 0.5.0 pins Activities 0.2.1; `vendor/ACTIVITIES.json` records
+  Version 0.6.0 pins Activities 0.3.0; `vendor/ACTIVITIES.json` records
   its exact reviewed source commit and archive checksum.
 - Use `npm run build` for distribution. Its manifestVersion 2 PBW must contain
   native app, PKJS, independently callable `plugin.js`, licences and notices.
@@ -73,12 +73,17 @@ renumbering prior keys. ACTIVITY_SHOW_TERMINAL (1023) explicitly publishes resul
 visibility. Version 2 native models add saved repeat duration and acknowledgement;
 keep the exact version 1 record decoder and atomic bank migration. Do not stack
 full collection copies in nested migration/save calls on the app stack; retain a conservative budget for older SDK classifications.
-Keep the activity/session schema 1 source
-alongside activity/card schema 2. The native publication/receipt path remains
+Prefer activity/live schema 3: one content item and optional detail/artwork,
+without provider-selected normal/compact layouts or required display labels.
+The provider adapter derives this public model from the original native snapshot.
+Keep activity/session schema 1 alongside activity/card schema 2 for older hosts.
+The native publication/receipt path remains
 schema 1 plus the optional bridge metadata. Source revisions advance globally
 and dirty slots are published in ascending order.
-Declare the `activity` source category once, with items `session` and `card`
-and the union of both schemas' properties.
+Declare the `activity` source category once, with items `live`, `session` and
+`card`, and the union of the three schemas' properties. Keep the native alarm,
+timer models, bank formats and app-list countdown independent of these source
+projection choices.
 Keep the earliest-deadline Wakeup broker: separate nearby Wakeups conflict on
 stock PebbleOS. Versioned storage chunks must stay below the SDK’s per-key limit;
 write and verify a new bank before committing it or retiring legacy state.

@@ -1,12 +1,12 @@
 {
   "name": "pebble-app-timer",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "author": "Xef",
   "private": true,
   "license": "SEE LICENSE IN LICENSE",
   "description": "A standalone stock PebbleOS timer with native alarms and activity sharing.",
   "dependencies": {
-    "pebble-activities": "file:vendor/pebble-activities-0.2.1.tgz"
+    "pebble-activities": "file:vendor/pebble-activities-0.3.0.tgz"
   },
   "scripts": {
     "test": "python3 scripts/test.py",
@@ -106,6 +106,7 @@
           "supportsMultiple": true,
           "suggestedRefreshIntervalSec": 30,
           "items": [
+            "live",
             "session",
             "card"
           ],
@@ -248,6 +249,15 @@
             ],
             "meter_max": [
               "numericValue"
+            ],
+            "app_name": [
+              "longText"
+            ],
+            "content": [
+              "longText"
+            ],
+            "detail": [
+              "longText"
             ]
           }
         }

@@ -1,5 +1,47 @@
 # Timer validation
 
+## 0.6.0 simple activity publishing — 3 November 2026
+
+Timer now publishes the notification-style `activity/live` schema 3 source
+through Activities 0.3.0. It supplies app identity and one countdown; the host
+chooses normal or compact presentation. The publishing API has no required
+visible field labels, main/support tree, meter or host layout selection.
+The existing session/card sources remain available to older hosts.
+
+- **18 JavaScript cases, six portable C suites and 38 Python release-helper
+  regressions pass.** New cold-runtime cases cover the live countdown, fixed
+  paused seconds and original five-minute expiry, acknowledged hidden terminal
+  revisions and compatibility source declarations. Polling does not renew data.
+- **SDK 4.33.1 Emery distribution build passes.** The final PBW includes native
+  payloads, PKJS, independently callable provider, exact symbolic/numeric keys,
+  the pinned Activities 0.3.0 package and required notices. The packaged scripts
+  execute through their actual receipt, multi-slot, live/session/card and cold
+  reload checks with simulated SDK surfaces.
+- The native Timer C and PKJS sources are unchanged from 0.5.0. A comparison of
+  both PBWs shows identical native payload bytes after excluding only the SDK
+  process header and verified GNU build-ID note. Resources are byte-identical.
+  Existing timer banks, alarms, Wakeup broker, application UI and launcher-glance
+  coalescing code therefore retain their prior implementation. The 0.5.0 native
+  UI/alarm/glance captures remain explicitly historical; no new native run is
+  claimed for this publishing-only change.
+- The release auditor now verifies the exact additional simple-API module and
+  its compiled imports against the pinned package. Regressions accept the valid
+  graph and reject an unpinned or modified module.
+- The final font audit verifies the same seven resources, linked outlines and
+  required licenses. Its current PBW hash and the native metadata ranges are
+  recorded alongside the packaged-runtime check.
+
+Evidence: [native payload identity](qa/0.6.0/native-identity.json),
+[actual packaged scripts](qa/0.6.0/packaged-runtime.json) and
+[font/resource audit](qa/0.6.0/font-audit.json). The dependency pin records exact
+source `dad422a3384864966b60acf6dc3e52ddec296a09` and archive SHA-256.
+
+Final PBW SHA-256: `f5ce5d3c7f16668046113fbf20a3b790b2c42d44b784f08d021c9be284123814`.
+
+This GitHub development prerelease is for sideload testing. Physical-watch and
+live mobile-app/plugin checks remain separate. Earlier published PBWs, source
+archives and tags remain unchanged.
+
 ## 0.5.0 activity acknowledgement, timer UX and app-list countdown
 
 This development prerelease implements the user's review of the watchface and
