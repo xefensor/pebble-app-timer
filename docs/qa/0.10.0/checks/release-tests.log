@@ -1,23 +1,8 @@
-...............................E...
-======================================================================
-ERROR: test_packaging_freezes_pbw_and_self_contained_source_with_checksums (test_timer_release.TimerReleaseTests.test_packaging_freezes_pbw_and_self_contained_source_with_checksums)
+...................................
 ----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/home/xela/Projekty/Pebble/pebble-app-timer/tests/test_timer_release.py", line 275, in test_packaging_freezes_pbw_and_self_contained_source_with_checksums
-    packager.package(self.root)
-    ~~~~~~~~~~~~~~~~^^^^^^^^^^^
-  File "/home/xela/Projekty/Pebble/pebble-app-timer/scripts/package-release.py", line 28, in package
-    debug.write_bytes((root / 'dist' / debug.name).read_bytes())
-                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
-  File "/usr/lib64/python3.13/pathlib/_abc.py", line 625, in read_bytes
-    with self.open(mode='rb') as f:
-         ~~~~~~~~~^^^^^^^^^^^
-  File "/usr/lib64/python3.13/pathlib/_local.py", line 537, in open
-    return io.open(self, mode, buffering, encoding, errors, newline)
-           ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-FileNotFoundError: [Errno 2] No such file or directory: '/tmp/tmpy93m6127/dist/Timer-1.2.3-debug.zip'
+Ran 35 tests in 1.496s
 
-----------------------------------------------------------------------
-Ran 35 tests in 1.459s
-
-FAILED (errors=1)
+OK
+Timer-1.2.3.pbw 4052 8383e7e23f09314706544f4c7fc933885fd6d7ea2ff225becb5b64706cfa05c7
+Timer-1.2.3-source.zip 4739 316045d544f2203b403068857ea51527d000a21e79e64e4af7b9cb1afe45b001
+Timer-1.2.3-debug.zip 145 c7b25b575ea38d7c3e6718cd1f4de5fe57f7d2013305ba6fbc1e46b70d770f61
