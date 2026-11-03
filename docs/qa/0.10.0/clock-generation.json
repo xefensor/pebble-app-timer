@@ -1,0 +1,31 @@
+{
+  "result": "PASS",
+  "fontSha256": "526d2361818275d1f9d1df6ce1835095058b84ec989e50e22f271237cc304000",
+  "unitsPerEm": 1000,
+  "glyphCount": 11,
+  "contourCount": 19,
+  "pointCount": 1049,
+  "maximumContourPoints": 145,
+  "maximumGlyphPoints": 145,
+  "maximumGlyphContours": 5,
+  "quadraticCubicFlatnessToleranceFontUnits": 2.0,
+  "maximumCurveFlatnessPxAt80": 0.16,
+  "characters": "0123456789:",
+  "holeContours": 5,
+  "overlapRemoval": "fontTools.ttLib.removeOverlaps with skia-pathops; curved nonzero winding union before flattening",
+  "fontToolsVersion": "4.61.1",
+  "pathopsVersion": "0.9.2",
+  "glyphAdvances": {
+    "0": 565,
+    "1": 379,
+    "2": 566,
+    "3": 565,
+    "4": 551,
+    "5": 493,
+    "6": 521,
+    "7": 522,
+    "8": 541,
+    "9": 521,
+    ":": 221
+  }
+}

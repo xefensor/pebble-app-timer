@@ -29,6 +29,34 @@ appinfo["usesPermissions"] = package["pebble"]["usesPermissions"]
 appinfo["plugin"] = package["pebble"]["plugin"]
 entries["appinfo.json"] = json.dumps(appinfo, indent=2).encode()
 entries["plugin.js"] = (build / "plugin.js").read_bytes()
+# Keep full source identity/debugging inputs outside the watch installation.
+# Release scripts are reproduced by the pinned, compression-disabled minifier.
+debug = {}
+for name in ("pebble-js-app.js", "plugin.js"):
+    debug[name] = entries[name]
+    mapping = entries.pop(name + ".map", None)
+    if mapping is not None:
+        debug[name + ".map"] = mapping
+    original = build / ("original-" + name)
+    original.write_bytes(entries[name])
+    output = build / "optimized" / name
+    output_map = build / "optimized" / (name + ".map")
+    command = ["node", str(root / "scripts/minify-js.cjs"),
+               str(original), str(output), str(output_map)]
+    if mapping is not None:
+        input_map = build / ("original-" + name + ".map")
+        input_map.write_bytes(mapping)
+        command.append(str(input_map))
+    subprocess.run(command, check=True, cwd=root)
+    entries[name] = output.read_bytes()
+    debug["minified/" + name + ".map"] = output_map.read_bytes()
+debug["optimization.json"] = json.dumps({
+    "schema": 1, "version": package["version"], "minifier": "terser@5.46.0",
+    "scripts": {name: {"sourceSha256": hashlib.sha256(debug[name]).hexdigest(),
+                       "releaseSha256": hashlib.sha256(entries[name]).hexdigest(),
+                       "mapSha256": hashlib.sha256(debug["minified/" + name + ".map"]).hexdigest()}
+                for name in ("pebble-js-app.js", "plugin.js")}
+}, indent=2).encode() + b"\n"
 entries["LICENSE"] = (root / "LICENSE").read_bytes()
 entries["licenses/pebble-activities-LICENSE.txt"] = (library / "LICENSE").read_bytes()
 entries["THIRD-PARTY-NOTICES.md"] = (root / "THIRD-PARTY-NOTICES.md").read_bytes()
@@ -38,12 +66,16 @@ if any(media.get("type") == "font" for media in package["pebble"].get("resources
         entries["licenses/" + notice] = (root / "resources/fonts" / notice).read_bytes()
 destination = root / "dist" / ("Timer-" + package["version"] + ".pbw")
 destination.parent.mkdir(exist_ok=True)
-with zipfile.ZipFile(destination, "w", zipfile.ZIP_DEFLATED) as output:
-    for name, content in sorted(entries.items()):
-        entry = zipfile.ZipInfo(name, (1980, 1, 1, 0, 0, 0))
-        entry.compress_type = zipfile.ZIP_DEFLATED
-        entry.external_attr = 0o644 << 16
-        output.writestr(entry, content)
-checksum = hashlib.sha256(destination.read_bytes()).hexdigest()
-(destination.parent / "SHA256SUMS.txt").write_text(checksum + "  " + destination.name + "\n")
+debug_destination = destination.with_name("Timer-" + package["version"] + "-debug.zip")
+for path, contents in ((destination, entries), (debug_destination, debug)):
+    with zipfile.ZipFile(path, "w", zipfile.ZIP_DEFLATED) as output:
+        for name, content in sorted(contents.items()):
+            entry = zipfile.ZipInfo(name, (1980, 1, 1, 0, 0, 0))
+            entry.compress_type = zipfile.ZIP_DEFLATED
+            entry.external_attr = 0o644 << 16
+            output.writestr(entry, content)
+(destination.parent / "SHA256SUMS.txt").write_text("".join(
+    hashlib.sha256(path.read_bytes()).hexdigest() + "  " + path.name + "\n"
+    for path in (destination, debug_destination)))
 print(destination)
+print(debug_destination)

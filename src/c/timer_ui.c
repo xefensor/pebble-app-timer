@@ -259,8 +259,8 @@ static void main_screen(GContext *ctx, const TimerUiView *view) {
 }
 
 static void list_screen(GContext *ctx, const TimerUiView *view) {
-  const unsigned count=timer_collection_count(view->collection);
-  const unsigned menu=view->menu>count?count:view->menu;
+  const TimerListWindow list=timer_ui_list_window(view);
+  const unsigned count=list.count,menu=list.menu;
   const bool full=!timer_collection_can_create(view->collection);
   const bool replacing=!full&&count==TIMER_COLLECTION_CAPACITY;
   const unsigned first_menu=full&&count?1:0;
@@ -276,12 +276,9 @@ static void list_screen(GContext *ctx, const TimerUiView *view) {
     hourglass(ctx,1,1,UI_CENTER,77,70,BLUE,GColorBlack,false,view->now);
     text(ctx,"Start a timer",18,178,GColorBlack);
   } else {
-    const unsigned rows=view->issue&&view->issue[0]?2:3;
-    unsigned first=menu>1?menu-2:0;
-    if(first+rows>count)first=count>rows?count-rows:0;
+    const unsigned rows=list.rows,first=list.first;
     for(unsigned row=first;row<count&&row<first+rows;++row) {
-      const int slot=timer_collection_visible_slot(view->collection,row);
-      if(slot<0)continue;
+      const unsigned slot=list.slots[row];
       const ActivityTimerModel *timer=&view->collection->slots[slot];
       const bool ready=timer->state==ACTIVITY_TIMER_FINISHED&&timer->acknowledged;
       const uint32_t left=ready?timer->repeat_seconds:activity_timer_remaining(timer,view->now);
@@ -428,15 +425,4 @@ void timer_ui_draw(GContext *ctx, const TimerUiView *view) {
     text(ctx,view->issue,14,confirm?14:202,GColorBlack);
     text(ctx,"Keep Timer open",14,confirm?30:220,GColorBlack);
   }
-}
-
-bool timer_ui_needs_tick(const TimerUiView *view) {
-  if(!view||!view->collection)return false;
-  if(view->screen==SCREEN_DETAIL&&view->selected<TIMER_COLLECTION_CAPACITY)
-    return view->collection->slots[view->selected].state==ACTIVITY_TIMER_RUNNING;
-  if(view->screen==SCREEN_LIST)
-    for(unsigned i=0;i<TIMER_COLLECTION_CAPACITY;++i)
-      if(timer_collection_visible(view->collection,i)&&
-         view->collection->slots[i].state==ACTIVITY_TIMER_RUNNING)return true;
-  return false;
 }

@@ -4,12 +4,17 @@ A native timer for **stock PebbleOS**, with activity sharing for compatible
 watchfaces such as [Dynamic](https://github.com/xefensor/dynamic-watchface).
 The first target is Pebble Time 2 (`emery`, 200 × 228).
 
-Timer **0.9.0** improves orientation and feedback throughout the watch UI.
-Lists show the selected timer's position and a scroll indicator; Full focuses a
-real timer. Options identifies the selected timer and its state. Invalid and
-locked editor fields match the available button actions. Critical warnings stay
-readable while preserving alarm and delete controls. The familiar hourglass,
-saved models, native alarms and launcher countdown retain their ownership.
+Timer **0.10.0** is a local optimization candidate with the approved 0.9 UI.
+Sharing acknowledgements no longer redraw an unchanged screen, and offscreen
+countdowns do not repaint the list. Unused font data is removed. Phone scripts
+are minified reproducibly; source maps and original bundles remain available in
+a separate debugging archive. Native timers, alarms and activity leases retain
+their ownership. See the [optimization review](docs/OPTIMIZATION-REVIEW.md).
+
+Local candidate: [PBW](releases/Timer-0.10.0.pbw),
+[source](releases/Timer-0.10.0-source.zip),
+[debugging files](releases/Timer-0.10.0-debug.zip) and
+[checksums](releases/SHA256SUMS.txt). This candidate has not been published.
 
 Timer 0.9.0 is a [GitHub development prerelease](https://github.com/xefensor/pebble-app-timer/releases/tag/v0.9.0)
 with a typed summary activity source, durable Done acknowledgement,
@@ -38,6 +43,25 @@ Use [Dynamic 0.15.0](https://github.com/xefensor/dynamic-watchface/releases/tag/
 for activity presentation and [Open Activity 0.1.4](https://github.com/xefensor/pebble-app-open-activity/releases/tag/v0.1.4)
 for the separately configured Primary/Secondary shortcuts. Install each app
 separately; the Activities library is already bundled.
+
+## Version 0.10.0
+
+- Repaint sharing status only when it changes in Options. Storage/alarm warnings
+  still invalidate every affected screen immediately. Keep native reconciliation
+  for offscreen running timers while ticking only the visible list rows.
+- Share the renderer's exact row window with its tick decision and compute the
+  bounded stable timer order once per list pass. Check for an actual due deadline
+  before copying the collection into completion transaction scratch.
+- Retain only the eleven usable digit/colon glyphs and six used body fonts.
+  Regenerate the exact reviewed outlines from the committed font with a local
+  recipe; retain original shapes, stable cells, antialiasing and required notices.
+- Minify phone/runtime provider scripts with locked Terser 5.46.0, keeping
+  compression disabled. Ship original scripts/maps and chained minified maps in
+  the separate debug ZIP. Release preparation re-audits source modules and
+  reproduces the exact optimized script/map bytes before runtime handoff checks.
+- Preserve published versions, eight native models, verified banks, earliest
+  Wakeup broker, App Glance, bounded animations and Activities 0.4.0 compatibility.
+  Emulator and host profiling results do not establish physical battery savings.
 
 ## Version 0.9.0
 
@@ -326,7 +350,7 @@ The dependency is installed from `vendor/pebble-activities-0.4.0.tgz`; its
 provenance and SHA-256 are recorded in [vendor/README.md](vendor/README.md).
 
 The distribution build clears the SDK cache so dependency updates cannot leave
-stale phone JavaScript in the PBW. It writes `dist/Timer-0.9.0.pbw` and its checksum. It bundles the provider
+stale phone JavaScript in the PBW. It writes `dist/Timer-0.10.0.pbw`, its debugging ZIP and checksums. It bundles the provider
 JavaScript and sets `manifestVersion: 2`, including `plugin.js` alongside PKJS
 and the watch binary. A plain `pebble build` creates a development PBW without
 that extra provider bundle; use `npm run build` for an installable shared-activity

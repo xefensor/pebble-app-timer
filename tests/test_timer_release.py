@@ -268,6 +268,8 @@ class TimerReleaseTests(unittest.TestCase):
 
     def test_packaging_freezes_pbw_and_self_contained_source_with_checksums(self):
         self.write("dist/Timer-1.2.3.pbw", zip_bytes(self.pbw))
+        debug_bytes = zip_bytes({'optimization.json': b'fixture debug'})
+        self.write("dist/Timer-1.2.3-debug.zip", debug_bytes)
         for name in ("build/private.js", "node_modules/other/index.js", ".pebble/cache.json",
                 "random.PBW", "old.pyc", "__pycache__/old.pyc", "releases/old-source.zip"):
             self.write(name, b"excluded fixture")
@@ -275,6 +277,7 @@ class TimerReleaseTests(unittest.TestCase):
         packager.package(self.root)
         timer = self.root / "releases/Timer-1.2.3.pbw"
         self.assertEqual(timer.read_bytes(), zip_bytes(self.pbw))
+        self.assertEqual((self.root / 'releases/Timer-1.2.3-debug.zip').read_bytes(), debug_bytes)
         source = self.root / "releases/Timer-1.2.3-source.zip"
         with zipfile.ZipFile(source) as archive:
             names = set(archive.namelist())
@@ -283,9 +286,10 @@ class TimerReleaseTests(unittest.TestCase):
             self.assertFalse(any(name.startswith(("dist/", "build/", "node_modules/", ".pebble/", "releases/")) or
                 Path(name).suffix.lower() in (".pbw", ".pyc") for name in names))
         selected = release.checksum_map((self.root / "releases/SHA256SUMS.txt").read_bytes(),
-            ["releases/Timer-1.2.3.pbw", "releases/Timer-1.2.3-source.zip"], "releases/SHA256SUMS.txt")
+            ["releases/Timer-1.2.3.pbw", "releases/Timer-1.2.3-source.zip", "releases/Timer-1.2.3-debug.zip"], "releases/SHA256SUMS.txt")
         self.assertEqual(selected["releases/Timer-1.2.3.pbw"], release.digest(timer.read_bytes()))
         self.assertEqual(selected["releases/Timer-1.2.3-source.zip"], release.digest(source.read_bytes()))
+        self.assertEqual(selected['releases/Timer-1.2.3-debug.zip'], release.digest(debug_bytes))
 
     def test_unbuilt_or_wrong_identity_pbw_does_not_touch_frozen_artifacts(self):
         self.write("releases/Timer-1.2.3.pbw", b"frozen")

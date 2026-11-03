@@ -9,7 +9,8 @@
     "source_commit": "984e05690684a3676124dd358760979726bd9c26"
   },
   "app_uuid": "50e9ef12-a5ab-4369-a3b5-3447bfba5151",
-  "assets": ["releases/Timer-{version}.pbw", "releases/Timer-{version}-source.zip"],
+  "assets": ["releases/Timer-{version}.pbw", "releases/Timer-{version}-source.zip", "releases/Timer-{version}-debug.zip"],
+  "debug_archive": "releases/Timer-{version}-debug.zip",
   "checksums_file": "releases/SHA256SUMS.txt",
   "source_archive": {"path": "releases/Timer-{version}-source.zip", "prefix": ""},
   "notes": {"path": "README.md", "heading": "## Version {version}"}

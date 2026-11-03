@@ -107,3 +107,19 @@ Wakeup ownership, start a worker, reorder the launcher or refresh source validit
 
 The accompanying PolyForm Noncommercial licence and required attribution apply.
 Preserve third-party notices, including the SDK's Apache 2.0 notice.
+
+Version 0.10.0 preserves the 0.9 UI while reducing work. `timer_ui_state.c` owns
+the portable row-window and visible sharing-status invalidation decisions.
+Both drawing and clock ticking must use the same list window, including the
+two-row critical-warning case. Offscreen timers still reconcile and own alarms.
+Do not use transport receipt status as a reason to repaint other screens.
+Keep the six used body fonts and exact eleven digit/colon outlines; regenerate
+with `scripts/generate-clock-glyphs.py` using the pinned font dependencies.
+
+Distribution-only minification uses locked Terser 5.46.0 with compression off.
+The debug ZIP owns SDK originals/maps and chained minified maps; no source map
+or dangling sourceMappingURL is installed in the PBW. Release preparation must
+verify original module/source identity, reproduce optimized code/map bytes and
+exercise the actual optimized runtime. Keep development SDK output unchanged.
+Publish/debug/source artifacts need matching versioned checksums. Host raster
+profiling counts portable work; it is not watch render timing or battery proof.

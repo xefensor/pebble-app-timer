@@ -1,0 +1,833 @@
+{
+  "version": "0.9.0",
+  "pbw": {
+    "file": "Timer-0.9.0.pbw",
+    "sha256": "44a2b09ce5a72455ae65694b8e22b05d5b5ab5276e0bd4891fc743b4e7ae0e3a"
+  },
+  "nativePayloadSha256": {
+    "appinfo.json": "762de117e9d93ebb9abcb41f514354179b06501e1273c9cb4a88a114aa55a79b",
+    "emery/app_resources.pbpack": "7c33059be8dd8d5379ca467ce430225778ae5b576d19db66ad978c835110c7df",
+    "emery/manifest.json": "46d12e44c0b028e8ab37f9bf0528620179cd4a575b4a063c66da71c0095419f1",
+    "emery/pebble-app.bin": "f2d7c43c16ddfa7c88a336e5ec6c359e44eba3d5a8723291c8d7017c078d9b64"
+  },
+  "activities": {
+    "package": "pebble-activities",
+    "version": "0.4.0",
+    "repository": "https://github.com/xefensor/pebble-activities",
+    "artifact": "pebble-activities-0.4.0.tgz",
+    "sha256": "9e640aea91d08633e91e59dab3d1e0ee6243efe0109d971e42d356a4d67affbe",
+    "integrity": "sha512-L1PKmeSojO9TMavz48qC5MBrBsEI6UBsPjy+rkgrnJxT6P0IobqYLdVHrdEgMxjydJhN19fFGjx4mc5jDuETdA==",
+    "sdk": "4.33.1",
+    "platforms": [
+      "emery"
+    ],
+    "source_commit": "9db426c36e591f3db98819b5b05ffd9da2af27b4"
+  },
+  "fontSources": "resources/fonts/font-provenance.json",
+  "fontAudit": "docs/qa/0.9.0/font-audit.json",
+  "nativeSourceSha256": {
+    "src/c/font_raster.h": "87651103df94931391886f0268769d59df99e3c14f872a686ec78bdca5a01336",
+    "src/c/generated_clock_glyphs.h": "38706b17a17fc394aea44b6446ff4a22bc52627cae4fe5744d6014354da325ec",
+    "src/c/main.c": "b5cc36e8ebc0bbef0bea01ac023f69c6dbaa234726950d8526866254324ac55a",
+    "src/c/timer_collection.c": "81a4851fc2cd39970646d1cb16289d137ae8097514ac7856a0890dbee5547ae5",
+    "src/c/timer_collection.h": "ada8e410ec5ae721368dcb5e0aad804d7f3a57dc7da8e345e4c67e63828c00ce",
+    "src/c/timer_fonts.c": "a0f63757b8bbb2801b6c5824f03f76df1d54565d1d23d94374c943d8ded5796d",
+    "src/c/timer_fonts.h": "24c0b9be2691506e4c74f753203f6a3098da1b661d71c8712f7972ba5d61868c",
+    "src/c/timer_glance.c": "a4b8daf7567d86226ed94982c09666ec8c45e3cc70e6f7e93920236f7e9f305a",
+    "src/c/timer_glance.h": "dd48e7b1563bc8262393b97d1307efc681542b0ae7b7c332bcc1d7a48318bb6b",
+    "src/c/timer_glance_plan.h": "78dca0f56f9a38e0a89c49b0024c4670f0db28cb9082adb2236c0e9993c3db23",
+    "src/c/timer_hourglass.h": "ab3563b7aef1ee6049d46adb1a8289352756079de70c7c9d8ac57ee197544566",
+    "src/c/timer_model.c": "45aaebf48d5f8ea677b8d562fc6658c90d4a767593becc71ad33feb56d9fa138",
+    "src/c/timer_model.h": "9924ab3cfe71e05bb1f712f653f118930e0062666089a62707a860978fc4fedb",
+    "src/c/timer_ui.c": "cd8e270c90f9f481523810e26e3fd0626bb429e960227423a8c010e2a5826bda",
+    "src/c/timer_ui.h": "1a07b714ab0aad7776065a2846319ae9b59d53e2eebe241c315e0d1a660a0b38"
+  },
+  "images": [
+    {
+      "file": "docs/qa/0.9.0/native/uxpass-mixed-list-first.png",
+      "sha256": "11facca6a24eb1c14f2557638bc6184d4743fa440178eee597fdccb67f670f58",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false,
+      "name": "uxpass-mixed-list-first",
+      "scope": "Exact final candidate Timer native binary"
+    },
+    {
+      "file": "docs/qa/0.9.0/native/uxpass-mixed-list-second-identical-timer.png",
+      "sha256": "c64d2e3c57fd43f5945d18027aa4645da3b718bae9bb8eeeb550a9c60e653b83",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false,
+      "name": "uxpass-mixed-list-second-identical-timer",
+      "scope": "Exact final candidate Timer native binary"
+    },
+    {
+      "file": "docs/qa/0.9.0/native/uxpass-options-identical-duration-context.png",
+      "sha256": "bf3413660c00d63c5089d3183815f70e7b965a94e99cebe450d0edd222c2e38e",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false,
+      "name": "uxpass-options-identical-duration-context",
+      "scope": "Exact final candidate Timer native binary"
+    },
+    {
+      "file": "docs/qa/0.9.0/native/uxpass-options-paused-context.png",
+      "sha256": "4136493b4ef98a38f1c11e039fcb1039e0944121e6b1baad553272345b21be1b",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false,
+      "name": "uxpass-options-paused-context",
+      "scope": "Exact final candidate Timer native binary"
+    },
+    {
+      "file": "docs/qa/0.9.0/native/uxpass-mixed-list-last-position.png",
+      "sha256": "e4ef986e6ec1fb80caf72adb2113696a77f791acced207e4ddf94e12de0ba572",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false,
+      "name": "uxpass-mixed-list-last-position",
+      "scope": "Exact final candidate Timer native binary"
+    },
+    {
+      "file": "docs/qa/0.9.0/native/uxpass-editor-zero-no-commit.png",
+      "sha256": "c3502066edd5fa32417b9faa99eb04994d8d260f7c57d8291cf3de9f2b1e3b25",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false,
+      "name": "uxpass-editor-zero-no-commit",
+      "scope": "Exact final candidate Timer native binary"
+    },
+    {
+      "file": "docs/qa/0.9.0/native/uxpass-editor-four-seconds-no-commit.png",
+      "sha256": "a90107a2240ae31b7aa9e093afd171a6c31add6b5437ad178539e18a0e1ffb73",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false,
+      "name": "uxpass-editor-four-seconds-no-commit",
+      "scope": "Exact final candidate Timer native binary"
+    },
+    {
+      "file": "docs/qa/0.9.0/native/uxpass-editor-five-seconds-valid.png",
+      "sha256": "f30a18a7de33ee4f9d45c681c10e0105c3e56bcbca675a2a7509d85eb677f849",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false,
+      "name": "uxpass-editor-five-seconds-valid",
+      "scope": "Exact final candidate Timer native binary"
+    },
+    {
+      "file": "docs/qa/0.9.0/native/uxpass-editor-24h-minutes-locked.png",
+      "sha256": "c48e48d762e4af830957d62d09b6f1ce32a1415fd6206657de6cc77ee25a072c",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false,
+      "name": "uxpass-editor-24h-minutes-locked",
+      "scope": "Exact final candidate Timer native binary"
+    },
+    {
+      "file": "docs/qa/0.9.0/native/uxpass-editor-24h-minutes-unchanged.png",
+      "sha256": "c48e48d762e4af830957d62d09b6f1ce32a1415fd6206657de6cc77ee25a072c",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false,
+      "name": "uxpass-editor-24h-minutes-unchanged",
+      "scope": "Exact final candidate Timer native binary"
+    },
+    {
+      "file": "docs/qa/0.9.0/native/uxpass-editor-24h-seconds-locked.png",
+      "sha256": "b4d23b35cc5ccdfbf0dbf18efa0643790055b0e1fae5d4a78d3afd0df4cda2c4",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false,
+      "name": "uxpass-editor-24h-seconds-locked",
+      "scope": "Exact final candidate Timer native binary"
+    },
+    {
+      "file": "docs/qa/0.9.0/native/uxpass-empty-single-create-action.png",
+      "sha256": "a2d001de5e40231508687147b54623bf4b3b30823b925a9935292a25721fd072",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false,
+      "name": "uxpass-empty-single-create-action",
+      "scope": "Exact final candidate Timer native binary"
+    },
+    {
+      "file": "docs/qa/0.9.0/native/settings-empty-new-timer.png",
+      "sha256": "a2d001de5e40231508687147b54623bf4b3b30823b925a9935292a25721fd072",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false,
+      "name": "settings-empty-new-timer",
+      "scope": "Exact final candidate Timer native binary"
+    },
+    {
+      "file": "docs/qa/0.9.0/native/settings-new-editor-minutes.png",
+      "sha256": "d995794a470531af04b2ced585edba58741cb3b9b5eb749449e43816680d8961",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false,
+      "name": "settings-new-editor-minutes",
+      "scope": "Exact final candidate Timer native binary"
+    },
+    {
+      "file": "docs/qa/0.9.0/native/settings-hours-cancel-hint.png",
+      "sha256": "96281566d2cc3594b885f61ddf2dd321048cc6dec21960087c2954eb555f2204",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false,
+      "name": "settings-hours-cancel-hint",
+      "scope": "Exact final candidate Timer native binary"
+    },
+    {
+      "file": "docs/qa/0.9.0/native/settings-new-cancel-returns-list.png",
+      "sha256": "a2d001de5e40231508687147b54623bf4b3b30823b925a9935292a25721fd072",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false,
+      "name": "settings-new-cancel-returns-list",
+      "scope": "Exact final candidate Timer native binary"
+    },
+    {
+      "file": "docs/qa/0.9.0/native/settings-running-detail.png",
+      "sha256": "d29bee9fe4ce7efc394cb863cd7df08c09b9aaeb423486b9e3476bd2347c4dda",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false,
+      "name": "settings-running-detail",
+      "scope": "Exact final candidate Timer native binary"
+    },
+    {
+      "file": "docs/qa/0.9.0/native/settings-direct-edit-cancel-returns-detail.png",
+      "sha256": "d3855dc9dde0f84b0b1a2d1d5f3749d372a54d9825615d508e5e11acd59c4fb4",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false,
+      "name": "settings-direct-edit-cancel-returns-detail",
+      "scope": "Exact final candidate Timer native binary"
+    },
+    {
+      "file": "docs/qa/0.9.0/native/settings-options-change-selected.png",
+      "sha256": "9941692249107dd7e3cb0aaf62352bcfd23410be1a7beac1e1cf2d6901014405",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false,
+      "name": "settings-options-change-selected",
+      "scope": "Exact final candidate Timer native binary"
+    },
+    {
+      "file": "docs/qa/0.9.0/native/settings-options-edit-cancel-returns-options.png",
+      "sha256": "9941692249107dd7e3cb0aaf62352bcfd23410be1a7beac1e1cf2d6901014405",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false,
+      "name": "settings-options-edit-cancel-returns-options",
+      "scope": "Exact final candidate Timer native binary"
+    },
+    {
+      "file": "docs/qa/0.9.0/native/settings-delete-keep-default.png",
+      "sha256": "3c1126c8ca2f88d86cd5a422175c66dde2b01ba11aa559708c054bd6cef31ed1",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false,
+      "name": "settings-delete-keep-default",
+      "scope": "Exact final candidate Timer native binary"
+    },
+    {
+      "file": "docs/qa/0.9.0/native/settings-keep-returns-options-delete-selected.png",
+      "sha256": "9243d8aca35930c6e915be7f3d1d18f12e9c56c873a889db1764e0567cdfb50e",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false,
+      "name": "settings-keep-returns-options-delete-selected",
+      "scope": "Exact final candidate Timer native binary"
+    },
+    {
+      "file": "docs/qa/0.9.0/native/settings-delete-back-returns-options-delete-selected.png",
+      "sha256": "9243d8aca35930c6e915be7f3d1d18f12e9c56c873a889db1764e0567cdfb50e",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false,
+      "name": "settings-delete-back-returns-options-delete-selected",
+      "scope": "Exact final candidate Timer native binary"
+    },
+    {
+      "file": "docs/qa/0.9.0/native/settings-restart-shows-saved-duration.png",
+      "sha256": "2ee782c19ad970acee18d18a21a2d7f3823d99eb41ae7c0483b14b9f0c0a71b4",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false,
+      "name": "settings-restart-shows-saved-duration",
+      "scope": "Exact final candidate Timer native binary"
+    },
+    {
+      "file": "docs/qa/0.9.0/native/settings-paused-detail.png",
+      "sha256": "7fabbab5624d2badf5509da0268753a77c3fddc6a8ca7ae00fa336ea6d575dd5",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false,
+      "name": "settings-paused-detail",
+      "scope": "Exact final candidate Timer native binary"
+    },
+    {
+      "file": "docs/qa/0.9.0/native/settings-eight-ready-replacement-list-warning.png",
+      "sha256": "c0ff6f3b9781f3ea3738b860238775d6fc2866c22e5837a79dde1ebf97205bb1",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false,
+      "name": "settings-eight-ready-replacement-list-warning",
+      "scope": "Exact final candidate Timer native binary"
+    },
+    {
+      "file": "docs/qa/0.9.0/native/settings-eight-ready-replacement-editor-warning.png",
+      "sha256": "032b52687b0f50b0d376bdd7fe439fc71f070c14005b174ebee6816ef3df79a4",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false,
+      "name": "settings-eight-ready-replacement-editor-warning",
+      "scope": "Exact final candidate Timer native binary"
+    },
+    {
+      "file": "docs/qa/0.9.0/native/settings-replacement-cancel-preserves-eight-ready.png",
+      "sha256": "c0ff6f3b9781f3ea3738b860238775d6fc2866c22e5837a79dde1ebf97205bb1",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false,
+      "name": "settings-replacement-cancel-preserves-eight-ready",
+      "scope": "Exact final candidate Timer native binary"
+    },
+    {
+      "file": "docs/qa/0.9.0/native/settings-eight-running-full.png",
+      "sha256": "234c5279c5d8a9593adfb61e0eb400c93dd04e7cd9c97d1142293a84617b03ae",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false,
+      "name": "settings-eight-running-full",
+      "scope": "Exact final candidate Timer native binary"
+    },
+    {
+      "file": "docs/qa/0.9.0/native/settings-full-select-preserves-runs.png",
+      "sha256": "29b37ef024b2186fed3d71c098ee5cc8d3f96562ad5fbcbc49ed4babd7fff41a",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false,
+      "name": "settings-full-select-preserves-runs",
+      "scope": "Exact final candidate Timer native binary"
+    },
+    {
+      "file": "docs/qa/0.9.0/native/settings-seconds-back-hint.png",
+      "sha256": "f4074d6ead1b20de674a1d1eb2532158b241450fc9a8713caf6c33133c3a5bf6",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false,
+      "name": "settings-seconds-back-hint",
+      "scope": "Exact final candidate Timer native binary"
+    },
+    {
+      "file": "docs/qa/0.9.0/native/empty-list.png",
+      "sha256": "a2d001de5e40231508687147b54623bf4b3b30823b925a9935292a25721fd072",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false,
+      "name": "empty-list",
+      "scope": "Exact final candidate Timer native binary"
+    },
+    {
+      "file": "docs/qa/0.9.0/native/new-editor-minutes.png",
+      "sha256": "d995794a470531af04b2ced585edba58741cb3b9b5eb749449e43816680d8961",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false,
+      "name": "new-editor-minutes",
+      "scope": "Exact final candidate Timer native binary"
+    },
+    {
+      "file": "docs/qa/0.9.0/native/editor-24h.png",
+      "sha256": "5e99331ae8006bce95544eca4b5d99fae6a7476b274fd8084d372e23a75ba8bc",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false,
+      "name": "editor-24h",
+      "scope": "Exact final candidate Timer native binary"
+    },
+    {
+      "file": "docs/qa/0.9.0/native/running-24h.png",
+      "sha256": "367b4556c9dc8e5dccb780607617b62390d4beadddc5f61014cdf359b0372791",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false,
+      "name": "running-24h",
+      "scope": "Exact final candidate Timer native binary"
+    },
+    {
+      "file": "docs/qa/0.9.0/native/short-running.png",
+      "sha256": "fe031ef73c54d41d9820130149578326fcc4776b0dea3e197d72ca642979ceda",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false,
+      "name": "short-running",
+      "scope": "Exact final candidate Timer native binary"
+    },
+    {
+      "file": "docs/qa/0.9.0/native/native-background-alarm.png",
+      "sha256": "0156e67619765fe62bedf41c95996d140508373934f32fbd5d2de2c833d5da15",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false,
+      "name": "native-background-alarm",
+      "scope": "Exact final candidate Timer native binary"
+    },
+    {
+      "file": "docs/qa/0.9.0/native/snoozed-original-identity.png",
+      "sha256": "9996e67add7b0943ab435be7f03f8eb8911e8f5ebc5682a0850ab3fd55060b2c",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false,
+      "name": "snoozed-original-identity",
+      "scope": "Exact final candidate Timer native binary"
+    },
+    {
+      "file": "docs/qa/0.9.0/native/remaining-editor.png",
+      "sha256": "2cc9b8dceb99428815305815efff8590dbc7d9f74e7fc967c5d39705b83ec226",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false,
+      "name": "remaining-editor",
+      "scope": "Exact final candidate Timer native binary"
+    },
+    {
+      "file": "docs/qa/0.9.0/native/unchanged-edit-keeps-run.png",
+      "sha256": "f9aebdcd8c412ac3fa97bd802c999fdcf55c1f6af1d846a727888efe295bd3db",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false,
+      "name": "unchanged-edit-keeps-run",
+      "scope": "Exact final candidate Timer native binary"
+    },
+    {
+      "file": "docs/qa/0.9.0/native/remaining-edit-preserves-elapsed.png",
+      "sha256": "09fabacbca08677d7acea269b25e4aea4bc771611221044f17c69574f48cda4e",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false,
+      "name": "remaining-edit-preserves-elapsed",
+      "scope": "Exact final candidate Timer native binary"
+    },
+    {
+      "file": "docs/qa/0.9.0/native/restart-original-duration.png",
+      "sha256": "fe031ef73c54d41d9820130149578326fcc4776b0dea3e197d72ca642979ceda",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false,
+      "name": "restart-original-duration",
+      "scope": "Exact final candidate Timer native binary"
+    },
+    {
+      "file": "docs/qa/0.9.0/native/second-native-alarm.png",
+      "sha256": "0156e67619765fe62bedf41c95996d140508373934f32fbd5d2de2c833d5da15",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false,
+      "name": "second-native-alarm",
+      "scope": "Exact final candidate Timer native binary"
+    },
+    {
+      "file": "docs/qa/0.9.0/native/select-done-ready-list.png",
+      "sha256": "c8d0e286460d1f46eca7d8c80cf9c42209640f6026c4bc10a95b7f46acac4d44",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false,
+      "name": "select-done-ready-list",
+      "scope": "Exact final candidate Timer native binary"
+    },
+    {
+      "file": "docs/qa/0.9.0/native/reopened-acknowledged-list.png",
+      "sha256": "c8d0e286460d1f46eca7d8c80cf9c42209640f6026c4bc10a95b7f46acac4d44",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false,
+      "name": "reopened-acknowledged-list",
+      "scope": "Exact final candidate Timer native binary"
+    },
+    {
+      "file": "docs/qa/0.9.0/native/ready-detail.png",
+      "sha256": "077e1ce1698349d015d62fe1059c1348c384ca817174a2cbbb9eebe60fe7be60",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false,
+      "name": "ready-detail",
+      "scope": "Exact final candidate Timer native binary"
+    },
+    {
+      "file": "docs/qa/0.9.0/native/ready-edited-without-starting.png",
+      "sha256": "9d2caed8b46f7ebc31074f0f2f6b98d75b1700ea01104443ea6ca89ce7949d59",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false,
+      "name": "ready-edited-without-starting",
+      "scope": "Exact final candidate Timer native binary"
+    },
+    {
+      "file": "docs/qa/0.9.0/native/ready-repeated-paused.png",
+      "sha256": "6414999267b7be01057795abbc1245f60494fb5b3a927d465b1dd9ecd15e89be",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false,
+      "name": "ready-repeated-paused",
+      "scope": "Exact final candidate Timer native binary"
+    },
+    {
+      "file": "docs/qa/0.9.0/native/eight-ready-list.png",
+      "sha256": "81ebe7282e6a111cd9728e660e2ae1ccbfdcbd163396e7ffd6b6ca2ff208a619",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false,
+      "name": "eight-ready-list",
+      "scope": "Exact final candidate Timer native binary"
+    },
+    {
+      "file": "docs/qa/0.9.0/native/eight-ready-replacement-warning.png",
+      "sha256": "032b52687b0f50b0d376bdd7fe439fc71f070c14005b174ebee6816ef3df79a4",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false,
+      "name": "eight-ready-replacement-warning",
+      "scope": "Exact final candidate Timer native binary"
+    },
+    {
+      "file": "docs/qa/0.9.0/native/ready-slot-replaced-running.png",
+      "sha256": "1661452efcf956b39d786a0f490f268f17b558f711b6a610bef96c9f5cfc8f5b",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false,
+      "name": "ready-slot-replaced-running",
+      "scope": "Exact final candidate Timer native binary"
+    },
+    {
+      "file": "docs/qa/0.9.0/native/second-replacement-warning.png",
+      "sha256": "032b52687b0f50b0d376bdd7fe439fc71f070c14005b174ebee6816ef3df79a4",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false,
+      "name": "second-replacement-warning",
+      "scope": "Exact final candidate Timer native binary"
+    },
+    {
+      "file": "docs/qa/0.9.0/native/two-running-six-ready.png",
+      "sha256": "73c00bf952a415fc5a46c549c75c10716f2d61ee841a81e123c25039530b3923",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false,
+      "name": "two-running-six-ready",
+      "scope": "Exact final candidate Timer native binary"
+    },
+    {
+      "file": "docs/qa/0.9.0/native-storage/storage-not-saved-list.png",
+      "sha256": "f27310e73012bb0f2c27925e73a0e350b109726cd813e8adaab13e12090f47c7",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false,
+      "name": "storage-not-saved-list",
+      "scope": "Exact final candidate Timer native binary"
+    },
+    {
+      "file": "docs/qa/0.9.0/native-storage/storage-not-saved-detail.png",
+      "sha256": "f6b63ed4880303af69725ef3d60273416e815b5c87a02aef8e8d7f84011cf2d1",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false,
+      "name": "storage-not-saved-detail",
+      "scope": "Exact final candidate Timer native binary"
+    },
+    {
+      "file": "docs/qa/0.9.0/native-storage/storage-not-saved-options.png",
+      "sha256": "5420b56517cd24a1106a81b0981abba8ec18cb70a0ae134b3ec250c2fc3a071c",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false,
+      "name": "storage-not-saved-options",
+      "scope": "Exact final candidate Timer native binary"
+    },
+    {
+      "file": "docs/qa/0.9.0/native-storage/storage-not-saved-delete-keeps-actions.png",
+      "sha256": "065ad46f6baf9f4b92d2196b3a3b09b9b3670a5595aebe6a3950f86a9aedcfda",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false,
+      "name": "storage-not-saved-delete-keeps-actions",
+      "scope": "Exact final candidate Timer native binary"
+    },
+    {
+      "file": "docs/qa/0.9.0/native-storage/storage-not-saved-native-alarm-actions-visible.png",
+      "sha256": "657a0c5a87af97c11f5eb442e4db4220381ab95c5407f9afbcbbae2f36a1dcc3",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false,
+      "name": "storage-not-saved-native-alarm-actions-visible",
+      "scope": "Exact final candidate Timer native binary"
+    },
+    {
+      "file": "docs/qa/0.9.0/native-storage/storage-done-cannot-hide-unsaved-alarm.png",
+      "sha256": "657a0c5a87af97c11f5eb442e4db4220381ab95c5407f9afbcbbae2f36a1dcc3",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false,
+      "name": "storage-done-cannot-hide-unsaved-alarm",
+      "scope": "Exact final candidate Timer native binary"
+    },
+    {
+      "file": "docs/qa/0.9.0/native-storage/storage-back-remains-available.png",
+      "sha256": "f461d4cdd2260ec51a1de7ee619b318769f330e68449e24f5d57c7f740a565f9",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false,
+      "name": "storage-back-remains-available",
+      "scope": "Exact final candidate Timer native binary"
+    },
+    {
+      "file": "docs/qa/0.9.0/native-error/errors/empty-before-conflict.png",
+      "sha256": "a2d001de5e40231508687147b54623bf4b3b30823b925a9935292a25721fd072",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false,
+      "name": "empty-before-conflict",
+      "scope": "Exact final candidate Timer native binary"
+    },
+    {
+      "file": "docs/qa/0.9.0/native-error/errors/alarm-not-set.png",
+      "sha256": "059d4b3d6400c3c5e2fcda6cec5f7802b6898f265f9fb22cad28a6fb059a7749",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false,
+      "name": "alarm-not-set",
+      "scope": "Exact final candidate Timer native binary"
+    },
+    {
+      "file": "docs/qa/0.9.0/native-error/errors/alarm-not-set-options.png",
+      "sha256": "ac3fb0adddd79ffda5f008ca493b17ba203337c7f786fe00fe0701d2df26b370",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false,
+      "name": "alarm-not-set-options",
+      "scope": "Exact final candidate Timer native binary"
+    },
+    {
+      "file": "docs/qa/0.9.0/native-error/errors/alarm-recovered.png",
+      "sha256": "802f9326615b6f6f3d6ac2671036a133e537614aac22ccb0032d6c074cbdbb09",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false,
+      "name": "alarm-recovered",
+      "scope": "Exact final candidate Timer native binary"
+    },
+    {
+      "file": "docs/qa/0.9.0/native-error/errors/empty-after-recovery.png",
+      "sha256": "a2d001de5e40231508687147b54623bf4b3b30823b925a9935292a25721fd072",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false,
+      "name": "empty-after-recovery",
+      "scope": "Exact final candidate Timer native binary"
+    }
+  ],
+  "fixtureImages": [
+    {
+      "file": "docs/qa/0.9.0/native-storage/storage-generation-fixture.png",
+      "sha256": "2be9dba7ea50818b3ec07925be44a150abb43a451891ef95572d96a2df3b8d21",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false,
+      "name": "storage-generation-fixture",
+      "scope": "Isolated exhausted-generation V1 bank fixture, not Timer native binary"
+    },
+    {
+      "file": "docs/qa/0.9.0/native-error/errors/external-wakeup-fixture.png",
+      "sha256": "50769d6a16cc86ca3d496809956dad9ac7da3ba6ad671adbe14f5863d0d9204b",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false,
+      "name": "external-wakeup-fixture",
+      "scope": "External Wakeup fixture, not Timer"
+    },
+    {
+      "file": "docs/qa/0.9.0/native-error/errors/fixture-cleared.png",
+      "sha256": "488de02013d1d3bab07371c7e40a2b57361035b3d5ac3424ef9ddcc8de8ce5b0",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false,
+      "name": "fixture-cleared",
+      "scope": "External Wakeup fixture, not Timer"
+    }
+  ],
+  "overview": {
+    "file": "docs/images/settings-overview.png",
+    "sha256": "cea2584994d852e913efbdf82c9647343a765050473891748b8044a86a9c7000",
+    "sources": [
+      "docs/qa/0.9.0/native/short-running.png",
+      "docs/qa/0.9.0/native/ready-repeated-paused.png",
+      "docs/qa/0.9.0/native/ready-detail.png",
+      "docs/qa/0.9.0/native/native-background-alarm.png",
+      "docs/qa/0.9.0/native/uxpass-mixed-list-second-identical-timer.png",
+      "docs/qa/0.9.0/native/uxpass-options-identical-duration-context.png",
+      "docs/qa/0.9.0/native/uxpass-editor-four-seconds-no-commit.png",
+      "docs/qa/0.9.0/native-storage/storage-not-saved-native-alarm-actions-visible.png"
+    ],
+    "scope": "Eight exact native screenshots arranged with labels outside; no native pixels modified."
+  },
+  "fixtureData": true,
+  "scope": "65 exact final-candidate native Timer frames and3explicitly labelled fixture frames; isolated Emery with synthetic saved data and Python receipts, plus simulated packaged suite SDK/transport. No real-phone/physical-watch/battery claim.",
+  "nativeQa": [
+    "docs/qa/0.9.0/native/ux.json",
+    "docs/qa/0.9.0/native-storage/ux.json",
+    "docs/qa/0.9.0/native-error/errors/errors.json",
+    "docs/qa/0.9.0/font-audit.json",
+    "docs/qa/0.9.0/packaged-runtime.json",
+    "docs/qa/0.9.0/packaged-handoff.json",
+    "docs/qa/0.9.0/native-identity.json"
+  ],
+  "visualReview": {
+    "result": "PASS",
+    "reviewers": [
+      "ux_timer",
+      "root"
+    ],
+    "nativeTimerFrames": 65,
+    "separateFixtureFrames": 3,
+    "reviewedAtUtc": "2026-11-03T19:34:02.798913+00:00"
+  }
+}

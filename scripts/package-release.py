@@ -24,6 +24,8 @@ def package(root):
     releases.mkdir(exist_ok=True)
     target = releases / (name + '.pbw')
     target.write_bytes(pbw)
+    debug = releases / (name + '-debug.zip')
+    debug.write_bytes((root / 'dist' / debug.name).read_bytes())
     names = subprocess.check_output(['git', 'ls-files', '-co', '--exclude-standard', '-z'], cwd=root).decode().split('\0')
     source = releases / (name + '-source.zip')
     with zipfile.ZipFile(source, 'w', zipfile.ZIP_DEFLATED, compresslevel=9) as archive:
@@ -38,7 +40,7 @@ def package(root):
             entry.compress_type = zipfile.ZIP_DEFLATED
             archive.writestr(entry, (root / path).read_bytes(), compresslevel=9)
     sums = []
-    for artifact in (target, source):
+    for artifact in (target, source, debug):
         checksum = hashlib.sha256(artifact.read_bytes()).hexdigest()
         sums.append(checksum + '  ' + artifact.name)
         print(artifact.name, artifact.stat().st_size, checksum)

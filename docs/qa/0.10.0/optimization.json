@@ -1,0 +1,44 @@
+{
+  "result": "PASS",
+  "version": "0.10.0",
+  "baselineVersion": "0.9.0",
+  "sizes": {
+    "0.9.0": {
+      "pbwBytes": 104142,
+      "pebble-js-app.js": 55220,
+      "plugin.js": 86585,
+      "emery/pebble-app.bin": 31556,
+      "emery/app_resources.pbpack": 26719
+    },
+    "0.10.0": {
+      "pbwBytes": 74892,
+      "pebble-js-app.js": 38415,
+      "plugin.js": 64087,
+      "emery/pebble-app.bin": 29436,
+      "emery/app_resources.pbpack": 22802
+    }
+  },
+  "scope": "Packaged byte sizes and SDK static allocation. Not live heap/peak stack, physical CPU timing or battery savings.",
+  "sdkStaticFootprintBytes": {
+    "0.9.0": 36501,
+    "0.10.0": 34393
+  },
+  "sdkHeapAvailableBeforeRuntimeAllocations": {
+    "0.9.0": 94571,
+    "0.10.0": 96679
+  },
+  "retainedFontRecordsExact": true,
+  "unusedOutlineBytesRemoved": 2496,
+  "unusedBitmapResourceBytesRemoved": 3917,
+  "nativeCaptures": 59,
+  "nativePhases": [
+    "equal",
+    "launcher",
+    "nearby",
+    "storage",
+    "ux",
+    "uxpass"
+  ],
+  "pixelIdenticalBaselineCaptures": 24,
+  "privateSourceContentPersisted": false
+}

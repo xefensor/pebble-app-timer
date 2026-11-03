@@ -1,5 +1,29 @@
 # Timer validation
 
+## 0.10.0 optimization candidate
+
+The [optimization review](OPTIMIZATION-REVIEW.md) records the implementation,
+measured before/after sizes, preserved behavior and remaining device checks.
+All 22 JS tests, seven portable C suites and 42 Python regressions pass. The SDK
+build uses 34,393 bytes of static RAM and 22,802 resource bytes; the distribution
+PBW is 74,892 bytes. Exact font/license identity and the actual optimized
+PKJS/provider cold handoff pass. Debug maps and original scripts live in a
+separate versioned ZIP, reproduced and verified during release preparation.
+
+Six native QEMU phases pass with 59 captures, including explicitly labelled
+fixture/OS-launcher frames. They cover unchanged layouts, offscreen clocks,
+storage refusal, native offline alarms, nearby/equal deadlines and app-list
+countdown clearing. Twenty-four complete native frames match approved 0.9.0
+pixels exactly. Source/payload hashes, limits and reviewed frames are in
+[current provenance](asset-provenance.json) and [the native report](qa/0.10.0/native/ux.json).
+The old 0.9 provenance is retained [with its historical QA](qa/0.9.0/asset-provenance.json).
+
+The host-only raster profile informs a decision to retain existing bounded
+scratch; it does not justify extra watch RAM for a phase-sensitive glyph cache.
+No battery, physical-watch timing, real-phone startup or peak-memory claim is
+made. Native timer models, verified persistence, expiry and launch sharing
+remain independent of this rendering/packaging pass.
+
 ## 0.9.0 complete watch UI/UX pass
 
 This pass improves list orientation, Options context, editor affordances and

@@ -66,9 +66,9 @@ def font_metrics(data):
 
 
 def native_tables(header, binary):
-    definitions = [('ClockPoint', 'clock_points', '<hh', 1607),
-                   ('ClockContour', 'clock_contours', '<HHB1x', 33),
-                   ('ClockGlyph', 'clock_glyphs', '<IHHHhhhh2x', 20)]
+    definitions = [('ClockPoint', 'clock_points', '<hh', 1049),
+                   ('ClockContour', 'clock_contours', '<HHB1x', 19),
+                   ('ClockGlyph', 'clock_glyphs', '<IHHHhhhh2x', 11)]
     summary = {}
     for kind, name, fmt, expected in definitions:
         match = re.search(r'static const ' + kind + r' ' + name + r'\[[^]]+\]\s*=\s*\{(.*?)\n\};', header, re.S)
@@ -92,7 +92,7 @@ def audit(pbw, root=ROOT):
     provenance = json.loads((root / 'resources/fonts/font-provenance.json').read_text())
     media = package['pebble']['resources']['media']
     require(media == provenance['bodyResources'] and
-            [item['name'] for item in media] == ['FONT_BODY_' + str(n) for n in (14, 15, 16, 18, 19, 23, 24)],
+            [item['name'] for item in media] == ['FONT_BODY_' + str(n) for n in (14, 15, 16, 18, 19, 23)],
             'Body resource definitions differ from reviewed provenance')
     for record in provenance['files']:
         data = (root / record['file']).read_bytes()

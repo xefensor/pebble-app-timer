@@ -34,7 +34,7 @@ jobs:
           cache: npm
       - run: npm ci --ignore-scripts
       - run: npm test
-      - run: python3 -m unittest discover -s tests -p 'test_*release.py'
+      - run: python3 -m unittest discover -s tests -p 'test_*.py'
       - id: prepare
         run: python3 scripts/github-release.py prepare --output "$RUNNER_TEMP/release"
 
@@ -51,6 +51,11 @@ jobs:
         with:
           fetch-depth: 0
           persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci --ignore-scripts
       - run: python3 scripts/github-release.py prepare --output "$RUNNER_TEMP/release"
       - run: python3 scripts/github-release.py publish --output "$RUNNER_TEMP/release"
         env:

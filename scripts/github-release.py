@@ -225,7 +225,45 @@ def timer_dependency(root, commit, package):
     return files
 
 
-def validate_timer(root, config, commit, package, files):
+def validate_timer_optimization(root, commit, package, files, debug):
+    """Prove optimized runtime bytes from separately audited SDK/source inputs."""
+    require(not any(name.endswith('.map') for name in files), 'Debug map in release PBW')
+    require(set(debug) == {'pebble-js-app.js', 'pebble-js-app.js.map', 'plugin.js',
+            'minified/pebble-js-app.js.map', 'minified/plugin.js.map', 'optimization.json'},
+            'Unexpected optimization debug inputs')
+    metadata = json.loads(debug['optimization.json'])
+    require(metadata.get('schema') == 1 and metadata.get('version') == package['version'] and
+            metadata.get('minifier') == 'terser@5.46.0', 'Invalid optimization metadata')
+    with tempfile.TemporaryDirectory(prefix='timer-release-minifier-') as directory:
+        checkout = Path(directory)
+        script = checkout / 'minify-js.cjs'
+        script.write_bytes(committed(root, commit, 'scripts/minify-js.cjs'))
+        environment = dict(os.environ, NODE_PATH=str(root / 'node_modules'))
+        for name in ('pebble-js-app.js', 'plugin.js'):
+            record = metadata.get('scripts', {}).get(name, {})
+            require(record == {'sourceSha256': digest(debug[name]), 'releaseSha256': digest(files[name]),
+                    'mapSha256': digest(debug['minified/' + name + '.map'])},
+                    'Optimization input identity differs: ' + name)
+            source = checkout / ('source-' + name)
+            source.write_bytes(debug[name])
+            output = checkout / name
+            mapping = checkout / (name + '.map')
+            command = ['node', str(script), str(source), str(output), str(mapping)]
+            if name + '.map' in debug:
+                input_map = checkout / ('source-' + name + '.map')
+                input_map.write_bytes(debug[name + '.map'])
+                command.append(str(input_map))
+            result = subprocess.run(command, env=environment, capture_output=True)
+            require(result.returncode == 0 and output.is_file(),
+                    'Cannot reproduce pinned release minification: ' + result.stderr.decode())
+            require(output.read_bytes() == files[name] and
+                    mapping.read_bytes() == debug['minified/' + name + '.map'],
+                    'Optimized release code/map differs: ' + name)
+
+
+def validate_timer(root, config, commit, package, files, debug=None):
+    source_files = files if debug is None else {**files, **{
+        name: debug[name] for name in ('pebble-js-app.js', 'pebble-js-app.js.map', 'plugin.js')}}
     expected = package["pebble"]
     info = json.loads(files["appinfo.json"])
     require(info.get("uuid") == expected["uuid"] == config["app_uuid"] and
@@ -267,7 +305,7 @@ def validate_timer(root, config, commit, package, files):
                         binary[104:120] == uuid.UUID(expected["uuid"]).bytes and
                         list(binary[12:14]) == [int(value) for value in package["version"].split(".")[:2]],
                         "Timer native identity/version differs")
-    validate_timer_pkjs(root, commit, "", files, dependency)
+    validate_timer_pkjs(root, commit, "", source_files, dependency)
     with tempfile.TemporaryDirectory(prefix="timer-release-plugin-") as directory:
         checkout = Path(directory)
         for name in ("scripts/bundle-js.py", "scripts/verify-timer-bundle.js", "src/plugin/index.js"):
@@ -282,7 +320,7 @@ def validate_timer(root, config, commit, package, files):
         result = subprocess.run(["python3", str(checkout / "scripts/bundle-js.py"),
                                  str(checkout / "src/plugin/index.js"), str(output)], capture_output=True)
         require(result.returncode == 0 and output.is_file(), "Cannot rebuild committed timer plugin")
-        require(files["plugin.js"] == output.read_bytes(), "Timer plugin/source differs")
+        require(source_files["plugin.js"] == output.read_bytes(), "Timer plugin/source differs")
         extracted = checkout / "pbw"
         extracted.mkdir()
         for name, content in files.items():
@@ -335,7 +373,11 @@ def validate_artifacts(root, config, commit, package, assets):
     require(info.get("uuid") == config["app_uuid"] == package["pebble"]["uuid"] and
             info.get("versionLabel") == package["version"], "PBW identity/version differs")
     if kind == "timer":
-        validate_timer(root, config, commit, package, pbw)
+        debug = None
+        if config.get('debug_archive'):
+            debug = zip_files(assets[expand(config['debug_archive'], package)])
+            validate_timer_optimization(root, commit, package, pbw, debug)
+        validate_timer(root, config, commit, package, pbw, debug)
     elif kind == "chmu":
         require(info.get("plugin", {}).get("script") == "plugin.js" and
                 pbw["plugin.js"].startswith(b"// CHMU_BUILD_VARIANT=public\n"), "Not a public CHMU build")

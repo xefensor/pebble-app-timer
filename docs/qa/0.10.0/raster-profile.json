@@ -1,0 +1,46 @@
+{
+  "result": "PASS",
+  "environment": "Portable host CPU only: x86_64",
+  "compiler": "cc (SUSE Linux) 16.2.1 20260929",
+  "rasterSha256": "87651103df94931391886f0268769d59df99e3c14f872a686ec78bdca5a01336",
+  "samples": [
+    {
+      "point": 24,
+      "digitCorpora": 1000,
+      "glyphsPerCorpus": 11,
+      "hostCpuSeconds": 0.084686,
+      "edgeTests": 74328000,
+      "intersectionDivisions": 1752000,
+      "coverageChecksum": "399468928632295464"
+    },
+    {
+      "point": 30,
+      "digitCorpora": 1000,
+      "glyphsPerCorpus": 11,
+      "hostCpuSeconds": 0.107381,
+      "edgeTests": 93268000,
+      "intersectionDivisions": 2198000,
+      "coverageChecksum": "17952287708740991880"
+    },
+    {
+      "point": 36,
+      "digitCorpora": 1000,
+      "glyphsPerCorpus": 11,
+      "hostCpuSeconds": 0.131861,
+      "edgeTests": 109812000,
+      "intersectionDivisions": 2638000,
+      "coverageChecksum": "1417729995894505680"
+    },
+    {
+      "point": 58,
+      "digitCorpora": 1000,
+      "glyphsPerCorpus": 11,
+      "hostCpuSeconds": 0.238986,
+      "edgeTests": 175480000,
+      "intersectionDivisions": 4250000,
+      "coverageChecksum": "7782242957343611320"
+    }
+  ],
+  "decision": "Keep bounded allocation-free raster scratch. Remove unnecessary frames first; a glyph coverage cache adds RAM and phase/invalidation handling and needs actual watch timings to justify it.",
+  "limits": "Not SDK/QEMU render timing, native power, frame latency, or physical battery evidence."
+}

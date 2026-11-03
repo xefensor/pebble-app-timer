@@ -1,0 +1,153 @@
+{
+  "result": "PASS",
+  "scope": "Whole native RGB equality with the approved0.9.0 captures where the same scenario/timing produces identical values. Independent clock-dependent frames may differ. All retained font points, contours and glyphs are identical to the old corpus prefix.",
+  "exactMatches": [
+    {
+      "file": "editor-24h.png",
+      "baselineSha256": "5e99331ae8006bce95544eca4b5d99fae6a7476b274fd8084d372e23a75ba8bc",
+      "candidateSha256": "5e99331ae8006bce95544eca4b5d99fae6a7476b274fd8084d372e23a75ba8bc"
+    },
+    {
+      "file": "empty-list.png",
+      "baselineSha256": "a2d001de5e40231508687147b54623bf4b3b30823b925a9935292a25721fd072",
+      "candidateSha256": "a2d001de5e40231508687147b54623bf4b3b30823b925a9935292a25721fd072"
+    },
+    {
+      "file": "native-background-alarm.png",
+      "baselineSha256": "0156e67619765fe62bedf41c95996d140508373934f32fbd5d2de2c833d5da15",
+      "candidateSha256": "0156e67619765fe62bedf41c95996d140508373934f32fbd5d2de2c833d5da15"
+    },
+    {
+      "file": "new-editor-minutes.png",
+      "baselineSha256": "d995794a470531af04b2ced585edba58741cb3b9b5eb749449e43816680d8961",
+      "candidateSha256": "d995794a470531af04b2ced585edba58741cb3b9b5eb749449e43816680d8961"
+    },
+    {
+      "file": "ready-detail.png",
+      "baselineSha256": "077e1ce1698349d015d62fe1059c1348c384ca817174a2cbbb9eebe60fe7be60",
+      "candidateSha256": "077e1ce1698349d015d62fe1059c1348c384ca817174a2cbbb9eebe60fe7be60"
+    },
+    {
+      "file": "ready-edited-without-starting.png",
+      "baselineSha256": "9d2caed8b46f7ebc31074f0f2f6b98d75b1700ea01104443ea6ca89ce7949d59",
+      "candidateSha256": "9d2caed8b46f7ebc31074f0f2f6b98d75b1700ea01104443ea6ca89ce7949d59"
+    },
+    {
+      "file": "ready-repeated-paused.png",
+      "baselineSha256": "6414999267b7be01057795abbc1245f60494fb5b3a927d465b1dd9ecd15e89be",
+      "candidateSha256": "6414999267b7be01057795abbc1245f60494fb5b3a927d465b1dd9ecd15e89be"
+    },
+    {
+      "file": "remaining-edit-preserves-elapsed.png",
+      "baselineSha256": "09fabacbca08677d7acea269b25e4aea4bc771611221044f17c69574f48cda4e",
+      "candidateSha256": "09fabacbca08677d7acea269b25e4aea4bc771611221044f17c69574f48cda4e"
+    },
+    {
+      "file": "remaining-editor.png",
+      "baselineSha256": "2cc9b8dceb99428815305815efff8590dbc7d9f74e7fc967c5d39705b83ec226",
+      "candidateSha256": "2cc9b8dceb99428815305815efff8590dbc7d9f74e7fc967c5d39705b83ec226"
+    },
+    {
+      "file": "reopened-acknowledged-list.png",
+      "baselineSha256": "c8d0e286460d1f46eca7d8c80cf9c42209640f6026c4bc10a95b7f46acac4d44",
+      "candidateSha256": "c8d0e286460d1f46eca7d8c80cf9c42209640f6026c4bc10a95b7f46acac4d44"
+    },
+    {
+      "file": "second-native-alarm.png",
+      "baselineSha256": "0156e67619765fe62bedf41c95996d140508373934f32fbd5d2de2c833d5da15",
+      "candidateSha256": "0156e67619765fe62bedf41c95996d140508373934f32fbd5d2de2c833d5da15"
+    },
+    {
+      "file": "select-done-ready-list.png",
+      "baselineSha256": "c8d0e286460d1f46eca7d8c80cf9c42209640f6026c4bc10a95b7f46acac4d44",
+      "candidateSha256": "c8d0e286460d1f46eca7d8c80cf9c42209640f6026c4bc10a95b7f46acac4d44"
+    },
+    {
+      "file": "short-running.png",
+      "baselineSha256": "fe031ef73c54d41d9820130149578326fcc4776b0dea3e197d72ca642979ceda",
+      "candidateSha256": "fe031ef73c54d41d9820130149578326fcc4776b0dea3e197d72ca642979ceda"
+    },
+    {
+      "file": "uxpass-editor-24h-minutes-locked.png",
+      "baselineSha256": "c48e48d762e4af830957d62d09b6f1ce32a1415fd6206657de6cc77ee25a072c",
+      "candidateSha256": "c48e48d762e4af830957d62d09b6f1ce32a1415fd6206657de6cc77ee25a072c"
+    },
+    {
+      "file": "uxpass-editor-24h-minutes-unchanged.png",
+      "baselineSha256": "c48e48d762e4af830957d62d09b6f1ce32a1415fd6206657de6cc77ee25a072c",
+      "candidateSha256": "c48e48d762e4af830957d62d09b6f1ce32a1415fd6206657de6cc77ee25a072c"
+    },
+    {
+      "file": "uxpass-editor-24h-seconds-locked.png",
+      "baselineSha256": "b4d23b35cc5ccdfbf0dbf18efa0643790055b0e1fae5d4a78d3afd0df4cda2c4",
+      "candidateSha256": "b4d23b35cc5ccdfbf0dbf18efa0643790055b0e1fae5d4a78d3afd0df4cda2c4"
+    },
+    {
+      "file": "uxpass-editor-five-seconds-valid.png",
+      "baselineSha256": "f30a18a7de33ee4f9d45c681c10e0105c3e56bcbca675a2a7509d85eb677f849",
+      "candidateSha256": "f30a18a7de33ee4f9d45c681c10e0105c3e56bcbca675a2a7509d85eb677f849"
+    },
+    {
+      "file": "uxpass-editor-four-seconds-no-commit.png",
+      "baselineSha256": "a90107a2240ae31b7aa9e093afd171a6c31add6b5437ad178539e18a0e1ffb73",
+      "candidateSha256": "a90107a2240ae31b7aa9e093afd171a6c31add6b5437ad178539e18a0e1ffb73"
+    },
+    {
+      "file": "uxpass-editor-zero-no-commit.png",
+      "baselineSha256": "c3502066edd5fa32417b9faa99eb04994d8d260f7c57d8291cf3de9f2b1e3b25",
+      "candidateSha256": "c3502066edd5fa32417b9faa99eb04994d8d260f7c57d8291cf3de9f2b1e3b25"
+    },
+    {
+      "file": "uxpass-empty-single-create-action.png",
+      "baselineSha256": "a2d001de5e40231508687147b54623bf4b3b30823b925a9935292a25721fd072",
+      "candidateSha256": "a2d001de5e40231508687147b54623bf4b3b30823b925a9935292a25721fd072"
+    },
+    {
+      "file": "uxpass-mixed-list-first.png",
+      "baselineSha256": "11facca6a24eb1c14f2557638bc6184d4743fa440178eee597fdccb67f670f58",
+      "candidateSha256": "11facca6a24eb1c14f2557638bc6184d4743fa440178eee597fdccb67f670f58"
+    },
+    {
+      "file": "uxpass-mixed-list-last-position.png",
+      "baselineSha256": "e4ef986e6ec1fb80caf72adb2113696a77f791acced207e4ddf94e12de0ba572",
+      "candidateSha256": "e4ef986e6ec1fb80caf72adb2113696a77f791acced207e4ddf94e12de0ba572"
+    },
+    {
+      "file": "uxpass-options-identical-duration-context.png",
+      "baselineSha256": "bf3413660c00d63c5089d3183815f70e7b965a94e99cebe450d0edd222c2e38e",
+      "candidateSha256": "bf3413660c00d63c5089d3183815f70e7b965a94e99cebe450d0edd222c2e38e"
+    },
+    {
+      "file": "uxpass-options-paused-context.png",
+      "baselineSha256": "4136493b4ef98a38f1c11e039fcb1039e0944121e6b1baad553272345b21be1b",
+      "candidateSha256": "4136493b4ef98a38f1c11e039fcb1039e0944121e6b1baad553272345b21be1b"
+    }
+  ],
+  "independentClockFrames": [
+    {
+      "file": "restart-original-duration.png",
+      "baselineSha256": "fe031ef73c54d41d9820130149578326fcc4776b0dea3e197d72ca642979ceda",
+      "candidateSha256": "58575c12141ca08a035043f7c676fe49f7e54481e9b496a938ad86e1ab6d1dc4"
+    },
+    {
+      "file": "running-24h.png",
+      "baselineSha256": "367b4556c9dc8e5dccb780607617b62390d4beadddc5f61014cdf359b0372791",
+      "candidateSha256": "e46ecb5a592df6b3e26120d9e3673e5a927562ce5b5ad1bd5ffdf159aa3aacc9"
+    },
+    {
+      "file": "snoozed-original-identity.png",
+      "baselineSha256": "9996e67add7b0943ab435be7f03f8eb8911e8f5ebc5682a0850ab3fd55060b2c",
+      "candidateSha256": "ecd4be9dcce31fecc532ba17ba680a0ab2bdfed3b554d17bb05bf8efec146b1a"
+    },
+    {
+      "file": "unchanged-edit-keeps-run.png",
+      "baselineSha256": "f9aebdcd8c412ac3fa97bd802c999fdcf55c1f6af1d846a727888efe295bd3db",
+      "candidateSha256": "cd4d4a4219c86e43fe74aa373fb284406bdc5ee952c28ad5a7ba8e8ceca87d9c"
+    },
+    {
+      "file": "uxpass-mixed-list-second-identical-timer.png",
+      "baselineSha256": "c64d2e3c57fd43f5945d18027aa4645da3b718bae9bb8eeeb550a9c60e653b83",
+      "candidateSha256": "d6c8b8f5d52ffb38d5e078e7ea9f941e713bf9ee6e5666616b676bd0147254d6"
+    }
+  ]
+}

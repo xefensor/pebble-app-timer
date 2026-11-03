@@ -1,0 +1,38 @@
+Emery QEMU connected through local FIFOs; no phone runtime
+N/A%[=                                                      ]   0.0 B/s 0:00:00
+N/A%[=                                                    ]  90.7 KiB/s 0:00:00
+N/A%[=                                                    ]  74.5 KiB/s 0:00:00
+N/A%[=                                                      ]   0.0 B/s 0:00:00
+N/A%[=                                                    ]  73.3 KiB/s 0:00:00
+N/A%[=                                                    ] 139.3 KiB/s 0:00:00
+N/A%[=                                                    ] 159.9 KiB/s 0:00:00
+N/A%[=                                                    ] 145.7 KiB/s 0:00:00
+N/A%[=                                                    ] 143.5 KiB/s 0:00:00
+empty-list
+new-editor-minutes
+editor-24h
+running-24h
+short-running
+native-background-alarm
+snoozed-original-identity
+remaining-editor
+unchanged-edit-keeps-run
+remaining-edit-preserves-elapsed
+restart-original-duration
+second-native-alarm
+select-done-ready-list
+reopened-acknowledged-list
+ready-detail
+ready-edited-without-starting
+ready-repeated-paused
+N/A%[=                                                      ]   0.0 B/s 0:00:00
+N/A%[=                                                    ]  57.7 KiB/s 0:00:00
+N/A%[=                                                    ]  67.5 KiB/s 0:00:00
+N/A%[=                                                      ]   0.0 B/s 0:00:00
+N/A%[=                                                    ]  77.6 KiB/s 0:00:00
+N/A%[=                                                    ] 141.2 KiB/s 0:00:00
+N/A%[=                                                    ] 148.9 KiB/s 0:00:00
+N/A%[=                                                    ] 134.0 KiB/s 0:00:00
+N/A%[=                                                    ] 149.5 KiB/s 0:00:00
+N/A%[=                                                    ] 138.2 KiB/s 0:00:00
+Timer native phase completed: ux

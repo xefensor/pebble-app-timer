@@ -24,6 +24,9 @@ bool timer_collection_valid(const TimerCollection *collection);
 bool timer_collection_decode(TimerCollection *collection, const void *bytes,
                               size_t length, uint8_t alarms);
 unsigned timer_collection_count(const TimerCollection *collection);
+/* Fill the bounded stable display order once for multi-row callers. */
+unsigned timer_collection_visible_slots(const TimerCollection *collection,
+                                        unsigned ordered[TIMER_COLLECTION_CAPACITY]);
 int timer_collection_visible_slot(const TimerCollection *collection, unsigned row);
 bool timer_collection_visible(const TimerCollection *collection, unsigned slot);
 bool timer_collection_can_create(const TimerCollection *collection);
@@ -42,6 +45,7 @@ bool timer_collection_delete(TimerCollection *collection, unsigned slot, uint32_
 bool timer_collection_snooze(TimerCollection *collection, unsigned slot, uint32_t now);
 bool timer_collection_acknowledge(TimerCollection *collection, unsigned slot);
 uint8_t timer_collection_finish_due(TimerCollection *collection, uint32_t now);
+bool timer_collection_has_due(const TimerCollection *collection, uint32_t now);
 bool timer_collection_reconfirm(TimerCollection *collection, unsigned slot, uint32_t now);
 /* Raise the collection-wide phone revision floor before reconfirming/sending
  * slots. Raising it alone does not alter an owner's observation timestamp. */

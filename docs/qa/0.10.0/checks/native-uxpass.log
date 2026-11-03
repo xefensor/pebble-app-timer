@@ -1,0 +1,31 @@
+Emery QEMU connected through local FIFOs; no phone runtime
+N/A%[=                                                      ]   0.0 B/s 0:00:00
+N/A%[=                                                    ]  91.6 KiB/s 0:00:00
+N/A%[=                                                    ]  75.0 KiB/s 0:00:00
+N/A%[=                                                      ]   0.0 B/s 0:00:00
+N/A%[=                                                    ]  77.4 KiB/s 0:00:00
+N/A%[=                                                    ] 141.6 KiB/s 0:00:00
+N/A%[=                                                    ] 161.4 KiB/s 0:00:00
+N/A%[=                                                    ] 148.6 KiB/s 0:00:00
+N/A%[=                                                    ] 145.2 KiB/s 0:00:00
+uxpass-mixed-list-first
+uxpass-mixed-list-second-identical-timer
+uxpass-options-identical-duration-context
+uxpass-options-paused-context
+uxpass-mixed-list-last-position
+uxpass-editor-zero-no-commit
+uxpass-editor-four-seconds-no-commit
+uxpass-editor-five-seconds-valid
+uxpass-editor-24h-minutes-locked
+uxpass-editor-24h-minutes-unchanged
+uxpass-editor-24h-seconds-locked
+N/A%[=                                                      ]   0.0 B/s 0:00:00
+N/A%[=                                                    ]  55.3 KiB/s 0:00:00
+N/A%[=                                                    ]  65.7 KiB/s 0:00:00
+N/A%[=                                                      ]   0.0 B/s 0:00:00
+N/A%[=                                                    ]  99.9 KiB/s 0:00:00
+N/A%[=                                                    ] 160.3 KiB/s 0:00:00
+N/A%[=                                                    ] 146.3 KiB/s 0:00:00
+N/A%[=                                                    ] 145.8 KiB/s 0:00:00
+uxpass-empty-single-create-action
+Timer native phase completed: uxpass

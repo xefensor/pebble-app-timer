@@ -60,9 +60,13 @@ static unsigned s_retries;
 static uint32_t s_transport_ticket;
 static WakeupId s_wakeup = -1;
 static uint32_t s_alarm_deadline;
+static Screen s_drawn_screen = SCREEN_LIST;
+static const char *s_drawn_issue, *s_drawn_status;
+static bool s_have_drawn;
 
 static void prv_flush(void);
 static void prv_refresh(void);
+static void prv_refresh_sharing(void);
 static void prv_schedule_alarm(void);
 static void prv_tick(struct tm *tick_time, TimeUnits units_changed);
 static void prv_transition(void);
@@ -317,6 +321,7 @@ static bool prv_apply(const TimerCollection *next, uint8_t alarms) {
 }
 
 static bool prv_finish_at(uint32_t now) {
+  if (!timer_collection_has_due(&s_collection, now)) return false;
   /* Completion can run under either a button or inbox transaction frame.
    * Keep its collection scratch off the SDK's 2 KiB stack as well. */
   static TimerCollection next;
@@ -346,7 +351,7 @@ static void prv_retry(void *context) {
     pa_publisher_retry(&s_publisher);
   }
   prv_flush();
-  prv_refresh();
+  prv_refresh_sharing();
 }
 
 static int prv_pending_slot(void) {
@@ -358,7 +363,7 @@ static int prv_pending_slot(void) {
 
 static void prv_flush(void) {
   if (s_storage_error || !s_phone_ready || s_transport_busy || !connection_service_peek_pebble_app_connection()) return;
-  if (s_retries >= RETRY_LIMIT) { s_share_error = true; prv_refresh(); return; }
+  if (s_retries >= RETRY_LIMIT) { s_share_error = true; prv_refresh_sharing(); return; }
   if (!s_have_flight) {
     const int slot = prv_pending_slot();
     if (slot < 0) return;
@@ -431,7 +436,7 @@ static void prv_outbox_sent(DictionaryIterator *iter, void *context) {
   if (s_have_flight && s_publisher.awaiting_receipt && !s_retry_timer)
     s_retry_timer = app_timer_register(2000, prv_retry, NULL);
   prv_flush();
-  prv_refresh();
+  prv_refresh_sharing();
 }
 
 static void prv_outbox_failed(DictionaryIterator *iter, AppMessageResult reason, void *context) {
@@ -444,8 +449,8 @@ static void prv_outbox_failed(DictionaryIterator *iter, AppMessageResult reason,
     if (!s_retry_timer && s_retries < RETRY_LIMIT) s_retry_timer = app_timer_register(500, prv_retry, NULL);
     if (s_retries >= RETRY_LIMIT) s_share_error = true;
   }
-  prv_refresh();
   prv_flush();
+  prv_refresh_sharing();
 }
 
 static void prv_reset_publication(void) {
@@ -499,7 +504,7 @@ static void prv_inbox(DictionaryIterator *iter, void *context) {
     s_retries = RETRY_LIMIT;
   }
   prv_flush();
-  prv_refresh();
+  prv_refresh_sharing();
 }
 
 static void prv_connection(bool connected) {
@@ -509,7 +514,7 @@ static void prv_connection(bool connected) {
     if (s_have_flight) pa_publisher_retry(&s_publisher);
     prv_flush();
   }
-  prv_refresh();
+  prv_refresh_sharing();
 }
 
 static const char *prv_status(void) {
@@ -538,6 +543,10 @@ static void prv_draw(Layer *layer, GContext *ctx) {
   (void)layer;
   const TimerUiView view = prv_view();
   timer_ui_draw(ctx, &view);
+  s_drawn_screen = view.screen;
+  s_drawn_issue = view.issue;
+  s_drawn_status = view.status;
+  s_have_drawn = true;
 }
 
 static void prv_update_ticks(void) {
@@ -557,6 +566,14 @@ static void prv_refresh(void) {
       !timer_collection_can_create(&s_collection)) s_menu=1;
   prv_update_ticks();
   if (s_canvas) layer_mark_dirty(s_canvas);
+}
+
+static void prv_refresh_sharing(void) {
+  /* Native timer mutations use prv_refresh. Sharing callbacks only repaint
+   * information that is actually visible; status strings have static lifetime. */
+  const TimerUiView view = prv_view();
+  if (!s_have_drawn || timer_ui_chrome_changed(&view, s_drawn_screen,
+      s_drawn_issue, s_drawn_status)) prv_refresh();
 }
 
 static uint32_t prv_millis(void) {

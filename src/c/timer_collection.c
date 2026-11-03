@@ -114,8 +114,9 @@ bool timer_collection_visible(const TimerCollection *collection, unsigned slot) 
       (collection->visible_mask & (1u << slot)) != 0;
 }
 
-int timer_collection_visible_slot(const TimerCollection *collection, unsigned row) {
-  unsigned ordered[TIMER_COLLECTION_CAPACITY], count = 0;
+unsigned timer_collection_visible_slots(const TimerCollection *collection,
+                                        unsigned ordered[TIMER_COLLECTION_CAPACITY]) {
+  unsigned count = 0;
   for (unsigned i = 0; i < TIMER_COLLECTION_CAPACITY; ++i) {
     if (!timer_collection_visible(collection, i)) continue;
     const ActivityTimerModel *timer = &collection->slots[i];
@@ -134,6 +135,12 @@ int timer_collection_visible_slot(const TimerCollection *collection, unsigned ro
     ordered[at] = i;
     ++count;
   }
+  return count;
+}
+
+int timer_collection_visible_slot(const TimerCollection *collection, unsigned row) {
+  unsigned ordered[TIMER_COLLECTION_CAPACITY];
+  const unsigned count = timer_collection_visible_slots(collection, ordered);
   return row < count ? (int)ordered[row] : -1;
 }
 
@@ -262,6 +269,15 @@ bool timer_collection_acknowledge(TimerCollection *collection, unsigned slot) {
   ActivityTimerModel next = collection->slots[slot];
   next.revision = collection->revision;
   return activity_timer_acknowledge(&next) && commit(collection, slot, &next);
+}
+
+bool timer_collection_has_due(const TimerCollection *collection, uint32_t now) {
+  if (!collection) return false;
+  for (unsigned i = 0; i < TIMER_COLLECTION_CAPACITY; ++i)
+    if (timer_collection_visible(collection, i) &&
+        collection->slots[i].state == ACTIVITY_TIMER_RUNNING &&
+        collection->slots[i].deadline <= now) return true;
+  return false;
 }
 
 uint8_t timer_collection_finish_due(TimerCollection *collection, uint32_t now) {

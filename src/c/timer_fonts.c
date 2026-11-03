@@ -6,15 +6,14 @@
 #include "font_raster.h"
 #include "generated_clock_glyphs.h"
 
-#define BODY_FONT_COUNT 7u
+#define BODY_FONT_COUNT 6u
 #define SCREEN_WIDTH 200
 #define SCREEN_HEIGHT 228
 
-static const uint8_t s_points[BODY_FONT_COUNT] = {14, 15, 16, 18, 19, 23, 24};
+static const uint8_t s_points[BODY_FONT_COUNT] = {14, 15, 16, 18, 19, 23};
 static const uint32_t s_resources[BODY_FONT_COUNT] = {
   RESOURCE_ID_FONT_BODY_14, RESOURCE_ID_FONT_BODY_15, RESOURCE_ID_FONT_BODY_16,
-  RESOURCE_ID_FONT_BODY_18, RESOURCE_ID_FONT_BODY_19, RESOURCE_ID_FONT_BODY_23,
-  RESOURCE_ID_FONT_BODY_24
+  RESOURCE_ID_FONT_BODY_18, RESOURCE_ID_FONT_BODY_19, RESOURCE_ID_FONT_BODY_23
 };
 static GFont s_body[BODY_FONT_COUNT];
 /* One glyph at a time, shared by every clock. No framebuffer, glyph bitmap,
