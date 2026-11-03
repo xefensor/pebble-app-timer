@@ -39,6 +39,7 @@ static uint32_t s_accepted[TIMER_COLLECTION_CAPACITY];
 static unsigned s_bank;
 static uint32_t s_generation;
 static Screen s_screen = SCREEN_LIST;
+static Screen s_edit_return_screen = SCREEN_LIST;
 static unsigned s_menu, s_selected;
 static int s_edit_slot = -1;
 static uint32_t s_edit[3] = {0, 10, 0};
@@ -601,6 +602,8 @@ static void prv_will_focus(bool focused) {
 }
 
 static void prv_begin_edit(int slot) {
+  s_edit_return_screen=slot<0?SCREEN_LIST:
+      s_screen==SCREEN_OPTIONS?SCREEN_OPTIONS:SCREEN_DETAIL;
   s_edit_slot=slot;
   uint32_t seconds=slot<0?600:activity_timer_remaining(&s_collection.slots[slot],prv_now());
   if (slot>=0 && !seconds) seconds=s_collection.slots[slot].repeat_seconds;
@@ -677,7 +680,7 @@ static void prv_press(ButtonId button) {
       if (s_edit[0]==24) s_edit[1]=s_edit[2]=0;
     } else if (button==BUTTON_ID_BACK) {
       if (s_edit_field)--s_edit_field;
-      else s_screen=s_edit_slot<0?SCREEN_LIST:SCREEN_DETAIL;
+      else s_screen=s_edit_return_screen;
     } else if (button==BUTTON_ID_SELECT) {
       if (s_edit_field<2)++s_edit_field;
       else {
@@ -711,7 +714,7 @@ static void prv_press(ButtonId button) {
     if (button==BUTTON_ID_UP) s_confirm_choice=0;
     else if (button==BUTTON_ID_DOWN) s_confirm_choice=1;
     else if (button==BUTTON_ID_BACK || (button==BUTTON_ID_SELECT && !s_confirm_choice))
-      s_screen=SCREEN_DETAIL;
+      s_screen=SCREEN_OPTIONS;
     else if (button==BUTTON_ID_SELECT) {
       TimerCollection next=s_collection;
       if (timer_collection_delete(&next,s_selected,prv_now()) &&

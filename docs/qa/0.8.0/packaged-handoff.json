@@ -1,0 +1,121 @@
+{
+  "result": "PASS",
+  "scope": "Actual packaged Dynamic PKJS/navigation provider, Timer PKJS/provider and Open Activity PKJS/config plugin, including saved shortcut mappings. In-memory SDK, clocks and native presentation/confirmation messages; no real phone or physical watch.",
+  "versions": {
+    "dynamic": "0.14.0",
+    "timer": "0.8.0",
+    "helper": "0.1.1"
+  },
+  "cases": [
+    {
+      "privacy": "message",
+      "role": "primary",
+      "notificationDestination": "b2cae818-10f8-46df-ad2b-98ad2254a3c1",
+      "otherDestination": "50e9ef12-a5ab-4369-a3b5-3447bfba5151",
+      "duplicateInvocationsSuppressed": true,
+      "existingBaselineSuppressed": true,
+      "privateContentsAbsentFromNavigation": true,
+      "coldSavedShortcutSettingsRespected": true,
+      "expiryContracted": true,
+      "expiredRouteClosed": true,
+      "underlyingTimerAndMusicRestored": true
+    },
+    {
+      "privacy": "message",
+      "role": "secondary",
+      "notificationDestination": "b2cae818-10f8-46df-ad2b-98ad2254a3c1",
+      "otherDestination": "50e9ef12-a5ab-4369-a3b5-3447bfba5151",
+      "duplicateInvocationsSuppressed": true,
+      "existingBaselineSuppressed": true,
+      "privateContentsAbsentFromNavigation": true,
+      "coldSavedShortcutSettingsRespected": true,
+      "expiryContracted": true,
+      "expiredRouteClosed": true,
+      "underlyingTimerAndMusicRestored": true
+    },
+    {
+      "privacy": "summary",
+      "role": "primary",
+      "notificationDestination": "b2cae818-10f8-46df-ad2b-98ad2254a3c1",
+      "otherDestination": "50e9ef12-a5ab-4369-a3b5-3447bfba5151",
+      "duplicateInvocationsSuppressed": true,
+      "existingBaselineSuppressed": true,
+      "privateContentsAbsentFromNavigation": true,
+      "coldSavedShortcutSettingsRespected": true,
+      "expiryContracted": true,
+      "expiredRouteClosed": true,
+      "underlyingTimerAndMusicRestored": true
+    },
+    {
+      "privacy": "summary",
+      "role": "secondary",
+      "notificationDestination": "b2cae818-10f8-46df-ad2b-98ad2254a3c1",
+      "otherDestination": "50e9ef12-a5ab-4369-a3b5-3447bfba5151",
+      "duplicateInvocationsSuppressed": true,
+      "existingBaselineSuppressed": true,
+      "privateContentsAbsentFromNavigation": true,
+      "coldSavedShortcutSettingsRespected": true,
+      "expiryContracted": true,
+      "expiredRouteClosed": true,
+      "underlyingTimerAndMusicRestored": true
+    },
+    {
+      "privacy": "app-only",
+      "role": "primary",
+      "notificationDestination": "b2cae818-10f8-46df-ad2b-98ad2254a3c1",
+      "otherDestination": "50e9ef12-a5ab-4369-a3b5-3447bfba5151",
+      "duplicateInvocationsSuppressed": true,
+      "existingBaselineSuppressed": true,
+      "privateContentsAbsentFromNavigation": true,
+      "coldSavedShortcutSettingsRespected": true,
+      "expiryContracted": true,
+      "expiredRouteClosed": true,
+      "underlyingTimerAndMusicRestored": true
+    },
+    {
+      "privacy": "app-only",
+      "role": "secondary",
+      "notificationDestination": "b2cae818-10f8-46df-ad2b-98ad2254a3c1",
+      "otherDestination": "50e9ef12-a5ab-4369-a3b5-3447bfba5151",
+      "duplicateInvocationsSuppressed": true,
+      "existingBaselineSuppressed": true,
+      "privateContentsAbsentFromNavigation": true,
+      "coldSavedShortcutSettingsRespected": true,
+      "expiryContracted": true,
+      "expiredRouteClosed": true,
+      "underlyingTimerAndMusicRestored": true
+    }
+  ],
+  "executedPackagedScripts": {
+    "dynamic": [
+      {
+        "file": "pebble-js-app.js",
+        "sha256": "04fd7805e32b311c823d73061d0a32782967e3954e5fc626ab3a9260041685e0"
+      },
+      {
+        "file": "plugin.js",
+        "sha256": "90bef7463fe17cdf79d1b40b9f9cbcaf60068314e5a4ea843c48a2cccdcf7940"
+      }
+    ],
+    "timer": [
+      {
+        "file": "pebble-js-app.js",
+        "sha256": "79cd2c61b7e5b69a5f7a6216277a9e354c40902d17c44616e5d2cfcb66db47b9"
+      },
+      {
+        "file": "plugin.js",
+        "sha256": "eb54fdbac2b65193a0c0c058a93c916ce4f0c29ae6d74d37200bae7e1f5a86e4"
+      }
+    ],
+    "helper": [
+      {
+        "file": "pebble-js-app.js",
+        "sha256": "62d17730a51fd8652063978980ce94c5f31b1fad17e026c1a124f8ee223749b5"
+      },
+      {
+        "file": "plugin.js",
+        "sha256": "6ab747c5a6d46d9e76467e207d538f255ae5adebdccfd094eab2047efcf80630"
+      }
+    ]
+  }
+}

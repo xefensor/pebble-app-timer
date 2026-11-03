@@ -4,10 +4,12 @@ A native timer for **stock PebbleOS**, with activity sharing for compatible
 watchfaces such as [Dynamic](https://github.com/xefensor/dynamic-watchface).
 The first target is Pebble Time 2 (`emery`, 200 × 228).
 
-The local **0.7.0** implementation adds `activity/summary` schema 4 and an
-optional destination for opening Timer from compatible consumers. Its native
-timer UI, alarm ownership and saved models remain unchanged. This version is
-validated locally; the published download below remains 0.6.0.
+The local **0.8.0** implementation improves Timer's on-watch options and duration
+editor: cancellation returns to its starting screen, Restart shows the saved
+duration, and replacing an old Ready timer is explained before starting.
+Activities, saved models, native alarms and the launcher countdown retain their
+existing ownership. This version is validated locally; the published download
+below remains 0.6.0.
 
 Timer 0.6.0 is a [GitHub development prerelease](https://github.com/xefensor/pebble-app-timer/releases/tag/v0.6.0)
 with a simple notification-style activity source, durable Done acknowledgement,
@@ -23,11 +25,29 @@ and [0.4.0](https://github.com/xefensor/pebble-app-timer/releases/tag/v0.4.0)
 and [earlier 0.2.0 release](https://github.com/xefensor/pebble-app-timer/releases/tag/v0.2.0)
 and its historical validation remain unchanged.
 
-![Timer 0.5.0 native Emery screens and launcher countdown](docs/images/native-overview.png)
+![Timer 0.8.0 native options and editor](docs/images/settings-overview.png)
 
-These are actual 0.5.0 native emulator captures, displayed at
-twice their 200 × 228 pixel size. The [approved browser concept](docs/design/Timer-UI-Preview.html)
-is retained separately; it is not native or physical-watch verification.
+These are actual 0.8.0 Emery captures with synthetic saved timers. The full
+[0.5.0 native overview](docs/images/native-overview.png) retains its historical
+alarm and launcher scope. The [approved browser concept](docs/design/Timer-UI-Preview.html)
+remains design evidence, not a native or physical-watch capture.
+
+## Version 0.8.0
+
+- Name the list's add action New timer. At eight saved timers, explain when it
+  will replace the oldest acknowledged Ready timer; retain the editor warning
+  and block creation when all eight timers are active or otherwise ineligible.
+- Cancel an Options edit back to Options, a direct detail edit back to detail,
+  and a new timer back to the list. Keep the selected Options row when cancelling
+  deletion with Keep or Back. Keep remains the initial confirmation choice.
+- Show the saved repeat duration in Restart, including after a remaining-time
+  edit or snooze. Add matching Back guidance for every duration field.
+- Give both alarm hints eight pixels of bottom clearance without changing the
+  hourglass, snooze, acknowledgement or alarm timing.
+- Keep settings on the watch, where the timers are owned. No phone settings
+  page, new storage format, activity-library update or alarm behavior is added.
+- Preserve the existing button-hold guards, eight slots, paused visibility,
+  native Wakeup ownership, sharing protocol and app-list countdown.
 
 ## Version 0.7.0
 
@@ -195,11 +215,11 @@ phone-mediated snapshot, not direct access to another watchapp's memory.
 
 | Screen | Up | Select | Down | Back |
 | --- | --- | --- | --- | --- |
-| Timer list | Previous row | Open timer / add from + | Next row | Exit to watchface |
-| Set timer | Increase selected field | Next field / start | Decrease selected field | Previous field / list |
+| Timer list | Previous row | Open timer / New timer | Next row | Exit to watchface |
+| Set timer | Increase selected field | Next field / start or save | Decrease selected field | Previous field / originating screen |
 | Timer detail | Change remaining / saved duration | Pause / resume / repeat Ready | More options | Timer list |
 | More options | Previous option | Choose option | Next option | Timer detail |
-| Delete confirmation | Keep | Confirm selected choice | Delete | Keep |
+| Delete confirmation | Keep | Confirm selected choice | Delete | Cancel to Options |
 | Time’s up | Snooze one minute | Done | Done (compatibility) | Done / timer list |
 
 The editor sets hours, minutes and seconds, from five seconds to 24 hours.
@@ -211,6 +231,10 @@ native time read. Elapsed excludes paused time. Changing the remaining time keep
 the elapsed portion and adjusts the run's progress span; an unchanged save keeps
 the deadline. The original saved repeat duration stays separate, including after
 a one-minute snooze. Ready timers retain that saved duration for their next run.
+
+Options and the duration editor are Timer's settings surface. The phone-side
+code only shares native snapshots; there is no separate phone configuration
+page. The [UX review](docs/UX-REVIEW.md) records the changes and retained behavior.
 
 ## Countdown in the app list
 
@@ -274,7 +298,7 @@ The dependency is installed from `vendor/pebble-activities-0.4.0.tgz`; its
 provenance and SHA-256 are recorded in [vendor/README.md](vendor/README.md).
 
 The distribution build clears the SDK cache so dependency updates cannot leave
-stale phone JavaScript in the PBW. It writes `dist/Timer-0.7.0.pbw` and its checksum. It bundles the provider
+stale phone JavaScript in the PBW. It writes `dist/Timer-0.8.0.pbw` and its checksum. It bundles the provider
 JavaScript and sets `manifestVersion: 2`, including `plugin.js` alongside PKJS
 and the watch binary. A plain `pebble build` creates a development PBW without
 that extra provider bundle; use `npm run build` for an installable shared-activity

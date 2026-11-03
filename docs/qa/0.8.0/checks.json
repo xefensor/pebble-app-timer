@@ -1,0 +1,31 @@
+{
+  "version": "0.8.0",
+  "result": "PASS",
+  "commands": [
+    {
+      "command": "npm test",
+      "javascriptTests": 22,
+      "portableCSuites": 6,
+      "log": "checks/portable.log"
+    },
+    {
+      "command": "python3 -m unittest discover -s tests -p 'test_*.py'",
+      "pythonRegressions": 38,
+      "log": "checks/python.log"
+    },
+    {
+      "command": "npm run build",
+      "sdk": "4.33.1",
+      "platform": "emery",
+      "log": "checks/sdk.log"
+    },
+    {
+      "command": "python3 scripts/check-timer-fonts.py --pbw dist/Timer-0.8.0.pbw",
+      "report": "font-audit.json"
+    }
+  ],
+  "nativeSettingsCaptures": 19,
+  "nativeUxCaptures": 17,
+  "packagedRuntime": "packaged-runtime.json",
+  "scope": "Local SDK/tests and isolated native emulator. No publication, live-phone or physical-watch claim."
+}

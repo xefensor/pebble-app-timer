@@ -1,0 +1,39 @@
+
+> pebble-app-timer@0.8.0 test
+> python3 scripts/test.py
+
+timer model: lifecycle, persistence, expiry and boundary checks passed
+timer collection: migration, eight slots, clocks, revisions, editing and persistence passed
+timer fonts: 86,401 countdown bounds, fixed cells, glyph coverage and raster samples passed
+timer UI: bounded hourglass silhouette, exact conserved sand area and monotonic 24h progress passed
+timer glance runtime: UTC collisions, latest state, snapshot ownership, persisted reopen and bounded exit passed
+✔ schema 4 cold source preserves owner clock and exposes only app navigation (6.71314ms)
+✔ schema 4 empty withdrawal after expiry keeps a newer complete-response header (1.955652ms)
+✔ summary omits exact native duration labels and preserves meaningful instance names (9.70017ms)
+✔ schema 4 pause expiry and completion acknowledgement survive cold plugin requests (3.510932ms)
+✔ native payload is saved by PKJS and read by a separate cold plugin runtime (2.129167ms)
+✔ pause and cancel update the saved run without deriving completion on the phone (0.738248ms)
+✔ storage failure never emits a successful application receipt (0.521432ms)
+✔ polling does not renew the original native lease (0.594576ms)
+✔ timer slots survive cold reads and replace old offline runs independently (2.833737ms)
+✔ invalid native slot cannot acknowledge or replace another timer (0.688984ms)
+✔ one activity manifest declaration covers summaries and every compatibility source (0.384899ms)
+✔ cold simple Timer activity supplies one countdown without mandatory display labels or elapsed detail (2.610325ms)
+✔ simple Timer keeps a paused countdown fixed through the original five-minute window (1.894135ms)
+✔ simple Timer completion keeps the acknowledged hidden tombstone through cold reads (1.991023ms)
+✔ cold Timer card is compact while detailed providers retain elapsed from the same observation (1.369382ms)
+✔ paused card clocks stay fixed and a changed duration is a new source revision (0.884804ms)
+✔ old native snapshots still work without inventing an elapsed value (0.547641ms)
+✔ conflicting duration metadata cannot mutate an accepted revision (0.609119ms)
+✔ only native completion can retain a bounded result card (0.739666ms)
+✔ both source schemas hide an expired pause without losing its saved snapshot (3.9093ms)
+✔ resuming a hidden pause republishes both source schemas with a fresh countdown (1.694202ms)
+✔ Done hides a completed run durably without cancelling it or another timer (3.423831ms)
+ℹ tests 22
+ℹ suites 0
+ℹ pass 22
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 68.97923

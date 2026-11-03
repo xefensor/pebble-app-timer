@@ -31,8 +31,10 @@ VERSION = json.loads((ROOT / 'package.json').read_text())['version']
 OUT = Path(os.environ.get('TIMER_QA_OUTPUT', ROOT / 'docs/qa' / VERSION / 'native'))
 OUT.mkdir(parents=True, exist_ok=True)
 PHASE = os.environ.get('TIMER_QA_PHASE', 'migration')
+REQUIRED_PHASES = set(os.environ.get('TIMER_QA_EXPECT_PHASES',
+    'migration,ux,capacity,launcher,nearby,equal').split(','))
 FINAL = ROOT / 'dist' / ('Timer-' + VERSION + '.pbw')
-NATIVE = ROOT / 'build/timer-ux-native-only.pbw'
+NATIVE = Path(os.environ.get('TIMER_QA_NATIVE_PBW', ROOT / 'build/timer-ux-native-only.pbw'))
 TARGET = uuid.UUID('50e9ef12-a5ab-4369-a3b5-3447bfba5151')
 digest = lambda value: hashlib.sha256(value).hexdigest()
 with zipfile.ZipFile(FINAL) as source, zipfile.ZipFile(NATIVE, 'w') as output:
@@ -61,6 +63,7 @@ else:
         'visualReview': {'reviewed': False},
     }
 report['completedPhases'] = [phase for phase in report['completedPhases'] if phase != PHASE]
+report['requiredPhases'] = sorted(REQUIRED_PHASES)
 report['result'] = 'INCOMPLETE'
 
 def save():
@@ -340,6 +343,79 @@ elif PHASE == 'capacity':
         'replacementExplicitlyWarnedBeforeStart': True}
     seed(0)
 
+elif PHASE == 'fields':
+    seed(0);handshake();add();button('Select')
+    shot('settings-seconds-back-hint')
+    button('Back',3)
+    empty=handshake()
+    assert all(value[1003]=='cancelled' for value in empty.values())
+    report['proofs']['secondsField']={'secondsHintCaptured':True,'cancelPreservesEmpty':True}
+
+elif PHASE == 'settings':
+    seed(0)
+    handshake()
+    shot('settings-empty-new-timer')
+    add(); shot('settings-new-editor-minutes')
+    button('Back'); shot('settings-hours-cancel-hint')
+    button('Back')
+    empty=handshake()
+    assert all(value[1003]=='cancelled' for value in empty.values())
+    shot('settings-new-cancel-returns-list')
+    add();button('Select',2)
+    before=handshake()['0']
+    shot('settings-running-detail')
+    button('Up');button('Back',2)
+    shot('settings-direct-edit-cancel-returns-detail')
+    unchanged=handshake()['0']
+    assert unchanged[1001]==before[1001] and unchanged[1011]==before[1011]
+    button('Down');shot('settings-options-change-selected')
+    button('Select');button('Back',2)
+    returned=shot('settings-options-edit-cancel-returns-options')
+    assert returned[(70*200+4)*3:(70*200+4)*3+3]==bytes((0,0,0))
+    # Edit the remaining duration without changing the saved repeat duration.
+    button('Select');button('Down');button('Select',2)
+    edited=handshake()['0']
+    assert edited[1001]==before[1001] and edited[1006]=='10 min timer'
+    assert edited[1022]!=600
+    button('Down');button('Down',2);button('Select')
+    shot('settings-delete-keep-default')
+    button('Select')
+    kept=shot('settings-keep-returns-options-delete-selected')
+    assert kept[(180*200+4)*3:(180*200+4)*3+3]==bytes((0,0,0))
+    button('Select');button('Back')
+    backed=shot('settings-delete-back-returns-options-delete-selected')
+    assert backed[(180*200+4)*3:(180*200+4)*3+3]==bytes((0,0,0))
+    intact=handshake()['0']
+    assert intact[1001]==edited[1001] and intact[1011]==edited[1011]
+    button('Up');shot('settings-restart-shows-saved-duration')
+    button('Select')
+    restarted=wait_record(0,lambda value:value[1003]=='active' and value[1001]!=edited[1001])
+    assert restarted[1022]==600 and restarted[1006]=='10 min timer'
+    button('Select');shot('settings-paused-detail')
+    seed(2);handshake();button('Up',8)
+    shot('settings-eight-ready-replacement-list-warning')
+    button('Select');shot('settings-eight-ready-replacement-editor-warning')
+    button('Back',2)
+    ready=handshake()
+    assert all(value[1003]=='completed' and value[1023]==0 for value in ready.values())
+    shot('settings-replacement-cancel-preserves-eight-ready')
+    for _ in range(8):
+        add();button('Select',2);button('Back')
+    full=handshake()
+    assert all(value[1003]=='active' for value in full.values())
+    button('Up',8);shot('settings-eight-running-full')
+    button('Select')
+    still_full=handshake()
+    assert all(still_full[slot][1001]==full[slot][1001] and
+        still_full[slot][1011]==full[slot][1011] for slot in full)
+    shot('settings-full-select-preserves-runs')
+    report['proofs']['settingsNavigation']={'newCancelKeepsEmpty':True,
+        'directEditCancelRun':unchanged,'optionsEditCancelCursorRestored':True,
+        'deleteKeepAndBackReturnToOptionsCursor':True,'remainingEdit':edited,
+        'deleteCancelKeepsRun':intact,'restartUsesSavedRepeat':restarted,
+        'replacementCancelPreservesEightReady':True,'fullSelectPreservesEightRuns':True}
+    seed(0)
+
 elif PHASE == 'launcher':
     seed(0)
     handshake()
@@ -420,7 +496,7 @@ else:
     raise SystemExit('Unknown TIMER_QA_PHASE: ' + PHASE)
 
 report['completedPhases'] = sorted(set(report['completedPhases'] + [PHASE]))
-report['result'] = 'PASS' if set(report['completedPhases']) >= {'migration', 'ux', 'capacity', 'launcher', 'nearby', 'equal'} else 'INCOMPLETE'
+report['result'] = 'PASS' if set(report['completedPhases']) >= REQUIRED_PHASES else 'INCOMPLETE'
 report.setdefault('nativeMessages', {})[PHASE] = list(all_messages)
 save()
 print('Timer native phase completed: ' + PHASE, flush=True)

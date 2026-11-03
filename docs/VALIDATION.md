@@ -1,5 +1,60 @@
 # Timer validation
 
+## 0.8.0 on-watch Options and editor UX
+
+This local update improves list guidance and cancellation paths. Timer has no
+phone configuration form: Options and the duration editor are its settings
+surface. The native model, collection, Glance and phone bridge sources retain
+their exact 0.7.0 bytes. Activities stays pinned at 0.4.0; UUIDs, keys, banks,
+alarms and all eight slots keep their existing ownership.
+
+- **22 JavaScript cases, six portable C suites and 38 Python regressions pass.**
+  The packaged PKJS and cold provider pass their numeric/symbolic key, schema4,
+  compatibility, acknowledgement, original-lease and multi-slot checks with
+  simulated SDK surfaces. The exact font/resource audit also passes.
+- **SDK 4.33.1 Emery distribution build passes:** 26,719 resource bytes and a
+  35,581-byte SDK RAM footprint. The SDK reports 95,491 available heap bytes
+  before startup allocation; no runtime peak or physical battery claim follows.
+- **19 actual native settings/navigation captures pass** on an isolated Emery
+  emulator. New timer, all three editor fields, running/paused detail, Options,
+  safe Delete confirmation, eight-Ready replacement and eight-running Full
+  states fit the real 200×228 surface.
+- **17 additional native UX captures pass** on the final candidate. Background
+  completion, Snooze, unchanged editor saves, elapsed-preserving remaining edits,
+  original-duration Restart, durable Done acknowledgement, reopen and Ready edits
+  retain their behavior. Independent visual review covers all 36 current frames.
+- Cancelled new edits keep the list empty. Direct detail cancellation preserves
+  run/deadline; Options editor cancellation restores Options. Delete Keep and
+  Back restore its selected Delete row and preserve the current run/deadline.
+  Native selection-region checks confirm those return screens and cursors.
+- A remaining-time edit keeps the saved ten-minute identity. Restart then
+  creates a new run with the saved 600-second duration, matching its visible
+  label. Cancelling replacement keeps all eight Ready entries; Select on the
+  eight-running Full state preserves every run and deadline.
+- Replacement is explained while New timer is selected in the list and again
+  in the editor. Back guidance covers Hours, Minutes and Seconds. The app's
+  deliberate hold guards, alarm controls and critical error messages are
+  unchanged; no extra confirmation or phone setting was added.
+- Native review found the alarm's Snooze hint touching the last display row.
+  Raising both hint baselines eight pixels preserves the hourglass and actions.
+  Both recaptured alarm frames have a verified eight-pixel black bottom margin
+  across the full content width, with no hint clipping.
+
+Evidence: [native navigation/capacity report](qa/0.8.0/native/ux.json),
+[review contact sheet](qa/0.8.0/native/review-settings.png),
+[native alarm/repeat UX](qa/0.8.0/native-ux/ux.json),
+[packaged runtime](qa/0.8.0/packaged-runtime.json),
+[packaged cross-app handoff](qa/0.8.0/packaged-handoff.json),
+[font audit](qa/0.8.0/font-audit.json),
+[unchanged owner/bridge source identity](qa/0.8.0/native-identity.json) and
+[UX review](UX-REVIEW.md).
+
+The emulator uses synthetic saved timers and direct Python snapshot requests/
+receipts while executing actual native Timer operations. This is separate from
+real phone/plugin delivery and physical-watch testing. Earlier migration,
+launcher, failure and hold captures remain historical unless explicitly
+repeated for this version. Nothing has been pushed or published.
+
 ## 0.7.0 typed summary snapshots and app navigation
 
 This local version publishes `activity/summary` schema 4 through the pinned

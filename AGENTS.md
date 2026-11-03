@@ -35,7 +35,7 @@ service. Keep timer behaviour independent of Dynamic's presentation.
 
 - Install with `npm ci --ignore-scripts`. Use the versioned tarball in `vendor/`;
   never rely on a sibling library checkout. Record updated provenance and hashes.
-  Version 0.7.0 pins Activities 0.4.0; `vendor/ACTIVITIES.json` records
+  Version 0.8.0 keeps Activities 0.4.0; `vendor/ACTIVITIES.json` records
   its exact reviewed source commit and archive checksum.
 - Use `npm run build` for distribution. Its manifestVersion 2 PBW must contain
   native app, PKJS, independently callable `plugin.js`, licences and notices.
@@ -62,6 +62,12 @@ Keep digits stable, sand proportional, paused views still and transitions
 bounded. Preserve initial launch focus and cancel decorative work under a
 covering window. All eight saved timers retain native deadline ownership.
 More options owns Restart and confirmed Delete; Keep is the initial choice.
+Cancel returns to the originating screen: an Options edit returns to Options,
+a direct detail edit returns to detail, and a new timer returns to the list.
+Delete Keep/Back returns to Options with its Delete row still selected.
+Restart names the saved repeat duration, independent of remaining/snoozed time.
+When New timer will reuse the oldest acknowledged Ready slot, warn in the list
+before entry and in the editor before starting. Eight active slots remain Full.
 Held buttons must not act again after their first press changes screens.
 Normal sharing status belongs in More options; alarm/storage failures stay
 visible. Restart creates a new run in the same slot with the configured duration.

@@ -28,3 +28,8 @@ The script copies the final distribution's native payload into a no-JavaScript
 QA PBW and records its exact hashes. Its Python AppMessage receiver requests
 saved native state and sends receipts; this is explicitly a QA transport,
 not evidence of actual phone PKJS/provider delivery.
+
+The `settings` phase checks editor/confirmation cancellation, saved-duration
+Restart labels, eight-Ready replacement warnings and the eight-running limit.
+For a focused run, set `TIMER_QA_EXPECT_PHASES=settings`; the report records this
+scope explicitly. The default required phases remain the original six above.
