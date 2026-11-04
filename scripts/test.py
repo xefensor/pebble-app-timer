@@ -48,6 +48,15 @@ with tempfile.TemporaryDirectory(prefix="timer-glance-runtime-test-") as scratch
         "-o", str(binary)
     ], check=True)
     subprocess.run([str(binary)], check=True)
+with tempfile.TemporaryDirectory(prefix="timer-alarm-feedback-test-") as scratch:
+    binary = Path(scratch) / "timer-alarm-feedback"
+    subprocess.run([
+        os.environ.get("CC", "cc"), "-std=c99", "-Wall", "-Wextra", "-Werror", "-pedantic",
+        "-I", str(root / "tests/fake-sdk"),
+        str(root / "src/c/timer_alarm_feedback.c"),
+        str(root / "tests/test_timer_alarm_feedback.c"), "-o", str(binary)
+    ], check=True)
+    subprocess.run([str(binary)], check=True)
 subprocess.run(["node", "--test", str(root / "tests/handoff.test.js")], check=True)
 with tempfile.TemporaryDirectory(prefix="timer-ui-state-test-") as scratch:
     binary = Path(scratch) / "timer-ui-state"

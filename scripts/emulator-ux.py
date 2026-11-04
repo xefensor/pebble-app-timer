@@ -24,7 +24,7 @@ from libpebble2.protocol.apps import AppRunState, AppRunStateStart, AppRunStateS
 from libpebble2.protocol.phone import PhoneNotification, IncomingCall, CallEnd
 from libpebble2.services.appmessage import AppMessageService, Uint8, Uint32, CString
 from libpebble2.services.screenshot import Screenshot
-from libpebble2.communication.transports.qemu.protocol import QemuButton
+from libpebble2.communication.transports.qemu.protocol import QemuButton, QemuTimeFormat
 from PIL import Image
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -183,6 +183,50 @@ def shot(name, wait=.3, source=None):
 def region(pixels, bounds):
     left, top, right, bottom = bounds
     return b''.join(pixels[(y*200+left)*3:(y*200+right)*3] for y in range(top, bottom))
+
+CLOCK_BOUNDS = (102, 4, 159, 31)
+BODY_BOUNDS = (0, 33, 166, 228)
+
+def clock_shot(name, wait=.3):
+    pixels = shot(name, wait)
+    clock = region(pixels, CLOCK_BOUNDS)
+    assert len({clock[index:index+3] for index in range(0, len(clock), 3)}) >= 2, 'Wall clock missing: ' + name
+    return pixels
+
+def blue_grain_width(pixels, bounds):
+    left, top, right, bottom = bounds
+    widest, count = 0, 0
+    for y in range(top, bottom):
+        run = 0
+        for x in range(left, right):
+            red, green, blue = pixels[(y*200+x)*3:(y*200+x)*3+3]
+            if red < 100 and green >= 80 and blue >= 150:
+                run += 1
+                count += 1
+                widest = max(widest, run)
+            else:
+                run = 0
+    return {'widestBlueRun': widest, 'bluePixels': count}
+
+def clock_rollover(prefix):
+    """Observe a real minute change without resetting watch time or alarms."""
+    before = clock_shot(prefix + '-before')
+    still = clock_shot(prefix + '-body-still', wait=1.2)
+    assert region(before, BODY_BOUNDS) == region(still, BODY_BOUNDS), 'Idle body changed: ' + prefix
+    started = time.monotonic()
+    until = started + 74
+    pixels = still
+    while region(before, CLOCK_BOUNDS) == region(pixels, CLOCK_BOUNDS):
+        assert time.monotonic() < until, 'Wall clock did not update across a real minute: ' + prefix
+        time.sleep(.8)
+        pixels = b''.join(Screenshot(p).grab_image())
+    after = clock_shot(prefix + '-minute-updated', wait=0)
+    assert region(before, CLOCK_BOUNDS) != region(after, CLOCK_BOUNDS)
+    assert region(before, BODY_BOUNDS) == region(after, BODY_BOUNDS), 'Minute update changed idle content: ' + prefix
+    return {'before': prefix + '-before.png', 'after': prefix + '-minute-updated.png',
+        'waitSeconds': round(time.monotonic()-started, 3), 'clockRegion': CLOCK_BOUNDS,
+        'bodyRegion': BODY_BOUNDS, 'bodyPixelsUnchanged': True, 'headerPixelsChanged': True,
+        'watchTimeReset': False, 'cpuOrBatteryUseMeasured': False}
 
 def sand_position(pixels, bounds, color):
     """Measure native coloured sand only; saved screenshots stay unmodified."""
@@ -527,6 +571,107 @@ elif PHASE == 'settings':
         'deleteCancelKeepsRun':intact,'restartUsesSavedRepeat':restarted,
         'replacementCancelPreservesEightReady':True,'fullSelectPreservesEightRuns':True,
         'fullListSkipsDisabledAddAndOpensSelectedTimer':True}
+    seed(0)
+
+elif PHASE == 'clock':
+    send_data_to_qemu(p.transport, QemuTimeFormat(is_24_hour=True))
+    seed(0); handshake()
+    clock_shot('clock-normal-list-24h')
+    send_data_to_qemu(p.transport, QemuTimeFormat(is_24_hour=False))
+    stop(); launch(); handshake()
+    clock_shot('clock-normal-list-12h')
+    send_data_to_qemu(p.transport, QemuTimeFormat(is_24_hour=True))
+    stop(); launch(); handshake(); add()
+    clock_shot('clock-normal-editor')
+    button('Select', 2)
+    running = wait_record(0, lambda value: value[1003] == 'active')
+    grain_bounds = (78, 141, 89, 175)
+    sand_frames = [clock_shot('clock-normal-running-sand-' + str(index), wait=.9 if index else .4)
+        for index in range(3)]
+    sand_hashes = [digest(region(frame, grain_bounds)) for frame in sand_frames]
+    grain_sizes = [blue_grain_width(frame, grain_bounds) for frame in sand_frames]
+    sand_regions = [region(frame, grain_bounds) for frame in sand_frames]
+    sand_deltas = [sum(first[at:at+3] != second[at:at+3] for at in range(0, len(first), 3))
+        for index, first in enumerate(sand_regions) for second in sand_regions[index+1:]]
+    assert len(set(sand_hashes)) >= 2, 'Running sand did not visibly change across seconds'
+    assert max(sand_deltas) >= 24, 'Falling sand phase changed too few native pixels'
+    assert all(value['widestBlueRun'] >= 4 and value['bluePixels'] >= 70 for value in grain_sizes), grain_sizes
+    button('Select')
+    paused = wait_record(0, lambda value: value[1003] == 'paused')
+    pause_first = clock_shot('clock-normal-paused', wait=.5)
+    pause_later = clock_shot('clock-normal-paused-still', wait=1.2)
+    assert region(pause_first, BODY_BOUNDS) == region(pause_later, BODY_BOUNDS)
+    button('Down'); clock_shot('clock-normal-options')
+    button('Down', 2); button('Select'); clock_shot('clock-normal-confirm')
+
+    # The exact candidate owns both equal native deadlines. Snooze must move
+    # only the first alarm to a new 60s run; Done acknowledges the next pending
+    # alarm. QEMU proves state/UI, while fake-SDK tests own vibration cadence.
+    seed(4)
+    equal = handshake()
+    completed = alarm_wait(equal['0'], 'clock-normal-alarm')
+    clock_pixels = Image.open(OUT / 'clock-normal-alarm.png').convert('RGB').tobytes()
+    clock_region = region(clock_pixels, CLOCK_BOUNDS)
+    assert len({clock_region[index:index+3] for index in range(0, len(clock_region), 3)}) >= 2
+    pending = wait_record(1, lambda value: value[1003] == 'completed' and value[1023] == 1)
+    button('Up')
+    snoozed = wait_record(0, lambda value: value[1003] == 'active' and value[1001] != completed[1001])
+    assert snoozed[1022] == 60 and current(1)[1023] == 1
+    clock_shot('clock-snooze-shows-next-pending')
+    button('Select')
+    acknowledged = wait_record(1, lambda value: value[1023] == 0 and value[1002] > pending[1002])
+    clock_shot('clock-done-clears-pending')
+    stop(); launch(); reopened = handshake()
+    assert reopened['0'][1003] == 'active' and reopened['0'][1001] == snoozed[1001]
+    assert reopened['1'][1023] == 0 and reopened['1'][1009] == acknowledged[1009]
+    clock_shot('clock-reopened-no-terminal-alarm')
+
+    # Actual exhausted-generation failure exercises the longest critical
+    # warning without patching Timer or inventing an alarm result.
+    seed(6)
+    clock_shot('clock-critical-list')
+    button('Select'); clock_shot('clock-critical-detail')
+    button('Up'); clock_shot('clock-critical-editor')
+    button('Back', 2); button('Down'); clock_shot('clock-critical-options')
+    button('Down', 2); button('Select'); clock_shot('clock-critical-confirm')
+    button('Back', 2)
+    until = time.monotonic() + 35
+    while time.monotonic() < until:
+        pixels = b''.join(Screenshot(p).grab_image())
+        if pixels[:3] == bytes((0, 0, 0)):
+            break
+        time.sleep(.3)
+    else:
+        raise AssertionError('Expected actual native alarm under exhausted-generation failure')
+    clock_shot('clock-critical-alarm')
+    report['proofs']['clockAndSand'] = {'clockBounds': CLOCK_BOUNDS,
+        'normalAndCriticalScreens': ['list', 'editor', 'detail', 'options', 'confirm', 'alarm'],
+        'qemuTimeFormatsExercised': [24, 12], 'watchTimeReset': False,
+        'runningSandRegion': grain_bounds, 'runningSandRegionHashes': sand_hashes,
+        'runningSandPixelRuns': grain_sizes, 'runningSandPhaseChangedPixels': sand_deltas,
+        'runningNativeState': running,
+        'pausedNativeState': paused, 'pausedBodyPixelsUnchanged': True,
+        'equalNativeDeadlines': equal, 'firstNativeCompletion': completed,
+        'snoozedFirst': snoozed, 'acknowledgedSecond': acknowledged, 'afterReopen': reopened,
+        'nativeSnoozePreservesOtherPendingAlarm': True, 'doneHidesPendingWithoutRealertOnReopen': True,
+        'physicalVibrationMeasured': False, 'cpuOrBatteryUseMeasured': False}
+    seed(0)
+
+elif PHASE == 'clock-idle':
+    send_data_to_qemu(p.transport, QemuTimeFormat(is_24_hour=True))
+    seed(0); handshake()
+    empty = clock_rollover('clock-idle-empty')
+    add(); button('Select', 2); button('Select')
+    paused = wait_record(0, lambda value: value[1003] == 'paused')
+    paused_proof = clock_rollover('clock-idle-paused')
+    button('Up')
+    editor = clock_rollover('clock-idle-editor')
+    button('Back', 2)
+    after = handshake()['0']
+    assert all(after[key] == paused[key] for key in (1001, 1003, 1009, 1010, 1012, 1022, 1023))
+    report['proofs']['clockIdleMinutes'] = {'empty': empty, 'paused': paused_proof, 'editor': editor,
+        'pausedBefore': paused, 'pausedAfter': after, 'nativePauseObservationAndExpiryUnchanged': True,
+        'noRunningTimersDuringChecks': True, 'watchTimeReset': False, 'cpuOrBatteryUseMeasured': False}
     seed(0)
 
 elif PHASE == 'hourglass':

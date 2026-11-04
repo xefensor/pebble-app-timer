@@ -1,0 +1,19 @@
+{
+  "candidatePbwSha256": "2b4c9ce770cb5a08b1a22da13c7788e77570158ebd15cd99ab7b87a8c0292652",
+  "file": "docs/images/timer-clock-sand-0.11.1.png",
+  "sources": [
+    {
+      "file": "docs/qa/0.11.1/native/clock-normal-running-sand-0.png",
+      "sha256": "2c833735b94e42c3d7775cf9bb0fcea098df26482f22ac6e8d765df1a2b3cbad"
+    },
+    {
+      "file": "docs/qa/0.11.1/native/clock-normal-paused.png",
+      "sha256": "0f23abeaf8f46be78fddef6fad4b4a170dd55ee7189ab416c947f2f805eab800"
+    },
+    {
+      "file": "docs/qa/0.11.1/native/clock-normal-alarm.png",
+      "sha256": "50988a93b94e9b272d60e2c031bac12cb85b1fa7f082977279ef0263b74f7dc8"
+    }
+  ],
+  "composition": "Unscaled unchanged native200x228 screenshots; labels outside; actual isolated Emery QEMU, no physicalwatch."
+}

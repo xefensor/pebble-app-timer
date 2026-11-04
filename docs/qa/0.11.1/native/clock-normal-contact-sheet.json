@@ -1,0 +1,38 @@
+{
+  "candidatePbwSha256": "2b4c9ce770cb5a08b1a22da13c7788e77570158ebd15cd99ab7b87a8c0292652",
+  "derivativeContactSheet": true,
+  "scale": 2,
+  "resampling": "nearest",
+  "sources": [
+    {
+      "file": "clock-normal-list-24h.png",
+      "sha256": "a7915453fa509a574bf4f815dac0201e63fe777425b36ab793849e5ca8f338ce",
+      "nativePixelsModified": false
+    },
+    {
+      "file": "clock-normal-editor.png",
+      "sha256": "5e0369b9511c300fdd217152446976d70d9c2d4ac039e3a6e0e570405760e93f",
+      "nativePixelsModified": false
+    },
+    {
+      "file": "clock-normal-running-sand-0.png",
+      "sha256": "2c833735b94e42c3d7775cf9bb0fcea098df26482f22ac6e8d765df1a2b3cbad",
+      "nativePixelsModified": false
+    },
+    {
+      "file": "clock-normal-options.png",
+      "sha256": "a7b9822f3249e0fb540d0c6e0f71b0372e5bedcecabc08d287301d91439aa549",
+      "nativePixelsModified": false
+    },
+    {
+      "file": "clock-normal-confirm.png",
+      "sha256": "ebe9050850230f2a0065a4de89ffb2baf1ceb655885243e113cd6c46d921ec38",
+      "nativePixelsModified": false
+    },
+    {
+      "file": "clock-normal-alarm.png",
+      "sha256": "50988a93b94e9b272d60e2c031bac12cb85b1fa7f082977279ef0263b74f7dc8",
+      "nativePixelsModified": false
+    }
+  ]
+}

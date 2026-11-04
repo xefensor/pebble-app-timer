@@ -1,0 +1,152 @@
+{
+  "candidatePbwSha256": "2b4c9ce770cb5a08b1a22da13c7788e77570158ebd15cd99ab7b87a8c0292652",
+  "scope": "Native header clock ROIx102..158,y5..29; labelled seedfixture excluded; threshold verifies visibleink, format/rollover proof is separately recorded in native report.",
+  "captures": [
+    {
+      "file": "clock-normal-list-24h.png",
+      "clockInkPixels": 192,
+      "whiteInk": false
+    },
+    {
+      "file": "clock-normal-list-12h.png",
+      "clockInkPixels": 182,
+      "whiteInk": false
+    },
+    {
+      "file": "clock-normal-editor.png",
+      "clockInkPixels": 200,
+      "whiteInk": false
+    },
+    {
+      "file": "clock-normal-running-sand-0.png",
+      "clockInkPixels": 200,
+      "whiteInk": false
+    },
+    {
+      "file": "clock-normal-running-sand-1.png",
+      "clockInkPixels": 200,
+      "whiteInk": false
+    },
+    {
+      "file": "clock-normal-running-sand-2.png",
+      "clockInkPixels": 200,
+      "whiteInk": false
+    },
+    {
+      "file": "clock-normal-paused.png",
+      "clockInkPixels": 200,
+      "whiteInk": false
+    },
+    {
+      "file": "clock-normal-paused-still.png",
+      "clockInkPixels": 200,
+      "whiteInk": false
+    },
+    {
+      "file": "clock-normal-options.png",
+      "clockInkPixels": 200,
+      "whiteInk": false
+    },
+    {
+      "file": "clock-normal-confirm.png",
+      "clockInkPixels": 200,
+      "whiteInk": false
+    },
+    {
+      "file": "clock-normal-alarm.png",
+      "clockInkPixels": 200,
+      "whiteInk": true
+    },
+    {
+      "file": "clock-snooze-shows-next-pending.png",
+      "clockInkPixels": 200,
+      "whiteInk": true
+    },
+    {
+      "file": "clock-done-clears-pending.png",
+      "clockInkPixels": 200,
+      "whiteInk": false
+    },
+    {
+      "file": "clock-reopened-no-terminal-alarm.png",
+      "clockInkPixels": 200,
+      "whiteInk": false
+    },
+    {
+      "file": "clock-critical-list.png",
+      "clockInkPixels": 200,
+      "whiteInk": false
+    },
+    {
+      "file": "clock-critical-detail.png",
+      "clockInkPixels": 200,
+      "whiteInk": false
+    },
+    {
+      "file": "clock-critical-editor.png",
+      "clockInkPixels": 200,
+      "whiteInk": false
+    },
+    {
+      "file": "clock-critical-options.png",
+      "clockInkPixels": 200,
+      "whiteInk": false
+    },
+    {
+      "file": "clock-critical-confirm.png",
+      "clockInkPixels": 200,
+      "whiteInk": false
+    },
+    {
+      "file": "clock-critical-alarm.png",
+      "clockInkPixels": 204,
+      "whiteInk": true
+    },
+    {
+      "file": "clock-idle-empty-before.png",
+      "clockInkPixels": 204,
+      "whiteInk": false
+    },
+    {
+      "file": "clock-idle-empty-body-still.png",
+      "clockInkPixels": 204,
+      "whiteInk": false
+    },
+    {
+      "file": "clock-idle-empty-minute-updated.png",
+      "clockInkPixels": 186,
+      "whiteInk": false
+    },
+    {
+      "file": "clock-idle-paused-before.png",
+      "clockInkPixels": 186,
+      "whiteInk": false
+    },
+    {
+      "file": "clock-idle-paused-body-still.png",
+      "clockInkPixels": 186,
+      "whiteInk": false
+    },
+    {
+      "file": "clock-idle-paused-minute-updated.png",
+      "clockInkPixels": 212,
+      "whiteInk": false
+    },
+    {
+      "file": "clock-idle-editor-before.png",
+      "clockInkPixels": 212,
+      "whiteInk": false
+    },
+    {
+      "file": "clock-idle-editor-body-still.png",
+      "clockInkPixels": 212,
+      "whiteInk": false
+    },
+    {
+      "file": "clock-idle-editor-minute-updated.png",
+      "clockInkPixels": 201,
+      "whiteInk": false
+    }
+  ],
+  "result": "PASS"
+}

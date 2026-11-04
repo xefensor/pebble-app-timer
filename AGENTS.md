@@ -134,3 +134,17 @@ deadline starts immediately, independently of decorative motion.
 Dashboard control remains a proposal in `docs/design/dashboard-timer-control.md`.
 Do not add a remote Pause/Resume action without an owner-side verified operation;
 neither a queued command nor a changed phone snapshot cancels a native Wakeup.
+
+Version 0.11.1 keeps the local watch time visible in each screen's existing
+header band. Preserve 12/24-hour preference, short readable context titles and
+critical warning clearance. Use minute ticks when no timer runs, second ticks
+when any native timer runs, and repaint idle headers only at minute/format
+changes. The SDK's first callback after subscribing can report zero changed
+units; do not skip it. Covering the app suppresses paints, not reconciliation.
+Running sand has a bold stream/grains on the existing second tick; do not add
+a perpetual high-frequency particle timer or animate paused/Ready glass.
+Repeating alarm feedback follows the real pending alarm mask. Clear/cancel it
+only after a successful acknowledgement/Snooze or process teardown; other
+pending alarms continue. Check Quiet Time before every pulse. Native model,
+saved alarm mask and Wakeup ownership remain authoritative. Repeating feedback
+requires the Timer process; never claim background motor behavior after exit.

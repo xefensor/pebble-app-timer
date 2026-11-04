@@ -1,0 +1,150 @@
+{
+  "result": "PASS",
+  "version": "0.11.1",
+  "candidatePbwSha256": "2b4c9ce770cb5a08b1a22da13c7788e77570158ebd15cd99ab7b87a8c0292652",
+  "comparedSourceCommit": "9b9118f824c67e26f1a5e2cb684de0c0dfa469ad",
+  "unchangedSources": [
+    {
+      "file": "src/c/timer_model.c",
+      "sha256": "45aaebf48d5f8ea677b8d562fc6658c90d4a767593becc71ad33feb56d9fa138",
+      "unchanged": true
+    },
+    {
+      "file": "src/c/timer_model.h",
+      "sha256": "9924ab3cfe71e05bb1f712f653f118930e0062666089a62707a860978fc4fedb",
+      "unchanged": true
+    },
+    {
+      "file": "src/c/timer_collection.c",
+      "sha256": "a0f1fd8c2f60cd215ed896dd9b7b21f45bb06d6bf39c785843147afa4e796cf5",
+      "unchanged": true
+    },
+    {
+      "file": "src/c/timer_collection.h",
+      "sha256": "01cf0450f3a52a5e6ec59c10a40a388783bdf099f688a9fd6c4dbb245780e58a",
+      "unchanged": true
+    },
+    {
+      "file": "src/c/timer_glance.c",
+      "sha256": "a4b8daf7567d86226ed94982c09666ec8c45e3cc70e6f7e93920236f7e9f305a",
+      "unchanged": true
+    },
+    {
+      "file": "src/c/timer_glance.h",
+      "sha256": "dd48e7b1563bc8262393b97d1307efc681542b0ae7b7c332bcc1d7a48318bb6b",
+      "unchanged": true
+    },
+    {
+      "file": "src/c/timer_glance_plan.h",
+      "sha256": "78dca0f56f9a38e0a89c49b0024c4670f0db28cb9082adb2236c0e9993c3db23",
+      "unchanged": true
+    },
+    {
+      "file": "src/c/timer_ui_state.c",
+      "sha256": "4d86e5a7eb5441892da7394fdbe12fa38f745d1169666bc9060048526fb4f0a8",
+      "unchanged": true
+    },
+    {
+      "file": "src/c/timer_ui_state.h",
+      "sha256": "91a8757e513ccbee8b13944d1a2cda41405b2c7abfaff757ab853a7190768ad7",
+      "unchanged": true
+    },
+    {
+      "file": "src/c/timer_fonts.c",
+      "sha256": "972a5ff86ec0185db6d86ea802f3b845a9b1ff63d9b48862136f230c4ef25e2c",
+      "unchanged": true
+    },
+    {
+      "file": "src/c/timer_fonts.h",
+      "sha256": "24c0b9be2691506e4c74f753203f6a3098da1b661d71c8712f7972ba5d61868c",
+      "unchanged": true
+    },
+    {
+      "file": "src/c/generated_clock_glyphs.h",
+      "sha256": "d24e8bbe3f938069b14de4483adadca00cc211082274f72e4b55ef8fc3a95981",
+      "unchanged": true
+    },
+    {
+      "file": "src/c/timer_hourglass.h",
+      "sha256": "9a048638957b89cb7eac48f08b7610badf91ad926047b6376c6005a78633c13f",
+      "unchanged": true
+    },
+    {
+      "file": "src/pkjs/index.js",
+      "sha256": "0509cf549422cb6bec86f11e639b95b4aa5bb9d2633fb54e76aace916c83bb79",
+      "unchanged": true
+    },
+    {
+      "file": "src/plugin/index.js",
+      "sha256": "0b200c65a1765baa19247e6a5ce29143dad9e44cae80f063b0a829dec2f11af4",
+      "unchanged": true
+    },
+    {
+      "file": "vendor/pebble-activities-0.4.0.tgz",
+      "sha256": "9e640aea91d08633e91e59dab3d1e0ee6243efe0109d971e42d356a4d67affbe",
+      "unchanged": true
+    }
+  ],
+  "unchangedMainFunctions": [
+    {
+      "function": "prv_save",
+      "sha256": "7f617fd8406af7a105e42359d8cc1433b3ace9b3ae2762cb8dde98b225adbb9b",
+      "unchanged": true
+    },
+    {
+      "function": "prv_load_bank",
+      "sha256": "036fb8dff29310e89dec8042de28c6068ad1ee9cea90d9d588266bf3328d84c4",
+      "unchanged": true
+    },
+    {
+      "function": "prv_load",
+      "sha256": "2f35b36decc5d906d6e5ba7a10cae59fd24403c415fd7fe970d392bb459177af",
+      "unchanged": true
+    },
+    {
+      "function": "prv_schedule_alarm",
+      "sha256": "b4322e14575d82a62d346869a4a0b90e57e53277d93fa76ec8ef760b98c1ba9e",
+      "unchanged": true
+    },
+    {
+      "function": "prv_apply",
+      "sha256": "035928c18fa044b45f0aff606af7545872d3b3c6961dfd1198e68fa971834828",
+      "unchanged": true
+    },
+    {
+      "function": "prv_alarm_dismiss",
+      "sha256": "d741300ce09b9a9dc014b85cc92e92ec4216ee6ff00a67e3abd85de4e434a663",
+      "unchanged": true
+    },
+    {
+      "function": "prv_press",
+      "sha256": "be67fee682ffb718d5b277f043aa895027084893af9803a25cf1213bd70bac7d",
+      "unchanged": true
+    },
+    {
+      "function": "prv_wakeup",
+      "sha256": "234d06b7ddfddb13e7868c7f76c97365e152da13d36143e486ffe5dd049d66df",
+      "unchanged": true
+    },
+    {
+      "function": "prv_flush",
+      "sha256": "d8aef90280325014ea0af1c899ab96db835f6c99b41a51aca230c4d235982f76",
+      "unchanged": true
+    },
+    {
+      "function": "prv_inbox",
+      "sha256": "7876f1f45ba2d3378c4ccba573ac0523c29bb3150dcd9ec851c70bca82aa5e6a",
+      "unchanged": true
+    }
+  ],
+  "unchangedPackagedMembers": [
+    "emery/app_resources.pbpack",
+    "pebble-js-app.js",
+    "plugin.js",
+    "licenses/pebble-activities-LICENSE.txt",
+    "licenses/OFL-Fredoka.txt",
+    "licenses/OFL-RobotoCondensed.txt"
+  ],
+  "changedNativeBehavior": "Wall-clock header/ticks, bolder grains and pending-mask-driven repeating vibration. Completion removes its former one-off pulse; state/save/Wakeup functions retain source identity.",
+  "scope": "Source/artifact identity and code inspection; feedback timing uses fake-SDK tests, native layouts/flows use emulator evidence, physical motor untested."
+}

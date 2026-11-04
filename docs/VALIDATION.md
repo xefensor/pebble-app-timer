@@ -1,5 +1,36 @@
 # Timer validation
 
+## 0.11.1 clock, falling sand and repeating feedback
+
+Eight portable C suites, 22 JS checks and 42 Python regressions pass. The new
+fake-SDK alarm tests verify repeated pulses, Quiet Time, final cancellation,
+multiple pending alarms, failed acknowledgement, reopening and timer-allocation
+failure recovery. Native storage, model, Wakeup broker and phone/provider source
+identity is retained; this pass adds feedback without handing off alarm ownership.
+
+The final SDK build uses 35,831 bytes of RAM footprint and 22,802 resource bytes.
+Exact font/license identity and the actual packaged phone runtime pass. Candidate
+PBW SHA-256:
+`2b4c9ce770cb5a08b1a22da13c7788e77570158ebd15cd99ab7b87a8c0292652`.
+See [versioned evidence](qa/0.11.1/).
+
+Focused native QA covers wall-clock headers on all six screens and their warning
+compositions, actual 12/24-hour switching, moving grains, static pause, native
+Snooze/Done with multiple pending alarms and idle minute updates. The running
+stream contains 83 blue pixels in its measured lane versus 15 in the preserved
+0.11.0 capture; alternating grain phases move 80 native pixels. These are
+screen-pixel measurements, not physical display brightness or battery results.
+Both focused phases pass with 30 actual QEMU captures, including one labelled
+seed fixture. Empty, paused and editor screens cross real minute boundaries
+with identical body pixels; their headers update. A font audit verifies all
+2,160 unique 12/24-hour clock strings fit the header, and a pixel audit confirms
+visible clock ink on all 29 Timer screenshots.
+
+Physical vibration feel and phone delivery are untested. Repeating feedback
+requires the Timer process; exiting stops it, and a saved pending alarm resumes
+feedback on reopening. The broader [0.11.0 native report](qa/0.11.0/native/ux.json)
+and [provenance](qa/0.11.0/asset-provenance.json) retain their historical scope.
+
 ## 0.11.0 local hourglass candidate
 
 This version changes native presentation and short decorative motion. Timer

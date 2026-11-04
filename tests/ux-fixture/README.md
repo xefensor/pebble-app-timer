@@ -58,3 +58,17 @@ longest list context. Review the unmodified native PNGs, not just the phase
 completion flag. `TIMER_QA_EXPECT_SHA256` can require an exact distribution PBW
 hash before any emulator connection; `TIMER_QA_EXPECT_PHASES` records the intended
 suite without implying unperformed historical phases ran again.
+
+The focused 0.11.1 `clock` phase covers the wall-clock header on all six normal
+and critical screens, real QEMU 12/24-hour settings, thicker 1Hz falling-sand
+pixels and paused body stability. Equal native deadlines exercise Snooze
+leading to the next pending alarm, Done acknowledging it, and reopening
+without re-alerting acknowledged work. Physical vibration is not measured by
+QEMU; portable fake-SDK feedback tests cover vibration calls and cancellation.
+
+The `clock-idle` phase waits for real minute changes while empty, paused and
+editing, with no running timers or watch-time resets. Each header must change
+while body pixels and paused owner observation/expiry stay unchanged. Screenshot
+stability does not measure repaint frequency, CPU use or battery consumption;
+the native SECOND-versus-MINUTE subscription policy is reviewed separately.
+Use `TIMER_QA_EXPECT_PHASES=clock,clock-idle` for this focused follow-up.

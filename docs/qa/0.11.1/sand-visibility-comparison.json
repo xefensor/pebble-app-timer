@@ -1,0 +1,49 @@
+{
+  "candidatePbwSha256": "2b4c9ce770cb5a08b1a22da13c7788e77570158ebd15cd99ab7b87a8c0292652",
+  "baselinePbwSha256": "4fb9ef3ab3581338842ae57bf2610abdef665886d1612f515c45a4eeeddebbbd",
+  "region": [
+    78,
+    141,
+    89,
+    175
+  ],
+  "regionDescription": "Upright running glass centre lane; excludes digits, header and lower pool during these early-running frames.",
+  "blueClassifier": "red<100, green>=80, blue>=150",
+  "baseline": {
+    "file": "docs/qa/0.11.0/native/hourglass-running-top.png",
+    "sha256": "1e2886bad6f2886309d4e8be2b35bb8bac5346cd126c8d06990bad33a34c8f6d",
+    "nativePixelsModified": false,
+    "bluePixels": 15,
+    "widestBlueRow": 1
+  },
+  "current": [
+    {
+      "file": "docs/qa/0.11.1/native/clock-normal-running-sand-0.png",
+      "sha256": "2c833735b94e42c3d7775cf9bb0fcea098df26482f22ac6e8d765df1a2b3cbad",
+      "nativePixelsModified": false,
+      "bluePixels": 83,
+      "widestBlueRow": 5
+    },
+    {
+      "file": "docs/qa/0.11.1/native/clock-normal-running-sand-1.png",
+      "sha256": "d828c93fcf0138905b63d21a06b2ca70a78f4e03bf80f9c3c2b5c8060abacf4a",
+      "nativePixelsModified": false,
+      "bluePixels": 83,
+      "widestBlueRow": 5
+    },
+    {
+      "file": "docs/qa/0.11.1/native/clock-normal-running-sand-2.png",
+      "sha256": "17c8d762a89b15c3c65903d0a929c5437d6aed3d88b71878eb6c89b5ea1d45f0",
+      "nativePixelsModified": false,
+      "bluePixels": 83,
+      "widestBlueRow": 5
+    }
+  ],
+  "currentPhaseChangedBluePixels": [
+    80,
+    0,
+    80
+  ],
+  "result": "PASS",
+  "scope": "Counts native visible stream/grain pixels and phase changes. Timers have different configured durations; comparison is restricted to the empty centre lane. No timing, battery or vibration measurement."
+}

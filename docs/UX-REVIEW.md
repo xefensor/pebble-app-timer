@@ -1,5 +1,27 @@
 # Timer UX review
 
+## 0.11.1 clock, falling sand and alarm feedback
+
+Every screen now reserves the existing top band for a short context title on
+the left and the current local time on the right, following Dashboard's
+composition. The clock respects the watch's 12/24-hour setting. Compact editor
+and Options titles retain their specific context below the header. Delete
+confirmation warnings move beneath the header, leaving the clock and both
+choices visible. The countdown and normal hourglass keep their existing size.
+
+The falling stream and individual grains are intentionally larger so running
+progress is visible on the watch. Grain positions use the existing one-second
+tick. Proportional chamber fill and the 300ms rotations remain independent;
+paused and Ready glass do not gain continuous animation.
+
+Pending alarms repeat a double vibration every three seconds while Timer is
+open, checking Quiet Time before each pulse. Acknowledgement or Snooze clears
+the corresponding pending alarm after the native save succeeds. If another
+alarm remains, feedback continues. Failed acknowledgement does not silence a
+still-pending result. Saved unacknowledged alarms resume feedback on reopening;
+exiting the process stops its feedback timer. Physical vibration feel remains
+a watch check.
+
 ## 0.11.0 hourglass and readability
 
 The countdown keeps a fixed position while the hourglass communicates state.

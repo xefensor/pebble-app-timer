@@ -9,6 +9,7 @@
 #include "timer_fonts.h"
 #include "timer_glance.h"
 #include "timer_hourglass.h"
+#include "timer_alarm_feedback.h"
 
 #define LEGACY_MODEL_KEY 2100
 #define WAKEUP_KEY 2101
@@ -46,7 +47,8 @@ static int s_edit_slot = -1;
 static uint32_t s_edit[3] = {0, 10, 0};
 static uint32_t s_edit_initial_seconds;
 static unsigned s_edit_field, s_option, s_confirm_choice;
-static bool s_focused, s_ready, s_ticks_active;
+static bool s_focused, s_ready;
+static TimeUnits s_tick_units;
 static bool s_exit_pending;
 static AppTimer *s_motion_timer;
 static uint32_t s_motion_started;
@@ -66,6 +68,7 @@ static uint32_t s_alarm_deadline;
 static Screen s_drawn_screen = SCREEN_LIST;
 static const char *s_drawn_issue, *s_drawn_status;
 static bool s_have_drawn;
+static uint32_t s_drawn_minute;
 
 static void prv_flush(void);
 static void prv_refresh(void);
@@ -340,7 +343,6 @@ static bool prv_finish_at(uint32_t now) {
     prv_schedule_alarm();
   }
   prv_open_alarm();
-  if (!quiet_time_is_active()) vibes_double_pulse();
   prv_refresh();
   return true;
 }
@@ -554,6 +556,7 @@ static void prv_draw(Layer *layer, GContext *ctx) {
   s_drawn_screen = view.screen;
   s_drawn_issue = view.issue;
   s_drawn_status = view.status;
+  s_drawn_minute = view.now / 60u;
   s_have_drawn = true;
 }
 
@@ -563,15 +566,17 @@ static void prv_update_ticks(void) {
   for (unsigned i=0;i<TIMER_COLLECTION_CAPACITY;++i)
     if (timer_collection_visible(&s_collection,i) &&
         s_collection.slots[i].state==ACTIVITY_TIMER_RUNNING) needed=true;
-  if (needed==s_ticks_active) return;
-  s_ticks_active=needed;
-  if (needed) tick_timer_service_subscribe(SECOND_UNIT,prv_tick);
-  else tick_timer_service_unsubscribe();
+  const TimeUnits units=needed?SECOND_UNIT:MINUTE_UNIT;
+  if (units==s_tick_units) return;
+  if (s_tick_units) tick_timer_service_unsubscribe();
+  s_tick_units=units;
+  tick_timer_service_subscribe(units,prv_tick);
 }
 
 static void prv_refresh(void) {
   if (s_screen==SCREEN_LIST && !s_menu && timer_collection_count(&s_collection) &&
       !timer_collection_can_create(&s_collection)) s_menu=1;
+  timer_alarm_feedback_update(s_alarm_mask);
   prv_update_ticks();
   if (s_canvas) layer_mark_dirty(s_canvas);
 }
@@ -826,10 +831,15 @@ static void prv_click_config(void *context) {
 }
 
 static void prv_tick(struct tm *tick_time, TimeUnits units_changed) {
-  (void)tick_time;(void)units_changed;
+  (void)tick_time;
   const bool finished=prv_finish();
+  timer_alarm_feedback_update(s_alarm_mask);
   const TimerUiView view=prv_view();
-  if (!finished && s_focused && timer_ui_needs_tick(&view)) prv_refresh();
+  /* A newly subscribed clock or format change can report zero changed units.
+   * Compare against the last painted minute so an idle screen remains current
+   * without turning its wall-clock header into a per-second repaint. */
+  const bool clock_changed=!s_have_drawn||s_drawn_minute!=view.now/60u||!units_changed;
+  if (!finished && s_focused && (clock_changed||timer_ui_needs_tick(&view))) prv_refresh();
 }
 
 static void prv_wakeup(WakeupId id,int32_t cookie) {
@@ -877,6 +887,7 @@ static void prv_init(void) {
 static void prv_deinit(void) {
   TIMER_DIAG("exit alarm=%ld deadline=%lu dirty=%u",(long)s_wakeup,(unsigned long)s_alarm_deadline,s_dirty);
   s_ready=false;prv_stop_motion();
+  timer_alarm_feedback_deinit();
   timer_glance_deinit();
   if (s_retry_timer)app_timer_cancel(s_retry_timer);
   app_focus_service_unsubscribe();

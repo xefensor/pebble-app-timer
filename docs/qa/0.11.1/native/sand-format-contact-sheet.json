@@ -1,0 +1,38 @@
+{
+  "candidatePbwSha256": "2b4c9ce770cb5a08b1a22da13c7788e77570158ebd15cd99ab7b87a8c0292652",
+  "derivativeContactSheet": true,
+  "scale": 2,
+  "resampling": "nearest",
+  "sources": [
+    {
+      "file": "clock-normal-list-12h.png",
+      "sha256": "ff64b0861cb16548ebd40279ef85b0fc66c144726cb333febfe7d8cddc12c98d",
+      "nativePixelsModified": false
+    },
+    {
+      "file": "clock-normal-list-24h.png",
+      "sha256": "a7915453fa509a574bf4f815dac0201e63fe777425b36ab793849e5ca8f338ce",
+      "nativePixelsModified": false
+    },
+    {
+      "file": "clock-normal-running-sand-0.png",
+      "sha256": "2c833735b94e42c3d7775cf9bb0fcea098df26482f22ac6e8d765df1a2b3cbad",
+      "nativePixelsModified": false
+    },
+    {
+      "file": "clock-normal-running-sand-1.png",
+      "sha256": "d828c93fcf0138905b63d21a06b2ca70a78f4e03bf80f9c3c2b5c8060abacf4a",
+      "nativePixelsModified": false
+    },
+    {
+      "file": "clock-normal-paused.png",
+      "sha256": "0f23abeaf8f46be78fddef6fad4b4a170dd55ee7189ab416c947f2f805eab800",
+      "nativePixelsModified": false
+    },
+    {
+      "file": "clock-normal-paused-still.png",
+      "sha256": "0f23abeaf8f46be78fddef6fad4b4a170dd55ee7189ab416c947f2f805eab800",
+      "nativePixelsModified": false
+    }
+  ]
+}

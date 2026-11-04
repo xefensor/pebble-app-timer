@@ -1,0 +1,38 @@
+{
+  "candidatePbwSha256": "2b4c9ce770cb5a08b1a22da13c7788e77570158ebd15cd99ab7b87a8c0292652",
+  "derivativeContactSheet": true,
+  "scale": 2,
+  "resampling": "nearest",
+  "sources": [
+    {
+      "file": "clock-idle-empty-before.png",
+      "sha256": "5e96f4aaeec8e81b7efe7cab46ed00377a70adbb2dcf9e883f0d86f411b5e905",
+      "nativePixelsModified": false
+    },
+    {
+      "file": "clock-idle-empty-minute-updated.png",
+      "sha256": "8fa3c35eae9562d5cdcdcc93fff8b9c9edd17b7abbadc263d3e5dd57710b3b99",
+      "nativePixelsModified": false
+    },
+    {
+      "file": "clock-idle-paused-before.png",
+      "sha256": "15b9389f5b4e7ad8ebead4c9d71f4d334bd20ee2b3f3bcf771831b17454e2566",
+      "nativePixelsModified": false
+    },
+    {
+      "file": "clock-idle-paused-minute-updated.png",
+      "sha256": "a1a75d123523d0f7a46d0697320725fc26760de124e71c65ddd01ac619eb2131",
+      "nativePixelsModified": false
+    },
+    {
+      "file": "clock-idle-editor-before.png",
+      "sha256": "b3f8191109a5d15e05beae1b37a1613a6112f5cf491bdd076303e524a85ac430",
+      "nativePixelsModified": false
+    },
+    {
+      "file": "clock-idle-editor-minute-updated.png",
+      "sha256": "c749166724d9e19d38f1a68e7943aad8040f1ee8753dc2ed7f312c5326100f8e",
+      "nativePixelsModified": false
+    }
+  ]
+}
