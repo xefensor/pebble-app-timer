@@ -1,0 +1,38 @@
+{
+  "derivativeContactSheet": true,
+  "scale": 2,
+  "resampling": "nearest",
+  "candidatePbwSha256": "4fb9ef3ab3581338842ae57bf2610abdef665886d1612f515c45a4eeeddebbbd",
+  "sources": [
+    {
+      "file": "storage-not-saved-list.png",
+      "sha256": "cdd7c850c7118e736e4a9437297a2597db68e4e3a7dedeed73a3bd5cb673f938",
+      "nativePixelsModified": false
+    },
+    {
+      "file": "storage-not-saved-detail.png",
+      "sha256": "e39db0f4bca08bbdb393cb00cb334605bd5dbe9906bee61c8a654800e6ea3499",
+      "nativePixelsModified": false
+    },
+    {
+      "file": "storage-not-saved-options.png",
+      "sha256": "ebd48a8fc1977f6eec3ae100f22373a9404b679d5641498d63d70007b5a7d286",
+      "nativePixelsModified": false
+    },
+    {
+      "file": "storage-not-saved-delete-keeps-actions.png",
+      "sha256": "26a76a7b1f57ab8d7cc78b9beb4254c106ab13d730df12d126af549a7a3724f1",
+      "nativePixelsModified": false
+    },
+    {
+      "file": "storage-not-saved-native-alarm-actions-visible.png",
+      "sha256": "ebfb33682b729a928bd2e5908b7fc81b3ced1ab12c140095ede7101731e9321d",
+      "nativePixelsModified": false
+    },
+    {
+      "file": "storage-done-cannot-hide-unsaved-alarm.png",
+      "sha256": "ebfb33682b729a928bd2e5908b7fc81b3ced1ab12c140095ede7101731e9321d",
+      "nativePixelsModified": false
+    }
+  ]
+}

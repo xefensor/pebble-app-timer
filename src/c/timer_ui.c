@@ -127,10 +127,6 @@ static void bar(GContext *ctx, Icon up, Icon select, Icon down, GColor backgroun
   icon(ctx,down,183,184,GColorWhite);
 }
 
-static int scaled(int value, int percent) {
-  return value < 0 ? -((-value*percent+50)/100) : (value*percent+50)/100;
-}
-
 typedef struct { int8_t x,y; } OutlinePoint;
 static const OutlinePoint hourglass_outline[] = {
   {-27,1},
@@ -191,46 +187,75 @@ static const OutlinePoint hourglass_outline[] = {
   {27,1}
 };
 
-static void sand_row(GContext *ctx, int center, int top, unsigned row,
-                     unsigned pixels, int scale) {
-  if (!pixels) return;
-  const int left = center + scaled(-(int)pixels/2,scale);
-  const int right = center + scaled((int)pixels-(int)pixels/2,scale);
-  const int y = top + scaled((int)row,scale);
-  const int next = top + scaled((int)row+1,scale);
-  graphics_fill_rect(ctx,GRect(left,y,right>left?right-left:1,next>y?next-y:1),0,GCornerNone);
+static GPoint glass_point(int x, int y, int center, int pivot,
+                           int scale, int angle) {
+  const TimerGlassPoint point=timer_hourglass_transform(x,y,scale,angle);
+  return GPoint(center+point.x,pivot+point.y);
+}
+
+static void glass_rect(GContext *ctx, int left, int top, int width, int height,
+                        int center, int pivot, int scale, int angle) {
+  GPoint points[]={glass_point(left,top,center,pivot,scale,angle),
+    glass_point(left+width,top,center,pivot,scale,angle),
+    glass_point(left+width,top+height,center,pivot,scale,angle),
+    glass_point(left,top+height,center,pivot,scale,angle)};
+  GPath path={.num_points=4,.points=points};
+  gpath_draw_filled(ctx,&path);
+}
+
+static void glass_sand(GContext *ctx, const uint8_t rows[TIMER_SAND_ROWS],
+                        int top, int center, int pivot, int scale, int angle) {
+  /* Fill the whole chamber silhouette at once. Stock GPath scan conversion
+   * can discard one-pixel-wide vertical polygons, so drawing each sand row
+   * separately loses its fill when the glass reaches the paused 90deg pose.
+   * The same conserved row widths form this single rigid, closed contour. */
+  GPoint points[TIMER_SAND_ROWS*4];
+  unsigned count=0;
+  for(unsigned row=0;row<TIMER_SAND_ROWS;++row) {
+    if(!rows[row])continue;
+    const int left=-(int)rows[row]/2;
+    points[count++]=glass_point(left,top+(int)row,center,pivot,scale,angle);
+    points[count++]=glass_point(left,top+(int)row+1,center,pivot,scale,angle);
+  }
+  for(unsigned n=TIMER_SAND_ROWS;n>0;--n) {
+    const unsigned row=n-1;
+    if(!rows[row])continue;
+    const int right=-(int)rows[row]/2+rows[row];
+    points[count++]=glass_point(right,top+(int)row+1,center,pivot,scale,angle);
+    points[count++]=glass_point(right,top+(int)row,center,pivot,scale,angle);
+  }
+  if(count) {
+    GPath path={.num_points=count,.points=points};
+    gpath_draw_filled(ctx,&path);
+  }
 }
 
 static void hourglass(GContext *ctx, uint32_t remaining, uint32_t total,
-                      int center, int top, int scale, GColor sand,
+                      int center, int pivot, int scale, int angle, GColor sand,
                       GColor outline, bool running, uint32_t now) {
   TimerSandFill fill;
   timer_sand_fill(remaining,total,&fill);
   graphics_context_set_fill_color(ctx,sand);
-  for (unsigned row=0;row<TIMER_SAND_ROWS;++row) {
-    sand_row(ctx,center,top+scaled(4,scale),row,fill.upper[row],scale);
-    sand_row(ctx,center,top+scaled(44,scale),row,fill.lower[row],scale);
-  }
-  if (running && remaining) {
-    rect(ctx,GRect(center-scaled(1,scale),top+scaled(36,scale),
-                  scaled(2,scale),scaled(7,scale)),sand);
-    const int phase = now & 1u;
-    rect(ctx,GRect(center-scaled(1,scale),top+scaled(phase?47:51,scale),
-                  scaled(2,scale),scaled(3,scale)),sand);
-    rect(ctx,GRect(center-scaled(1,scale),top+scaled(phase?55:59,scale),
-                  scaled(2,scale),scaled(2,scale)),sand);
+  glass_sand(ctx,fill.upper,4,center,pivot,scale,angle);
+  glass_sand(ctx,fill.lower,44,center,pivot,scale,angle);
+  if(running&&remaining&&angle==0) {
+    glass_rect(ctx,-1,36,2,7,center,pivot,scale,angle);
+    const int phase=now&1u;
+    glass_rect(ctx,-1,phase?47:51,2,3,center,pivot,scale,angle);
+    glass_rect(ctx,-1,phase?55:59,2,2,center,pivot,scale,angle);
   }
   GPoint points[sizeof(hourglass_outline)/sizeof(hourglass_outline[0])];
-  for (unsigned i=0;i<sizeof(points)/sizeof(points[0]);++i)
-    points[i]=GPoint(center+scaled(hourglass_outline[i].x,scale),
-                     top+scaled(hourglass_outline[i].y,scale));
+  for(unsigned i=0;i<sizeof(points)/sizeof(points[0]);++i)
+    points[i]=glass_point(hourglass_outline[i].x,hourglass_outline[i].y,
+        center,pivot,scale,angle);
   GPath path={.num_points=sizeof(points)/sizeof(points[0]),.points=points};
   graphics_context_set_stroke_color(ctx,outline);
-  graphics_context_set_stroke_width(ctx,scale<75?1:3);
+  graphics_context_set_stroke_width(ctx,scale<75?2:3);
   gpath_draw_outline_open(ctx,&path);
-  segment(ctx,center-scaled(29,scale),top,center+scaled(29,scale),top);
-  segment(ctx,center-scaled(29,scale),top+scaled(79,scale),
-          center+scaled(29,scale),top+scaled(79,scale));
+  graphics_draw_line(ctx,glass_point(-29,0,center,pivot,scale,angle),
+      glass_point(29,0,center,pivot,scale,angle));
+  graphics_draw_line(ctx,glass_point(-29,79,center,pivot,scale,angle),
+      glass_point(29,79,center,pivot,scale,angle));
   graphics_context_set_stroke_width(ctx,1);
 }
 
@@ -240,22 +265,25 @@ static void main_screen(GContext *ctx, const TimerUiView *view) {
   const bool finished=timer->state==ACTIVITY_TIMER_FINISHED;
   const bool ready=finished&&timer->acknowledged;
   const uint32_t left=ready?timer->repeat_seconds:activity_timer_remaining(timer,view->now);
-  const int offset=paused||finished?8:0;
   bar(ctx,ICON_EDIT,paused||finished?ICON_PLAY:ICON_PAUSE,ICON_MORE,GColorBlack);
-  if(paused||finished) {
-    rect(ctx,GRect(0,0,UI_WIDTH,27),paused?AMBER:BLUE);
-    text(ctx,paused?"PAUSED":ready?"READY":"FINISHED",14,19,GColorBlack);
-  }
-  char label[32],clock[20],elapsed[20],support[36];
-  duration_text(timer->repeat_seconds,label,sizeof(label),true);
-  text(ctx,label,15,paused||finished?46:23,GColorBlack);
+  const char *heading=paused?"Paused":ready?"Ready":finished?"Finished":"Timer";
+  text(ctx,heading,23,25,GColorBlack);
+  graphics_context_set_stroke_color(ctx,GColorLightGray);segment(ctx,8,32,158,32);
+  char clock[20],elapsed[20],support[40];
   clock_text(left,clock,sizeof(clock));
-  timer_fonts_digits(ctx,clock,UI_CENTER,82+offset,left>=3600?36:58,GColorBlack,GColorWhite);
-  hourglass(ctx,left,ready?timer->repeat_seconds:timer->configured_seconds,UI_CENTER,99+offset,100,
-            paused?AMBER:BLUE,GColorBlack,!paused&&timer->state==ACTIVITY_TIMER_RUNNING,view->now);
-  clock_text(activity_timer_elapsed(timer,view->now),elapsed,sizeof(elapsed));
-  snprintf(support,sizeof(support),"Elapsed %s",elapsed);
-  text(ctx,ready?"Select to repeat":support,16,211,GColorBlack);
+  timer_fonts_digits(ctx,clock,UI_CENTER,86,left>=3600?36:58,GColorBlack,GColorWhite);
+  const int pose=timer_hourglass_pose(ready?TIMER_GLASS_READY:
+      paused?TIMER_GLASS_PAUSED:TIMER_GLASS_RUNNING);
+  const int angle=view->hourglass_transition?view->hourglass_angle:pose;
+  hourglass(ctx,left,ready?timer->repeat_seconds:timer->configured_seconds,
+      UI_CENTER,view->issue?137:145,view->issue?85:100,angle,paused?AMBER:BLUE,GColorBlack,
+      timer->state==ACTIVITY_TIMER_RUNNING,view->now);
+  if(ready)snprintf(support,sizeof(support),"Select to repeat");
+  else {
+    clock_text(activity_timer_elapsed(timer,view->now),elapsed,sizeof(elapsed));
+    snprintf(support,sizeof(support),"Elapsed %s",elapsed);
+  }
+  text(ctx,support,18,220,GColorDarkGray);
 }
 
 static void list_screen(GContext *ctx, const TimerUiView *view) {
@@ -268,13 +296,13 @@ static void list_screen(GContext *ctx, const TimerUiView *view) {
       menu<count?ICON_DOWN:ICON_NONE,GColorBlack);
   if(full)rect(ctx,GRect(0,0,UI_WIDTH,37),AMBER);
   else if(!menu)rect(ctx,GRect(0,0,UI_WIDTH,37),BLUE);
-  timer_fonts_text(ctx,full?"TIMERS FULL":menu?"TIMERS":"NEW TIMER",16,12,24,144,GColorBlack,GTextAlignmentLeft);
+  timer_fonts_text(ctx,full?"Timers full":menu?"Timers":"New timer",19,12,27,144,GColorBlack,GTextAlignmentLeft);
   if(!full)icon(ctx,ICON_PLUS,147,18,GColorBlack);
   graphics_context_set_stroke_color(ctx,GColorLightGray);
   segment(ctx,9,36,157,36);
   if(!count) {
-    hourglass(ctx,1,1,UI_CENTER,77,70,BLUE,GColorBlack,false,view->now);
-    text(ctx,"Start a timer",18,178,GColorBlack);
+    hourglass(ctx,1,1,UI_CENTER,107,70,180,BLUE,GColorBlack,false,view->now);
+    text(ctx,"Start a timer",23,180,GColorBlack);
   } else {
     const unsigned rows=list.rows,first=list.first;
     for(unsigned row=first;row<count&&row<first+rows;++row) {
@@ -294,7 +322,11 @@ static void list_screen(GContext *ctx, const TimerUiView *view) {
       duration_text(timer->repeat_seconds,duration,sizeof(duration),false);
       snprintf(detail,sizeof(detail),"%s · %s",timer->state==ACTIVITY_TIMER_RUNNING?"Running":
                timer->state==ACTIVITY_TIMER_PAUSED?"Paused":ready?"Ready":"Time’s up",duration);
-      timer_fonts_text(ctx,detail,14,13,y+47,126,selected?GColorLightGray:GColorDarkGray,GTextAlignmentLeft);
+      int detail_point=18;
+      if(timer_fonts_text_width(detail,detail_point)>128)detail_point=16;
+      if(timer_fonts_text_width(detail,detail_point)>128)detail_point=15;
+      timer_fonts_text(ctx,detail,detail_point,13,y+49,128,
+          selected?GColorLightGray:GColorDarkGray,GTextAlignmentLeft);
       const uint32_t total=ready?timer->repeat_seconds:timer->configured_seconds;
       const unsigned fill=total?
         (unsigned)(((uint64_t)left*29+total/2)/total):0;
@@ -314,12 +346,12 @@ static void list_screen(GContext *ctx, const TimerUiView *view) {
   if(menu)snprintf(position,sizeof(position),"Timer %u of %u",menu,count);
   else if(count)snprintf(position,sizeof(position),"%u of 8 saved",count);
   else snprintf(position,sizeof(position),"Select to create");
-  text(ctx,replacing&&!menu?"Replaces oldest ready":position,
-       replacing&&!menu?14:16,222,GColorDarkGray);
+  text(ctx,replacing&&!menu?"Reuses oldest ready":position,
+       18,223,GColorDarkGray);
 }
 
 static void editor_screen(GContext *ctx, const TimerUiView *view) {
-  static const char *labels[]={"HOURS","MIN","SEC"};
+  static const char *labels[]={"HRS","MIN","SEC"};
   const uint32_t total=view->edit[0]*3600+view->edit[1]*60+view->edit[2];
   const bool locked=view->edit[0]==24&&view->edit_field>0;
   const bool invalid=total<ACTIVITY_TIMER_MIN_SECONDS;
@@ -327,9 +359,9 @@ static void editor_screen(GContext *ctx, const TimerUiView *view) {
       view->edit_field<2?ICON_NEXT:invalid?ICON_NONE:ICON_CHECK,
       locked?ICON_NONE:ICON_MINUS,GColorBlack);
   const bool reuse=view->editing_new&&timer_collection_count(view->collection)==TIMER_COLLECTION_CAPACITY;
-  text(ctx,view->editing_new?(reuse?"REPLACE SAVED":"NEW TIMER"):
-       view->editing_ready?"EDIT SAVED TIMER":"CHANGE REMAINING",15,24,GColorBlack);
-  hourglass(ctx,total?1:0,1,UI_CENTER,43,50,BLUE,GColorBlack,false,view->now);
+  text(ctx,view->editing_new?(reuse?"Replace saved":"New timer"):
+       view->editing_ready?"Edit saved timer":"Change remaining",18,25,GColorBlack);
+  hourglass(ctx,1,1,UI_CENTER,65,50,180,BLUE,GColorBlack,false,view->now);
   for(unsigned field=0;field<3;++field) {
     const int x=5+(int)field*53;
     const bool selected=view->edit_field==field;
@@ -340,15 +372,15 @@ static void editor_screen(GContext *ctx, const TimerUiView *view) {
     }
     char value[4];snprintf(value,sizeof(value),"%02lu",(unsigned long)view->edit[field]);
     timer_fonts_digits(ctx,value,x+25,138,36,GColorBlack,background);
-    timer_fonts_text(ctx,labels[field],14,x,168,50,selected?GColorBlack:GColorDarkGray,GTextAlignmentCenter);
+    timer_fonts_text(ctx,labels[field],18,x,170,50,selected?GColorBlack:GColorDarkGray,GTextAlignmentCenter);
   }
-  if(view->edit[0]==24)text(ctx,"24 hours max",14,186,GColorDarkGray);
-  else if(reuse)text(ctx,"Replaces oldest ready",14,186,GColorDarkGray);
+  if(view->edit[0]==24)text(ctx,"24 hours max",18,188,GColorDarkGray);
+  else if(reuse)text(ctx,"Reuses oldest ready",18,188,GColorDarkGray);
   else text(ctx,view->edit_field==0?"Back to cancel":
-      view->edit_field==1?"Back for hours":"Back for minutes",14,186,GColorDarkGray);
-  text(ctx,invalid?"Set at least 5 seconds":
-       view->edit_field<2?"Select for next field":view->editing_new?"Select to start":"Select to save",
-       16,206,GColorBlack);
+      view->edit_field==1?"Back for hours":"Back for minutes",18,188,GColorDarkGray);
+  text(ctx,invalid?"At least 5 seconds":
+       view->edit_field<2?"Select: next":view->editing_new?"Select: start":"Select: save",
+       18,216,GColorBlack);
 }
 
 static void alarm_screen(GContext *ctx, const TimerUiView *view) {
@@ -360,9 +392,9 @@ static void alarm_screen(GContext *ctx, const TimerUiView *view) {
   char duration[20];clock_text(timer->repeat_seconds,duration,sizeof(duration));
   timer_fonts_digits(ctx,duration,UI_CENTER,issue?65:77,
       timer->repeat_seconds>=3600?(issue?28:32):(issue?36:47),GColorWhite,GColorBlack);
-  hourglass(ctx,0,1,UI_CENTER,issue?80:96,issue?85:100,BLUE,GColorWhite,false,view->now);
-  text(ctx,"Select: Done",15,issue?167:200,GColorWhite);
-  text(ctx,"Up: Snooze 1 min",14,issue?183:217,GColorWhite);
+  hourglass(ctx,0,1,UI_CENTER,issue?114:136,issue?85:100,0,BLUE,GColorWhite,false,view->now);
+  text(ctx,"Select: Done",18,issue?167:200,GColorWhite);
+  text(ctx,"Up: Snooze 1 min",18,issue?183:218,GColorWhite);
 }
 
 static void options_screen(GContext *ctx, const TimerUiView *view) {
@@ -383,8 +415,8 @@ static void options_screen(GContext *ctx, const TimerUiView *view) {
   snprintf(context,sizeof(context),"%s · %s",duration,
       timer->state==ACTIVITY_TIMER_RUNNING?"Running":timer->state==ACTIVITY_TIMER_PAUSED?"Paused":
       timer->acknowledged?"Ready":"Time’s up");
-  text(ctx,heading,16,24,GColorBlack);
-  text(ctx,context,14,43,GColorDarkGray);
+  text(ctx,heading,19,25,GColorBlack);
+  text(ctx,context,18,46,GColorDarkGray);
   graphics_context_set_stroke_color(ctx,GColorLightGray);segment(ctx,10,49,156,49);
   for(unsigned row=0;row<3;++row) {
     const int y=58+(int)row*43;
@@ -392,7 +424,7 @@ static void options_screen(GContext *ctx, const TimerUiView *view) {
     if(selected)rect(ctx,GRect(0,y,UI_WIDTH,41),GColorBlack);
     timer_fonts_text(ctx,options[row],19,13,y+28,149,selected?GColorWhite:GColorBlack,GTextAlignmentLeft);
   }
-  text(ctx,view->status&&view->status[0]?view->status:"Back to keep timing",14,214,GColorDarkGray);
+  text(ctx,view->status&&view->status[0]?view->status:"Back to keep timing",18,220,GColorDarkGray);
 }
 
 static void confirm_screen(GContext *ctx, const TimerUiView *view) {
@@ -401,7 +433,7 @@ static void confirm_screen(GContext *ctx, const TimerUiView *view) {
       view->confirm_choice?ICON_NONE:ICON_DOWN,GColorBlack);
   icon(ctx,ICON_TRASH,UI_CENTER,issue?55:43,GColorBlack);
   text(ctx,"Delete timer?",23,issue?95:89,GColorBlack);
-  text(ctx,"This cannot be undone.",15,issue?119:113,GColorDarkGray);
+  text(ctx,"Cannot be undone",18,issue?119:113,GColorDarkGray);
   rect(ctx,GRect(0,141,UI_WIDTH,32),view->confirm_choice?GColorWhite:GColorBlack);
   text(ctx,"Keep timer",18,163,view->confirm_choice?GColorBlack:GColorWhite);
   if(view->confirm_choice)rect(ctx,GRect(0,177,UI_WIDTH,32),AMBER);

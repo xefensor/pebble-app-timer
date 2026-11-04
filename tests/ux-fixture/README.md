@@ -42,3 +42,19 @@ The `uxpass` phase captures mixed-list position/scroll affordances, identical
 timer Options context, invalid seconds and locked 24-hour fields. The `storage`
 phase captures actual exhausted-generation states and native completion without changing
 the candidate binary. It never claims a real phone or physical-watch test.
+
+The `hourglass` phase verifies Ready/editor sand at the bottom, running sand at
+the top, horizontal static pause, partial-sand proportions through resume,
+unchanged ownership for other timers and opening an existing run without a
+replayed start flip. A synthetic incoming call covers the app during a pause
+transition in isolated QEMU; return must settle without replay. Screenshot RPC
+timing may miss individual 300ms transitions, so the report records which samples
+actually caught intermediate frames. This does not measure battery use or CPU
+work underneath the cover.
+
+The `legibility` phase captures replacement hints, editor labels and mixed long
+durations. It enters 23:59:59 through the actual native editor to exercise the
+longest list context. Review the unmodified native PNGs, not just the phase
+completion flag. `TIMER_QA_EXPECT_SHA256` can require an exact distribution PBW
+hash before any emulator connection; `TIMER_QA_EXPECT_PHASES` records the intended
+suite without implying unperformed historical phases ran again.

@@ -1,18 +1,18 @@
 {
-  "version": "0.10.0",
+  "version": "0.11.0",
   "pbw": {
-    "file": "Timer-0.10.0.pbw",
-    "sha256": "24ca3c656b77e260d4a019a32cc80429e23b4aeedb6249631b263b955e947cdb"
+    "file": "Timer-0.11.0.pbw",
+    "sha256": "4fb9ef3ab3581338842ae57bf2610abdef665886d1612f515c45a4eeeddebbbd"
   },
   "debug": {
-    "file": "Timer-0.10.0-debug.zip",
-    "sha256": "38a0dacca218a4d35b68129e781f4a9edb37fe01186cfc6431a6970b30feaec4"
+    "file": "Timer-0.11.0-debug.zip",
+    "sha256": "55e2a90f5bb05eb00e4d6f45388c74b0565c1eaf13c8ebb2860ac93f446a2edc"
   },
   "nativePayloadSha256": {
-    "appinfo.json": "e69cad60dc797c7f1f2cf52de8fde985c54cfd1598412b4e419170a7d70e4564",
+    "appinfo.json": "6a70e9930b0e8cac803e92357a78c53864afd81f7385fe83fcbfd084140f3bab",
     "emery/app_resources.pbpack": "a35ebc1371147dbe65bf1cafa0362d6236583eac9b1210192a0f369adfa08c49",
-    "emery/manifest.json": "36b767d29a86ac72dc4ed0cd2e5f6415b1341d6362c4dda78d63bfb99fff4dd4",
-    "emery/pebble-app.bin": "369c1d3a2283bc2dbde86e258229a260d422a5bf4b93d07feb9417a58865942c"
+    "emery/manifest.json": "a6cbdfc4b3bf0f046d98b97cb0ed053727fbc8839839c1853a144387768e6959",
+    "emery/pebble-app.bin": "d40ce3ceb68cbb7249382d9d6cb842c12881ad52a9946731294f1e222396ccca"
   },
   "activities": {
     "package": "pebble-activities",
@@ -28,11 +28,11 @@
     "source_commit": "9db426c36e591f3db98819b5b05ffd9da2af27b4"
   },
   "fontSources": "resources/fonts/font-provenance.json",
-  "fontAudit": "docs/qa/0.10.0/font-audit.json",
+  "fontAudit": "docs/qa/0.11.0/font-audit.json",
   "nativeSourceSha256": {
     "src/c/font_raster.h": "87651103df94931391886f0268769d59df99e3c14f872a686ec78bdca5a01336",
     "src/c/generated_clock_glyphs.h": "d24e8bbe3f938069b14de4483adadca00cc211082274f72e4b55ef8fc3a95981",
-    "src/c/main.c": "e07c48684265d6e3dca69549953a6fb63bb90c4667437a220eaae4165083987f",
+    "src/c/main.c": "d7a4f9d9519ae5949965d16560f6fc0575dbcb26d47b3569312d2d26d037ce45",
     "src/c/timer_collection.c": "a0f1fd8c2f60cd215ed896dd9b7b21f45bb06d6bf39c785843147afa4e796cf5",
     "src/c/timer_collection.h": "01cf0450f3a52a5e6ec59c10a40a388783bdf099f688a9fd6c4dbb245780e58a",
     "src/c/timer_fonts.c": "972a5ff86ec0185db6d86ea802f3b845a9b1ff63d9b48862136f230c4ef25e2c",
@@ -40,438 +40,605 @@
     "src/c/timer_glance.c": "a4b8daf7567d86226ed94982c09666ec8c45e3cc70e6f7e93920236f7e9f305a",
     "src/c/timer_glance.h": "dd48e7b1563bc8262393b97d1307efc681542b0ae7b7c332bcc1d7a48318bb6b",
     "src/c/timer_glance_plan.h": "78dca0f56f9a38e0a89c49b0024c4670f0db28cb9082adb2236c0e9993c3db23",
-    "src/c/timer_hourglass.h": "ab3563b7aef1ee6049d46adb1a8289352756079de70c7c9d8ac57ee197544566",
+    "src/c/timer_hourglass.h": "9a048638957b89cb7eac48f08b7610badf91ad926047b6376c6005a78633c13f",
     "src/c/timer_model.c": "45aaebf48d5f8ea677b8d562fc6658c90d4a767593becc71ad33feb56d9fa138",
     "src/c/timer_model.h": "9924ab3cfe71e05bb1f712f653f118930e0062666089a62707a860978fc4fedb",
-    "src/c/timer_ui.c": "232b13699c2ce4df48dab833a9f7d76eccb5e8252182e894a9a358a90c9eb389",
+    "src/c/timer_ui.c": "297cf1632452dc90c5e9e55e19d99a95c5cbc9d54a79ec53238455057cf604ac",
     "src/c/timer_ui.h": "19b1ef26744dbbbb29904c66da3fe0eaecf3f1cc84187139c146821f53277f60",
     "src/c/timer_ui_state.c": "4d86e5a7eb5441892da7394fdbe12fa38f745d1169666bc9060048526fb4f0a8",
-    "src/c/timer_ui_state.h": "f8905814157b1685c859a9564f6a6f316df819ff2a3fd6b7e1d050a22f1eaede"
+    "src/c/timer_ui_state.h": "91a8757e513ccbee8b13944d1a2cda41405b2c7abfaff757ab853a7190768ad7"
   },
   "captures": [
     {
-      "file": "docs/qa/0.10.0/native/uxpass-mixed-list-first.png",
-      "sha256": "11facca6a24eb1c14f2557638bc6184d4743fa440178eee597fdccb67f670f58",
-      "rgbSha256": "62f9af786b39ce0f9d9a7d0b64bcefe4a763b59064b990249cc437636f522e1a",
-      "phase": "uxpass",
-      "source": "Final0.10.0 native payload, or OS launcher as named"
+      "file": "docs/qa/0.11.0/native/hourglass-ready-bottom.png",
+      "sha256": "1ba9a7ee488f510029e4838c3bee2828695dadaac635b93bfd46db323b6cf019",
+      "rgbSha256": "33563b51ede2b7dd0721d087d899d0b8db5519e148660ce2bd58e9a454980cb4",
+      "phase": "hourglass",
+      "source": "Actual isolated Emery QEMU; Timer/fixture/OS surfaces identified in native report"
     },
     {
-      "file": "docs/qa/0.10.0/native/uxpass-mixed-list-second-identical-timer.png",
-      "sha256": "d6c8b8f5d52ffb38d5e078e7ea9f941e713bf9ee6e5666616b676bd0147254d6",
-      "rgbSha256": "e0272bff2005a10464b8b22975ba0ae4e7110a832708635af1e733470ad06235",
-      "phase": "uxpass",
-      "source": "Final0.10.0 native payload, or OS launcher as named"
+      "file": "docs/qa/0.11.0/native/hourglass-editor-bottom.png",
+      "sha256": "04f4f4dbb4ee92c36f527b80d3194b378a03dce473414a3876fec7ea879c9d61",
+      "rgbSha256": "d0a84a53ec77c8f264d0adab8bfb33f4c69d5e08b59c59e0e62c0b46fd79f207",
+      "phase": "hourglass",
+      "source": "Actual isolated Emery QEMU; Timer/fixture/OS surfaces identified in native report"
     },
     {
-      "file": "docs/qa/0.10.0/native/uxpass-options-identical-duration-context.png",
-      "sha256": "bf3413660c00d63c5089d3183815f70e7b965a94e99cebe450d0edd222c2e38e",
-      "rgbSha256": "dc16da1f1209199be5441623c82e60d0bd1562fed0934224c379effcde3a91d4",
-      "phase": "uxpass",
-      "source": "Final0.10.0 native payload, or OS launcher as named"
+      "file": "docs/qa/0.11.0/native/hourglass-start-flip.png",
+      "sha256": "7aadd3a38d244b9d2e6450887c5e5ead0c464a9b012a66413c6cf2552e83a32a",
+      "rgbSha256": "89e01ea31eac3d981157c0ae7aedb4f132dec0e2427d04bf28321cf80eb95383",
+      "phase": "hourglass",
+      "source": "Actual isolated Emery QEMU; Timer/fixture/OS surfaces identified in native report"
     },
     {
-      "file": "docs/qa/0.10.0/native/uxpass-options-paused-context.png",
-      "sha256": "4136493b4ef98a38f1c11e039fcb1039e0944121e6b1baad553272345b21be1b",
-      "rgbSha256": "549de91360d736ceb475f0f326fac76411520374a2a8ea71d6db3fcbe3e9f76d",
-      "phase": "uxpass",
-      "source": "Final0.10.0 native payload, or OS launcher as named"
+      "file": "docs/qa/0.11.0/native/hourglass-running-top.png",
+      "sha256": "1e2886bad6f2886309d4e8be2b35bb8bac5346cd126c8d06990bad33a34c8f6d",
+      "rgbSha256": "53dcb931fb2a0f3cfb7f03eb6133a038cfaad2e6e1236114ae427e35c26203a4",
+      "phase": "hourglass",
+      "source": "Actual isolated Emery QEMU; Timer/fixture/OS surfaces identified in native report"
     },
     {
-      "file": "docs/qa/0.10.0/native/uxpass-mixed-list-last-position.png",
-      "sha256": "e4ef986e6ec1fb80caf72adb2113696a77f791acced207e4ddf94e12de0ba572",
-      "rgbSha256": "cf7e9fa3b496d64e719a88f3eaad5731c20a93f263ea104b52877a0e3268c4ac",
-      "phase": "uxpass",
-      "source": "Final0.10.0 native payload, or OS launcher as named"
+      "file": "docs/qa/0.11.0/native/hourglass-pause-turn.png",
+      "sha256": "841bfd65ff9cae05bd9be5464a655102fb08834cbf19e40230c423f918c7c1ad",
+      "rgbSha256": "e28832ed17ca89d6bb9e5ad8f2cadc13530bb4f8ed5cca98b24ed917f75caef0",
+      "phase": "hourglass",
+      "source": "Actual isolated Emery QEMU; Timer/fixture/OS surfaces identified in native report"
     },
     {
-      "file": "docs/qa/0.10.0/native/uxpass-editor-zero-no-commit.png",
-      "sha256": "c3502066edd5fa32417b9faa99eb04994d8d260f7c57d8291cf3de9f2b1e3b25",
-      "rgbSha256": "0c6d6020a3f83ed539e17cd413756967a19b25768282f59aa55392e5066034bf",
-      "phase": "uxpass",
-      "source": "Final0.10.0 native payload, or OS launcher as named"
+      "file": "docs/qa/0.11.0/native/hourglass-paused-horizontal.png",
+      "sha256": "26bcb42292cb86aa73c16a7afec9b8d1c249362ccc8c9c211f975b748928ddcf",
+      "rgbSha256": "b263cf4e291a4c275cd1063076e7bac2f1901d48b6657eb93dde9a45d993b727",
+      "phase": "hourglass",
+      "source": "Actual isolated Emery QEMU; Timer/fixture/OS surfaces identified in native report"
     },
     {
-      "file": "docs/qa/0.10.0/native/uxpass-editor-four-seconds-no-commit.png",
-      "sha256": "a90107a2240ae31b7aa9e093afd171a6c31add6b5437ad178539e18a0e1ffb73",
-      "rgbSha256": "e1b32956923b6c41c286ad66e193236e4b35111d8d82ff1e8d4edf01b83dd77a",
-      "phase": "uxpass",
-      "source": "Final0.10.0 native payload, or OS launcher as named"
+      "file": "docs/qa/0.11.0/native/hourglass-paused-static.png",
+      "sha256": "26bcb42292cb86aa73c16a7afec9b8d1c249362ccc8c9c211f975b748928ddcf",
+      "rgbSha256": "b263cf4e291a4c275cd1063076e7bac2f1901d48b6657eb93dde9a45d993b727",
+      "phase": "hourglass",
+      "source": "Actual isolated Emery QEMU; Timer/fixture/OS surfaces identified in native report"
     },
     {
-      "file": "docs/qa/0.10.0/native/uxpass-editor-five-seconds-valid.png",
-      "sha256": "f30a18a7de33ee4f9d45c681c10e0105c3e56bcbca675a2a7509d85eb677f849",
-      "rgbSha256": "d770e874e2113897b9b71aec3c6752337ce9beb4a66933d8566373442d7d9c5c",
-      "phase": "uxpass",
-      "source": "Final0.10.0 native payload, or OS launcher as named"
+      "file": "docs/qa/0.11.0/native/hourglass-resume-turn.png",
+      "sha256": "cc881a7b28b9ba684a816f2a23599171494c3071a14e3972e8e19b036e4f032d",
+      "rgbSha256": "f70a70060b80988092ec8f7bab6c606a9d4905475286fb5c02cdb89f6f4ae269",
+      "phase": "hourglass",
+      "source": "Actual isolated Emery QEMU; Timer/fixture/OS surfaces identified in native report"
     },
     {
-      "file": "docs/qa/0.10.0/native/uxpass-editor-24h-minutes-locked.png",
-      "sha256": "c48e48d762e4af830957d62d09b6f1ce32a1415fd6206657de6cc77ee25a072c",
-      "rgbSha256": "5e494468b6b5de4f7e8fde9311f875c978a55bfdd0a9bf831217adbd7337ad25",
-      "phase": "uxpass",
-      "source": "Final0.10.0 native payload, or OS launcher as named"
+      "file": "docs/qa/0.11.0/native/hourglass-resumed-top.png",
+      "sha256": "f0899436ffe0cbc563773a1b084b3cac64117381dfbd00bdea47ecb64d59a7c9",
+      "rgbSha256": "c0aa75535924780b9b87cae984945263b2ddcca3fc6a5289a4dcbce6b9a0f2e5",
+      "phase": "hourglass",
+      "source": "Actual isolated Emery QEMU; Timer/fixture/OS surfaces identified in native report"
     },
     {
-      "file": "docs/qa/0.10.0/native/uxpass-editor-24h-minutes-unchanged.png",
-      "sha256": "c48e48d762e4af830957d62d09b6f1ce32a1415fd6206657de6cc77ee25a072c",
-      "rgbSha256": "5e494468b6b5de4f7e8fde9311f875c978a55bfdd0a9bf831217adbd7337ad25",
-      "phase": "uxpass",
-      "source": "Final0.10.0 native payload, or OS launcher as named"
+      "file": "docs/qa/0.11.0/native/hourglass-os-cover.png",
+      "sha256": "597273fafe364efa25bbfd6916b95f9518bd77e64dd1128daf4981050aaceab8",
+      "rgbSha256": "892507a94f0007d5e929c26f8b9b55f1a31c80ca5f7c63dbd3acdfc8930fefd8",
+      "phase": "hourglass",
+      "source": "Stock PebbleOS synthetic call cover; includes an OS window transition, not Timer-only UI"
     },
     {
-      "file": "docs/qa/0.10.0/native/uxpass-editor-24h-seconds-locked.png",
-      "sha256": "b4d23b35cc5ccdfbf0dbf18efa0643790055b0e1fae5d4a78d3afd0df4cda2c4",
-      "rgbSha256": "b80b60f48bdfe541cbdb1a526c43aae6a00981e6b59eae03faf37851e17e458d",
-      "phase": "uxpass",
-      "source": "Final0.10.0 native payload, or OS launcher as named"
+      "file": "docs/qa/0.11.0/native/hourglass-call-ended-cover.png",
+      "sha256": "23bc9612ed89dbb47079f74fff0ba5333a5f853dea2836f63572eff47cbfef26",
+      "rgbSha256": "5f7a1ce437addf0d3e344d1964a610ecfa0b19e6f9d604cef7f65b56d0696983",
+      "phase": "hourglass",
+      "source": "Stock PebbleOS Call Declined summary, not Timer UI"
     },
     {
-      "file": "docs/qa/0.10.0/native/uxpass-empty-single-create-action.png",
-      "sha256": "a2d001de5e40231508687147b54623bf4b3b30823b925a9935292a25721fd072",
-      "rgbSha256": "7499eb735b496c7ead217c6a8e868b7dbff1d2c563158fcf736b63ca1d85a9e1",
-      "phase": "uxpass",
-      "source": "Final0.10.0 native payload, or OS launcher as named"
+      "file": "docs/qa/0.11.0/native/hourglass-after-os-cover.png",
+      "sha256": "26bcb42292cb86aa73c16a7afec9b8d1c249362ccc8c9c211f975b748928ddcf",
+      "rgbSha256": "b263cf4e291a4c275cd1063076e7bac2f1901d48b6657eb93dde9a45d993b727",
+      "phase": "hourglass",
+      "source": "Actual isolated Emery QEMU; Timer/fixture/OS surfaces identified in native report"
     },
     {
-      "file": "docs/qa/0.10.0/native/empty-list.png",
-      "sha256": "a2d001de5e40231508687147b54623bf4b3b30823b925a9935292a25721fd072",
-      "rgbSha256": "7499eb735b496c7ead217c6a8e868b7dbff1d2c563158fcf736b63ca1d85a9e1",
+      "file": "docs/qa/0.11.0/native/hourglass-cover-return-static.png",
+      "sha256": "26bcb42292cb86aa73c16a7afec9b8d1c249362ccc8c9c211f975b748928ddcf",
+      "rgbSha256": "b263cf4e291a4c275cd1063076e7bac2f1901d48b6657eb93dde9a45d993b727",
+      "phase": "hourglass",
+      "source": "Actual isolated Emery QEMU; Timer/fixture/OS surfaces identified in native report"
+    },
+    {
+      "file": "docs/qa/0.11.0/native/hourglass-other-ready-timer.png",
+      "sha256": "9f3ad63256ec0a82594402903191180489772033f489185c923945e864162973",
+      "rgbSha256": "4b93a75a3f9577b10a007f5ae7e567d39580574c5ce602e450e01330baff3c48",
+      "phase": "hourglass",
+      "source": "Actual isolated Emery QEMU; Timer/fixture/OS surfaces identified in native report"
+    },
+    {
+      "file": "docs/qa/0.11.0/native/hourglass-open-existing-running-immediate.png",
+      "sha256": "2cbbb7aa2652709cad09245ec061705d4d11c29dbbb87d4b92ddaf6923363640",
+      "rgbSha256": "25efdeafdc128f8ccb74291f7ec5d2c355eeca882f34908150fcc6facb12c06a",
+      "phase": "hourglass",
+      "source": "Actual isolated Emery QEMU; Timer/fixture/OS surfaces identified in native report"
+    },
+    {
+      "file": "docs/qa/0.11.0/native/hourglass-open-existing-running-settled.png",
+      "sha256": "2cbbb7aa2652709cad09245ec061705d4d11c29dbbb87d4b92ddaf6923363640",
+      "rgbSha256": "25efdeafdc128f8ccb74291f7ec5d2c355eeca882f34908150fcc6facb12c06a",
+      "phase": "hourglass",
+      "source": "Actual isolated Emery QEMU; Timer/fixture/OS surfaces identified in native report"
+    },
+    {
+      "file": "docs/qa/0.11.0/native/hourglass-partial-paused-horizontal.png",
+      "sha256": "adb24d9afce06ce1d1825bf72300ef608623db959f147e7a0116774b7053bdf4",
+      "rgbSha256": "fc5bf9aaa5388926fab284a5befe638b3c51ac1d912bd54e08f15c8fd907f631",
+      "phase": "hourglass",
+      "source": "Actual isolated Emery QEMU; Timer/fixture/OS surfaces identified in native report"
+    },
+    {
+      "file": "docs/qa/0.11.0/native/hourglass-partial-resume-turn.png",
+      "sha256": "dd5e3d05b475cf0cdbd5ed94b04c58214eb34d81e50b4d20009aa632047cdb9e",
+      "rgbSha256": "49852dcfbb26a44bd207f47fb12cbe44635635b2a438c945a7144b97a8b41a38",
+      "phase": "hourglass",
+      "source": "Actual isolated Emery QEMU; Timer/fixture/OS surfaces identified in native report"
+    },
+    {
+      "file": "docs/qa/0.11.0/native/hourglass-partial-resumed-top.png",
+      "sha256": "dd5e3d05b475cf0cdbd5ed94b04c58214eb34d81e50b4d20009aa632047cdb9e",
+      "rgbSha256": "49852dcfbb26a44bd207f47fb12cbe44635635b2a438c945a7144b97a8b41a38",
+      "phase": "hourglass",
+      "source": "Actual isolated Emery QEMU; Timer/fixture/OS surfaces identified in native report"
+    },
+    {
+      "file": "docs/qa/0.11.0/native/legibility-24h-running-list.png",
+      "sha256": "3dc55b40eeb9977d1eca492694ff8fec8830a9240a1239522e8b8e2b0956d010",
+      "rgbSha256": "69613db826e76036e055bf8fa5f1a08a27e4ce799f26133b8ea4c52a4b37c4c8",
+      "phase": "legibility",
+      "source": "Actual isolated Emery QEMU; Timer/fixture/OS surfaces identified in native report"
+    },
+    {
+      "file": "docs/qa/0.11.0/native/legibility-24h-running-detail.png",
+      "sha256": "8445d3a2e1640734ea4696f185cf3c8a09cd0c41787ac16d6fc8c97b8de79897",
+      "rgbSha256": "dfcfc8532abff3923b4dbe3808003afca599107909b15c9477493b9ab1a7eece",
+      "phase": "legibility",
+      "source": "Actual isolated Emery QEMU; Timer/fixture/OS surfaces identified in native report"
+    },
+    {
+      "file": "docs/qa/0.11.0/native/legibility-replacement-list.png",
+      "sha256": "31370bb1930cd5646a32edeec50cae38607ab978c4304a0fa77e14b9faf56a01",
+      "rgbSha256": "a5616f4f39168dbf85131f33247cde0c9aaab38bd7a05f368aa351fa29f0f110",
+      "phase": "legibility",
+      "source": "Actual isolated Emery QEMU; Timer/fixture/OS surfaces identified in native report"
+    },
+    {
+      "file": "docs/qa/0.11.0/native/legibility-replacement-editor.png",
+      "sha256": "3d6037074cf8e4c91b155f9a3b98965ab4b18c84a9dc09304dcd0de150704b5e",
+      "rgbSha256": "33728b0b8866a354f214d34d7cd2bd34fed9a2cc1a88e55f21edd33c815de4db",
+      "phase": "legibility",
+      "source": "Actual isolated Emery QEMU; Timer/fixture/OS surfaces identified in native report"
+    },
+    {
+      "file": "docs/qa/0.11.0/native/legibility-235959-running-detail.png",
+      "sha256": "280f7350ad6bd2415356996b4e919de5f5e03514f22a2d814852d0ca319fb759",
+      "rgbSha256": "3c30463e4589466ac4b48a3759a269ed08ce4c3ea2db87abcd863da089775a07",
+      "phase": "legibility",
+      "source": "Actual isolated Emery QEMU; Timer/fixture/OS surfaces identified in native report"
+    },
+    {
+      "file": "docs/qa/0.11.0/native/legibility-235959-running-list.png",
+      "sha256": "79f404a97ceb0c4ebe80f2a4b06b2366d710a103146bd0a2403a52d8ef04cdf3",
+      "rgbSha256": "b8be20c1c1f0df1ee28b31904abf671d5cf50e13a408a3f2f19dd8364e3205ab",
+      "phase": "legibility",
+      "source": "Actual isolated Emery QEMU; Timer/fixture/OS surfaces identified in native report"
+    },
+    {
+      "file": "docs/qa/0.11.0/native/legibility-zero-seconds-editor-bottom.png",
+      "sha256": "312f4833c49821f04812676606c4823ec03a826330cc8e7c75f0f0cbe609a33e",
+      "rgbSha256": "d9e833d30bb1b4ea7da1de06487cf0f9799701d9d101bacb936ce888ecec717c",
+      "phase": "legibility",
+      "source": "Actual isolated Emery QEMU; Timer/fixture/OS surfaces identified in native report"
+    },
+    {
+      "file": "docs/qa/0.11.0/native/legibility-four-seconds-editor-bottom.png",
+      "sha256": "59b5da1aba40f8ef3ea9c5e28ec80cc4af77244a2245586c7621ec507750cea3",
+      "rgbSha256": "41261b40c7e96b905dee28c2eedd165ab0e4a4ce59915fcaf869f7fad67490cd",
+      "phase": "legibility",
+      "source": "Actual isolated Emery QEMU; Timer/fixture/OS surfaces identified in native report"
+    },
+    {
+      "file": "docs/qa/0.11.0/native/legibility-five-seconds-editor-valid.png",
+      "sha256": "c6ef56494bb9b483b53c62913b8c0dc30539f42fde4c49987c8ce0929b8a2669",
+      "rgbSha256": "3f348fe9d3383278d8a6b85a7a57bcfb5a9222699fbe69418890c89682453210",
+      "phase": "legibility",
+      "source": "Actual isolated Emery QEMU; Timer/fixture/OS surfaces identified in native report"
+    },
+    {
+      "file": "docs/qa/0.11.0/native/empty-list.png",
+      "sha256": "a1e5c1d4dbf4da7f68e374a83c8e468dea5cfcfbb02f8ab308aa772296cc87b3",
+      "rgbSha256": "3aa110f51510d8b9b9cf468513cd41489bdcef160d52bd1b75f3d485015145d7",
       "phase": "ux",
-      "source": "Final0.10.0 native payload, or OS launcher as named"
+      "source": "Actual isolated Emery QEMU; Timer/fixture/OS surfaces identified in native report"
     },
     {
-      "file": "docs/qa/0.10.0/native/new-editor-minutes.png",
-      "sha256": "d995794a470531af04b2ced585edba58741cb3b9b5eb749449e43816680d8961",
-      "rgbSha256": "196793ffb313be94716c049c672bf8f9cea82a821657cbc37eca68ca2bce3aff",
+      "file": "docs/qa/0.11.0/native/new-editor-minutes.png",
+      "sha256": "d2a0c67b510fab75a71ec51b484828700b6cfbf4b2db5cdbe13449316c943d06",
+      "rgbSha256": "88c9ca8749b1fda5536c693218795cc7507ebf77048cc269405f79572f915d7b",
       "phase": "ux",
-      "source": "Final0.10.0 native payload, or OS launcher as named"
+      "source": "Actual isolated Emery QEMU; Timer/fixture/OS surfaces identified in native report"
     },
     {
-      "file": "docs/qa/0.10.0/native/editor-24h.png",
-      "sha256": "5e99331ae8006bce95544eca4b5d99fae6a7476b274fd8084d372e23a75ba8bc",
-      "rgbSha256": "08890674f69857078716667c73597b3c471488151852bdf7e3108b691483b101",
+      "file": "docs/qa/0.11.0/native/editor-24h.png",
+      "sha256": "8658f0e3875aaea7925600c7f1982cb75fe96d7f7076773da0176d81e9dfa83f",
+      "rgbSha256": "debe84306b57b83b0c3c924f73a8266cd911b2e0aa15cc21d6f1d75314468999",
       "phase": "ux",
-      "source": "Final0.10.0 native payload, or OS launcher as named"
+      "source": "Actual isolated Emery QEMU; Timer/fixture/OS surfaces identified in native report"
     },
     {
-      "file": "docs/qa/0.10.0/native/running-24h.png",
-      "sha256": "e46ecb5a592df6b3e26120d9e3673e5a927562ce5b5ad1bd5ffdf159aa3aacc9",
-      "rgbSha256": "0fc285c8633d8dfb7caba70ba792381f0514a6c55d31a1fdbec6380b1192df62",
+      "file": "docs/qa/0.11.0/native/running-24h.png",
+      "sha256": "f627283e38f4768a9ce2eb1ece47346f064686e39c0ac6e36430dba7d25a9c36",
+      "rgbSha256": "530addcbfd8386c0f448b811f88cb4b3c872532d7fe8c419dc51d762d35580da",
       "phase": "ux",
-      "source": "Final0.10.0 native payload, or OS launcher as named"
+      "source": "Actual isolated Emery QEMU; Timer/fixture/OS surfaces identified in native report"
     },
     {
-      "file": "docs/qa/0.10.0/native/short-running.png",
-      "sha256": "fe031ef73c54d41d9820130149578326fcc4776b0dea3e197d72ca642979ceda",
-      "rgbSha256": "85c849e5b07a9a96b8f244ef820261758700b61fde567ce6e6acce6a3e9809dc",
+      "file": "docs/qa/0.11.0/native/short-running.png",
+      "sha256": "e12afa1b67178a75ae6919b702921b4dacb30b178590977f298c0b2242d680e7",
+      "rgbSha256": "2fb64c42f96cdc307c258aa655ff1b6ff0bf318f8a63e062184d50016fd75a61",
       "phase": "ux",
-      "source": "Final0.10.0 native payload, or OS launcher as named"
+      "source": "Actual isolated Emery QEMU; Timer/fixture/OS surfaces identified in native report"
     },
     {
-      "file": "docs/qa/0.10.0/native/native-background-alarm.png",
-      "sha256": "0156e67619765fe62bedf41c95996d140508373934f32fbd5d2de2c833d5da15",
-      "rgbSha256": "7a2ff911ca9f7d0dc43695e15d0ababca60e7280dadf1d8e3b03b33f3b44e649",
+      "file": "docs/qa/0.11.0/native/native-background-alarm.png",
+      "sha256": "17968059bdb049969acfcd12fcfa8dce5be934b4d2700e24b5453e7ad84fada2",
+      "rgbSha256": "1b0470f5ea8f5ba4537877d7d6cafbdee7acd9302f35a3407e7fbb2cf26778f1",
       "phase": "ux",
-      "source": "Final0.10.0 native payload, or OS launcher as named"
+      "source": "Actual isolated Emery QEMU; Timer/fixture/OS surfaces identified in native report"
     },
     {
-      "file": "docs/qa/0.10.0/native/snoozed-original-identity.png",
-      "sha256": "ecd4be9dcce31fecc532ba17ba680a0ab2bdfed3b554d17bb05bf8efec146b1a",
-      "rgbSha256": "8c29a2a535f7a1b0d03643eceb7e87468bd8abdbb8c2e5fab448888533e452f3",
+      "file": "docs/qa/0.11.0/native/snoozed-original-identity.png",
+      "sha256": "05fe06a951cba3d1221e619d633e06b73b46e0c3ab7ffbbfbb9370e0bd5f9df0",
+      "rgbSha256": "636db4a791d6e65bd60fc81727416e59a068e83ce3ca707d8031bc241320cee3",
       "phase": "ux",
-      "source": "Final0.10.0 native payload, or OS launcher as named"
+      "source": "Actual isolated Emery QEMU; Timer/fixture/OS surfaces identified in native report"
     },
     {
-      "file": "docs/qa/0.10.0/native/remaining-editor.png",
-      "sha256": "2cc9b8dceb99428815305815efff8590dbc7d9f74e7fc967c5d39705b83ec226",
-      "rgbSha256": "218cf2701590d3ed36b697334f83cc4d810bfbbf936f7633597e63d105c17896",
+      "file": "docs/qa/0.11.0/native/remaining-editor.png",
+      "sha256": "e2a382ef8c661159cb6977222b53086c68a5df945ea473e069c4f9d2178c06de",
+      "rgbSha256": "d31da3b841f13505fde4575dd1032f31df735441afd2663314fcf65504251385",
       "phase": "ux",
-      "source": "Final0.10.0 native payload, or OS launcher as named"
+      "source": "Actual isolated Emery QEMU; Timer/fixture/OS surfaces identified in native report"
     },
     {
-      "file": "docs/qa/0.10.0/native/unchanged-edit-keeps-run.png",
-      "sha256": "cd4d4a4219c86e43fe74aa373fb284406bdc5ee952c28ad5a7ba8e8ceca87d9c",
-      "rgbSha256": "481ddcc73a3dd53e4adcb13d57734706ca92dc64a1301afcdb721eec07466edd",
+      "file": "docs/qa/0.11.0/native/unchanged-edit-keeps-run.png",
+      "sha256": "b50bb8f5af60bf81f25c8849c8f9b8dfc69bc8c2b359963548f395f47d7f562e",
+      "rgbSha256": "cbf7bcd7d44ae11f38b9212103b9175e0681f4bd8a280951b2de1adb468114d9",
       "phase": "ux",
-      "source": "Final0.10.0 native payload, or OS launcher as named"
+      "source": "Actual isolated Emery QEMU; Timer/fixture/OS surfaces identified in native report"
     },
     {
-      "file": "docs/qa/0.10.0/native/remaining-edit-preserves-elapsed.png",
-      "sha256": "09fabacbca08677d7acea269b25e4aea4bc771611221044f17c69574f48cda4e",
-      "rgbSha256": "82223813b2ac249b845a98853c05d3bb0dec2f27bd8c712cec33625be3f49035",
+      "file": "docs/qa/0.11.0/native/remaining-edit-preserves-elapsed.png",
+      "sha256": "b8df7ecdcf3eac966caa79deb0d120615f7d493dc7d10593893f7235992addbc",
+      "rgbSha256": "27016fa644eb4d1badc241ed48fe1a6d5e150f723bc5b55a42d89a3ca0d650a3",
       "phase": "ux",
-      "source": "Final0.10.0 native payload, or OS launcher as named"
+      "source": "Actual isolated Emery QEMU; Timer/fixture/OS surfaces identified in native report"
     },
     {
-      "file": "docs/qa/0.10.0/native/restart-original-duration.png",
-      "sha256": "58575c12141ca08a035043f7c676fe49f7e54481e9b496a938ad86e1ab6d1dc4",
-      "rgbSha256": "39be9b5fe1b5a57e35257a05bc6a334d949a97b49956c7a0864a80859de4133b",
+      "file": "docs/qa/0.11.0/native/restart-original-duration.png",
+      "sha256": "b1828242153c606df36ee4dbd6a7b8cf747443053583a495af2de705a2204d9c",
+      "rgbSha256": "bfca576be6ce7e431d6de96d36de760685a9ca1c8a0271a44ab165580742570f",
       "phase": "ux",
-      "source": "Final0.10.0 native payload, or OS launcher as named"
+      "source": "Actual isolated Emery QEMU; Timer/fixture/OS surfaces identified in native report"
     },
     {
-      "file": "docs/qa/0.10.0/native/second-native-alarm.png",
-      "sha256": "0156e67619765fe62bedf41c95996d140508373934f32fbd5d2de2c833d5da15",
-      "rgbSha256": "7a2ff911ca9f7d0dc43695e15d0ababca60e7280dadf1d8e3b03b33f3b44e649",
+      "file": "docs/qa/0.11.0/native/second-native-alarm.png",
+      "sha256": "17968059bdb049969acfcd12fcfa8dce5be934b4d2700e24b5453e7ad84fada2",
+      "rgbSha256": "1b0470f5ea8f5ba4537877d7d6cafbdee7acd9302f35a3407e7fbb2cf26778f1",
       "phase": "ux",
-      "source": "Final0.10.0 native payload, or OS launcher as named"
+      "source": "Actual isolated Emery QEMU; Timer/fixture/OS surfaces identified in native report"
     },
     {
-      "file": "docs/qa/0.10.0/native/select-done-ready-list.png",
-      "sha256": "c8d0e286460d1f46eca7d8c80cf9c42209640f6026c4bc10a95b7f46acac4d44",
-      "rgbSha256": "955ed3b52b84e2886bc06d024dbc3702b143048e9aa6bf02f5527c4633d54632",
+      "file": "docs/qa/0.11.0/native/select-done-ready-list.png",
+      "sha256": "ac2c70e4ac36c6ce3d24e1b3ae8f29d8ac59a3506987b6c1c3bb55ac39d763dd",
+      "rgbSha256": "db40f159d3de682937a00395b64086891b9134d2408413edcfb70a9ed5299d30",
       "phase": "ux",
-      "source": "Final0.10.0 native payload, or OS launcher as named"
+      "source": "Actual isolated Emery QEMU; Timer/fixture/OS surfaces identified in native report"
     },
     {
-      "file": "docs/qa/0.10.0/native/reopened-acknowledged-list.png",
-      "sha256": "c8d0e286460d1f46eca7d8c80cf9c42209640f6026c4bc10a95b7f46acac4d44",
-      "rgbSha256": "955ed3b52b84e2886bc06d024dbc3702b143048e9aa6bf02f5527c4633d54632",
+      "file": "docs/qa/0.11.0/native/reopened-acknowledged-list.png",
+      "sha256": "ac2c70e4ac36c6ce3d24e1b3ae8f29d8ac59a3506987b6c1c3bb55ac39d763dd",
+      "rgbSha256": "db40f159d3de682937a00395b64086891b9134d2408413edcfb70a9ed5299d30",
       "phase": "ux",
-      "source": "Final0.10.0 native payload, or OS launcher as named"
+      "source": "Actual isolated Emery QEMU; Timer/fixture/OS surfaces identified in native report"
     },
     {
-      "file": "docs/qa/0.10.0/native/ready-detail.png",
-      "sha256": "077e1ce1698349d015d62fe1059c1348c384ca817174a2cbbb9eebe60fe7be60",
-      "rgbSha256": "cd29fecbe5b455fe2d790e1b0e35cefd309469e520bac52094cfe31553153c99",
+      "file": "docs/qa/0.11.0/native/ready-detail.png",
+      "sha256": "c95eca0807488e3d2bc92e8b398a864e5dba43aac7bae58f2712654a61fed798",
+      "rgbSha256": "4c82099d7aba261fb624a9b28de54ef1bc93cb2aff2b91e92cbb30b1400828b5",
       "phase": "ux",
-      "source": "Final0.10.0 native payload, or OS launcher as named"
+      "source": "Actual isolated Emery QEMU; Timer/fixture/OS surfaces identified in native report"
     },
     {
-      "file": "docs/qa/0.10.0/native/ready-edited-without-starting.png",
-      "sha256": "9d2caed8b46f7ebc31074f0f2f6b98d75b1700ea01104443ea6ca89ce7949d59",
-      "rgbSha256": "02e0af6830a321f07882c27430139a3f3d4697b0d163cfe71d01bbd51ea4f637",
+      "file": "docs/qa/0.11.0/native/ready-edited-without-starting.png",
+      "sha256": "61056ab4f03c5eeed0203f85f5db8def9ac604a8459d946de25cd9c852858c65",
+      "rgbSha256": "efddd71152636075f95fe5645933c032760f70d19aebef9aa8254930efec2f83",
       "phase": "ux",
-      "source": "Final0.10.0 native payload, or OS launcher as named"
+      "source": "Actual isolated Emery QEMU; Timer/fixture/OS surfaces identified in native report"
     },
     {
-      "file": "docs/qa/0.10.0/native/ready-repeated-paused.png",
-      "sha256": "6414999267b7be01057795abbc1245f60494fb5b3a927d465b1dd9ecd15e89be",
-      "rgbSha256": "396c941d1a78c1f4b0fbfae7f251509ce61cbfebdc93be2f8641070239733db1",
+      "file": "docs/qa/0.11.0/native/ready-repeated-paused.png",
+      "sha256": "41802a715d39040ab99ac99f0bfac4dc9673515cb985b05b919f3db73879fab3",
+      "rgbSha256": "c2cfe210ee994f3ecff2587422212e78015e074a324467381caff6091b78536b",
       "phase": "ux",
-      "source": "Final0.10.0 native payload, or OS launcher as named"
+      "source": "Actual isolated Emery QEMU; Timer/fixture/OS surfaces identified in native report"
     },
     {
-      "file": "docs/qa/0.10.0/native/storage-generation-fixture.png",
+      "file": "docs/qa/0.11.0/native/settings-empty-new-timer.png",
+      "sha256": "a1e5c1d4dbf4da7f68e374a83c8e468dea5cfcfbb02f8ab308aa772296cc87b3",
+      "rgbSha256": "3aa110f51510d8b9b9cf468513cd41489bdcef160d52bd1b75f3d485015145d7",
+      "phase": "settings",
+      "source": "Actual isolated Emery QEMU; Timer/fixture/OS surfaces identified in native report"
+    },
+    {
+      "file": "docs/qa/0.11.0/native/settings-new-editor-minutes.png",
+      "sha256": "d2a0c67b510fab75a71ec51b484828700b6cfbf4b2db5cdbe13449316c943d06",
+      "rgbSha256": "88c9ca8749b1fda5536c693218795cc7507ebf77048cc269405f79572f915d7b",
+      "phase": "settings",
+      "source": "Actual isolated Emery QEMU; Timer/fixture/OS surfaces identified in native report"
+    },
+    {
+      "file": "docs/qa/0.11.0/native/settings-hours-cancel-hint.png",
+      "sha256": "d0ef778bddf27ccb8eac1bea6b46cb13a916373dcf179497ef67ce42d19b2910",
+      "rgbSha256": "4df88ae4fc481f4b04a5eabfe0ef5fc89fe44fe5afeef58d1aeb2b33f76378c7",
+      "phase": "settings",
+      "source": "Actual isolated Emery QEMU; Timer/fixture/OS surfaces identified in native report"
+    },
+    {
+      "file": "docs/qa/0.11.0/native/settings-new-cancel-returns-list.png",
+      "sha256": "a1e5c1d4dbf4da7f68e374a83c8e468dea5cfcfbb02f8ab308aa772296cc87b3",
+      "rgbSha256": "3aa110f51510d8b9b9cf468513cd41489bdcef160d52bd1b75f3d485015145d7",
+      "phase": "settings",
+      "source": "Actual isolated Emery QEMU; Timer/fixture/OS surfaces identified in native report"
+    },
+    {
+      "file": "docs/qa/0.11.0/native/settings-running-detail.png",
+      "sha256": "316b53e414bf37588ee4c152f8892a09144091ae9ca0fea2c1cd3afed6500268",
+      "rgbSha256": "0774d90eee5283aead3ed993d00b25c954229c491fdff3864f3f4bf9b9cfe127",
+      "phase": "settings",
+      "source": "Actual isolated Emery QEMU; Timer/fixture/OS surfaces identified in native report"
+    },
+    {
+      "file": "docs/qa/0.11.0/native/settings-direct-edit-cancel-returns-detail.png",
+      "sha256": "7041680ed7951006d326fe082d066eee4cfb3a4f4527d405ddac9bc452ce3338",
+      "rgbSha256": "9216d43782134f0ce49d7ee581d3001fb18255b1e65152ad9bb4139aa22f0438",
+      "phase": "settings",
+      "source": "Actual isolated Emery QEMU; Timer/fixture/OS surfaces identified in native report"
+    },
+    {
+      "file": "docs/qa/0.11.0/native/settings-options-change-selected.png",
+      "sha256": "fc6a31e1e8df90876d9cd939a643c097dc84035b3acd3097e8ffcd4ddb5098bf",
+      "rgbSha256": "413516519ca9f0054fd4948ced602c60afb41ba4b7323fdc220c19d6b9abd270",
+      "phase": "settings",
+      "source": "Actual isolated Emery QEMU; Timer/fixture/OS surfaces identified in native report"
+    },
+    {
+      "file": "docs/qa/0.11.0/native/settings-options-edit-cancel-returns-options.png",
+      "sha256": "fc6a31e1e8df90876d9cd939a643c097dc84035b3acd3097e8ffcd4ddb5098bf",
+      "rgbSha256": "413516519ca9f0054fd4948ced602c60afb41ba4b7323fdc220c19d6b9abd270",
+      "phase": "settings",
+      "source": "Actual isolated Emery QEMU; Timer/fixture/OS surfaces identified in native report"
+    },
+    {
+      "file": "docs/qa/0.11.0/native/settings-delete-keep-default.png",
+      "sha256": "7168d3088cb77886abc76e7a7b6a6b2ea6fd4384140cd00eab545c119f1f863c",
+      "rgbSha256": "3e3db5a3780cf521e5ed6dde28ac7c4ca3957b03c00e60f9a1ae59c0cf039e96",
+      "phase": "settings",
+      "source": "Actual isolated Emery QEMU; Timer/fixture/OS surfaces identified in native report"
+    },
+    {
+      "file": "docs/qa/0.11.0/native/settings-keep-returns-options-delete-selected.png",
+      "sha256": "a7cc91f98fee67f149d49eb5ae16ef39848f94e0084cbf55fb4557da6729e941",
+      "rgbSha256": "33ea5280d6af60792d0db21a9735172063894cab733dc0b2eca424e88fcc4870",
+      "phase": "settings",
+      "source": "Actual isolated Emery QEMU; Timer/fixture/OS surfaces identified in native report"
+    },
+    {
+      "file": "docs/qa/0.11.0/native/settings-delete-back-returns-options-delete-selected.png",
+      "sha256": "a7cc91f98fee67f149d49eb5ae16ef39848f94e0084cbf55fb4557da6729e941",
+      "rgbSha256": "33ea5280d6af60792d0db21a9735172063894cab733dc0b2eca424e88fcc4870",
+      "phase": "settings",
+      "source": "Actual isolated Emery QEMU; Timer/fixture/OS surfaces identified in native report"
+    },
+    {
+      "file": "docs/qa/0.11.0/native/settings-restart-shows-saved-duration.png",
+      "sha256": "d3f5dd056db061b7d2fe8fb40b84c3236d42b3fff3ad7128f9756996dcc30a0f",
+      "rgbSha256": "79ec489f4bd6d9cbcf753e1ed883901f1cfcea8ae246eac9f2afa1a63f8fc711",
+      "phase": "settings",
+      "source": "Actual isolated Emery QEMU; Timer/fixture/OS surfaces identified in native report"
+    },
+    {
+      "file": "docs/qa/0.11.0/native/settings-paused-detail.png",
+      "sha256": "abd03388962e7bc64b5b6ab21ed6e61067ca701a990f175c5156f1220021f509",
+      "rgbSha256": "e76695446a5f8683a2c158630f1bff0160ae19b1b3c2b957e0124c4e3807b66c",
+      "phase": "settings",
+      "source": "Actual isolated Emery QEMU; Timer/fixture/OS surfaces identified in native report"
+    },
+    {
+      "file": "docs/qa/0.11.0/native/settings-eight-ready-replacement-list-warning.png",
+      "sha256": "d14f7bb3ed6e119b570ccbe0f0a4d620c83e43b13ffc8d5b5d066bb35c599934",
+      "rgbSha256": "46306db8ccc5ffd52f4afda577c8624e24cfc192abc8ebc4f32cf2b2262c2cd7",
+      "phase": "settings",
+      "source": "Actual isolated Emery QEMU; Timer/fixture/OS surfaces identified in native report"
+    },
+    {
+      "file": "docs/qa/0.11.0/native/settings-eight-ready-replacement-editor-warning.png",
+      "sha256": "3d6037074cf8e4c91b155f9a3b98965ab4b18c84a9dc09304dcd0de150704b5e",
+      "rgbSha256": "33728b0b8866a354f214d34d7cd2bd34fed9a2cc1a88e55f21edd33c815de4db",
+      "phase": "settings",
+      "source": "Actual isolated Emery QEMU; Timer/fixture/OS surfaces identified in native report"
+    },
+    {
+      "file": "docs/qa/0.11.0/native/settings-replacement-cancel-preserves-eight-ready.png",
+      "sha256": "d14f7bb3ed6e119b570ccbe0f0a4d620c83e43b13ffc8d5b5d066bb35c599934",
+      "rgbSha256": "46306db8ccc5ffd52f4afda577c8624e24cfc192abc8ebc4f32cf2b2262c2cd7",
+      "phase": "settings",
+      "source": "Actual isolated Emery QEMU; Timer/fixture/OS surfaces identified in native report"
+    },
+    {
+      "file": "docs/qa/0.11.0/native/settings-eight-running-full.png",
+      "sha256": "2b93cbddb7763d72a2f2f820d1dfef148c01fa0ea78e748e58c40cb1fe1a50b4",
+      "rgbSha256": "3ca570a1222ceb3a727ff90ef23af269ab0cb5ad65577f6f987180d5ec2c88d0",
+      "phase": "settings",
+      "source": "Actual isolated Emery QEMU; Timer/fixture/OS surfaces identified in native report"
+    },
+    {
+      "file": "docs/qa/0.11.0/native/settings-full-select-preserves-runs.png",
+      "sha256": "be4921f0d48e6e79279cde8384ef83d3d4d1726c6fe88c01e49b92bee454164b",
+      "rgbSha256": "a9415a960ca9dc8fce3dc201062f87451e19828c6f608847a0a8b4a9ad041760",
+      "phase": "settings",
+      "source": "Actual isolated Emery QEMU; Timer/fixture/OS surfaces identified in native report"
+    },
+    {
+      "file": "docs/qa/0.11.0/native/eight-ready-list.png",
+      "sha256": "b55419407a6521331318cc93a5bf36115d60711183fafb15265dbaa333ad007f",
+      "rgbSha256": "08aae94f3a3ed52cd972211b2a34ad00fd5dea3ee0d234e0f781330c1aa5d7dd",
+      "phase": "capacity",
+      "source": "Actual isolated Emery QEMU; Timer/fixture/OS surfaces identified in native report"
+    },
+    {
+      "file": "docs/qa/0.11.0/native/eight-ready-replacement-warning.png",
+      "sha256": "3d6037074cf8e4c91b155f9a3b98965ab4b18c84a9dc09304dcd0de150704b5e",
+      "rgbSha256": "33728b0b8866a354f214d34d7cd2bd34fed9a2cc1a88e55f21edd33c815de4db",
+      "phase": "capacity",
+      "source": "Actual isolated Emery QEMU; Timer/fixture/OS surfaces identified in native report"
+    },
+    {
+      "file": "docs/qa/0.11.0/native/ready-slot-replaced-running.png",
+      "sha256": "ff8892b1546db6d7d6345e6677d463533d3196f1ad600f756fddc33f46ffcdd3",
+      "rgbSha256": "ceb0b3fb8d879dea8696513f012d82ac6b6d875a6654529c497b35510e041c7f",
+      "phase": "capacity",
+      "source": "Actual isolated Emery QEMU; Timer/fixture/OS surfaces identified in native report"
+    },
+    {
+      "file": "docs/qa/0.11.0/native/second-replacement-warning.png",
+      "sha256": "3d6037074cf8e4c91b155f9a3b98965ab4b18c84a9dc09304dcd0de150704b5e",
+      "rgbSha256": "33728b0b8866a354f214d34d7cd2bd34fed9a2cc1a88e55f21edd33c815de4db",
+      "phase": "capacity",
+      "source": "Actual isolated Emery QEMU; Timer/fixture/OS surfaces identified in native report"
+    },
+    {
+      "file": "docs/qa/0.11.0/native/two-running-six-ready.png",
+      "sha256": "bc2350689a1f2acf0aa34c62e02594f572e1fdb24ee7ceeee4a1c63013f4e170",
+      "rgbSha256": "f47cbfbbfa54ebb82798b896d8a2a5396175a842e8e0627c32a8267b582e1693",
+      "phase": "capacity",
+      "source": "Actual isolated Emery QEMU; Timer/fixture/OS surfaces identified in native report"
+    },
+    {
+      "file": "docs/qa/0.11.0/native/storage-generation-fixture.png",
       "sha256": "2be9dba7ea50818b3ec07925be44a150abb43a451891ef95572d96a2df3b8d21",
       "rgbSha256": "f295b0119a6769a90ed503c69878be708bd5e9d861d2b2f0d4007c30ab8f89bc",
       "phase": "storage",
       "source": "Isolated exhausted-generation V1 bank fixture, not Timer native binary"
     },
     {
-      "file": "docs/qa/0.10.0/native/storage-not-saved-list.png",
-      "sha256": "f27310e73012bb0f2c27925e73a0e350b109726cd813e8adaab13e12090f47c7",
-      "rgbSha256": "cce575c99fcb1a79142b8dd8f1655fab23a515e7c0fe46096bd69ff969745dd6",
+      "file": "docs/qa/0.11.0/native/storage-not-saved-list.png",
+      "sha256": "cdd7c850c7118e736e4a9437297a2597db68e4e3a7dedeed73a3bd5cb673f938",
+      "rgbSha256": "016b2b709399a4e8820de7d0519545d4ad5ccb420a6282febe31937ae76a6cba",
       "phase": "storage",
-      "source": "Final0.10.0 native payload, or OS launcher as named"
+      "source": "Actual isolated Emery QEMU; Timer/fixture/OS surfaces identified in native report"
     },
     {
-      "file": "docs/qa/0.10.0/native/storage-not-saved-detail.png",
-      "sha256": "3daa64f030417f4a91dbd606ddab653e3faac0c6486f38daf6ed9638877a4223",
-      "rgbSha256": "e418aaf416fc4b733d73b23b844be1193b75098938abe448339c170703c210b5",
+      "file": "docs/qa/0.11.0/native/storage-not-saved-detail.png",
+      "sha256": "e39db0f4bca08bbdb393cb00cb334605bd5dbe9906bee61c8a654800e6ea3499",
+      "rgbSha256": "29dac5461733b579550a5056dcc05752020ad9a4e58e44b84876fdb82f799601",
       "phase": "storage",
-      "source": "Final0.10.0 native payload, or OS launcher as named"
+      "source": "Actual isolated Emery QEMU; Timer/fixture/OS surfaces identified in native report"
     },
     {
-      "file": "docs/qa/0.10.0/native/storage-not-saved-options.png",
-      "sha256": "5420b56517cd24a1106a81b0981abba8ec18cb70a0ae134b3ec250c2fc3a071c",
-      "rgbSha256": "746cf6313da941eaac1326cc947dbfe1da46728775227d47d3ce292fb813cc00",
+      "file": "docs/qa/0.11.0/native/storage-not-saved-options.png",
+      "sha256": "ebd48a8fc1977f6eec3ae100f22373a9404b679d5641498d63d70007b5a7d286",
+      "rgbSha256": "066f15167ffdab11ca8bb495150adaab0ac407c73c9c16655a790a2adc1f5a54",
       "phase": "storage",
-      "source": "Final0.10.0 native payload, or OS launcher as named"
+      "source": "Actual isolated Emery QEMU; Timer/fixture/OS surfaces identified in native report"
     },
     {
-      "file": "docs/qa/0.10.0/native/storage-not-saved-delete-keeps-actions.png",
-      "sha256": "065ad46f6baf9f4b92d2196b3a3b09b9b3670a5595aebe6a3950f86a9aedcfda",
-      "rgbSha256": "72cb1a8bf5153cbd8d73b1231e8dbd076622493d783f14e133368ffc40f88093",
+      "file": "docs/qa/0.11.0/native/storage-not-saved-delete-keeps-actions.png",
+      "sha256": "26a76a7b1f57ab8d7cc78b9beb4254c106ab13d730df12d126af549a7a3724f1",
+      "rgbSha256": "8491816d43ff2748d80edf431f21ecfd3b7403c00e97725007b16f1a6f0cdf18",
       "phase": "storage",
-      "source": "Final0.10.0 native payload, or OS launcher as named"
+      "source": "Actual isolated Emery QEMU; Timer/fixture/OS surfaces identified in native report"
     },
     {
-      "file": "docs/qa/0.10.0/native/storage-not-saved-native-alarm-actions-visible.png",
-      "sha256": "657a0c5a87af97c11f5eb442e4db4220381ab95c5407f9afbcbbae2f36a1dcc3",
-      "rgbSha256": "49c4b3ff482ca132d9299d47c9d39369a9d2d2fd3bc7902322169e1ea39d7001",
+      "file": "docs/qa/0.11.0/native/storage-not-saved-native-alarm-actions-visible.png",
+      "sha256": "ebfb33682b729a928bd2e5908b7fc81b3ced1ab12c140095ede7101731e9321d",
+      "rgbSha256": "e72f9f1521f3d84f347709cf8bce64c9fb72504b4440decd774c306b6f14282f",
       "phase": "storage",
-      "source": "Final0.10.0 native payload, or OS launcher as named"
+      "source": "Actual isolated Emery QEMU; Timer/fixture/OS surfaces identified in native report"
     },
     {
-      "file": "docs/qa/0.10.0/native/storage-done-cannot-hide-unsaved-alarm.png",
-      "sha256": "657a0c5a87af97c11f5eb442e4db4220381ab95c5407f9afbcbbae2f36a1dcc3",
-      "rgbSha256": "49c4b3ff482ca132d9299d47c9d39369a9d2d2fd3bc7902322169e1ea39d7001",
+      "file": "docs/qa/0.11.0/native/storage-done-cannot-hide-unsaved-alarm.png",
+      "sha256": "ebfb33682b729a928bd2e5908b7fc81b3ced1ab12c140095ede7101731e9321d",
+      "rgbSha256": "e72f9f1521f3d84f347709cf8bce64c9fb72504b4440decd774c306b6f14282f",
       "phase": "storage",
-      "source": "Final0.10.0 native payload, or OS launcher as named"
+      "source": "Actual isolated Emery QEMU; Timer/fixture/OS surfaces identified in native report"
     },
     {
-      "file": "docs/qa/0.10.0/native/storage-back-remains-available.png",
-      "sha256": "f461d4cdd2260ec51a1de7ee619b318769f330e68449e24f5d57c7f740a565f9",
-      "rgbSha256": "9466c632334c542af9d66d75276e9ddd70dd99417b8016838ac51223df3b1e03",
+      "file": "docs/qa/0.11.0/native/storage-back-remains-available.png",
+      "sha256": "0cca3605c3411bd9cbaf74a2dd4d53c756fb547419a19e24ed429da799024065",
+      "rgbSha256": "62d5e313c1fef59e0172a63109c2fff513e2ec02ec94be7695a71e8a827228a3",
       "phase": "storage",
-      "source": "Final0.10.0 native payload, or OS launcher as named"
+      "source": "Actual isolated Emery QEMU; Timer/fixture/OS surfaces identified in native report"
     },
     {
-      "file": "docs/qa/0.10.0/native/nearby-running-list.png",
-      "sha256": "91032f671dd125ea76f1d0723c87b1cd83f5955180448ae30f56dd30fa467f9e",
-      "rgbSha256": "4c2c365b8824e3287cdef228ef0e829fce69eca1e2c234cae89bad53f732edfa",
-      "phase": "nearby",
-      "source": "Final0.10.0 native payload, or OS launcher as named"
+      "file": "docs/qa/0.11.0/native/errors/empty-before-conflict.png",
+      "sha256": "a1e5c1d4dbf4da7f68e374a83c8e468dea5cfcfbb02f8ab308aa772296cc87b3",
+      "rgbSha256": "3aa110f51510d8b9b9cf468513cd41489bdcef160d52bd1b75f3d485015145d7",
+      "phase": "scheduling-error",
+      "source": "Exact candidate Timer native binary"
     },
     {
-      "file": "docs/qa/0.10.0/native/nearby-launcher-earliest.png",
-      "sha256": "eaf2636beb330aec551d465611d3d2c66009f9663b2d4fdc08e0b37fc276a0ca",
-      "rgbSha256": "c79f602114265a54b345e5585ac44c35c5c1d6ac34e0dc75c2436a9eac915584",
-      "phase": "nearby",
-      "source": "Final0.10.0 native payload, or OS launcher as named"
+      "file": "docs/qa/0.11.0/native/errors/external-wakeup-fixture.png",
+      "sha256": "50769d6a16cc86ca3d496809956dad9ac7da3ba6ad671adbe14f5863d0d9204b",
+      "rgbSha256": "435300862ad219a95e5bfa43019102d0b48d063345fcd381d324c0742480f2b2",
+      "phase": "scheduling-error",
+      "source": "External Wakeup fixture, not Timer"
     },
     {
-      "file": "docs/qa/0.10.0/native/nearby-first-native-alarm.png",
-      "sha256": "fa5d5a55c7b187356ef05c6141ed9557a94d71ec8a79466c46d787efc6cc89be",
-      "rgbSha256": "2621866c0fefb6b217e055b9537ad5ec32643e8212e5abde735b43b50a6de7f9",
-      "phase": "nearby",
-      "source": "Final0.10.0 native payload, or OS launcher as named"
+      "file": "docs/qa/0.11.0/native/errors/alarm-not-set.png",
+      "sha256": "62367bd2389724535b5df868e27ee5f0a4f4edc11b2b8e4a92ce41ee3e0559b2",
+      "rgbSha256": "91e4229f24018aba6eaf9ed4fd901d41daaef1ef51a14d9afabfc8ad53a1e2b5",
+      "phase": "scheduling-error",
+      "source": "Exact candidate Timer native binary"
     },
     {
-      "file": "docs/qa/0.10.0/native/nearby-second-native-alarm.png",
-      "sha256": "6ede35c0ca4b1f95080c3cb4ef3af6b4981e83d85895eb38b812a83b28281fea",
-      "rgbSha256": "d2384c5578501299c66fe694cc67054415ff6d4ab0d6ce14cf135221d6782802",
-      "phase": "nearby",
-      "source": "Final0.10.0 native payload, or OS launcher as named"
+      "file": "docs/qa/0.11.0/native/errors/alarm-not-set-options.png",
+      "sha256": "654c67c3c24d33ab970fe31083406a2484388ffc6f07b5692992002c01b485c4",
+      "rgbSha256": "f13d5340d29f09094825bdbc9075de1cebb4ac1b4ba021dab00c8ba3091f1259",
+      "phase": "scheduling-error",
+      "source": "Exact candidate Timer native binary"
     },
     {
-      "file": "docs/qa/0.10.0/native/nearby-back-acknowledged-list.png",
-      "sha256": "001924f34b588ac02fd646d7c8c04a4f47e7237129917c4efaf3954dce31a0aa",
-      "rgbSha256": "de6bc48efde9820e0c9f8e65ed003c15ca525dc003e5160bc87f59db3030868f",
-      "phase": "nearby",
-      "source": "Final0.10.0 native payload, or OS launcher as named"
+      "file": "docs/qa/0.11.0/native/errors/fixture-cleared.png",
+      "sha256": "488de02013d1d3bab07371c7e40a2b57361035b3d5ac3424ef9ddcc8de8ce5b0",
+      "rgbSha256": "86fd10a1cdb65d9f1a61bf8274a06f32e2c9542d6d3ed3ba5373dc240de23cfc",
+      "phase": "scheduling-error",
+      "source": "External Wakeup fixture, not Timer"
     },
     {
-      "file": "docs/qa/0.10.0/native/nearby-reopened-no-alarm.png",
-      "sha256": "001924f34b588ac02fd646d7c8c04a4f47e7237129917c4efaf3954dce31a0aa",
-      "rgbSha256": "de6bc48efde9820e0c9f8e65ed003c15ca525dc003e5160bc87f59db3030868f",
-      "phase": "nearby",
-      "source": "Final0.10.0 native payload, or OS launcher as named"
+      "file": "docs/qa/0.11.0/native/errors/alarm-recovered.png",
+      "sha256": "b606f9b09db481c5c9b3850d5a7a9d0e6138c8ec53bffce081d0b12788a74eef",
+      "rgbSha256": "ac419e146e6bcc3dac6dfb8f7ed02f3d49eef278d10984e7ee26506c36d2d823",
+      "phase": "scheduling-error",
+      "source": "Exact candidate Timer native binary"
     },
     {
-      "file": "docs/qa/0.10.0/native/nearby-finished-launcher-cleared.png",
-      "sha256": "96af9878f49c452291d355b91720550dc9eef4acbfe816a91793632743df98a6",
-      "rgbSha256": "1fe3d27bb571a746dcdec2a672391f30a976ee15521e7adeaa66931576d5edf9",
-      "phase": "nearby",
-      "source": "Final0.10.0 native payload, or OS launcher as named"
-    },
-    {
-      "file": "docs/qa/0.10.0/native/equal-running-list.png",
-      "sha256": "be49319b68ea98054c77080022edf13b78f03ccfeda49dcb08de34f01ee540b8",
-      "rgbSha256": "dc5f11383e4614f5991fd550b21812798103cd0350229f2be8df7d4ab4b84cc4",
-      "phase": "equal",
-      "source": "Final0.10.0 native payload, or OS launcher as named"
-    },
-    {
-      "file": "docs/qa/0.10.0/native/equal-launcher-earliest.png",
-      "sha256": "eaf2636beb330aec551d465611d3d2c66009f9663b2d4fdc08e0b37fc276a0ca",
-      "rgbSha256": "c79f602114265a54b345e5585ac44c35c5c1d6ac34e0dc75c2436a9eac915584",
-      "phase": "equal",
-      "source": "Final0.10.0 native payload, or OS launcher as named"
-    },
-    {
-      "file": "docs/qa/0.10.0/native/equal-first-native-alarm.png",
-      "sha256": "fa5d5a55c7b187356ef05c6141ed9557a94d71ec8a79466c46d787efc6cc89be",
-      "rgbSha256": "2621866c0fefb6b217e055b9537ad5ec32643e8212e5abde735b43b50a6de7f9",
-      "phase": "equal",
-      "source": "Final0.10.0 native payload, or OS launcher as named"
-    },
-    {
-      "file": "docs/qa/0.10.0/native/equal-second-native-alarm.png",
-      "sha256": "fa5d5a55c7b187356ef05c6141ed9557a94d71ec8a79466c46d787efc6cc89be",
-      "rgbSha256": "2621866c0fefb6b217e055b9537ad5ec32643e8212e5abde735b43b50a6de7f9",
-      "phase": "equal",
-      "source": "Final0.10.0 native payload, or OS launcher as named"
-    },
-    {
-      "file": "docs/qa/0.10.0/native/equal-back-acknowledged-list.png",
-      "sha256": "f71b4d513a0a2c4d2feee465e49e5c333a731d29877191fd364ccd01155872b4",
-      "rgbSha256": "6fc267d0d50147197193518f474c01c20ebf0e701dd91858c0d4830829242171",
-      "phase": "equal",
-      "source": "Final0.10.0 native payload, or OS launcher as named"
-    },
-    {
-      "file": "docs/qa/0.10.0/native/equal-reopened-no-alarm.png",
-      "sha256": "f71b4d513a0a2c4d2feee465e49e5c333a731d29877191fd364ccd01155872b4",
-      "rgbSha256": "6fc267d0d50147197193518f474c01c20ebf0e701dd91858c0d4830829242171",
-      "phase": "equal",
-      "source": "Final0.10.0 native payload, or OS launcher as named"
-    },
-    {
-      "file": "docs/qa/0.10.0/native/equal-finished-launcher-cleared.png",
-      "sha256": "96af9878f49c452291d355b91720550dc9eef4acbfe816a91793632743df98a6",
-      "rgbSha256": "1fe3d27bb571a746dcdec2a672391f30a976ee15521e7adeaa66931576d5edf9",
-      "phase": "equal",
-      "source": "Final0.10.0 native payload, or OS launcher as named"
-    },
-    {
-      "file": "docs/qa/0.10.0/native/launcher-source-running.png",
-      "sha256": "1661452efcf956b39d786a0f490f268f17b558f711b6a610bef96c9f5cfc8f5b",
-      "rgbSha256": "714d4351529085b9ad43298c9595ddcd2c695607f99e460ffcb60a948502bf87",
-      "phase": "launcher",
-      "source": "Final0.10.0 native payload, or OS launcher as named"
-    },
-    {
-      "file": "docs/qa/0.10.0/native/launcher-running-countdown.png",
-      "sha256": "020659f5b2ed8b93707b2e51796780e06834f3f40ebd23eef47dab2c18b07ed4",
-      "rgbSha256": "569eedd0ee07579e28ab7c4e96ee0e3470f85b4f74a980d0d7a4e62411e96790",
-      "phase": "launcher",
-      "source": "Final0.10.0 native payload, or OS launcher as named"
-    },
-    {
-      "file": "docs/qa/0.10.0/native/launcher-running-countdown-tick.png",
-      "sha256": "56b1add18cd9d4d3d122ad3e5f8c87f0d67db0c35e0ba1ee96076589539221a7",
-      "rgbSha256": "c55428fd46cff4e40e6a88a5958f7ad7aa9b456a69a1d1e9999a5941071859c8",
-      "phase": "launcher",
-      "source": "Final0.10.0 native payload, or OS launcher as named"
-    },
-    {
-      "file": "docs/qa/0.10.0/native/launcher-source-paused.png",
-      "sha256": "f36a2f1b45b5e5d2bcdc708c030cfc7ab81b337b68d7d59653f0a7a7b1f7a22d",
-      "rgbSha256": "6422bf43d8e3dee8bcd9d2020548b182eb430068ebfefcafd59f6287c70da9a3",
-      "phase": "launcher",
-      "source": "Final0.10.0 native payload, or OS launcher as named"
-    },
-    {
-      "file": "docs/qa/0.10.0/native/launcher-paused-cleared.png",
-      "sha256": "96af9878f49c452291d355b91720550dc9eef4acbfe816a91793632743df98a6",
-      "rgbSha256": "1fe3d27bb571a746dcdec2a672391f30a976ee15521e7adeaa66931576d5edf9",
-      "phase": "launcher",
-      "source": "Final0.10.0 native payload, or OS launcher as named"
-    },
-    {
-      "file": "docs/qa/0.10.0/native/launcher-paused-cleared-settled.png",
-      "sha256": "96af9878f49c452291d355b91720550dc9eef4acbfe816a91793632743df98a6",
-      "rgbSha256": "1fe3d27bb571a746dcdec2a672391f30a976ee15521e7adeaa66931576d5edf9",
-      "phase": "launcher",
-      "source": "Final0.10.0 native payload, or OS launcher as named"
-    },
-    {
-      "file": "docs/qa/0.10.0/native/launcher-deleted-cleared.png",
-      "sha256": "96af9878f49c452291d355b91720550dc9eef4acbfe816a91793632743df98a6",
-      "rgbSha256": "1fe3d27bb571a746dcdec2a672391f30a976ee15521e7adeaa66931576d5edf9",
-      "phase": "launcher",
-      "source": "Final0.10.0 native payload, or OS launcher as named"
-    },
-    {
-      "file": "docs/qa/0.10.0/native/launcher-fast-pause-exit-cleared.png",
-      "sha256": "96af9878f49c452291d355b91720550dc9eef4acbfe816a91793632743df98a6",
-      "rgbSha256": "1fe3d27bb571a746dcdec2a672391f30a976ee15521e7adeaa66931576d5edf9",
-      "phase": "launcher",
-      "source": "Final0.10.0 native payload, or OS launcher as named"
+      "file": "docs/qa/0.11.0/native/errors/empty-after-recovery.png",
+      "sha256": "a1e5c1d4dbf4da7f68e374a83c8e468dea5cfcfbb02f8ab308aa772296cc87b3",
+      "rgbSha256": "3aa110f51510d8b9b9cf468513cd41489bdcef160d52bd1b75f3d485015145d7",
+      "phase": "scheduling-error",
+      "source": "Exact candidate Timer native binary"
     }
   ],
   "validation": [
-    "docs/qa/0.10.0/native/ux.json",
-    "docs/qa/0.10.0/font-audit.json",
-    "docs/qa/0.10.0/clock-generation.json",
-    "docs/qa/0.10.0/packaged-runtime.log",
-    "docs/qa/0.10.0/optimization.json",
-    "docs/qa/0.10.0/pixel-comparison.json",
-    "docs/qa/0.10.0/raster-profile.json"
+    "docs/qa/0.11.0/native/ux.json",
+    "docs/qa/0.11.0/native/errors/errors.json",
+    "docs/qa/0.11.0/README.md",
+    "docs/qa/0.11.0/font-audit.json",
+    "docs/qa/0.11.0/ownership-identity.json",
+    "docs/qa/0.11.0/packaged-runtime.log"
   ],
-  "historical": "0.9.0 provenance retained at docs/qa/0.9.0/asset-provenance.json; published bytes/tags unchanged.",
+  "historical": "Published 0.10 and earlier bytes/tags preserved; original0.10 provenance retained at docs/qa/0.10.0/asset-provenance.json.",
   "limits": "Actual QEMU/portable VM evidence only; no real-phone delivery, physical-watch latency, peak memory or battery measurement."
 }

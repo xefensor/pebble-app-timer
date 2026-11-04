@@ -1,0 +1,110 @@
+{
+  "version": "0.11.0",
+  "scope": "Actual native Timer scheduling-error integration in Emery QEMU; no phone JavaScript or physical watch",
+  "candidatePbwSha256": "4fb9ef3ab3581338842ae57bf2610abdef665886d1612f515c45a4eeeddebbbd",
+  "fixtureUuid": "d012c8aa-b7ce-4fc3-82f7-f45c8a58f4d1",
+  "fixturePbwSha256": "e561f72518ed82bcf647689949b5bb4547452507cad383250ab08dc2fdec18a3",
+  "fixtureSourceSha256": "cb4332ce536a35385d0bc15e1b6c8fa5d00910f4261acd7e3088716c15199bc3",
+  "fixtureWakeupOffsetSeconds": 600,
+  "phoneJavascriptExecuted": false,
+  "captures": [
+    {
+      "name": "empty-before-conflict",
+      "file": "empty-before-conflict.png",
+      "sha256": "a1e5c1d4dbf4da7f68e374a83c8e468dea5cfcfbb02f8ab308aa772296cc87b3",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false,
+      "source": "Exact candidate Timer native binary"
+    },
+    {
+      "name": "external-wakeup-fixture",
+      "file": "external-wakeup-fixture.png",
+      "sha256": "50769d6a16cc86ca3d496809956dad9ac7da3ba6ad671adbe14f5863d0d9204b",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false,
+      "source": "External Wakeup fixture, not Timer"
+    },
+    {
+      "name": "alarm-not-set",
+      "file": "alarm-not-set.png",
+      "sha256": "62367bd2389724535b5df868e27ee5f0a4f4edc11b2b8e4a92ce41ee3e0559b2",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false,
+      "source": "Exact candidate Timer native binary"
+    },
+    {
+      "name": "alarm-not-set-options",
+      "file": "alarm-not-set-options.png",
+      "sha256": "654c67c3c24d33ab970fe31083406a2484388ffc6f07b5692992002c01b485c4",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false,
+      "source": "Exact candidate Timer native binary"
+    },
+    {
+      "name": "fixture-cleared",
+      "file": "fixture-cleared.png",
+      "sha256": "488de02013d1d3bab07371c7e40a2b57361035b3d5ac3424ef9ddcc8de8ce5b0",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false,
+      "source": "External Wakeup fixture, not Timer"
+    },
+    {
+      "name": "alarm-recovered",
+      "file": "alarm-recovered.png",
+      "sha256": "b606f9b09db481c5c9b3850d5a7a9d0e6138c8ec53bffce081d0b12788a74eef",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false,
+      "source": "Exact candidate Timer native binary"
+    },
+    {
+      "name": "empty-after-recovery",
+      "file": "empty-after-recovery.png",
+      "sha256": "a1e5c1d4dbf4da7f68e374a83c8e468dea5cfcfbb02f8ab308aa772296cc87b3",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false,
+      "source": "Exact candidate Timer native binary"
+    }
+  ],
+  "fixtureCleanupCompleted": true,
+  "result": "PASS",
+  "visualReview": {
+    "reviewed": true,
+    "reviewers": [
+      "Root",
+      "timer_ui",
+      "timer_qa"
+    ],
+    "scope": "Six labelled contact sheets and focused original native PNGs reviewed for state poses, proportional sand, legibility, navigation, capacity, alarm hints and critical warning clearance. Original captures unchanged; no physical-watch claim."
+  },
+  "nativePayloadSha256": {
+    "emery/app_resources.pbpack": "a35ebc1371147dbe65bf1cafa0362d6236583eac9b1210192a0f369adfa08c49",
+    "emery/manifest.json": "a6cbdfc4b3bf0f046d98b97cb0ed053727fbc8839839c1853a144387768e6959",
+    "emery/pebble-app.bin": "d40ce3ceb68cbb7249382d9d6cb842c12881ad52a9946731294f1e222396ccca"
+  },
+  "proofs": {
+    "alarmWarningVisibleInDetailAndOptions": true,
+    "warningClearsAfterNativeRecovery": true,
+    "emptyListRestored": true
+  }
+}

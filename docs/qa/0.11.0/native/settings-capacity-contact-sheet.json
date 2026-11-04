@@ -1,0 +1,38 @@
+{
+  "derivativeContactSheet": true,
+  "scale": 2,
+  "resampling": "nearest",
+  "candidatePbwSha256": "4fb9ef3ab3581338842ae57bf2610abdef665886d1612f515c45a4eeeddebbbd",
+  "sources": [
+    {
+      "file": "settings-options-edit-cancel-returns-options.png",
+      "sha256": "fc6a31e1e8df90876d9cd939a643c097dc84035b3acd3097e8ffcd4ddb5098bf",
+      "nativePixelsModified": false
+    },
+    {
+      "file": "settings-delete-keep-default.png",
+      "sha256": "7168d3088cb77886abc76e7a7b6a6b2ea6fd4384140cd00eab545c119f1f863c",
+      "nativePixelsModified": false
+    },
+    {
+      "file": "settings-keep-returns-options-delete-selected.png",
+      "sha256": "a7cc91f98fee67f149d49eb5ae16ef39848f94e0084cbf55fb4557da6729e941",
+      "nativePixelsModified": false
+    },
+    {
+      "file": "settings-restart-shows-saved-duration.png",
+      "sha256": "d3f5dd056db061b7d2fe8fb40b84c3236d42b3fff3ad7128f9756996dcc30a0f",
+      "nativePixelsModified": false
+    },
+    {
+      "file": "settings-eight-running-full.png",
+      "sha256": "2b93cbddb7763d72a2f2f820d1dfef148c01fa0ea78e748e58c40cb1fe1a50b4",
+      "nativePixelsModified": false
+    },
+    {
+      "file": "two-running-six-ready.png",
+      "sha256": "bc2350689a1f2acf0aa34c62e02594f572e1fdb24ee7ceeee4a1c63013f4e170",
+      "nativePixelsModified": false
+    }
+  ]
+}

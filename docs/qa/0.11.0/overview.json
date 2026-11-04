@@ -1,0 +1,19 @@
+{
+  "candidatePbwSha256": "4fb9ef3ab3581338842ae57bf2610abdef665886d1612f515c45a4eeeddebbbd",
+  "file": "docs/images/hourglass-overview-0.11.png",
+  "sources": [
+    {
+      "file": "docs/qa/0.11.0/native/hourglass-ready-bottom.png",
+      "sha256": "1ba9a7ee488f510029e4838c3bee2828695dadaac635b93bfd46db323b6cf019"
+    },
+    {
+      "file": "docs/qa/0.11.0/native/hourglass-running-top.png",
+      "sha256": "1e2886bad6f2886309d4e8be2b35bb8bac5346cd126c8d06990bad33a34c8f6d"
+    },
+    {
+      "file": "docs/qa/0.11.0/native/hourglass-paused-horizontal.png",
+      "sha256": "26bcb42292cb86aa73c16a7afec9b8d1c249362ccc8c9c211f975b748928ddcf"
+    }
+  ],
+  "composition": "Unscaled, unchanged native200x228 screenshots with captions outside; actual isolated Emery QEMU, no physicalwatch."
+}

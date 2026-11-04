@@ -123,3 +123,14 @@ verify original module/source identity, reproduce optimized code/map bytes and
 exercise the actual optimized runtime. Keep development SDK output unchanged.
 Publish/debug/source artifacts need matching versioned checksums. Host raster
 profiling counts portable work; it is not watch render timing or battery proof.
+
+Version 0.11.0 replaces the canvas bounce with a 300ms glass-only rotation.
+`timer_hourglass.h` owns portable geometry, state poses and bounded easing;
+`main.c` starts motion only after an explicit successful timer operation.
+Ready/setup is 180 degrees, Running/Finished is 0 and Paused is 90. Keep
+the countdown fixed, preserve proportional sand, stop decorative timers under
+a cover and do not replay motion on ordinary refresh or reopening. The alarm
+deadline starts immediately, independently of decorative motion.
+Dashboard control remains a proposal in `docs/design/dashboard-timer-control.md`.
+Do not add a remote Pause/Resume action without an owner-side verified operation;
+neither a queued command nor a changed phone snapshot cancels a native Wakeup.

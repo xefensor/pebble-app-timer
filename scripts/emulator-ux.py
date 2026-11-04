@@ -21,6 +21,7 @@ from pebble_tool.commands.base import PebbleCommand
 from pebble_tool.commands.install import ToolAppInstaller
 from pebble_tool.commands.emucontrol import send_data_to_qemu
 from libpebble2.protocol.apps import AppRunState, AppRunStateStart, AppRunStateStop
+from libpebble2.protocol.phone import PhoneNotification, IncomingCall, CallEnd
 from libpebble2.services.appmessage import AppMessageService, Uint8, Uint32, CString
 from libpebble2.services.screenshot import Screenshot
 from libpebble2.communication.transports.qemu.protocol import QemuButton
@@ -37,6 +38,9 @@ FINAL = ROOT / 'dist' / ('Timer-' + VERSION + '.pbw')
 NATIVE = Path(os.environ.get('TIMER_QA_NATIVE_PBW', ROOT / 'build/timer-ux-native-only.pbw'))
 TARGET = uuid.UUID('50e9ef12-a5ab-4369-a3b5-3447bfba5151')
 digest = lambda value: hashlib.sha256(value).hexdigest()
+candidate_hash = digest(FINAL.read_bytes())
+if os.environ.get('TIMER_QA_EXPECT_SHA256'):
+    assert candidate_hash == os.environ['TIMER_QA_EXPECT_SHA256'], 'Candidate differs from the reviewed build'
 with zipfile.ZipFile(FINAL) as source, zipfile.ZipFile(NATIVE, 'w') as output:
     native_hashes = {name: digest(source.read(name)) for name in source.namelist() if name.startswith('emery/')}
     for info in source.infolist():
@@ -48,12 +52,12 @@ with zipfile.ZipFile(NATIVE) as packaged:
 report_file = OUT / 'ux.json'
 if report_file.exists():
     report = json.loads(report_file.read_text())
-    assert report['candidatePbwSha256'] == digest(FINAL.read_bytes()), 'QA belongs to another candidate'
+    assert report['candidatePbwSha256'] == candidate_hash, 'QA belongs to another candidate'
 else:
     report = {
         'version': VERSION,
         'environment': 'Actual Emery QEMU; no phone JavaScript, real phone or physical watch',
-        'candidatePbwSha256': digest(FINAL.read_bytes()),
+        'candidatePbwSha256': candidate_hash,
         'nativeOnlyPbwSha256': digest(NATIVE.read_bytes()),
         'nativePayloadSha256': native_hashes,
         'phoneJavascriptExecuted': False,
@@ -159,7 +163,7 @@ def button(name, count=1):
         send_data_to_qemu(p.transport, QemuButton(state=0))
         time.sleep(.18)
 
-def shot(name, wait=.3):
+def shot(name, wait=.3, source=None):
     time.sleep(wait)
     rows = Screenshot(p).grab_image()
     assert len(rows) == 228 and all(len(row) == 600 for row in rows)
@@ -170,9 +174,52 @@ def shot(name, wait=.3):
     report['captures'] = [entry for entry in report['captures'] if entry['name'] != name]
     report['captures'].append({'name': name, 'file': path.name, 'sha256': digest(path.read_bytes()),
         'rgbSha256': digest(pixels), 'pixels': [200, 228], 'nativePixelsModified': False, 'phase': PHASE})
+    if source:
+        report['captures'][-1]['source'] = source
     save()
     print(name, flush=True)
     return pixels
+
+def region(pixels, bounds):
+    left, top, right, bottom = bounds
+    return b''.join(pixels[(y*200+left)*3:(y*200+right)*3] for y in range(top, bottom))
+
+def sand_position(pixels, bounds, color):
+    """Measure native coloured sand only; saved screenshots stay unmodified."""
+    left, top, right, bottom = bounds
+    points = []
+    for y in range(top, bottom):
+        for x in range(left, right):
+            red, green, blue = pixels[(y*200+x)*3:(y*200+x)*3+3]
+            matches = (red < 100 and green >= 80 and blue >= 150) if color == 'blue' else (
+                red >= 170 and green >= 80 and blue < 90)
+            if matches:
+                points.append((x, y))
+    assert len(points) > 100, 'Expected a substantial native sand chamber: ' + str(len(points))
+    return {'pixels': len(points), 'x': sum(x for x, _ in points)/len(points),
+        'y': sum(y for _, y in points)/len(points)}
+
+def tap_select():
+    send_data_to_qemu(p.transport, QemuButton(state=int(QemuButton.Button.Select)))
+    time.sleep(.035)
+    send_data_to_qemu(p.transport, QemuButton(state=0))
+
+def transition_shot(name):
+    # The generic button helper intentionally waits for settled UI. Here the
+    # real QEMU press/release and immediate screenshot sample a finite flip.
+    tap_select()
+    return shot(name, wait=.025)
+
+def wait_timer_surface(seconds=6):
+    """Wait for the OS's own window transition before inspecting app pixels."""
+    until = time.monotonic() + seconds
+    while time.monotonic() < until:
+        pixels = b''.join(Screenshot(p).grab_image())
+        corners = [(0, 0), (165, 0), (0, 227), (165, 227)]
+        if all(pixels[(y*200+x)*3:(y*200+x)*3+3] == bytes((255, 255, 255)) for x, y in corners):
+            return
+        time.sleep(.08)
+    raise AssertionError('Stock OS did not finish returning to Timer')
 
 def current(slot=0):
     with lock:
@@ -480,6 +527,176 @@ elif PHASE == 'settings':
         'deleteCancelKeepsRun':intact,'restartUsesSavedRepeat':restarted,
         'replacementCancelPreservesEightReady':True,'fullSelectPreservesEightRuns':True,
         'fullListSkipsDisabledAddAndOpensSelectedTimer':True}
+    seed(0)
+
+elif PHASE == 'hourglass':
+    seed(2)
+    before = handshake()
+    assert all(value[1003] == 'completed' and value[1023] == 0 for value in before.values())
+    button('Up', 8); button('Down'); button('Select')
+    glass_bounds = (42, 104, 125, 187)
+    editor_bounds = (57, 39, 110, 92)
+    ready_pixels = shot('hourglass-ready-bottom')
+    ready_sand = sand_position(ready_pixels, glass_bounds, 'blue')
+    assert ready_sand['y'] > 153, ready_sand
+    button('Up')
+    editor_pixels = shot('hourglass-editor-bottom')
+    editor_sand = sand_position(editor_pixels, editor_bounds, 'blue')
+    assert editor_sand['y'] > 69, editor_sand
+    button('Back', 2)
+    after_cancel = handshake()
+    # A ready handshake deliberately reconfirms source revisions. It must
+    # preserve run identity, owner observation/expiry, duration and visibility.
+    assert all(after_cancel[slot][key] == before[slot][key]
+        for slot in before for key in (1001, 1003, 1009, 1010, 1011, 1012, 1022, 1023))
+    start_mid = transition_shot('hourglass-start-flip')
+    running_pixels = shot('hourglass-running-top', wait=.4)
+    running = wait_record(0, lambda value: value[1003] == 'active' and value[1001] != before['0'][1001])
+    running_sand = sand_position(running_pixels, glass_bounds, 'blue')
+    assert running_sand['y'] < 137, running_sand
+    start_sampled = region(start_mid, glass_bounds) != region(running_pixels, glass_bounds)
+    pause_mid = transition_shot('hourglass-pause-turn')
+    paused_pixels = shot('hourglass-paused-horizontal', wait=.4)
+    paused = wait_record(0, lambda value: value[1003] == 'paused')
+    assert paused[1001] == running[1001] and paused[1012] > 0
+    paused_sand = sand_position(paused_pixels, glass_bounds, 'amber')
+    assert paused_sand['x'] > 91 and abs(paused_sand['y'] - 145) < 4, paused_sand
+    pause_sampled = region(pause_mid, glass_bounds) != region(paused_pixels, glass_bounds)
+    paused_later = shot('hourglass-paused-static', wait=1.2)
+    assert region(paused_pixels, glass_bounds) == region(paused_later, glass_bounds), 'Paused glass animated at rest'
+    resume_mid = transition_shot('hourglass-resume-turn')
+    resumed_pixels = shot('hourglass-resumed-top', wait=.4)
+    resumed = wait_record(0, lambda value: value[1003] == 'active' and value[1002] > paused[1002])
+    resumed_sand = sand_position(resumed_pixels, glass_bounds, 'blue')
+    assert resumed[1001] == paused[1001] and resumed[1022] == paused[1022]
+    assert resumed[1011] - resumed[1009] == paused[1012]
+    assert resumed_sand['y'] < 137, resumed_sand
+    resume_sampled = region(resume_mid, glass_bounds) != region(resumed_pixels, glass_bounds)
+    # Screenshot RPC completion can occur after a 300ms transition; retain each
+    # observed result rather than claiming every attempted sample caught it.
+    assert start_sampled or pause_sampled or resume_sampled, 'No intermediate rotation frame sampled'
+    # Cardinal rotations preserve the same native chamber to raster tolerance.
+    areas = [ready_sand['pixels'], running_sand['pixels'], paused_sand['pixels'], resumed_sand['pixels']]
+    assert max(areas) - min(areas) < max(areas)*.12, areas
+    unchanged_others = handshake()
+    assert all(unchanged_others[slot][key] == before[slot][key]
+        for slot in before if slot != '0' for key in (1001, 1003, 1009, 1010, 1011, 1012, 1022, 1023))
+    # Cover a pause while its 300ms animation is still in flight. These packets
+    # generate only an isolated QEMU OS call surface; no phone is connected.
+    tap_select()
+    cookie = 0x544d5101
+    p.send_packet(PhoneNotification(cookie=cookie, message=IncomingCall(number='000', name='Timer motion QA')))
+    covered_pixels = shot('hourglass-os-cover', wait=.2,
+        source='Stock PebbleOS synthetic call cover; includes an OS window transition, not Timer-only UI')
+    paused_cover = wait_record(0, lambda value: value[1003] == 'paused' and value[1002] > resumed[1002])
+    assert region(covered_pixels, glass_bounds) != region(paused_pixels, glass_bounds), 'OS cover not visible'
+    p.send_packet(PhoneNotification(cookie=cookie, message=CallEnd()))
+    ended_pixels = shot('hourglass-call-ended-cover', wait=.6,
+        source='Stock PebbleOS Call Declined summary, not Timer UI')
+    # Stock PebbleOS retains a red Call Declined summary after CallEnd. Dismiss
+    # that actual system surface; CallEnd alone does not return focus to Timer.
+    call_summary_dismissed = ended_pixels[:3] == bytes((255, 0, 0))
+    if call_summary_dismissed:
+        button('Back')
+    wait_timer_surface()
+    returned_pixels = shot('hourglass-after-os-cover', wait=.2)
+    returned_sand = sand_position(returned_pixels, glass_bounds, 'amber')
+    assert returned_sand['x'] > 91 and abs(returned_sand['y'] - 145) < 4, returned_sand
+    returned_later = shot('hourglass-cover-return-static', wait=1.2)
+    assert region(returned_pixels, glass_bounds) == region(returned_later, glass_bounds), 'Cover return replayed motion'
+    assert current(0)[1001] == paused_cover[1001] and current(0)[1012] == paused_cover[1012]
+    button('Select')
+    reopened_run = wait_record(0, lambda value: value[1003] == 'active' and value[1002] > paused_cover[1002])
+    button('Back'); button('Down'); button('Select')
+    shot('hourglass-other-ready-timer')
+    button('Back'); button('Up')
+    tap_select()
+    reopened_mid = shot('hourglass-open-existing-running-immediate', wait=.025)
+    reopened_final = shot('hourglass-open-existing-running-settled', wait=.4)
+    assert sand_position(reopened_mid, glass_bounds, 'blue')['y'] < 137, 'Opening an existing run replayed start flip'
+    assert sand_position(reopened_final, glass_bounds, 'blue')['y'] < 137
+    assert current(0)[1001] == reopened_run[1001] and current(0)[1011] == reopened_run[1011]
+
+    # Also exercise a substantially divided chamber, so a reset-to-full visual
+    # on pause/resume cannot pass by matching a near-full five-minute timer.
+    seed(0); handshake(); create(10)
+    partial_started = wait_record(0, lambda value: value[1003] == 'active')
+    time.sleep(3.8)
+    button('Select')
+    partial_paused = wait_record(0, lambda value: value[1003] == 'paused')
+    partial_pixels = shot('hourglass-partial-paused-horizontal')
+    upper = sand_position(partial_pixels, (85, 104, 125, 187), 'amber')['pixels']
+    lower = sand_position(partial_pixels, (42, 104, 82, 187), 'amber')['pixels']
+    partial_fraction = upper/(upper+lower)
+    expected_fraction = partial_paused[1012]/partial_paused[1022]
+    assert .2 <= expected_fraction <= .8, partial_paused
+    assert abs(partial_fraction - expected_fraction) < .08, (partial_fraction, expected_fraction)
+    transition_shot('hourglass-partial-resume-turn')
+    partial_resumed_pixels = shot('hourglass-partial-resumed-top', wait=.35)
+    partial_resumed = wait_record(0, lambda value: value[1003] == 'active' and value[1002] > partial_paused[1002])
+    assert partial_resumed[1001] == partial_paused[1001]
+    assert partial_resumed[1011] - partial_resumed[1009] == partial_paused[1012]
+    upper = sand_position(partial_resumed_pixels, (42, 104, 125, 142), 'blue')['pixels']
+    lower = sand_position(partial_resumed_pixels, (42, 148, 125, 187), 'blue')['pixels']
+    resumed_fraction = upper/(upper+lower)
+    assert expected_fraction - .14 <= resumed_fraction <= expected_fraction + .04, (resumed_fraction, expected_fraction)
+    report['proofs']['hourglass'] = {'readySand': ready_sand, 'editorSand': editor_sand,
+        'runningSand': running_sand, 'pausedSand': paused_sand, 'resumedSand': resumed_sand,
+        'cardinalSandPixels': areas, 'nativeBefore': before, 'nativeStarted': running,
+        'nativePaused': paused, 'nativeResumed': resumed, 'nativePausedDuringCover': paused_cover,
+        'readyAndEditorSandPhysicallyBottom': True, 'runningSandPhysicallyTop': True,
+        'pausedGlassHorizontalAndStatic': True,
+        'intermediateRotationSamples': {'start': start_sampled, 'pause': pause_sampled, 'resume': resume_sampled},
+        'resumePreservesRunAndRemaining': True, 'editorCancelPreservesAllEightTimers': True,
+        'sevenOtherTimersPreserved': True, 'syntheticQemuOsCoverReturnSettledWithoutReplay': True,
+        'osCallSummaryDismissedWithBack': call_summary_dismissed,
+        'existingRunningListOpenDoesNotReplayStartFlip': True,
+        'partialStarted': partial_started, 'partialPaused': partial_paused, 'partialResumed': partial_resumed,
+        'partialPausedRemainingSandFraction': partial_fraction,
+        'partialResumedRemainingSandFraction': resumed_fraction,
+        'partialPauseResumePreservesPhysicalProportions': True,
+        'nativePixelsUnmodified': True, 'batteryOrCoveredCpuUsageMeasured': False}
+    seed(0)
+
+elif PHASE == 'legibility':
+    seed(5); handshake()
+    button('Down', 2)
+    shot('legibility-24h-running-list')
+    button('Select'); shot('legibility-24h-running-detail')
+    button('Back'); button('Up', 8)
+    shot('legibility-replacement-list')
+    button('Select'); shot('legibility-replacement-editor')
+    # Enter the longest legal duration through the actual native editor. An
+    # exact 24h duration is labelled24h and would not exercise long context.
+    button('Back'); button('Up', 23); button('Select')
+    button('Up', 49); button('Select'); button('Up', 59); button('Select')
+    state = handshake()
+    long_running = next(value for value in state.values()
+        if value[1003] == 'active' and value[1022] == 86399)
+    shot('legibility-235959-running-detail')
+    button('Back'); shot('legibility-235959-running-list')
+    seed(0); handshake(); add(); button('Down', 10); button('Select')
+    zero_editor = shot('legibility-zero-seconds-editor-bottom')
+    zero_sand = sand_position(zero_editor, (57, 39, 110, 92), 'blue')
+    assert zero_sand['y'] > 69, zero_sand
+    button('Select')
+    invalid_zero = handshake()
+    assert all(value[1003] == 'cancelled' for value in invalid_zero.values())
+    button('Up', 4)
+    four_editor = shot('legibility-four-seconds-editor-bottom')
+    four_sand = sand_position(four_editor, (57, 39, 110, 92), 'blue')
+    assert four_sand['y'] > 69, four_sand
+    button('Select')
+    invalid_four = handshake()
+    assert all(value[1003] == 'cancelled' for value in invalid_four.values())
+    button('Up'); shot('legibility-five-seconds-editor-valid')
+    button('Back', 3)
+    report['proofs']['legibility'] = {'nativeMixed24hAndReplacementCaptured': True,
+        'native235959Timer': long_running, 'longDurationEnteredThroughNativeEditor': True,
+        'zeroEditorSand': zero_sand, 'fourSecondEditorSand': four_sand,
+        'invalidZeroAndFourSecondsPreserveEmptyCollection': True,
+        'fiveSecondsValidAffordanceCaptured': True,
+        'requiresHumanVisualReview': True}
     seed(0)
 
 elif PHASE == 'launcher':

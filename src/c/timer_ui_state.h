@@ -15,6 +15,8 @@ typedef struct {
   bool editing_new, editing_ready;
   uint32_t now;
   const char *status, *issue;
+  bool hourglass_transition;
+  int16_t hourglass_angle;
 } TimerUiView;
 
 typedef struct {

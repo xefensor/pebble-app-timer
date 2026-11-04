@@ -1,0 +1,38 @@
+{
+  "derivativeContactSheet": true,
+  "scale": 2,
+  "resampling": "nearest",
+  "candidatePbwSha256": "4fb9ef3ab3581338842ae57bf2610abdef665886d1612f515c45a4eeeddebbbd",
+  "sources": [
+    {
+      "file": "empty-list.png",
+      "sha256": "a1e5c1d4dbf4da7f68e374a83c8e468dea5cfcfbb02f8ab308aa772296cc87b3",
+      "nativePixelsModified": false
+    },
+    {
+      "file": "native-background-alarm.png",
+      "sha256": "17968059bdb049969acfcd12fcfa8dce5be934b4d2700e24b5453e7ad84fada2",
+      "nativePixelsModified": false
+    },
+    {
+      "file": "snoozed-original-identity.png",
+      "sha256": "05fe06a951cba3d1221e619d633e06b73b46e0c3ab7ffbbfbb9370e0bd5f9df0",
+      "nativePixelsModified": false
+    },
+    {
+      "file": "remaining-edit-preserves-elapsed.png",
+      "sha256": "b8df7ecdcf3eac966caa79deb0d120615f7d493dc7d10593893f7235992addbc",
+      "nativePixelsModified": false
+    },
+    {
+      "file": "ready-edited-without-starting.png",
+      "sha256": "61056ab4f03c5eeed0203f85f5db8def9ac604a8459d946de25cd9c852858c65",
+      "nativePixelsModified": false
+    },
+    {
+      "file": "ready-repeated-paused.png",
+      "sha256": "41802a715d39040ab99ac99f0bfac4dc9673515cb985b05b919f3db73879fab3",
+      "nativePixelsModified": false
+    }
+  ]
+}

@@ -31,6 +31,9 @@ NATIVE = Path(environ.get('TIMER_QA_NATIVE_PBW', ROOT / 'build/timer-error-nativ
 FIXTURE = ROOT / 'tests/wakeup-conflict-fixture/build/wakeup-conflict-fixture.pbw'
 TARGET = uuid.UUID('50e9ef12-a5ab-4369-a3b5-3447bfba5151')
 CONFLICT = uuid.UUID('d012c8aa-b7ce-4fc3-82f7-f45c8a58f4d1')
+candidate_hash = hashlib.sha256(FINAL.read_bytes()).hexdigest()
+if environ.get('TIMER_QA_EXPECT_SHA256'):
+    assert candidate_hash == environ['TIMER_QA_EXPECT_SHA256'], 'Candidate differs from the reviewed build'
 
 
 class Connection(PebbleCommand):
@@ -49,7 +52,7 @@ captures = []
 report = {
     'version': VERSION,
     'scope': 'Actual native Timer scheduling-error integration in Emery QEMU; no phone JavaScript or physical watch',
-    'candidatePbwSha256': hashlib.sha256(FINAL.read_bytes()).hexdigest(),
+    'candidatePbwSha256': candidate_hash,
     'fixtureUuid': str(CONFLICT), 'fixturePbwSha256': hashlib.sha256(FIXTURE.read_bytes()).hexdigest(),
     'fixtureSourceSha256': hashlib.sha256((ROOT / 'tests/wakeup-conflict-fixture/src/c/main.c').read_bytes()).hexdigest(),
     'fixtureWakeupOffsetSeconds': 600, 'phoneJavascriptExecuted': False,

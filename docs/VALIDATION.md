@@ -1,5 +1,54 @@
 # Timer validation
 
+## 0.11.0 local hourglass candidate
+
+This version changes native presentation and short decorative motion. Timer
+models, collection/banks, Wakeup broker, Glance and phone publisher/provider
+remain independent. Dashboard Pause/Resume is deferred by user choice; the
+[platform investigation](design/dashboard-timer-control.md) records the scope.
+
+All seven portable C suites, 22 JS checks and 42 Python regressions pass. The
+portable checks cover conserved sand, every second of a 24-hour countdown,
+every integer orientation from 0 to 180 degrees at the used scales, state poses
+and finite monotone easing, including interrupted rotations. SDK build,
+packaged-runtime, font identity and Python release/optimization checks are
+recorded in [versioned QA](qa/0.11.0/). The final SDK build reports 35,243 bytes
+of static RAM and 22,802 resource bytes. Final candidate SHA-256:
+`4fb9ef3ab3581338842ae57bf2610abdef665886d1612f515c45a4eeeddebbbd`.
+
+Six actual native Emery phases pass with 76 captures, including explicitly
+labelled OS/fixture surfaces. They cover the hourglass poses and intermediate
+motion, partial sand proportions, static pause, OS cover-return, existing-run
+opening, real 23:59:59 entry, invalid 0/4 seconds versus valid 5 seconds,
+eight-slot capacity/reuse, editing/cancellation, background Wakeup, Snooze,
+Restart, durable Done/reopening and actual refusal to save an exhausted bank.
+Contact sheets preserve the raw native screenshots and identify enlargement;
+the three-state product overview keeps native screenshots unscaled. All checks
+use the exact final candidate's native binary and resources, with Python
+transport/receipts explicitly separated from real phone delivery.
+
+The separate [scheduling-error run](qa/0.11.0/native/errors/errors.json) also
+passes with seven captures, including two labelled external-fixture surfaces.
+Timer shows Alarm not set in Detail and Options, recovers after the external
+Wakeup is cleared, and returns to the same empty list after deletion. Across
+both reports, all 83 PNG hashes match and the native payload is identical.
+Six labelled contact sheets and focused originals were visually reviewed.
+
+The [identity report](qa/0.11.0/ownership-identity.json) verifies the retained
+timer models, storage, alarm broker, Glance, phone sources, provider metadata
+and packaged fonts/scripts against 0.10. Repeated migration, equal/nearby-deadline
+and launcher tests retain their historical scope; this pass does not claim
+those unchanged paths were exercised again on 0.11.
+
+The first native candidate exposed a rasterization defect: its one-pixel sand
+polygons disappeared at the horizontal paused pose. Its rejected hash, captures
+and observations remain in [failed-candidate evidence](qa/0.11.0/candidate-1-failed/).
+Portable geometry tests alone did not detect that SDK raster behavior.
+
+This remains emulator/host evidence, not a real phone, physical-watch, battery
+or measured watch rendering-time claim. The published 0.10 artifacts and their
+[historical provenance](qa/0.10.0/asset-provenance.json) remain unchanged.
+
 ## Publication — 3 November 2026
 
 The [0.10.0 development prerelease](https://github.com/xefensor/pebble-app-timer/releases/tag/v0.10.0)
@@ -24,7 +73,7 @@ fixture/OS-launcher frames. They cover unchanged layouts, offscreen clocks,
 storage refusal, native offline alarms, nearby/equal deadlines and app-list
 countdown clearing. Twenty-four complete native frames match approved 0.9.0
 pixels exactly. Source/payload hashes, limits and reviewed frames are in
-[current provenance](asset-provenance.json) and [the native report](qa/0.10.0/native/ux.json).
+[0.10 provenance](qa/0.10.0/asset-provenance.json) and [the native report](qa/0.10.0/native/ux.json).
 The old 0.9 provenance is retained [with its historical QA](qa/0.9.0/asset-provenance.json).
 
 The host-only raster profile informs a decision to retain existing bounded

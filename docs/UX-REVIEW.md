@@ -1,4 +1,33 @@
-# Timer UX review — 0.9.0
+# Timer UX review
+
+## 0.11.0 hourglass and readability
+
+The countdown keeps a fixed position while the hourglass communicates state.
+Setup and acknowledged Ready have their sand at the bottom. Starting rotates
+the glass to put the remaining sand above; Pause rotates it onto its side;
+Resume returns it upright. A finished alarm has its sand below without an
+extra flip. Proportional sand is still derived from the native model.
+
+Only the glass rotates, for at most 300ms. Rapid Pause/Resume starts from the
+current decorative angle. Opening an existing timer, ordinary ticks and phone
+receipts do not replay the animation. Covering the app stops its decorative
+timer; the countdown and native Wakeup continue independently.
+
+Labels and guidance now primarily use 18, 19 and 23px body fonts across the
+list, duration editor, detail, Options, confirmation and alarm. The native
+right-side action bar and established navigation remain. Critical error
+compositions reserve space for the warnings and available alarm actions.
+Long state/duration subtitles use 16 or 15px only when necessary to preserve
+the complete value on one line beside the progress bar. Shorter replacement
+guidance and HRS/MIN/SEC labels fit at the normal larger size. Invalid setup
+values keep the same bottom-sand pose while disabling the Start action.
+
+Dashboard Pause/Resume is deferred by user choice. The
+[platform investigation and proposed handoff](design/dashboard-timer-control.md)
+record why an invisible control cannot safely operate a separately installed
+Timer through the supported SDK. No new control is advertised by the provider.
+
+## Earlier 0.9.0 review
 
 This pass follows the complete watch journey: empty and mixed lists, capacity,
 duration entry, running/paused/Ready detail, Options, safe deletion, native

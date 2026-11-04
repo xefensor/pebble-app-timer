@@ -8,6 +8,7 @@
 #include "timer_ui.h"
 #include "timer_fonts.h"
 #include "timer_glance.h"
+#include "timer_hourglass.h"
 
 #define LEGACY_MODEL_KEY 2100
 #define WAKEUP_KEY 2101
@@ -49,6 +50,8 @@ static bool s_focused, s_ready, s_ticks_active;
 static bool s_exit_pending;
 static AppTimer *s_motion_timer;
 static uint32_t s_motion_started;
+static bool s_glass_motion;
+static int s_glass_from, s_glass_to;
 static Screen s_repeat_screen;
 static PaPublisher s_publisher;
 static ActivityTimerModel s_flight_model;
@@ -70,6 +73,7 @@ static void prv_refresh_sharing(void);
 static void prv_schedule_alarm(void);
 static void prv_tick(struct tm *tick_time, TimeUnits units_changed);
 static void prv_transition(void);
+static uint32_t prv_millis(void);
 static bool prv_load_bank(unsigned bank, TimerCollection *collection, SavedHeader *header);
 
 static uint32_t prv_now(void) { return (uint32_t)time(NULL); }
@@ -536,7 +540,11 @@ static TimerUiView prv_view(void) {
           s_collection.slots[s_edit_slot].acknowledged,
       .issue=s_storage_error?"Changes not saved":
           s_alarm_error?"Alarm not set":NULL,
-      .status=prv_status()};
+      .status=prv_status(),
+      .hourglass_transition=s_glass_motion&&s_screen==SCREEN_DETAIL,
+      .hourglass_angle=(int16_t)(s_glass_motion?
+          timer_hourglass_angle(s_glass_from,s_glass_to,
+              prv_millis()-s_motion_started,300u):0)};
 }
 
 static void prv_draw(Layer *layer, GContext *ctx) {
@@ -584,18 +592,16 @@ static uint32_t prv_millis(void) {
 
 static void prv_stop_motion(void) {
   if (s_motion_timer) { app_timer_cancel(s_motion_timer);s_motion_timer=NULL; }
-  if (s_canvas && s_window)
-    layer_set_frame(s_canvas,layer_get_bounds(window_get_root_layer(s_window)));
+  const bool was_moving=s_glass_motion;
+  s_glass_motion=false;
+  if(was_moving&&s_focused&&s_canvas)layer_mark_dirty(s_canvas);
 }
 
 static void prv_motion_tick(void *context) {
   (void)context;s_motion_timer=NULL;
   const uint32_t elapsed=prv_millis()-s_motion_started;
-  if (!s_focused || elapsed>=180u) { prv_stop_motion();return; }
-  GRect frame=layer_get_bounds(window_get_root_layer(s_window));
-  const uint32_t left=180u-elapsed;
-  frame.origin.y=(int16_t)((3u*left*left+16200u)/32400u);
-  layer_set_frame(s_canvas,frame);
+  if (!s_focused || s_screen!=SCREEN_DETAIL || elapsed>=300u) { prv_stop_motion();return; }
+  if(s_canvas)layer_mark_dirty(s_canvas);
   s_motion_timer=app_timer_register(30,prv_motion_tick,NULL);
   if (!s_motion_timer) prv_stop_motion();
 }
@@ -604,7 +610,19 @@ static void prv_transition(void) {
   prv_stop_motion();
   if (s_window) window_set_background_color(s_window,s_screen==SCREEN_ALARM?GColorBlack:GColorWhite);
   prv_refresh();
-  if (!s_focused || !s_canvas) return;
+}
+
+static int prv_glass_pose(void) {
+  if(s_selected>=TIMER_COLLECTION_CAPACITY)return 180;
+  const ActivityTimerModel *timer=&s_collection.slots[s_selected];
+  return timer_hourglass_pose(timer->state==ACTIVITY_TIMER_PAUSED?TIMER_GLASS_PAUSED:
+      timer->state==ACTIVITY_TIMER_FINISHED&&timer->acknowledged?TIMER_GLASS_READY:TIMER_GLASS_RUNNING);
+}
+
+static void prv_rotate_glass(int from, int to) {
+  prv_stop_motion();
+  if(!s_focused||!s_canvas||s_screen!=SCREEN_DETAIL||from==to)return;
+  s_glass_from=from;s_glass_to=to;s_glass_motion=true;
   s_motion_started=prv_millis();prv_motion_tick(NULL);
 }
 
@@ -773,8 +791,30 @@ static void prv_click(ClickRecognizerRef recognizer, void *context) {
   else if (s_repeat_screen!=s_screen || (s_screen!=SCREEN_LIST &&
       s_screen!=SCREEN_EDITOR && s_screen!=SCREEN_OPTIONS)) return;
   const Screen before=s_screen;
+  const unsigned previous_slot=s_selected;
+  const uint32_t previous_run=s_selected<TIMER_COLLECTION_CAPACITY?
+      s_collection.slots[s_selected].run:0;
+  const uint32_t previous_state=s_selected<TIMER_COLLECTION_CAPACITY?
+      s_collection.slots[s_selected].state:0;
+  const uint32_t previous_revision=s_selected<TIMER_COLLECTION_CAPACITY?
+      s_collection.slots[s_selected].revision:0;
+  const int previous_angle=s_glass_motion?
+      timer_hourglass_angle(s_glass_from,s_glass_to,
+          prv_millis()-s_motion_started,300u):prv_glass_pose();
   prv_press(button);
   if (s_screen!=before) prv_transition();
+  if(s_screen==SCREEN_DETAIL&&s_selected<TIMER_COLLECTION_CAPACITY) {
+    const ActivityTimerModel *timer=&s_collection.slots[s_selected];
+    if(before==SCREEN_EDITOR&&
+        (previous_slot!=s_selected||timer->revision!=previous_revision))
+      prv_rotate_glass(180,prv_glass_pose());
+    else if((before==SCREEN_DETAIL||before==SCREEN_OPTIONS)&&
+        previous_slot==s_selected&&timer->state==ACTIVITY_TIMER_RUNNING&&
+        timer->run!=previous_run)
+      prv_rotate_glass(180,0);
+    else if(before==SCREEN_DETAIL&&previous_slot==s_selected&&timer->state!=previous_state)
+      prv_rotate_glass(previous_angle,prv_glass_pose());
+  }
 }
 
 static void prv_click_config(void *context) {

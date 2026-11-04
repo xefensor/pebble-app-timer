@@ -1,0 +1,38 @@
+{
+  "derivativeContactSheet": true,
+  "scale": 2,
+  "resampling": "nearest",
+  "candidatePbwSha256": "4fb9ef3ab3581338842ae57bf2610abdef665886d1612f515c45a4eeeddebbbd",
+  "sources": [
+    {
+      "file": "legibility-235959-running-list.png",
+      "sha256": "79f404a97ceb0c4ebe80f2a4b06b2366d710a103146bd0a2403a52d8ef04cdf3",
+      "nativePixelsModified": false
+    },
+    {
+      "file": "legibility-replacement-editor.png",
+      "sha256": "3d6037074cf8e4c91b155f9a3b98965ab4b18c84a9dc09304dcd0de150704b5e",
+      "nativePixelsModified": false
+    },
+    {
+      "file": "legibility-replacement-list.png",
+      "sha256": "31370bb1930cd5646a32edeec50cae38607ab978c4304a0fa77e14b9faf56a01",
+      "nativePixelsModified": false
+    },
+    {
+      "file": "legibility-zero-seconds-editor-bottom.png",
+      "sha256": "312f4833c49821f04812676606c4823ec03a826330cc8e7c75f0f0cbe609a33e",
+      "nativePixelsModified": false
+    },
+    {
+      "file": "legibility-four-seconds-editor-bottom.png",
+      "sha256": "59b5da1aba40f8ef3ea9c5e28ec80cc4af77244a2245586c7621ec507750cea3",
+      "nativePixelsModified": false
+    },
+    {
+      "file": "legibility-five-seconds-editor-valid.png",
+      "sha256": "c6ef56494bb9b483b53c62913b8c0dc30539f42fde4c49987c8ce0929b8a2669",
+      "nativePixelsModified": false
+    }
+  ]
+}

@@ -4,7 +4,19 @@ A native timer for **stock PebbleOS**, with activity sharing for compatible
 watchfaces such as [Dynamic](https://github.com/xefensor/dynamic-watchface).
 The first target is Pebble Time 2 (`emery`, 200 × 228).
 
-Timer **0.10.0** is a [GitHub development prerelease](https://github.com/xefensor/pebble-app-timer/releases/tag/v0.10.0)
+Timer **0.11.0** is a local development candidate with larger labels and a
+stateful hourglass: sand rests at the bottom during setup, flips to the top
+when started, and lies horizontally while paused. Short rotations leave the
+countdown stationary and do not delay the native alarm.
+The local test package is [Timer-0.11.0.pbw](releases/Timer-0.11.0.pbw).
+
+Dashboard Pause/Resume is deferred by choice. Separate stock PebbleOS apps cannot
+control each other's workers or cancel each other's alarms. The proposed
+Timer handoff and automatic return is documented in
+[Dashboard control design](docs/design/dashboard-timer-control.md); no remote
+control or automatic app switch is implemented in this candidate.
+
+The published **0.10.0** remains a [GitHub development prerelease](https://github.com/xefensor/pebble-app-timer/releases/tag/v0.10.0)
 with the approved 0.9 UI.
 Sharing acknowledgements no longer redraw an unchanged screen, and offscreen
 countdowns do not repaint the list. Unused font data is removed. Phone scripts
@@ -33,9 +45,11 @@ and [0.4.0](https://github.com/xefensor/pebble-app-timer/releases/tag/v0.4.0)
 and [earlier 0.2.0 release](https://github.com/xefensor/pebble-app-timer/releases/tag/v0.2.0)
 and its historical validation remain unchanged.
 
-![Timer 0.9.0 native UI and navigation](docs/images/settings-overview.png)
+![Timer 0.11.0 native hourglass states](docs/images/hourglass-overview-0.11.png)
 
-These are actual 0.9.0 Emery captures with synthetic saved timers. The full
+These are actual 0.11.0 Emery captures with synthetic saved timers; the native
+screenshots are unscaled and unchanged. The
+[0.9.0 UI/navigation overview](docs/images/settings-overview.png) and full
 [0.5.0 native overview](docs/images/native-overview.png) retains its historical
 alarm and launcher scope. The [approved browser concept](docs/design/Timer-UI-Preview.html)
 remains design evidence, not a native or physical-watch capture.
@@ -44,6 +58,20 @@ Use [Dynamic 0.16.0](https://github.com/xefensor/dynamic-watchface/releases/tag/
 for activity presentation and [Open Activity 0.1.5](https://github.com/xefensor/pebble-app-open-activity/releases/tag/v0.1.5)
 for the separately configured Primary/Secondary shortcuts. Install each app
 separately; the Activities library is already bundled.
+
+## Version 0.11.0
+
+- Increase labels and guidance across the timer list, editor, detail, Options
+  and alarm, retaining the native right-hand action bar.
+- Keep a fixed countdown baseline. Ready and setup show the sand at the bottom;
+  Start flips the glass upright. Pause rotates it horizontally and freezes the
+  remaining time; Resume rotates it upright again.
+- Limit each rotation to 300ms. Keep paused screens still and cancel motion
+  under an OS cover. Opening or refreshing a timer does not replay a flip.
+- Retain eight saved timers, native deadlines, verified storage, acknowledgement,
+  five-minute paused activity visibility and the existing Activities dependency.
+- Document Dashboard Pause/Resume without exposing a control that cannot
+  safely update Timer's native alarm. See the linked design record above.
 
 ## Version 0.10.0
 
@@ -351,7 +379,7 @@ The dependency is installed from `vendor/pebble-activities-0.4.0.tgz`; its
 provenance and SHA-256 are recorded in [vendor/README.md](vendor/README.md).
 
 The distribution build clears the SDK cache so dependency updates cannot leave
-stale phone JavaScript in the PBW. It writes `dist/Timer-0.10.0.pbw`, its debugging ZIP and checksums. It bundles the provider
+stale phone JavaScript in the PBW. It writes `dist/Timer-0.11.0.pbw`, its debugging ZIP and checksums. It bundles the provider
 JavaScript and sets `manifestVersion: 2`, including `plugin.js` alongside PKJS
 and the watch binary. A plain `pebble build` creates a development PBW without
 that extra provider bundle; use `npm run build` for an installable shared-activity

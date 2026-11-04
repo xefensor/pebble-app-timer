@@ -1,0 +1,28 @@
+{
+  "derivativeContactSheet": true,
+  "scale": 2,
+  "resampling": "nearest",
+  "candidatePbwSha256": "4fb9ef3ab3581338842ae57bf2610abdef665886d1612f515c45a4eeeddebbbd",
+  "sources": [
+    {
+      "file": "errors/alarm-not-set.png",
+      "sha256": "62367bd2389724535b5df868e27ee5f0a4f4edc11b2b8e4a92ce41ee3e0559b2",
+      "nativePixelsModified": false
+    },
+    {
+      "file": "errors/alarm-not-set-options.png",
+      "sha256": "654c67c3c24d33ab970fe31083406a2484388ffc6f07b5692992002c01b485c4",
+      "nativePixelsModified": false
+    },
+    {
+      "file": "errors/alarm-recovered.png",
+      "sha256": "b606f9b09db481c5c9b3850d5a7a9d0e6138c8ec53bffce081d0b12788a74eef",
+      "nativePixelsModified": false
+    },
+    {
+      "file": "errors/empty-after-recovery.png",
+      "sha256": "a1e5c1d4dbf4da7f68e374a83c8e468dea5cfcfbb02f8ab308aa772296cc87b3",
+      "nativePixelsModified": false
+    }
+  ]
+}

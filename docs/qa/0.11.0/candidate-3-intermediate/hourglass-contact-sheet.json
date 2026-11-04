@@ -1,0 +1,48 @@
+{
+  "derivativeContactSheet": true,
+  "scale": 2,
+  "resampling": "nearest",
+  "candidatePbwSha256": "9246f37b28a95d3e333c40a957cbdaac94d32cd9406775a20096a82e4a7fc2b0",
+  "sources": [
+    {
+      "file": "hourglass-ready-bottom.png",
+      "sha256": "1ba9a7ee488f510029e4838c3bee2828695dadaac635b93bfd46db323b6cf019",
+      "nativePixelsModified": false
+    },
+    {
+      "file": "hourglass-editor-bottom.png",
+      "sha256": "04f4f4dbb4ee92c36f527b80d3194b378a03dce473414a3876fec7ea879c9d61",
+      "nativePixelsModified": false
+    },
+    {
+      "file": "hourglass-running-top.png",
+      "sha256": "1729fe8dea308fe80c58d88f2f3390b35771446f7707252d3a8ffc3758c0c948",
+      "nativePixelsModified": false
+    },
+    {
+      "file": "hourglass-paused-horizontal.png",
+      "sha256": "cdd4525f36a8853fbfc1be39cf35809116eb6a51af4526070849ac3d1cfc7330",
+      "nativePixelsModified": false
+    },
+    {
+      "file": "hourglass-partial-paused-horizontal.png",
+      "sha256": "adb24d9afce06ce1d1825bf72300ef608623db959f147e7a0116774b7053bdf4",
+      "nativePixelsModified": false
+    },
+    {
+      "file": "hourglass-partial-resumed-top.png",
+      "sha256": "fa38e67f5131db25b84821fa69fda909a21196c558017b9bf04a8a19f1c75604",
+      "nativePixelsModified": false
+    },
+    {
+      "file": "hourglass-open-existing-running-immediate.png",
+      "sha256": "b365578c8d853e6c703030659664edaa9ee2de7a2cf7a833ea60204bb31b6d5f",
+      "nativePixelsModified": false
+    },
+    {
+      "file": "hourglass-after-os-cover.png",
+      "sha256": "26bcb42292cb86aa73c16a7afec9b8d1c249362ccc8c9c211f975b748928ddcf",
+      "nativePixelsModified": false
+    }
+  ]
+}
