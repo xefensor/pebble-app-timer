@@ -5,8 +5,8 @@
   "tag_prefix": "v",
   "prerelease": true,
   "bootstrap": {
-    "version": "0.8.0",
-    "source_commit": "984e05690684a3676124dd358760979726bd9c26"
+    "version": "0.12.0",
+    "source_commit": "2c5a9ef2b2f8b0da3e6643abe87ec07f149442b8"
   },
   "app_uuid": "50e9ef12-a5ab-4369-a3b5-3447bfba5151",
   "assets": ["releases/Timer-{version}.pbw", "releases/Timer-{version}-source.zip", "releases/Timer-{version}-debug.zip"],

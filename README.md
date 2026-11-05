@@ -4,19 +4,23 @@ A native timer for **stock PebbleOS**, with activity sharing for compatible
 watchfaces such as [Dynamic](https://github.com/xefensor/dynamic-watchface).
 The first target is Pebble Time 2 (`emery`, 200 × 228).
 
-Timer **0.12.0** is a local development candidate with **Reset** in More options.
+Timer **0.12.0** is available as a [GitHub development prerelease](https://github.com/xefensor/pebble-app-timer/releases/tag/v0.12.0)
+with **Reset** in More options.
 Reset stops the current countdown and restores its saved duration as **Ready**.
 It stays stopped until you press Select to start, including after closing and
 reopening Timer. Other timers continue normally.
-The local test package is [Timer-0.12.0.pbw](releases/Timer-0.12.0.pbw).
+Download the [PBW](https://github.com/xefensor/pebble-app-timer/releases/download/v0.12.0/Timer-0.12.0.pbw),
+[source](https://github.com/xefensor/pebble-app-timer/releases/download/v0.12.0/Timer-0.12.0-source.zip),
+[debugging files](https://github.com/xefensor/pebble-app-timer/releases/download/v0.12.0/Timer-0.12.0-debug.zip) and
+[checksums](https://github.com/xefensor/pebble-app-timer/releases/download/v0.12.0/SHA256SUMS.txt).
 
 Dashboard Pause/Resume is deferred by choice. Separate stock PebbleOS apps cannot
 control each other's workers or cancel each other's alarms. The proposed
 Timer handoff and automatic return is documented in
 [Dashboard control design](docs/design/dashboard-timer-control.md); no remote
-control or automatic app switch is implemented in this candidate.
+control or automatic app switch is implemented in this release.
 
-The published **0.10.0** remains a [GitHub development prerelease](https://github.com/xefensor/pebble-app-timer/releases/tag/v0.10.0)
+The previous **0.10.0** remains a [GitHub development prerelease](https://github.com/xefensor/pebble-app-timer/releases/tag/v0.10.0)
 with the approved 0.9 UI.
 Sharing acknowledgements no longer redraw an unchanged screen, and offscreen
 countdowns do not repaint the list. Unused font data is removed. Phone scripts

@@ -17,7 +17,7 @@ Reset records do not acquire a new observation or lease on polling/reopen.
 
 The SDK build passes with 36,123 bytes RAM footprint and 22,802 resource bytes.
 The font/license audit confirms unchanged source fonts, native outlines and SDK
-bitmap resources. Candidate PBW SHA-256:
+bitmap resources. Published PBW SHA-256:
 `2ff486c1af98f9f62325d49d61f92ab43abe20d2159f3e9bfb03c032abc30560`.
 Both focused native phases pass with 21 captures: 19 Timer screens, one stock OS
 screen at the withdrawn deadline and one labelled storage seed fixture. Reset
@@ -34,6 +34,17 @@ run as Ready; the old binaries do not support this representation. Already Ready
 Reset and unchanged Ready edits preserve every model byte, and the native UI
 does not save or republish a no-op Reset. The Activities publisher/provider pin
 remains 0.4.0; source schemas, message keys and app UUID are unchanged.
+
+The [0.12.0 development prerelease](https://github.com/xefensor/pebble-app-timer/releases/tag/v0.12.0)
+was published by the passing GitHub Actions release workflow from tested commit
+`2c5a9ef2b2f8b0da3e6643abe87ec07f149442b8`. Published PBW, source, debug and
+checksum assets match the prepared bytes. Source ZIP SHA-256 is
+`c843da6a2dbc8be7b265930a4866efee871f3af59764ec5d179bf65147fbb710`;
+debug ZIP SHA-256 is
+`04057ff2c180db8e785c5d49259eeb655b1f504e6f24f4938a7deef4ef6c63cb`.
+Later documentation commits keep that release source snapshot, tag and runtime
+unchanged. Release preparation pins 0.12.0 to the tested source commit and checks
+the committed artifacts without rebuilding or replacing the published source ZIP.
 
 ## 0.11.2 activity transport reliability
 
