@@ -318,6 +318,155 @@ static void edit_bounds_and_snooze_repeat(void) {
   assert(!memcmp(&unchanged, &collection, sizeof(collection)));
 }
 
+static void reset_saved_ready(void) {
+  TimerCollection collection;
+  timer_collection_init(&collection, 994, 1000);
+  assert(!timer_collection_reset(NULL, 0, 1000));
+  assert(!timer_collection_reset(&collection, 0, 1000));
+  assert(!timer_collection_reset(&collection, TIMER_COLLECTION_CAPACITY, 1000));
+  assert(timer_collection_create(&collection, 600, 1000) == 0);
+  assert(timer_collection_create(&collection, 900, 1000) == 1);
+  const ActivityTimerModel sibling = collection.slots[1];
+  assert(timer_collection_edit(&collection, 0, 1200, 1100));
+  const ActivityTimerModel before = collection.slots[0];
+  const uint32_t revision = collection.revision;
+  assert(timer_collection_reset(&collection, 0, 1120));
+  const ActivityTimerModel *ready = &collection.slots[0];
+  assert(ready->state == ACTIVITY_TIMER_CANCELLED && activity_timer_ready(ready));
+  assert(!ready->deadline && !ready->remaining_seconds && !ready->acknowledged);
+  assert(ready->origin == before.origin && ready->run == before.run);
+  assert(ready->configured_seconds == 1300 && ready->repeat_seconds == 600);
+  assert(ready->revision == revision + 1 && collection.revision == revision + 1);
+  assert(ready->observed_at == 1120 && ready->valid_until == before.valid_until);
+  assert(timer_collection_visible(&collection, 0) && timer_collection_count(&collection) == 2);
+  assert(!timer_collection_has_due(&collection, 1800));
+  assert(!timer_collection_finish_due(&collection, 1800));
+  assert(!activity_timer_finish_if_due(&collection.slots[0], 200000));
+  assert(!memcmp(&sibling, &collection.slots[1], sizeof(sibling)));
+
+  /* Ready is saved data. Repeated reset, a no-op edit and later reopen cannot
+   * manufacture a countdown, another observation, or a renewed tombstone. */
+  TimerCollection previous = collection;
+  assert(timer_collection_reset(&collection, 0, 200000));
+  assert(timer_collection_edit(&collection, 0, 600, 200000));
+  assert(!memcmp(&previous, &collection, sizeof(collection)));
+  assert(timer_collection_edit(&collection, 0, 1200, 200000));
+  assert(ready->repeat_seconds == 1200 && ready->configured_seconds == 1300);
+  assert(ready->run == before.run && !ready->deadline);
+  assert(ready->observed_at == 1120 && ready->valid_until == before.valid_until);
+  assert(timer_collection_reconfirm(&collection, 0, 200000));
+  assert(ready->observed_at == 1120 && ready->valid_until == before.valid_until);
+  assert(timer_collection_valid(&collection));
+
+  TimerCollection restored;
+  assert(timer_collection_decode(&restored, &collection, sizeof(collection), 0));
+  assert(!memcmp(&restored, &collection, sizeof(collection)));
+  assert(!timer_collection_decode(&restored, &collection, sizeof(collection), 1));
+  assert(!memcmp(&restored, &collection, sizeof(collection)));
+  assert(timer_collection_restart(&restored, 0, 200001));
+  assert(restored.slots[0].state == ACTIVITY_TIMER_RUNNING);
+  assert(restored.slots[0].run == before.run + 1);
+  assert(restored.slots[0].deadline == 201201 && restored.slots[0].repeat_seconds == 1200);
+  assert(restored.slots[0].configured_seconds == 1200);
+  assert(!memcmp(&sibling, &restored.slots[1], sizeof(sibling)));
+
+  /* Deleting a reset row publishes another cancellation before hiding it. */
+  const uint32_t until = ready->valid_until;
+  const uint32_t delete_revision = collection.revision;
+  assert(timer_collection_delete(&collection, 0, 1000)); /* RTC rollback. */
+  assert(!timer_collection_visible(&collection, 0));
+  assert(collection.slots[0].revision == delete_revision + 1);
+  assert(collection.slots[0].valid_until == until);
+  assert(collection.slots[0].origin == before.origin && collection.slots[0].run == before.run);
+  assert(timer_collection_valid(&collection));
+
+  /* Current banks still reject a visible unused slot or hidden live timer. */
+  previous = collection;
+  collection.visible_mask |= 1u << 7;
+  assert(!timer_collection_valid(&collection));
+  assert(!timer_collection_decode(&restored, &collection, sizeof(collection), 0));
+  collection = previous;
+  collection.visible_mask &= ~(1u << 1);
+  assert(!timer_collection_valid(&collection));
+  assert(!timer_collection_decode(&restored, &collection, sizeof(collection), 0));
+}
+
+static void reset_paused_finished_and_limits(void) {
+  TimerCollection collection;
+  timer_collection_init(&collection, 995, 1000);
+  assert(timer_collection_create(&collection, 600, 1000) == 0);
+  assert(timer_collection_pause(&collection, 0, 1120));
+  const uint32_t run = collection.slots[0].run;
+  assert(timer_collection_reset(&collection, 0, 200000));
+  assert(collection.slots[0].run == run && collection.slots[0].repeat_seconds == 600);
+  assert(collection.slots[0].valid_until == 200060 && collection.slots[0].observed_at == 200000);
+  assert(activity_timer_ready(&collection.slots[0]) && timer_collection_valid(&collection));
+  assert(timer_collection_restart(&collection, 0, 200001));
+  assert(timer_collection_finish_due(&collection, 200601) == 1);
+  assert(timer_collection_snooze(&collection, 0, 200601));
+  assert(collection.slots[0].configured_seconds == 60 && collection.slots[0].repeat_seconds == 600);
+  assert(timer_collection_reset(&collection, 0, 200602));
+  assert(collection.slots[0].configured_seconds == 60 && collection.slots[0].repeat_seconds == 600);
+  assert(timer_collection_restart(&collection, 0, 200603));
+  assert(collection.slots[0].deadline == 201203); /* Saved duration, not snooze. */
+  assert(timer_collection_finish_due(&collection, 201203) == 1);
+  const uint32_t pending_run = collection.slots[0].run;
+  assert(timer_collection_reset(&collection, 0, 201204));
+  assert(collection.slots[0].state == ACTIVITY_TIMER_CANCELLED);
+  assert(!collection.slots[0].acknowledged && collection.slots[0].run == pending_run);
+  assert(collection.slots[0].valid_until == 201264);
+  assert(timer_collection_restart(&collection, 0, 201205));
+  assert(timer_collection_finish_due(&collection, 201805) == 1);
+  assert(timer_collection_acknowledge(&collection, 0));
+  TimerCollection previous = collection;
+  assert(timer_collection_reset(&collection, 0, 999999));
+  assert(!memcmp(&collection, &previous, sizeof(collection))); /* Done already is Ready. */
+
+  collection.revision = UINT32_MAX;
+  previous = collection;
+  assert(timer_collection_reset(&collection, 0, 999999));
+  assert(timer_collection_edit(&collection, 0, 600, 999999));
+  assert(!timer_collection_edit(&collection, 0, 900, 999999));
+  assert(!memcmp(&collection, &previous, sizeof(collection)));
+  collection = previous;
+  collection.revision = collection.slots[0].revision;
+  assert(timer_collection_restart(&collection, 0, 201806));
+  collection.revision = UINT32_MAX;
+  previous = collection;
+  assert(!timer_collection_reset(&collection, 0, 201807));
+  assert(!memcmp(&collection, &previous, sizeof(collection)));
+  collection.revision = UINT32_MAX - 1;
+  collection.slots[0].run = UINT32_MAX;
+  assert(timer_collection_reset(&collection, 0, UINT32_MAX));
+  assert(collection.slots[0].valid_until == UINT32_MAX && timer_collection_valid(&collection));
+  previous = collection;
+  assert(timer_collection_reset(&collection, 0, UINT32_MAX));
+  assert(timer_collection_edit(&collection, 0, 600, UINT32_MAX));
+  assert(!timer_collection_restart(&collection, 0, 201808));
+  assert(!memcmp(&collection, &previous, sizeof(collection)));
+}
+
+static void reset_ready_order_and_capacity(void) {
+  TimerCollection collection;
+  timer_collection_init(&collection, 996, 1000);
+  for (unsigned i = 0; i < TIMER_COLLECTION_CAPACITY; ++i)
+    assert(timer_collection_create(&collection, i ? 600 : 60, 1000) == (int)i);
+  assert(timer_collection_reset(&collection, 3, 1020));
+  assert(timer_collection_reset(&collection, 5, 1010));
+  assert(timer_collection_pause(&collection, 2, 1015));
+  assert(timer_collection_finish_due(&collection, 1060) == 1);
+  const unsigned expected[] = {1, 4, 6, 7, 2, 0, 3, 5};
+  for (unsigned i = 0; i < TIMER_COLLECTION_CAPACITY; ++i)
+    assert(timer_collection_visible_slot(&collection, i) == (int)expected[i]);
+  assert(timer_collection_can_create(&collection));
+  const ActivityTimerModel sibling = collection.slots[3];
+  const uint32_t previous_run = collection.slots[5].run;
+  assert(timer_collection_create(&collection, 90, 1061) == 5); /* Oldest Ready. */
+  assert(collection.slots[5].run == previous_run + 1 && collection.slots[5].deadline == 1151);
+  assert(!memcmp(&sibling, &collection.slots[3], sizeof(sibling)));
+  assert(timer_collection_valid(&collection));
+}
+
 static void v1_collection_upgrade(void) {
   typedef struct {
     uint32_t magic, version, seed, revision, visible_mask;
@@ -363,6 +512,14 @@ static void v1_collection_upgrade(void) {
   old.slots[7].version = 99;
   assert(!timer_collection_decode(&decoded, &old, sizeof(old), 1));
   assert(!memcmp(&previous, &decoded, sizeof(decoded)));
+  old.slots[7].version = 1;
+  old.slots[0].state = ACTIVITY_TIMER_CANCELLED;
+  assert(!timer_collection_decode(&decoded, &old, sizeof(old), 0));
+  assert(!memcmp(&previous, &decoded, sizeof(decoded))); /* v1 never had visible Ready cancellations. */
+  old.visible_mask &= ~1u;
+  assert(timer_collection_decode(&decoded, &old, sizeof(old), 0));
+  assert(!timer_collection_visible(&decoded, 0) && decoded.slots[0].run);
+  assert(timer_collection_valid(&decoded));
 }
 
 int main(void) {
@@ -376,6 +533,9 @@ int main(void) {
   restart_is_a_new_run();
   acknowledged_results_and_capacity();
   edit_bounds_and_snooze_repeat();
+  reset_saved_ready();
+  reset_paused_finished_and_limits();
+  reset_ready_order_and_capacity();
   v1_collection_upgrade();
   puts("timer collection: migration, eight slots, clocks, revisions, editing and persistence passed");
   return 0;

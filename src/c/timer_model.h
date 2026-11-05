@@ -43,6 +43,9 @@ typedef struct {
 
 void activity_timer_init(ActivityTimerModel *timer, uint32_t origin, uint32_t now);
 bool activity_timer_valid(const ActivityTimerModel *timer);
+/* A saved duration with no pending countdown/alarm. Cancelled records still
+ * need the collection's visible bit to distinguish Ready from deleted slots. */
+bool activity_timer_ready(const ActivityTimerModel *timer);
 bool activity_timer_decode(ActivityTimerModel *timer, const void *bytes,
                             size_t length, bool acknowledged);
 uint32_t activity_timer_remaining(const ActivityTimerModel *timer, uint32_t now);

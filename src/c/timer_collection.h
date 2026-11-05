@@ -37,7 +37,10 @@ bool timer_collection_can_create(const TimerCollection *collection);
 int timer_collection_create(TimerCollection *collection, uint32_t seconds, uint32_t now);
 bool timer_collection_edit(TimerCollection *collection, unsigned slot,
                             uint32_t seconds, uint32_t now);
-/* Restart this stable slot as a new run with its configured duration. */
+/* Retain the saved duration as Ready without starting another countdown.
+ * The current run is withdrawn; resetting Ready is an unchanged success. */
+bool timer_collection_reset(TimerCollection *collection, unsigned slot, uint32_t now);
+/* Start this stable slot as a new run with its saved repeat duration. */
 bool timer_collection_restart(TimerCollection *collection, unsigned slot, uint32_t now);
 bool timer_collection_pause(TimerCollection *collection, unsigned slot, uint32_t now);
 bool timer_collection_resume(TimerCollection *collection, unsigned slot, uint32_t now);

@@ -558,6 +558,74 @@ test('Done hides a completed run durably without cancelling it or another timer'
   assert.equal(full[0].properties.show_terminal.boolean.value,false);
 });
 
+for (const state of ['active', 'paused']) test('Reset withdraws the '+state+' timer durably while preserving its sibling and requiring a new run to Start', async () => {
+  const shared=storage(),pkjs=runtime('src/pkjs/index.js',shared);
+  const original=snapshot({ACTIVITY_SLOT:0,ACTIVITY_STATE:state,ACTIVITY_TOTAL_DURATION:600,
+    ACTIVITY_DEADLINE:state==='active'?now+480:0,ACTIVITY_DURATION:state==='paused'?480:0,
+    ACTIVITY_VALID_UNTIL:now+(state==='active'?540:300),ACTIVITY_SHOW_TERMINAL:0});
+  const sibling=snapshot({ACTIVITY_SLOT:1,ACTIVITY_RUN:'other:1',ACTIVITY_REVISION:5,
+    ACTIVITY_TOTAL_DURATION:1200,ACTIVITY_DEADLINE:now+1200,ACTIVITY_VALID_UNTIL:now+1260,ACTIVITY_SHOW_TERMINAL:0});
+  pkjs.events.appmessage({payload:original});pkjs.events.appmessage({payload:sibling});
+  const before=await readSummary(shared);
+  assert.equal(before.instances[0].properties.activity_count.numericValue.value,2);
+  const reset={...original,ACTIVITY_REVISION:6,ACTIVITY_STATE:'cancelled',ACTIVITY_CLOCK:'none',
+    ACTIVITY_OBSERVED_AT:now+1,ACTIVITY_VALID_UNTIL:Math.max(original.ACTIVITY_VALID_UNTIL,now+61),ACTIVITY_DEADLINE:0,ACTIVITY_DURATION:0,
+    ACTIVITY_TOTAL_DURATION:600,ACTIVITY_SHOW_TERMINAL:0};
+  pkjs.events.appmessage({payload:reset});assert.equal(pkjs.sent.at(-1).ACTIVITY_ACCEPTED_REVISION,6);
+  const hidden=await readSummary(shared,now+2);
+  assert.equal(hidden.instances[0].properties.activity_count.numericValue.value,1);
+  assert.ok(hidden.instances[0].properties.snapshot_sequence.numericValue.value>before.instances[0].properties.snapshot_sequence.numericValue.value);
+  assert.deepEqual(Array.from(hidden.instances.slice(1),item=>item.instanceId),['other:1']);
+  function compatibility(item,at=now+2){
+    let response;runtime('src/plugin/index.js',shared,at).source({category:'activity',item},{data(value){response=value;},error(code){throw Error(code);}});
+    return response.instances;
+  }
+  for (const item of ['live','session','card']) {
+    const instances=compatibility(item),ready=instances.find(item=>item.instanceId===original.ACTIVITY_RUN).properties;
+    assert.equal(ready.state.shortText.text,'cancelled');assert.equal(ready.revision.numericValue.value,6);
+    assert.equal(ready.observed_at.timestamp.value,now+1);assert.equal(ready.valid_until.timestamp.value,reset.ACTIVITY_VALID_UNTIL);
+    if(item!=='session')assert.equal(ready.show_terminal.boolean.value,false);
+    const other=instances.find(item=>item.instanceId==='other:1').properties;
+    assert.equal(other.state.shortText.text,'active');assert.equal(other.revision.numericValue.value,5);
+    assert.equal(other.observed_at.timestamp.value,now);assert.equal(other.valid_until.timestamp.value,now+1260);
+  }
+  const reopened=runtime('src/pkjs/index.js',shared,now+2);reopened.events.ready();
+  assert.equal(reopened.sent[0].ACTIVITY_LAST_REVISION,6);
+  reopened.events.appmessage({payload:{...reset,ACTIVITY_REVISION:7}});
+  assert.equal(reopened.sent.at(-1).ACTIVITY_ACCEPTED_REVISION,7);
+  reopened.events.appmessage({payload:original});assert.equal(reopened.sent.at(-1).ACTIVITY_ERROR,'STALE_REVISION');
+  reopened.events.appmessage({payload:{...original,ACTIVITY_REVISION:8}});
+  assert.equal(reopened.sent.at(-1).ACTIVITY_ERROR,'TERMINAL_RUN','Only explicit Start with a new run can resume a reset timer');
+  assert.deepEqual(Array.from((await readSummary(shared,now+2)).instances.slice(1),item=>item.instanceId),['other:1']);
+  const reloaded=compatibility('card').find(item=>item.instanceId===original.ACTIVITY_RUN).properties;
+  assert.equal(reloaded.observed_at.timestamp.value,now+1);assert.equal(reloaded.valid_until.timestamp.value,reset.ACTIVITY_VALID_UNTIL);
+  assert.deepEqual(Array.from(compatibility('live',reset.ACTIVITY_VALID_UNTIL+1),item=>item.instanceId),['other:1'],'Expired reset tombstone cannot return through polling');
+  const started={...original,ACTIVITY_RUN:'6b49d200:00000002',ACTIVITY_REVISION:8,ACTIVITY_STATE:'active',ACTIVITY_CLOCK:'deadline',
+    ACTIVITY_OBSERVED_AT:now+3,ACTIVITY_VALID_UNTIL:now+663,ACTIVITY_DEADLINE:now+603,ACTIVITY_DURATION:0};
+  reopened.events.appmessage({payload:started});assert.equal(reopened.sent.at(-1).ACTIVITY_ACCEPTED_REVISION,8);
+  const active=await readSummary(shared,now+3);
+  assert.deepEqual(Array.from(active.instances.slice(1),item=>item.instanceId),[started.ACTIVITY_RUN,'other:1']);
+  assert.equal(JSON.parse(active.instances[1].properties.content.longText.text).headline.deadline,now+603);
+});
+
+test('failed Reset snapshot save leaves accepted activities intact and retries only when native sends again',async()=>{
+  const shared=storage(),write=shared.setItem.bind(shared);let fail=false;
+  shared.setItem=(key,value)=>{if(fail)throw Error('test reset storage failure');write(key,value);};
+  const pkjs=runtime('src/pkjs/index.js',shared);
+  pkjs.events.appmessage({payload:snapshot({ACTIVITY_SLOT:0})});
+  pkjs.events.appmessage({payload:snapshot({ACTIVITY_SLOT:1,ACTIVITY_RUN:'other:1',ACTIVITY_REVISION:5})});
+  const reset=snapshot({ACTIVITY_SLOT:0,ACTIVITY_REVISION:6,ACTIVITY_STATE:'cancelled',ACTIVITY_CLOCK:'none',
+    ACTIVITY_DEADLINE:0,ACTIVITY_SHOW_TERMINAL:0});
+  fail=true;pkjs.events.appmessage({payload:reset});
+  assert.equal(pkjs.sent.at(-1).ACTIVITY_ERROR,'STORAGE_FAILED');assert.equal(pkjs.sent.at(-1).ACTIVITY_ACCEPTED_REVISION,undefined);
+  fail=false;
+  assert.equal(helpers.createPublisher({storage:shared,pluginUuid:uuid,maxRecords:8}).lastRevision(),5);
+  const preserved=await readSummary(shared);
+  assert.deepEqual(Array.from(preserved.instances.slice(1),item=>item.instanceId),[snapshot().ACTIVITY_RUN,'other:1']);
+  pkjs.events.appmessage({payload:reset});assert.equal(pkjs.sent.at(-1).ACTIVITY_ACCEPTED_REVISION,6);
+  assert.deepEqual(Array.from((await readSummary(shared)).instances.slice(1),item=>item.instanceId),['other:1']);
+});
+
 function retryClock() {
   let sequence = 0;
   const timers = new Map(), delays = [];

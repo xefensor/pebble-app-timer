@@ -538,8 +538,7 @@ static TimerUiView prv_view(void) {
       .option=s_option,.confirm_choice=s_confirm_choice,.edit=s_edit,
       .editing_new=s_edit_slot<0,.now=prv_now(),
       .editing_ready=s_edit_slot>=0&&
-          s_collection.slots[s_edit_slot].state==ACTIVITY_TIMER_FINISHED&&
-          s_collection.slots[s_edit_slot].acknowledged,
+          activity_timer_ready(&s_collection.slots[s_edit_slot]),
       .issue=s_storage_error?"Changes not saved":
           s_alarm_error?"Alarm not set":NULL,
       .status=prv_status(),
@@ -621,7 +620,7 @@ static int prv_glass_pose(void) {
   if(s_selected>=TIMER_COLLECTION_CAPACITY)return 180;
   const ActivityTimerModel *timer=&s_collection.slots[s_selected];
   return timer_hourglass_pose(timer->state==ACTIVITY_TIMER_PAUSED?TIMER_GLASS_PAUSED:
-      timer->state==ACTIVITY_TIMER_FINISHED&&timer->acknowledged?TIMER_GLASS_READY:TIMER_GLASS_RUNNING);
+      activity_timer_ready(timer)?TIMER_GLASS_READY:TIMER_GLASS_RUNNING);
 }
 
 static void prv_rotate_glass(int from, int to) {
@@ -749,8 +748,9 @@ static void prv_press(ButtonId button) {
       if (s_option==0) prv_begin_edit((int)s_selected);
       else if (s_option==1) {
         TimerCollection next=s_collection;
-        if (timer_collection_restart(&next,s_selected,prv_now()) &&
-            prv_apply(&next,s_alarm_mask & (uint8_t)~(1u<<s_selected))) s_screen=SCREEN_DETAIL;
+        if (timer_collection_reset(&next,s_selected,prv_now()) &&
+            (next.revision==s_collection.revision||
+             prv_apply(&next,s_alarm_mask & (uint8_t)~(1u<<s_selected)))) s_screen=SCREEN_DETAIL;
       } else { s_confirm_choice=0;s_screen=SCREEN_CONFIRM; }
     }
   } else if (s_screen==SCREEN_CONFIRM) {
@@ -817,7 +817,8 @@ static void prv_click(ClickRecognizerRef recognizer, void *context) {
         previous_slot==s_selected&&timer->state==ACTIVITY_TIMER_RUNNING&&
         timer->run!=previous_run)
       prv_rotate_glass(180,0);
-    else if(before==SCREEN_DETAIL&&previous_slot==s_selected&&timer->state!=previous_state)
+    else if((before==SCREEN_DETAIL||before==SCREEN_OPTIONS)&&
+        previous_slot==s_selected&&timer->state!=previous_state)
       prv_rotate_glass(previous_angle,prv_glass_pose());
   }
 }

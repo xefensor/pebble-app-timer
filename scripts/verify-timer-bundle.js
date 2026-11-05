@@ -309,6 +309,53 @@ async function verifySummary() {
   await vm.runInContext('__handler(__request, __respond)', cold, {timeout:1000});
   assert.ok(response.instances[0].properties.snapshot_sequence.numericValue.value > sequence);
   assert.equal(response.instances[1].properties.revision.numericValue.value, revision + 2);
-  console.log('Packaged Timer PKJS, numeric keys, schema 4 owner snapshots/navigation, compatibility sources, multi-slot replacement, acknowledgement and cold reload passed.');
+  await verifyReset();
+  console.log('Packaged Timer PKJS, numeric keys, schema 4 owner snapshots/navigation, compatibility sources, multi-slot replacement, acknowledgement, Reset withdrawal/new-run Start and cold reload passed.');
+}
+
+async function verifyReset() {
+  async function readCold(item) {
+    let callback,answer;
+    const isolated=vm.createContext({Pebble:{registerSourceHandler(handler){callback=handler;}},
+      localStorage:storage,Date:FixedDate,console});
+    vm.runInContext(fs.readFileSync(path.join(root,appinfo.plugin.script),'utf8'),isolated,{timeout:1000});
+    isolated.__handler=callback;isolated.__request={category:'activity',item};
+    isolated.__respond={data(value){answer=value;},error(code){throw Error(code);}};
+    await vm.runInContext('__handler(__request,__respond)',isolated,{timeout:1000});
+    assert.ok(answer,'Cold reset source did not reply: '+item);return answer.instances;
+  }
+  for(const [index,state] of ['active','paused'].entries()) {
+    const id='packaged-reset-'+state+':1',firstRevision=revision+5+index*4;
+    const active={ACTIVITY_SLOT:0,ACTIVITY_RUN:id,ACTIVITY_REVISION:firstRevision,ACTIVITY_STATE:state,
+      ACTIVITY_CLOCK:'deadline',ACTIVITY_OBSERVED_AT:NOW_SECONDS,ACTIVITY_VALID_UNTIL:NOW_SECONDS+660,
+      ACTIVITY_DEADLINE:state==='active'?NOW_SECONDS+600:0,ACTIVITY_DURATION:state==='paused'?600:0,
+      ACTIVITY_TOTAL_DURATION:600,ACTIVITY_SHOW_TERMINAL:0};
+    assert.equal(publishNative(active).ACTIVITY_ACCEPTED_REVISION,firstRevision);
+    const before=await readCold('summary');assert.equal(before[0].properties.activity_count.numericValue.value,2);
+    const reset={...active,ACTIVITY_REVISION:firstRevision+1,ACTIVITY_STATE:'cancelled',ACTIVITY_CLOCK:'none',
+      ACTIVITY_DEADLINE:0,ACTIVITY_DURATION:0};
+    assert.equal(publishNative(reset).ACTIVITY_ACCEPTED_REVISION,firstRevision+1);
+    const after=await readCold('summary');
+    assert.equal(after[0].properties.activity_count.numericValue.value,1);
+    assert.deepEqual(Array.from(after.slice(1),instance=>instance.instanceId),['second-slot:2']);
+    assert.ok(after[0].properties.snapshot_sequence.numericValue.value>before[0].properties.snapshot_sequence.numericValue.value);
+    for(const item of ['live','card','session']) {
+      const instances=await readCold(item),ready=instances.find(instance=>instance.instanceId===id).properties;
+      assert.equal(ready.state.shortText.text,'cancelled');
+      assert.equal(ready.observed_at.timestamp.value,NOW_SECONDS);assert.equal(ready.valid_until.timestamp.value,NOW_SECONDS+660);
+      if(item!=='session')assert.equal(ready.show_terminal.boolean.value,false);
+      const sibling=instances.find(instance=>instance.instanceId==='second-slot:2').properties;
+      assert.equal(sibling.state.shortText.text,'active');assert.equal(sibling.revision.numericValue.value,revision+2);
+      assert.equal(sibling.observed_at.timestamp.value,observedAt);assert.equal(sibling.valid_until.timestamp.value,validUntil);
+    }
+    assert.equal(publishNative(active).ACTIVITY_ERROR,'STALE_REVISION');
+    assert.equal(publishNative({...active,ACTIVITY_REVISION:firstRevision+2}).ACTIVITY_ERROR,'TERMINAL_RUN');
+    const started={...active,ACTIVITY_RUN:'packaged-reset-'+state+':2',ACTIVITY_REVISION:firstRevision+2,
+      ACTIVITY_STATE:'active',ACTIVITY_DEADLINE:NOW_SECONDS+600,ACTIVITY_DURATION:0};
+    assert.equal(publishNative(started).ACTIVITY_ACCEPTED_REVISION,firstRevision+2);
+    const resumed=await readCold('summary');
+    assert.deepEqual(Array.from(resumed.slice(1),instance=>instance.instanceId),[started.ACTIVITY_RUN,'second-slot:2']);
+    assert.equal(JSON.parse(resumed[1].properties.content.longText.text).headline.deadline,NOW_SECONDS+600);
+  }
 }
 verifySummary().catch(error => { console.error(error); process.exitCode = 1; });

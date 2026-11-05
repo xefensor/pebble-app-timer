@@ -53,6 +53,11 @@ bool activity_timer_valid(const ActivityTimerModel *timer) {
   }
 }
 
+bool activity_timer_ready(const ActivityTimerModel *timer) {
+  return timer && ((timer->state == ACTIVITY_TIMER_CANCELLED && timer->run) ||
+      (timer->state == ACTIVITY_TIMER_FINISHED && timer->acknowledged));
+}
+
 bool activity_timer_decode(ActivityTimerModel *timer, const void *bytes,
                             size_t length, bool acknowledged) {
   if (!timer || !bytes) return false;

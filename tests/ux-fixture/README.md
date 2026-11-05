@@ -72,3 +72,13 @@ while body pixels and paused owner observation/expiry stay unchanged. Screenshot
 stability does not measure repaint frequency, CPU use or battery consumption;
 the native SECOND-versus-MINUTE subscription policy is reviewed separately.
 Use `TIMER_QA_EXPECT_PHASES=clock,clock-idle` for this focused follow-up.
+
+The focused `reset` phase checks Reset from running/paused timers, Ready no-op,
+saved repeat after remaining edits and Snooze, Ready-duration editing, process
+reopen and explicit Start as a new run. Existing mode3 deadlines prove that a
+reset timer no longer wakes Timer at its old deadline while its sibling still
+launches the real native alarm. No watch time is changed. The `storage` phase
+also attempts Reset against the existing exhausted-generation fixture: the
+candidate must retain the old timer/alarm, show failure and publish no unsaved
+withdrawal. Use `TIMER_QA_EXPECT_PHASES=reset,storage` for this focused task;
+older full-suite phases are not automatically rerun or claimed.

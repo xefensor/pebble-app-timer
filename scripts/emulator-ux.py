@@ -20,7 +20,7 @@ import zipfile
 from pebble_tool.commands.base import PebbleCommand
 from pebble_tool.commands.install import ToolAppInstaller
 from pebble_tool.commands.emucontrol import send_data_to_qemu
-from libpebble2.protocol.apps import AppRunState, AppRunStateStart, AppRunStateStop
+from libpebble2.protocol.apps import AppRunState, AppRunStateRequest, AppRunStateStart, AppRunStateStop
 from libpebble2.protocol.phone import PhoneNotification, IncomingCall, CallEnd
 from libpebble2.services.appmessage import AppMessageService, Uint8, Uint32, CString
 from libpebble2.services.screenshot import Screenshot
@@ -387,6 +387,10 @@ elif PHASE == 'ux':
     assert changed[1006] == '00:10 timer'
     shot('remaining-edit-preserves-elapsed')
     button('Down'); button('Down'); button('Select')
+    reset = wait_record(0, lambda value: value[1003] == 'cancelled' and value[1002] > changed[1002])
+    assert reset[1001] == changed[1001] and reset[1011] == 0 and reset[1023] == 0
+    shot('reset-original-duration-ready')
+    button('Select')
     repeated = wait_record(0, lambda value: value[1003] == 'active' and value[1001] != changed[1001])
     assert repeated[1022] == 10 and repeated[1006] == '00:10 timer'
     shot('restart-original-duration')
@@ -412,8 +416,87 @@ elif PHASE == 'ux':
     report['proofs']['nativeUx'] = {'shortStarted': state, 'nativeBackgroundCompletion': background_completed,
         'snoozed': snoozed, 'beforeNoOpEdit': before, 'afterNoOpEdit': unchanged,
         'beforeRemainingEdit': paused, 'afterRemainingEdit': changed,
-        'restart': repeated, 'acknowledged': done, 'afterReopen': reopened,
+        'resetWithoutStarting': reset, 'explicitRestart': repeated, 'acknowledged': done, 'afterReopen': reopened,
         'savedDurationEditedWithoutStarting': ready_edit, 'explicitRepeat': resumed}
+    seed(0)
+
+elif PHASE == 'reset':
+    # Existing V1 fixture seeds deadlines20s/25s. Only actual Timer schedules
+    # Wakeups; reset the earlier run, then observe the untouched sibling wake.
+    seed(3)
+    seeded = handshake()
+    button('Select');button('Down');button('Down')
+    shot('reset-running-options')
+    button('Select')
+    running_reset=wait_record(0,lambda value:value[1003]=='cancelled' and value[1002]>seeded['0'][1002])
+    assert running_reset[1001]==seeded['0'][1001] and running_reset[1011]==0 and running_reset[1023]==0
+    assert current(1)[1001]==seeded['1'][1001] and current(1)[1011]==seeded['1'][1011]
+    shot('reset-running-ready')
+    stop()
+    remaining=seeded['0'][1011]-time.time()+.5
+    assert remaining<25,'Unexpected fixture/watch RTC offset'
+    if remaining>0:time.sleep(remaining)
+    reset_foreground=p.send_and_read(AppRunState(data=AppRunStateRequest()),AppRunState).data.uuid
+    assert reset_foreground!=TARGET,'Reset timer still launched Timer at its former deadline'
+    shot('reset-old-deadline-no-background-wakeup',wait=0)
+    remaining=seeded['1'][1011]-time.time()+1
+    if remaining>0:time.sleep(remaining)
+    sibling_foreground=p.send_and_read(AppRunState(data=AppRunStateRequest()),AppRunState).data.uuid
+    assert sibling_foreground==TARGET,'Sibling native Wakeup did not launch Timer'
+    woken=handshake()
+    assert woken['0'][1003]=='cancelled' and woken['0'][1001]==running_reset[1001]
+    assert woken['1'][1003]=='completed' and woken['1'][1023]==1
+    shot('reset-sibling-native-background-alarm')
+    button('Select')
+
+    seed(0);handshake();add();button('Select',2)
+    original=handshake()['0'];button('Select')
+    paused=wait_record(0,lambda value:value[1003]=='paused')
+    # Change current remaining time; the saved ten-minute repeat stays separate.
+    button('Up');button('Down');button('Select',2)
+    edited=wait_record(0,lambda value:value[1002]>paused[1002])
+    assert edited[1003]=='paused' and edited[1022]!=600 and edited[1006]=='10 min timer'
+    button('Down');button('Down');button('Select')
+    paused_reset=wait_record(0,lambda value:value[1003]=='cancelled' and value[1002]>edited[1002])
+    assert paused_reset[1001]==edited[1001] and paused_reset[1022]==edited[1022]
+    assert paused_reset[1011]==0 and paused_reset[1006]=='10 min timer'
+    shot('reset-paused-edited-span-ready-saved-repeat')
+
+    seed(0);handshake();create(10)
+    short=handshake()['0'];completed=alarm_wait(short,'reset-short-native-completion')
+    button('Up')
+    snoozed=wait_record(0,lambda value:value[1003]=='active' and value[1001]!=completed[1001])
+    assert snoozed[1022]==60 and snoozed[1006]=='00:10 timer'
+    button('Down');button('Down');button('Select')
+    snooze_reset=wait_record(0,lambda value:value[1003]=='cancelled' and value[1002]>snoozed[1002])
+    assert snooze_reset[1001]==snoozed[1001] and snooze_reset[1022]==60 and snooze_reset[1006]=='00:10 timer'
+    shot('reset-snoozed-ready-original-repeat')
+    button('Up');button('Select');button('Up',10);button('Select')
+    ready_edit=wait_record(0,lambda value:value[1002]>snooze_reset[1002])
+    assert ready_edit[1003]=='cancelled' and ready_edit[1011]==0 and ready_edit[1023]==0
+    assert ready_edit[1001]==snooze_reset[1001] and ready_edit[1006]=='00:20 timer'
+    before=shot('reset-ready-edited-without-starting')
+    button('Down');button('Down');button('Select')
+    after=shot('reset-already-ready-noop')
+    unchanged=current(0)
+    assert all(unchanged[key]==ready_edit[key] for key in (1001,1002,1009,1010,1011,1022))
+    assert region(before,BODY_BOUNDS)==region(after,BODY_BOUNDS)
+    stop();launch();reopened=handshake()['0']
+    assert reopened[1003]=='cancelled' and reopened[1011]==0 and reopened[1023]==0
+    assert reopened[1001]==ready_edit[1001] and reopened[1009]==ready_edit[1009] and reopened[1010]==ready_edit[1010]
+    button('Select');shot('reset-ready-after-process-reopen')
+    button('Select')
+    started=wait_record(0,lambda value:value[1003]=='active' and value[1001]!=ready_edit[1001])
+    assert started[1022]==20 and started[1011]-started[1009]==20
+    shot('reset-explicit-start-new-run')
+    report['proofs']['resetToReady']={'runningBefore':seeded,'runningReset':running_reset,
+        'foregroundAtResetOldDeadline':str(reset_foreground),'foregroundAtSiblingDeadline':str(sibling_foreground),
+        'oldResetDeadlineDoesNotLaunchTimer':True,'siblingNativeBackgroundWakeup':woken,
+        'pausedBeforeEdit':paused,'pausedAfterRemainingEdit':edited,'pausedReset':paused_reset,
+        'shortCompletion':completed,'snoozed':snoozed,'snoozedReset':snooze_reset,
+        'readyDurationEditedWithoutStarting':ready_edit,'alreadyReadyResetNoop':unchanged,
+        'afterProcessReopen':reopened,'explicitStartNewRun':started,
+        'watchTimeReset':False,'nativeBinaryUnmodified':True,'allEightStableSlotsRetained':True}
     seed(0)
 
 elif PHASE == 'capacity':
@@ -487,9 +570,16 @@ elif PHASE == 'storage':
     assert first[(200*200+1)*3:(200*200+1)*3+3]==bytes((255,170,0))
     button('Select');shot('storage-not-saved-detail')
     button('Down');shot('storage-not-saved-options')
+    # A failed Reset must not cancel the existing deadline, become Ready or
+    # publish an unsaved withdrawal. Even a direct QA reconfirm cannot commit.
+    messages.send_message(TARGET,{1017:Uint8(1),1019:Uint32(0)})
+    button('Down');button('Select');shot('storage-reset-failed-stays-options')
+    assert not all_messages,'Unsaved Timer state was published after failed Reset'
+    button('Back',2);stop();launch();shot('storage-reset-failed-after-reopen')
+    button('Select');button('Down')
     button('Down',2);button('Select')
     confirm=shot('storage-not-saved-delete-keeps-actions')
-    assert confirm[(1*200+1)*3:(1*200+1)*3+3]==bytes((255,170,0))
+    assert confirm[(40*200+1)*3:(40*200+1)*3+3]==bytes((255,170,0))
     assert confirm[(180*200+1)*3:(180*200+1)*3+3]!=bytes((255,170,0))
     button('Back',2)
     until=time.monotonic()+35
@@ -504,6 +594,8 @@ elif PHASE == 'storage':
     button('Back');shot('storage-back-remains-available')
     report['proofs']['storageFailure']={'fixtureMode':6,'actualExhaustedGenerationWriteRefusal':True,
         'nativeBinaryUnmodified':True,'alarmActionsVisibleWithCriticalMessage':True,
+        'failedResetDoesNotPublishOrCancelOriginalDeadline':True,
+        'failedResetReopenAndOriginalNativeCompletionCaptured':True,
         'failedAcknowledgmentRemainsAlarm':True,'backRemainsAvailable':True}
     seed(0)
 
@@ -543,8 +635,11 @@ elif PHASE == 'settings':
     assert backed[(180*200+4)*3:(180*200+4)*3+3]==bytes((0,0,0))
     intact=handshake()['0']
     assert intact[1001]==edited[1001] and intact[1011]==edited[1011]
-    button('Up');shot('settings-restart-shows-saved-duration')
+    button('Up');shot('settings-reset-shows-saved-duration')
     button('Select')
+    reset=wait_record(0,lambda value:value[1003]=='cancelled' and value[1002]>edited[1002])
+    assert reset[1001]==edited[1001] and reset[1011]==0 and reset[1006]=='10 min timer'
+    shot('settings-reset-ready-without-starting');button('Select')
     restarted=wait_record(0,lambda value:value[1003]=='active' and value[1001]!=edited[1001])
     assert restarted[1022]==600 and restarted[1006]=='10 min timer'
     button('Select');shot('settings-paused-detail')
@@ -568,7 +663,7 @@ elif PHASE == 'settings':
     report['proofs']['settingsNavigation']={'newCancelKeepsEmpty':True,
         'directEditCancelRun':unchanged,'optionsEditCancelCursorRestored':True,
         'deleteKeepAndBackReturnToOptionsCursor':True,'remainingEdit':edited,
-        'deleteCancelKeepsRun':intact,'restartUsesSavedRepeat':restarted,
+        'deleteCancelKeepsRun':intact,'resetUsesSavedRepeatWithoutStarting':reset,'explicitRestartUsesSavedRepeat':restarted,
         'replacementCancelPreservesEightReady':True,'fullSelectPreservesEightRuns':True,
         'fullListSkipsDisabledAddAndOpensSelectedTimer':True}
     seed(0)

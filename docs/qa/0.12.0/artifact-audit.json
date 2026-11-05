@@ -1,0 +1,34 @@
+{
+  "result": "PASS",
+  "version": "0.12.0",
+  "baseline": "0c378ec8d037822d65ed3df7c48a4c542a91539b",
+  "pbwSha256": "2ff486c1af98f9f62325d49d61f92ab43abe20d2159f3e9bfb03c032abc30560",
+  "nativePayloadSha256": {
+    "emery/app_resources.pbpack": "a35ebc1371147dbe65bf1cafa0362d6236583eac9b1210192a0f369adfa08c49",
+    "emery/manifest.json": "0631c79947114ece8d355e1fc70fb938e2276e99541fbd63d292fbd8f9845c7b",
+    "emery/pebble-app.bin": "8d49f4dede18918960433b7daf0370048f996cb4fcc56b681248991ce5812772"
+  },
+  "nativeCaptures": 21,
+  "allCaptureHashesAndPixelsUnmodified": true,
+  "nativePhases": [
+    "reset",
+    "storage"
+  ],
+  "previousVersionedArtifactsPreserved": 49,
+  "unchangedRepositories": {
+    "pebble-activities": "df4f30f4a66419ce835959eeeec6de7999704fa0",
+    "dynamic-watchface": "48a5aaec1aac4e2805bad2bb7e793b5da58b5165",
+    "pebble-app-dashboard": "be58d4599ebd2c74ea374c1c16fa5ebff5f2199d",
+    "pebble-app-open-activity": "1d963c7a1adee58c1ceefedc96e27a00e20f383b",
+    "pebble-watchface-core": "466062f0514d82eb1567135c3483fb3bb67c7842"
+  },
+  "tests": {
+    "javascript": 31,
+    "nativeSuites": 8,
+    "python": 42,
+    "changedModelCollectionSanitizers": true,
+    "packagedOptimizedRuntime": true,
+    "exactFontsAndLicenses": true
+  },
+  "limits": "Isolated Emery QEMU and packaged SDK simulation; no real phone or physical-watch claim."
+}

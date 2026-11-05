@@ -1,0 +1,48 @@
+{
+  "candidatePbwSha256": "2ff486c1af98f9f62325d49d61f92ab43abe20d2159f3e9bfb03c032abc30560",
+  "derivativeContactSheet": true,
+  "scale": 2,
+  "resampling": "nearest",
+  "sources": [
+    {
+      "file": "storage-not-saved-list.png",
+      "sha256": "25977a55a2ba6c83c763ecc7be75b63e1c0045e1569f0a91816136a9b7173b09",
+      "nativePixelsModified": false
+    },
+    {
+      "file": "storage-not-saved-detail.png",
+      "sha256": "cb3f534d425a24f8302465f35dc9239b5138c5ba0607b54569502f127db70880",
+      "nativePixelsModified": false
+    },
+    {
+      "file": "storage-reset-failed-stays-options.png",
+      "sha256": "cd6af828d0978f648c2beff2841df54f758e12d8d4d963a07428a33ab343a88b",
+      "nativePixelsModified": false
+    },
+    {
+      "file": "storage-reset-failed-after-reopen.png",
+      "sha256": "3d7def94a1dc7fdc0499d26f6920c16c344793f00fd6731450cdabfb043d4edf",
+      "nativePixelsModified": false
+    },
+    {
+      "file": "storage-not-saved-delete-keeps-actions.png",
+      "sha256": "9beedb37fa30ba94e2b6d1ece7744813e0c0dbe4f36ab22d7dcbde51058e461a",
+      "nativePixelsModified": false
+    },
+    {
+      "file": "storage-not-saved-native-alarm-actions-visible.png",
+      "sha256": "add1b3d710df9ac498f23dbb6cbd23b7fd965710bd1961d050d3eddfa705829b",
+      "nativePixelsModified": false
+    },
+    {
+      "file": "storage-done-cannot-hide-unsaved-alarm.png",
+      "sha256": "add1b3d710df9ac498f23dbb6cbd23b7fd965710bd1961d050d3eddfa705829b",
+      "nativePixelsModified": false
+    },
+    {
+      "file": "storage-back-remains-available.png",
+      "sha256": "c68b495fcc2fe0560ce0708198bb639f4cb371198602d31afb7694464cfaccb9",
+      "nativePixelsModified": false
+    }
+  ]
+}

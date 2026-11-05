@@ -12,6 +12,22 @@ static bool slot_ready(const TimerCollection *collection, unsigned slot) {
       collection->revision < UINT32_MAX;
 }
 
+static bool visibility_valid(const ActivityTimerModel *timer, bool visible, bool legacy) {
+  if (timer->state != ACTIVITY_TIMER_CANCELLED) return visible;
+  /* Only current banks can retain a cancelled run as a saved Ready row.
+   * Initial never-started slots and all legacy cancellations stay hidden. */
+  return !visible || (!legacy && timer->run);
+}
+
+static void cancel_record(ActivityTimerModel *timer, uint32_t now) {
+  ++timer->revision;
+  timer->state = ACTIVITY_TIMER_CANCELLED;
+  timer->remaining_seconds = timer->deadline = timer->acknowledged = 0;
+  timer->observed_at = now;
+  const uint32_t until = saturating_add(now, ACTIVITY_TIMER_TERMINAL_SECONDS);
+  if (timer->valid_until < until) timer->valid_until = until;
+}
+
 static bool commit(TimerCollection *collection, unsigned slot,
                    const ActivityTimerModel *model) {
   if (!activity_timer_valid(model) || model->revision <= collection->revision) return false;
@@ -50,7 +66,7 @@ bool timer_collection_valid(const TimerCollection *collection) {
     const ActivityTimerModel *timer = &collection->slots[i];
     if (!activity_timer_valid(timer) || timer->revision > collection->revision) return false;
     const bool visible = (collection->visible_mask & (1u << i)) != 0;
-    if (visible != (timer->state != ACTIVITY_TIMER_CANCELLED)) return false;
+    if (!visibility_valid(timer, visible, false)) return false;
     for (unsigned j = 0; j < i; ++j)
       if (collection->slots[j].origin == timer->origin) return false;
   }
@@ -81,8 +97,7 @@ bool timer_collection_decode(TimerCollection *collection, const void *bytes,
     ActivityTimerModel model;
     if (!activity_timer_decode(&model, models + i * model_size, model_size,
         !(alarms & (1u << i))) || model.revision > header.revision ||
-        ((header.visible_mask & (1u << i)) != 0) !=
-            (model.state != ACTIVITY_TIMER_CANCELLED) ||
+        !visibility_valid(&model, (header.visible_mask & (1u << i)) != 0, legacy) ||
         ((alarms & (1u << i)) &&
             (model.state != ACTIVITY_TIMER_FINISHED || model.acknowledged))) return false;
     for (unsigned j = 0; j < i; ++j)
@@ -121,12 +136,12 @@ unsigned timer_collection_visible_slots(const TimerCollection *collection,
     if (!timer_collection_visible(collection, i)) continue;
     const ActivityTimerModel *timer = &collection->slots[i];
     const unsigned rank = timer->state == ACTIVITY_TIMER_RUNNING ? 0 :
-        timer->state == ACTIVITY_TIMER_PAUSED ? 1 : timer->acknowledged ? 3 : 2;
+        timer->state == ACTIVITY_TIMER_PAUSED ? 1 : activity_timer_ready(timer) ? 3 : 2;
     unsigned at = count;
     while (at) {
       const ActivityTimerModel *other = &collection->slots[ordered[at - 1]];
       const unsigned other_rank = other->state == ACTIVITY_TIMER_RUNNING ? 0 :
-          other->state == ACTIVITY_TIMER_PAUSED ? 1 : other->acknowledged ? 3 : 2;
+          other->state == ACTIVITY_TIMER_PAUSED ? 1 : activity_timer_ready(other) ? 3 : 2;
       if (other_rank < rank || (other_rank == rank &&
           (rank != 0 || other->deadline <= timer->deadline))) break;
       ordered[at] = ordered[at - 1];
@@ -150,7 +165,7 @@ static int create_slot(const TimerCollection *collection) {
   for (unsigned i = 0; i < TIMER_COLLECTION_CAPACITY; ++i) {
     if (!timer_collection_visible(collection, i)) return (int)i;
     const ActivityTimerModel *timer = &collection->slots[i];
-    if (timer->state == ACTIVITY_TIMER_FINISHED && timer->acknowledged &&
+    if (activity_timer_ready(timer) &&
         (oldest < 0 || timer->observed_at < collection->slots[oldest].observed_at))
       oldest = (int)i;
   }
@@ -175,13 +190,14 @@ int timer_collection_create(TimerCollection *collection, uint32_t seconds, uint3
 
 bool timer_collection_edit(TimerCollection *collection, unsigned slot,
                             uint32_t seconds, uint32_t now) {
-  if (!slot_ready(collection, slot) || !timer_collection_visible(collection, slot) ||
+  if (!timer_collection_visible(collection, slot) ||
       seconds < ACTIVITY_TIMER_MIN_SECONDS || seconds > ACTIVITY_TIMER_MAX_SECONDS) return false;
+  if (activity_timer_ready(&collection->slots[slot]) &&
+      collection->slots[slot].repeat_seconds == seconds) return true;
+  if (!slot_ready(collection, slot)) return false;
   ActivityTimerModel next = collection->slots[slot];
   next.revision = collection->revision;
-  if (next.state == ACTIVITY_TIMER_FINISHED) {
-    if (!next.acknowledged) return false;
-    if (next.repeat_seconds == seconds) return true;
+  if (activity_timer_ready(&next)) {
     ++next.revision;
     next.repeat_seconds = seconds;
   } else {
@@ -215,6 +231,18 @@ bool timer_collection_pause(TimerCollection *collection, unsigned slot, uint32_t
   return activity_timer_pause(&next, now) && commit(collection, slot, &next);
 }
 
+bool timer_collection_reset(TimerCollection *collection, unsigned slot, uint32_t now) {
+  if (!timer_collection_visible(collection, slot)) return false;
+  if (activity_timer_ready(&collection->slots[slot])) return true;
+  if (!slot_ready(collection, slot)) return false;
+  ActivityTimerModel next = collection->slots[slot];
+  if (!next.run || (next.state != ACTIVITY_TIMER_RUNNING &&
+      next.state != ACTIVITY_TIMER_PAUSED && next.state != ACTIVITY_TIMER_FINISHED)) return false;
+  next.revision = collection->revision;
+  cancel_record(&next, now);
+  return commit(collection, slot, &next);
+}
+
 bool timer_collection_restart(TimerCollection *collection, unsigned slot, uint32_t now) {
   if (!slot_ready(collection, slot) || !timer_collection_visible(collection, slot)) return false;
   ActivityTimerModel next = collection->slots[slot];
@@ -239,13 +267,9 @@ bool timer_collection_delete(TimerCollection *collection, unsigned slot, uint32_
   if (!slot_ready(collection, slot) || !timer_collection_visible(collection, slot)) return false;
   ActivityTimerModel next = collection->slots[slot];
   next.revision = collection->revision;
-  if (next.state == ACTIVITY_TIMER_FINISHED) {
-    ++next.revision;
-    next.state = ACTIVITY_TIMER_CANCELLED;
-    next.acknowledged = 0;
-    next.observed_at = now;
-    next.valid_until = saturating_add(now, ACTIVITY_TIMER_TERMINAL_SECONDS);
-  } else if (!activity_timer_cancel(&next, now)) return false;
+  if (next.state == ACTIVITY_TIMER_FINISHED || next.state == ACTIVITY_TIMER_CANCELLED)
+    cancel_record(&next, now);
+  else if (!activity_timer_cancel(&next, now)) return false;
   if (!commit(collection, slot, &next)) return false;
   collection->visible_mask &= ~(1u << slot);
   return true;

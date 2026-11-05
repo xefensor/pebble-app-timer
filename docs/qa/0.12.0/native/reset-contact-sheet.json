@@ -1,0 +1,48 @@
+{
+  "candidatePbwSha256": "2ff486c1af98f9f62325d49d61f92ab43abe20d2159f3e9bfb03c032abc30560",
+  "derivativeContactSheet": true,
+  "scale": 2,
+  "resampling": "nearest",
+  "sources": [
+    {
+      "file": "reset-running-options.png",
+      "sha256": "e80179888b138ff807344a7f0ade7fed7705ea221628009e890b0f6f6fdb6e99",
+      "nativePixelsModified": false
+    },
+    {
+      "file": "reset-running-ready.png",
+      "sha256": "5201e74dd68cdaf7e65d4b4028481c6fdc4335de8ccbb3ac4f09cd840720f3b8",
+      "nativePixelsModified": false
+    },
+    {
+      "file": "reset-sibling-native-background-alarm.png",
+      "sha256": "fe4aa9d48a16ad4ae9d8a3153d05873ce26f53aa31bbf5fe637d8ee6f5ad0c53",
+      "nativePixelsModified": false
+    },
+    {
+      "file": "reset-paused-edited-span-ready-saved-repeat.png",
+      "sha256": "290592ad91493dc9ecc01a45f8bde8bf5bf16a1f88b96ba68570a8b13c1781cb",
+      "nativePixelsModified": false
+    },
+    {
+      "file": "reset-snoozed-ready-original-repeat.png",
+      "sha256": "e00ec36a065d6785cc7783c06a61ceb6d332f6635c76a7a5df3b96269ac57a74",
+      "nativePixelsModified": false
+    },
+    {
+      "file": "reset-ready-edited-without-starting.png",
+      "sha256": "60fe360c05d0a7ced97a45208c10c1e717491c7e268fede9a58f2ceb4616b727",
+      "nativePixelsModified": false
+    },
+    {
+      "file": "reset-ready-after-process-reopen.png",
+      "sha256": "60fe360c05d0a7ced97a45208c10c1e717491c7e268fede9a58f2ceb4616b727",
+      "nativePixelsModified": false
+    },
+    {
+      "file": "reset-explicit-start-new-run.png",
+      "sha256": "c093fe7e2afa8aec24f7c8f3f7696e35f91d0e8a92d9e797db18f47734f28df2",
+      "nativePixelsModified": false
+    }
+  ]
+}

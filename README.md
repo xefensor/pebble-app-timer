@@ -4,12 +4,11 @@ A native timer for **stock PebbleOS**, with activity sharing for compatible
 watchfaces such as [Dynamic](https://github.com/xefensor/dynamic-watchface).
 The first target is Pebble Time 2 (`emery`, 200 × 228).
 
-Timer **0.11.2** is a local development candidate with more reliable activity
-sharing: transient startup sends retry, thrown bridge calls recover and late
-duplicate callbacks cannot release another message's queue slot. Duplicate
-ready/connection events no longer force redundant handoffs. It retains the
-clock header, clear falling sand and repeating alarm from 0.11.1.
-The local test package is [Timer-0.11.2.pbw](releases/Timer-0.11.2.pbw).
+Timer **0.12.0** is a local development candidate with **Reset** in More options.
+Reset stops the current countdown and restores its saved duration as **Ready**.
+It stays stopped until you press Select to start, including after closing and
+reopening Timer. Other timers continue normally.
+The local test package is [Timer-0.12.0.pbw](releases/Timer-0.12.0.pbw).
 
 Dashboard Pause/Resume is deferred by choice. Separate stock PebbleOS apps cannot
 control each other's workers or cancel each other's alarms. The proposed
@@ -59,6 +58,23 @@ Use [Dynamic 0.16.0](https://github.com/xefensor/dynamic-watchface/releases/tag/
 for activity presentation and [Open Activity 0.1.5](https://github.com/xefensor/pebble-app-open-activity/releases/tag/v0.1.5)
 for the separately configured Primary/Secondary shortcuts. Install each app
 separately; the Activities library is already bundled.
+
+## Version 0.12.0
+
+- Replace the immediate Restart option with **Reset**. Restore the saved repeat
+  duration, show Ready with the sand at the bottom, and start only on Select.
+- Stop the reset timer's native alarm and withdraw its activity. Keep its saved
+  slot, duration and other timers; resetting after a remaining-time edit or
+  one-minute Snooze restores the saved repeat duration.
+- Keep Ready duration edits stopped. Press Select when ready to start a new
+  countdown using the saved duration.
+- Persist Reset before changing alarms or sharing state. A failed save leaves the
+  previous countdown and alarm authoritative. Ready survives a normal app reopen.
+- Retain the existing storage layout and read older v1/v2 records. Reset Ready
+  rows use the cancelled state plus the saved visibility bit; older app versions
+  do not support those rows, so downgrading is not supported.
+
+See [validation](docs/qa/0.12.0/) for the focused native and packaged-source checks.
 
 ## Version 0.11.2
 
@@ -410,7 +426,7 @@ The dependency is installed from `vendor/pebble-activities-0.4.0.tgz`; its
 provenance and SHA-256 are recorded in [vendor/README.md](vendor/README.md).
 
 The distribution build clears the SDK cache so dependency updates cannot leave
-stale phone JavaScript in the PBW. It writes `dist/Timer-0.11.2.pbw`, its debugging ZIP and checksums. It bundles the provider
+stale phone JavaScript in the PBW. It writes `dist/Timer-0.12.0.pbw`, its debugging ZIP and checksums. It bundles the provider
 JavaScript and sets `manifestVersion: 2`, including `plugin.js` alongside PKJS
 and the watch binary. A plain `pebble build` creates a development PBW without
 that extra provider bundle; use `npm run build` for an installable shared-activity

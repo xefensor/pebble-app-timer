@@ -1,0 +1,101 @@
+{
+  "result": "HARNESS_ASSERTION_OUTDATED",
+  "candidatePbwSha256": "2ff486c1af98f9f62325d49d61f92ab43abe20d2159f3e9bfb03c032abc30560",
+  "nativePayloadSha256": {
+    "emery/app_resources.pbpack": "a35ebc1371147dbe65bf1cafa0362d6236583eac9b1210192a0f369adfa08c49",
+    "emery/manifest.json": "0631c79947114ece8d355e1fc70fb938e2276e99541fbd63d292fbd8f9845c7b",
+    "emery/pebble-app.bin": "8d49f4dede18918960433b7daf0370048f996cb4fcc56b681248991ce5812772"
+  },
+  "phoneJavascriptExecuted": false,
+  "captures": [
+    {
+      "name": "storage-generation-fixture",
+      "file": "storage-generation-fixture.png",
+      "sha256": "2be9dba7ea50818b3ec07925be44a150abb43a451891ef95572d96a2df3b8d21",
+      "rgbSha256": "f295b0119a6769a90ed503c69878be708bd5e9d861d2b2f0d4007c30ab8f89bc",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false,
+      "phase": "storage",
+      "source": "Isolated exhausted-generation V1 bank fixture, not Timer native binary"
+    },
+    {
+      "name": "storage-not-saved-list",
+      "file": "storage-not-saved-list.png",
+      "sha256": "197287583e3bbe97586a3db68b046ac8632a4d773ad1decadd9795b79dc76911",
+      "rgbSha256": "6501c9f9e16207ac70e8b50f10c5d4923944a215b72f9995c592f152a2cddc9d",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false,
+      "phase": "storage"
+    },
+    {
+      "name": "storage-not-saved-detail",
+      "file": "storage-not-saved-detail.png",
+      "sha256": "516101821da69bd8f8afaf228461f8b2c3f192603d87142c753c957af548a1ce",
+      "rgbSha256": "8568823a833c76764c1df5064e0ec0a52bd79c537fbbb78db1be1e6b242ca058",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false,
+      "phase": "storage"
+    },
+    {
+      "name": "storage-not-saved-options",
+      "file": "storage-not-saved-options.png",
+      "sha256": "925d90b0efd5c12e9472bfd892f06bcf1ab58660b36c9d753a485e73de7c65c0",
+      "rgbSha256": "7cf61d2aad423be0a0fa2c64d1f2b51ab8358d7a7d7607577b0d6faf080c79bd",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false,
+      "phase": "storage"
+    },
+    {
+      "name": "storage-reset-failed-stays-options",
+      "file": "storage-reset-failed-stays-options.png",
+      "sha256": "7bc7f8f645448f4832beda4d54f19080c5c7429dd5cc80be4c6265ec207b6b81",
+      "rgbSha256": "6773a7015bbd0e679669cb3a378b069524b4790807fe1d15b4259d1b21526aa8",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false,
+      "phase": "storage"
+    },
+    {
+      "name": "storage-reset-failed-after-reopen",
+      "file": "storage-reset-failed-after-reopen.png",
+      "sha256": "4d3fcb11793067aa6ce7c39ee8128d2dee6fb2c10bd8e15a8fe78a16808027a9",
+      "rgbSha256": "3cdb87cdd389cbe9b71b639ee611eb58ea51ad3704056822aace8c469e19a355",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false,
+      "phase": "storage"
+    },
+    {
+      "name": "storage-not-saved-delete-keeps-actions",
+      "file": "storage-not-saved-delete-keeps-actions.png",
+      "sha256": "d1a3b1af41b9d45e906dd78d4871fbf535c0da5b0596dc98b8456b4b32131d70",
+      "rgbSha256": "88c6334a8b4b280ce2d3a94376117df01206422ab5237e74f58a8a9a1f02dd15",
+      "pixels": [
+        200,
+        228
+      ],
+      "nativePixelsModified": false,
+      "phase": "storage"
+    }
+  ],
+  "failedAssertion": "Delete critical warning was expected amber at(1,1); clock-header0.11.1 correctly moved this warning to y32..67.",
+  "correctedAssertion": "Check warning amber at(1,40), preserving the unchanged(1,180)choice-clearance assertion.",
+  "productRenderingChangeRequired": false,
+  "phaseMustRerun": true
+}

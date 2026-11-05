@@ -62,6 +62,28 @@ static void paused_visibility(void) {
   assert(activity_timer_valid(&timer));
 }
 
+static void ready_states(void) {
+  ActivityTimerModel timer;
+  assert(!activity_timer_ready(NULL));
+  activity_timer_init(&timer, 901, 1000);
+  assert(!activity_timer_ready(&timer)); /* An unused slot is not saved Ready. */
+  assert(activity_timer_start(&timer, 60, 1000));
+  assert(!activity_timer_ready(&timer));
+  assert(activity_timer_pause(&timer, 1010));
+  assert(!activity_timer_ready(&timer));
+  assert(activity_timer_resume(&timer, 1020));
+  assert(activity_timer_finish_if_due(&timer, 1070));
+  assert(!activity_timer_ready(&timer)); /* A pending alarm still needs Done. */
+  assert(activity_timer_acknowledge(&timer));
+  ActivityTimerModel previous = timer;
+  assert(activity_timer_ready(&timer));
+  assert(!memcmp(&timer, &previous, sizeof(timer)));
+  assert(activity_timer_start(&timer, 60, 2000));
+  assert(activity_timer_cancel(&timer, 2010));
+  assert(activity_timer_ready(&timer));
+  assert(activity_timer_valid(&timer));
+}
+
 int main(void) {
   ActivityTimerModel timer;
   activity_timer_init(&timer, 123, 1000);
@@ -169,6 +191,7 @@ int main(void) {
   assert(!activity_timer_decode(&restored, &old, sizeof(old), false));
   assert(!memcmp(&before, &restored, sizeof(before)));
   paused_visibility();
+  ready_states();
   puts("timer model: lifecycle, persistence, expiry and boundary checks passed");
   return 0;
 }

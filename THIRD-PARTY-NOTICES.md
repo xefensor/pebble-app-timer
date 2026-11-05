@@ -3,11 +3,11 @@
 Timer uses the repository's PolyForm Noncommercial License 1.0.0 and required
 attribution, carried in `LICENSE` in the source checkout and packaged PBW.
 
-## Pebble Activities 0.2.0
+## Pebble Activities
 
 The app bundles shared native and JavaScript helpers from
 [xefensor/pebble-activities](https://github.com/xefensor/pebble-activities), pinned
-to the reviewed 0.2.0 candidate tarball in `vendor/`. That dependency uses the PolyForm
+to the reviewed tarball recorded in `vendor/ACTIVITIES.json`. That dependency uses the PolyForm
 Noncommercial License 1.0.0 with its required attribution. Its original licence
 is retained in `licenses/pebble-activities-LICENSE.txt` in the packaged PBW and
 inside the vendored source tarball. See [vendor/README.md](vendor/README.md) for

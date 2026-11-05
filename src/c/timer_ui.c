@@ -281,9 +281,9 @@ static void main_screen(GContext *ctx, const TimerUiView *view) {
   const ActivityTimerModel *timer=&view->collection->slots[view->selected];
   const bool paused=timer->state==ACTIVITY_TIMER_PAUSED;
   const bool finished=timer->state==ACTIVITY_TIMER_FINISHED;
-  const bool ready=finished&&timer->acknowledged;
+  const bool ready=activity_timer_ready(timer);
   const uint32_t left=ready?timer->repeat_seconds:activity_timer_remaining(timer,view->now);
-  bar(ctx,ICON_EDIT,paused||finished?ICON_PLAY:ICON_PAUSE,ICON_MORE,GColorBlack);
+  bar(ctx,ICON_EDIT,paused||finished||ready?ICON_PLAY:ICON_PAUSE,ICON_MORE,GColorBlack);
   const char *heading=paused?"Paused":ready?"Ready":finished?"Finished":"Timer";
   header(ctx,view,heading,GColorBlack);
   graphics_context_set_stroke_color(ctx,GColorLightGray);segment(ctx,8,32,158,32);
@@ -296,7 +296,7 @@ static void main_screen(GContext *ctx, const TimerUiView *view) {
   hourglass(ctx,left,ready?timer->repeat_seconds:timer->configured_seconds,
       UI_CENTER,view->issue?137:145,view->issue?85:100,angle,paused?AMBER:BLUE,GColorBlack,
       timer->state==ACTIVITY_TIMER_RUNNING,view->now);
-  if(ready)snprintf(support,sizeof(support),"Select to repeat");
+  if(ready)snprintf(support,sizeof(support),"Select to start");
   else {
     clock_text(activity_timer_elapsed(timer,view->now),elapsed,sizeof(elapsed));
     snprintf(support,sizeof(support),"Elapsed %s",elapsed);
@@ -325,7 +325,7 @@ static void list_screen(GContext *ctx, const TimerUiView *view) {
     for(unsigned row=first;row<count&&row<first+rows;++row) {
       const unsigned slot=list.slots[row];
       const ActivityTimerModel *timer=&view->collection->slots[slot];
-      const bool ready=timer->state==ACTIVITY_TIMER_FINISHED&&timer->acknowledged;
+      const bool ready=activity_timer_ready(timer);
       const uint32_t left=ready?timer->repeat_seconds:activity_timer_remaining(timer,view->now);
       const bool selected=menu==row+1;
       const GColor foreground=selected?GColorWhite:GColorBlack;
@@ -416,11 +416,11 @@ static void alarm_screen(GContext *ctx, const TimerUiView *view) {
 
 static void options_screen(GContext *ctx, const TimerUiView *view) {
   const ActivityTimerModel *timer=&view->collection->slots[view->selected];
-  char duration[20],restart[32];
+  char duration[20],reset[32];
   duration_text(timer->repeat_seconds,duration,sizeof(duration),false);
-  snprintf(restart,sizeof(restart),"Restart %s",duration);
-  const char *options[]={timer->state==ACTIVITY_TIMER_FINISHED&&timer->acknowledged?
-      "Change duration":"Change remaining",restart,"Delete timer"};
+  snprintf(reset,sizeof(reset),"Reset %s",duration);
+  const char *options[]={activity_timer_ready(timer)?
+      "Change duration":"Change remaining",reset,"Delete timer"};
   bar(ctx,view->option?ICON_UP:ICON_NONE,ICON_CHECK,view->option<2?ICON_DOWN:ICON_NONE,GColorBlack);
   const unsigned count=timer_collection_count(view->collection);
   unsigned position=1;
@@ -431,7 +431,7 @@ static void options_screen(GContext *ctx, const TimerUiView *view) {
   else snprintf(heading,sizeof(heading),"Options");
   snprintf(context,sizeof(context),"%s · %s",duration,
       timer->state==ACTIVITY_TIMER_RUNNING?"Running":timer->state==ACTIVITY_TIMER_PAUSED?"Paused":
-      timer->acknowledged?"Ready":"Time’s up");
+      activity_timer_ready(timer)?"Ready":"Time’s up");
   header(ctx,view,heading,GColorBlack);
   text(ctx,context,18,46,GColorDarkGray);
   graphics_context_set_stroke_color(ctx,GColorLightGray);segment(ctx,10,49,156,49);
@@ -441,7 +441,8 @@ static void options_screen(GContext *ctx, const TimerUiView *view) {
     if(selected)rect(ctx,GRect(0,y,UI_WIDTH,41),GColorBlack);
     timer_fonts_text(ctx,options[row],19,13,y+28,149,selected?GColorWhite:GColorBlack,GTextAlignmentLeft);
   }
-  text(ctx,view->status&&view->status[0]?view->status:"Back to keep timing",18,220,GColorDarkGray);
+  text(ctx,view->status&&view->status[0]?view->status:
+      activity_timer_ready(timer)?"Back to timer":"Back to keep timing",18,220,GColorDarkGray);
 }
 
 static void confirm_screen(GContext *ctx, const TimerUiView *view) {

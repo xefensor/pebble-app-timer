@@ -61,11 +61,11 @@ packaged resources and linked outlines against their exact source assets.
 Keep digits stable, sand proportional, paused views still and transitions
 bounded. Preserve initial launch focus and cancel decorative work under a
 covering window. All eight saved timers retain native deadline ownership.
-More options owns Restart and confirmed Delete; Keep is the initial choice.
+More options owns Reset and confirmed Delete; Keep is the initial choice.
 Cancel returns to the originating screen: an Options edit returns to Options,
 a direct detail edit returns to detail, and a new timer returns to the list.
 Delete Keep/Back returns to Options with its Delete row still selected.
-Restart names the saved repeat duration, independent of remaining/snoozed time.
+Reset names the saved repeat duration, independent of remaining/snoozed time.
 When New timer will reuse the oldest acknowledged Ready slot, warn in the list
 before entry and in the editor before starting. Eight active slots remain Full.
 Held buttons must not act again after their first press changes screens.
@@ -77,7 +77,8 @@ Critical warnings must preserve list rows, both Delete choices and the alarm's
 Done/Snooze hints. Error fixtures may exercise an exhausted bank generation or
 an external Wakeup conflict, but shipping native code must remain unmodified.
 Normal sharing status belongs in More options; alarm/storage failures stay
-visible. Restart creates a new run in the same slot with the configured duration.
+visible. Reset leaves the timer Ready; explicit Select starts a new run in the
+same slot with the saved repeat duration.
 
 The app has eight stable native timer slots and an independent list/editor/detail/
 alarm interface. ACTIVITY_SLOT (1021) is an internal bridge key;
@@ -157,3 +158,15 @@ must not trigger another full reconfirmation/publication. Keep native receipt
 tickets, storage, observations and alarm ownership intact. Use the packaged
 transport benchmark for work/recovery evidence; it does not measure real radio
 delivery, battery life or native vibration.
+
+Version 0.12.0 replaces More options' immediate Restart with Reset. Persist a
+cancelled tombstone in the same run/slot, retain that row through visible_mask,
+and render it as Ready through activity_timer_ready(). Preserve repeat_seconds;
+Ready editing changes only the saved repeat, and Select starts a new run. Reset
+must not report completion, create a deadline or affect sibling alarms. Only a
+verified save permits cancelling its Wakeup and withdrawing its activity. No-op
+Ready resets do not write or renew observation/revision. Keep v1 visibility
+decoding strict; v2 additionally accepts visible cancelled records with run>0.
+Existing records upgrade without a format rewrite; older binaries do not support
+the new visible-cancelled Ready representation. Preserve the unchanged paused
+lease, terminal-history, publisher receipt and single-queue rules.

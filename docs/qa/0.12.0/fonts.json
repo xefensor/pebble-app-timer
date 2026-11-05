@@ -1,0 +1,68 @@
+{
+  "result": "PASS",
+  "version": "0.12.0",
+  "pbwSha256": "2ff486c1af98f9f62325d49d61f92ab43abe20d2159f3e9bfb03c032abc30560",
+  "bodyFonts": [
+    {
+      "name": "FONT_BODY_14",
+      "point": 14,
+      "glyphs": 99,
+      "bytes": 2749,
+      "sha256": "45efe516ed2b649e37da83212cf91a4a0d7df0abebe0b70c73feba9ce862d116"
+    },
+    {
+      "name": "FONT_BODY_15",
+      "point": 15,
+      "glyphs": 99,
+      "bytes": 2857,
+      "sha256": "378cd8baf998f0b2eb3f6f74b53699e786b993733a920081623a89280bd45bfc"
+    },
+    {
+      "name": "FONT_BODY_16",
+      "point": 16,
+      "glyphs": 99,
+      "bytes": 2909,
+      "sha256": "6e34990792d5a899116eaba6a117f8b05d434b3290ac4f0d8c62275be6f2b09a"
+    },
+    {
+      "name": "FONT_BODY_18",
+      "point": 18,
+      "glyphs": 99,
+      "bytes": 3137,
+      "sha256": "a20d74aaa5d3492d49cf204f32260a31ddb9e28eb61ce2749815205cdb851d36"
+    },
+    {
+      "name": "FONT_BODY_19",
+      "point": 19,
+      "glyphs": 99,
+      "bytes": 3261,
+      "sha256": "7f4d050395d1079a11abf0eec09e93a0286cd27737e06f4d882d1f8fbda59a3e"
+    },
+    {
+      "name": "FONT_BODY_23",
+      "point": 23,
+      "glyphs": 99,
+      "bytes": 3781,
+      "sha256": "2c2695c889a2bc4990f538aa028ae0b413d14ae881dd7fc619e9d4b191a83ef0"
+    }
+  ],
+  "roundedClockTables": {
+    "clock_points": {
+      "rows": 1049,
+      "bytes": 4196,
+      "nativeIdentity": true
+    },
+    "clock_contours": {
+      "rows": 19,
+      "bytes": 114,
+      "nativeIdentity": true
+    },
+    "clock_glyphs": {
+      "rows": 11,
+      "bytes": 220,
+      "nativeIdentity": true
+    }
+  },
+  "fontLicensesMatchSource": true,
+  "scope": "Exact source/SDK bitmap and native outline identity; native captures separately verify pixels, fitting and motion."
+}

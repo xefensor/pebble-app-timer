@@ -1,5 +1,40 @@
 # Timer validation
 
+## 0.12.0 Reset without starting
+
+More options now resets the selected timer to its saved duration as Ready.
+Select starts it explicitly. The cancelled owner record stays in the same slot
+and run, and withdraws its displayable activity; only Start creates a new run.
+Ready, edited remaining time, Snooze, process reopen, sibling timers and native
+alarm ownership are covered by the focused checks in [versioned QA](qa/0.12.0/).
+
+All 31 JavaScript checks, eight portable C suites and 42 Python regressions pass.
+The changed model/collection suites also pass AddressSanitizer and UBSan with
+leak scanning disabled for the sandbox. The packaged optimized PKJS/provider
+checks verify Reset withdrawal through summary/live/card/session, unchanged
+sibling clocks, stale/native-terminal rejection and explicit new-run Start.
+Reset records do not acquire a new observation or lease on polling/reopen.
+
+The SDK build passes with 36,123 bytes RAM footprint and 22,802 resource bytes.
+The font/license audit confirms unchanged source fonts, native outlines and SDK
+bitmap resources. Candidate PBW SHA-256:
+`2ff486c1af98f9f62325d49d61f92ab43abe20d2159f3e9bfb03c032abc30560`.
+Both focused native phases pass with 21 captures: 19 Timer screens, one stock OS
+screen at the withdrawn deadline and one labelled storage seed fixture. Reset
+survives reopening, the withdrawn deadline does not launch Timer, and an untouched
+sibling still wakes and alarms. An actually refused native bank save preserves
+the old timer/alarm, shows the warning and emits no unsaved withdrawal. Both
+contact sheets were visually reviewed. Exact candidate/native payload identity
+is recorded in the versioned QA directory; older captures retain their scope.
+No real phone or physical-watch validation is claimed.
+
+The persisted layout, keys and record sizes remain unchanged, and the current
+decoder retains v1/v2 input support. V2 additionally accepts a visible cancelled
+run as Ready; the old binaries do not support this representation. Already Ready
+Reset and unchanged Ready edits preserve every model byte, and the native UI
+does not save or republish a no-op Reset. The Activities publisher/provider pin
+remains 0.4.0; source schemas, message keys and app UUID are unchanged.
+
 ## 0.11.2 activity transport reliability
 
 All 28 JavaScript checks, eight portable C suites and 42 Python regressions pass.

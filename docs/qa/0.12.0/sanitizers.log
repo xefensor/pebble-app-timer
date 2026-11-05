@@ -1,0 +1,2 @@
+timer model: lifecycle, persistence, expiry and boundary checks passed
+timer collection: migration, eight slots, clocks, revisions, editing and persistence passed
