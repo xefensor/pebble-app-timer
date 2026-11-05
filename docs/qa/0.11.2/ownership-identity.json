@@ -1,0 +1,189 @@
+{
+  "result": "PASS",
+  "version": "0.11.2",
+  "candidatePbwSha256": "597429bab50353d13508f9edd2abf3915f6b99b2c725d587365e7451d6fd982a",
+  "comparedSourceCommit": "067b1cdca7b0b85d1d39a101cded7ef90aca667e",
+  "unchangedSources": [
+    {
+      "file": "src/c/font_raster.h",
+      "sha256": "87651103df94931391886f0268769d59df99e3c14f872a686ec78bdca5a01336",
+      "unchanged": true
+    },
+    {
+      "file": "src/c/generated_clock_glyphs.h",
+      "sha256": "d24e8bbe3f938069b14de4483adadca00cc211082274f72e4b55ef8fc3a95981",
+      "unchanged": true
+    },
+    {
+      "file": "src/c/timer_alarm_feedback.c",
+      "sha256": "34ee88328b3bdfc0bf9ae898c56a90a721519840b8ff8052ee8fc7a026c8aac4",
+      "unchanged": true
+    },
+    {
+      "file": "src/c/timer_alarm_feedback.h",
+      "sha256": "8f13776df841895f536ebd158e7d5e87d24762eb706bff52e373064d22b10bf2",
+      "unchanged": true
+    },
+    {
+      "file": "src/c/timer_collection.c",
+      "sha256": "a0f1fd8c2f60cd215ed896dd9b7b21f45bb06d6bf39c785843147afa4e796cf5",
+      "unchanged": true
+    },
+    {
+      "file": "src/c/timer_collection.h",
+      "sha256": "01cf0450f3a52a5e6ec59c10a40a388783bdf099f688a9fd6c4dbb245780e58a",
+      "unchanged": true
+    },
+    {
+      "file": "src/c/timer_fonts.c",
+      "sha256": "972a5ff86ec0185db6d86ea802f3b845a9b1ff63d9b48862136f230c4ef25e2c",
+      "unchanged": true
+    },
+    {
+      "file": "src/c/timer_fonts.h",
+      "sha256": "24c0b9be2691506e4c74f753203f6a3098da1b661d71c8712f7972ba5d61868c",
+      "unchanged": true
+    },
+    {
+      "file": "src/c/timer_glance.c",
+      "sha256": "a4b8daf7567d86226ed94982c09666ec8c45e3cc70e6f7e93920236f7e9f305a",
+      "unchanged": true
+    },
+    {
+      "file": "src/c/timer_glance.h",
+      "sha256": "dd48e7b1563bc8262393b97d1307efc681542b0ae7b7c332bcc1d7a48318bb6b",
+      "unchanged": true
+    },
+    {
+      "file": "src/c/timer_glance_plan.h",
+      "sha256": "78dca0f56f9a38e0a89c49b0024c4670f0db28cb9082adb2236c0e9993c3db23",
+      "unchanged": true
+    },
+    {
+      "file": "src/c/timer_hourglass.h",
+      "sha256": "9a048638957b89cb7eac48f08b7610badf91ad926047b6376c6005a78633c13f",
+      "unchanged": true
+    },
+    {
+      "file": "src/c/timer_model.c",
+      "sha256": "45aaebf48d5f8ea677b8d562fc6658c90d4a767593becc71ad33feb56d9fa138",
+      "unchanged": true
+    },
+    {
+      "file": "src/c/timer_model.h",
+      "sha256": "9924ab3cfe71e05bb1f712f653f118930e0062666089a62707a860978fc4fedb",
+      "unchanged": true
+    },
+    {
+      "file": "src/c/timer_ui.c",
+      "sha256": "699cd7280355cb44799561d74075c0efeaf2a1170b2bd5444b30df51bbf10237",
+      "unchanged": true
+    },
+    {
+      "file": "src/c/timer_ui.h",
+      "sha256": "19b1ef26744dbbbb29904c66da3fe0eaecf3f1cc84187139c146821f53277f60",
+      "unchanged": true
+    },
+    {
+      "file": "src/c/timer_ui_state.c",
+      "sha256": "4d86e5a7eb5441892da7394fdbe12fa38f745d1169666bc9060048526fb4f0a8",
+      "unchanged": true
+    },
+    {
+      "file": "src/c/timer_ui_state.h",
+      "sha256": "91a8757e513ccbee8b13944d1a2cda41405b2c7abfaff757ab853a7190768ad7",
+      "unchanged": true
+    },
+    {
+      "file": "src/plugin/index.js",
+      "sha256": "0b200c65a1765baa19247e6a5ce29143dad9e44cae80f063b0a829dec2f11af4",
+      "unchanged": true
+    },
+    {
+      "file": "vendor/pebble-activities-0.4.0.tgz",
+      "sha256": "9e640aea91d08633e91e59dab3d1e0ee6243efe0109d971e42d356a4d67affbe",
+      "unchanged": true
+    }
+  ],
+  "unchangedMainFunctions": [
+    {
+      "function": "prv_save",
+      "sha256": "7f617fd8406af7a105e42359d8cc1433b3ace9b3ae2762cb8dde98b225adbb9b",
+      "unchanged": true
+    },
+    {
+      "function": "prv_load_bank",
+      "sha256": "036fb8dff29310e89dec8042de28c6068ad1ee9cea90d9d588266bf3328d84c4",
+      "unchanged": true
+    },
+    {
+      "function": "prv_load",
+      "sha256": "2f35b36decc5d906d6e5ba7a10cae59fd24403c415fd7fe970d392bb459177af",
+      "unchanged": true
+    },
+    {
+      "function": "prv_schedule_alarm",
+      "sha256": "b4322e14575d82a62d346869a4a0b90e57e53277d93fa76ec8ef760b98c1ba9e",
+      "unchanged": true
+    },
+    {
+      "function": "prv_apply",
+      "sha256": "035928c18fa044b45f0aff606af7545872d3b3c6961dfd1198e68fa971834828",
+      "unchanged": true
+    },
+    {
+      "function": "prv_finish_at",
+      "sha256": "b9204665f2ea3c5341ae9b84f9541433f518620da0037a21facf2fa126400f68",
+      "unchanged": true
+    },
+    {
+      "function": "prv_alarm_dismiss",
+      "sha256": "d741300ce09b9a9dc014b85cc92e92ec4216ee6ff00a67e3abd85de4e434a663",
+      "unchanged": true
+    },
+    {
+      "function": "prv_press",
+      "sha256": "be67fee682ffb718d5b277f043aa895027084893af9803a25cf1213bd70bac7d",
+      "unchanged": true
+    },
+    {
+      "function": "prv_wakeup",
+      "sha256": "234d06b7ddfddb13e7868c7f76c97365e152da13d36143e486ffe5dd049d66df",
+      "unchanged": true
+    },
+    {
+      "function": "prv_draw",
+      "sha256": "d1e755e8428cec4a046e1989cebae660ba6bab32f7671b08b5519aa75f9fa082",
+      "unchanged": true
+    },
+    {
+      "function": "prv_view",
+      "sha256": "5489e4bd6f38f5652fbbc476b0fd6f2097300bd86251417f52ac49f1f43b4419",
+      "unchanged": true
+    },
+    {
+      "function": "prv_tick",
+      "sha256": "e4d2bc2a2adc84cff8349b60f9357bb0d7eed88f221c5c48e8e9bbbea21225e8",
+      "unchanged": true
+    },
+    {
+      "function": "prv_update_ticks",
+      "sha256": "789abc0571fd4260366e137bec0e398aa96aaf5bbe58c34ea6fa448834d221b7",
+      "unchanged": true
+    }
+  ],
+  "unchangedPackagedMembers": [
+    "emery/app_resources.pbpack",
+    "plugin.js",
+    "licenses/pebble-activities-LICENSE.txt",
+    "licenses/OFL-Fredoka.txt",
+    "licenses/OFL-RobotoCondensed.txt"
+  ],
+  "changedBehavior": "Duplicate connection events return without forcing publication; PKJS settles each send once and retries only failed bootstrap sends with a bounded backoff.",
+  "nativeLayoutEvidence": {
+    "version": "0.11.1",
+    "report": "docs/qa/0.11.1/native/ux.json",
+    "scope": "Historical captures; unchanged native rendering/layout/clock/alarm sources verified above. No0.11.2 native pixel recapture claimed."
+  },
+  "limits": "No physical watch, real-phone transport or battery measurement."
+}

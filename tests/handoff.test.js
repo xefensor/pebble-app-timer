@@ -21,13 +21,14 @@ function storage(failing) {
   };
 }
 
-function runtime(file, shared, at = now) {
+function runtime(file, shared, at = now, options = {}) {
   const events = {}, sent = [];
   let source;
   const pebble = {
     addEventListener(name, fn) { events[name] = fn; },
-    sendAppMessage(message, success) {
+    sendAppMessage(message, success, failure) {
       sent.push(JSON.parse(JSON.stringify(message)));
+      if (options.send) return options.send(message, success, failure);
       success();
     },
     registerSourceHandler(fn) { source = fn; }
@@ -39,6 +40,7 @@ function runtime(file, shared, at = now) {
   };
   vm.runInNewContext(fs.readFileSync(path.join(__dirname, '..', file), 'utf8'), {
     Pebble: pebble, localStorage: shared,
+    setTimeout: options.later, clearTimeout: options.cancel,
     require(name) {
       if (name === 'pebble-activities/summary') {
         return {...library.summary, defineSnapshotProvider(options) {
@@ -554,4 +556,120 @@ test('Done hides a completed run durably without cancelling it or another timer'
   const full=helpers.createProvider({storage:shared,pluginUuid:uuid,now:()=>(now+602)*1000})
     .source({category:'activity',item:'card'}).instances;
   assert.equal(full[0].properties.show_terminal.boolean.value,false);
+});
+
+function retryClock() {
+  let sequence = 0;
+  const timers = new Map(), delays = [];
+  return {
+    timers, delays,
+    later(fn, delay) {const id = ++sequence; timers.set(id, fn); delays.push(delay); return id;},
+    cancel(id) {timers.delete(id);},
+    next() {
+      const [id, fn] = timers.entries().next().value;
+      timers.delete(id); fn();
+    }
+  };
+}
+
+test('bootstrap recovers a thrown bridge call without duplicate ready requests', () => {
+  const clock = retryClock(); let requests = 0;
+  const app = runtime('src/pkjs/index.js', storage(), now, {...clock,
+    send(message, success) {
+      if (message.ACTIVITY_REQUEST && ++requests === 1) throw new Error('bridge not ready');
+      success();
+    }});
+  assert.doesNotThrow(() => app.events.ready());
+  app.events.ready();
+  assert.equal(requests, 1);
+  assert.deepEqual(clock.delays, [500]);
+  clock.next();
+  assert.equal(requests, 2);
+  assert.equal(clock.timers.size, 0);
+  app.events.appmessage({payload:snapshot()});
+  assert.equal(app.sent.at(-1).ACTIVITY_ACCEPTED_REVISION, 4);
+});
+
+test('bootstrap retries are bounded even when failure callbacks also throw', () => {
+  const clock = retryClock(); let requests = 0;
+  const app = runtime('src/pkjs/index.js', storage(), now, {...clock,
+    send(message, success, failure) {
+      if (!message.ACTIVITY_REQUEST) return success();
+      ++requests; failure(); failure(); throw new Error('duplicate bridge outcome');
+    }});
+  assert.doesNotThrow(() => app.events.ready());
+  assert.equal(clock.timers.size, 1);
+  clock.next(); clock.next();
+  assert.equal(requests, 3);
+  assert.deepEqual(clock.delays, [500, 1000]);
+  assert.equal(clock.timers.size, 0);
+  app.events.ready();
+  assert.equal(requests, 3);
+});
+
+test('old transport callbacks cannot unlock the next in-flight receipt', () => {
+  const callbacks = [];
+  const app = runtime('src/pkjs/index.js', storage(), now, {
+    send(message, success, failure) {callbacks.push({success, failure});}
+  });
+  app.events.ready();
+  app.events.appmessage({payload:snapshot()});
+  callbacks[0].success();
+  assert.equal(app.sent.length, 2);
+  app.events.appmessage({payload:snapshot({ACTIVITY_REVISION:5})});
+  callbacks[0].failure(); callbacks[0].success();
+  assert.equal(app.sent.length, 2, 'first receipt still owns the only transport slot');
+  callbacks[1].success();
+  assert.equal(app.sent.length, 3);
+  assert.equal(app.sent[2].ACTIVITY_ACCEPTED_REVISION, 5);
+});
+
+test('an accepted native snapshot cancels pending bootstrap retries', () => {
+  const clock = retryClock(); let requests = 0;
+  const app = runtime('src/pkjs/index.js', storage(), now, {...clock,
+    send(message, success, failure) {
+      if (message.ACTIVITY_REQUEST) {++requests; failure();} else success();
+    }});
+  app.events.ready();
+  assert.equal(clock.timers.size, 1);
+  app.events.appmessage({payload:snapshot()});
+  assert.equal(clock.timers.size, 0);
+  assert.equal(requests, 1);
+  assert.equal(app.sent.at(-1).ACTIVITY_ACCEPTED_REVISION, 4);
+});
+
+test('a thrown receipt does not wedge later authoritative updates', async () => {
+  let failReceipt = true;
+  const shared = storage();
+  const app = runtime('src/pkjs/index.js', shared, now, {
+    send(message, success) {
+      if (message.ACTIVITY_ACCEPTED_REVISION && failReceipt) {
+        failReceipt = false; throw new Error('temporary receipt transport error');
+      }
+      success();
+    }
+  });
+  app.events.ready();
+  assert.doesNotThrow(() => app.events.appmessage({payload:snapshot()}));
+  app.events.appmessage({payload:snapshot({ACTIVITY_REVISION:5})});
+  assert.equal(app.sent.at(-1).ACTIVITY_ACCEPTED_REVISION, 5);
+  const result = await readSummary(shared);
+  assert.equal(result.instances[1].properties.revision.numericValue.value, 5);
+});
+
+test('a stale rejected snapshot does not cancel a necessary bootstrap retry', () => {
+  const shared = storage();
+  runtime('src/pkjs/index.js', shared).events.appmessage({payload:snapshot({ACTIVITY_REVISION:5})});
+  const clock = retryClock(); let requests = 0;
+  const app = runtime('src/pkjs/index.js', shared, now, {...clock,
+    send(message, success, failure) {
+      if (message.ACTIVITY_REQUEST && ++requests === 1) failure(); else success();
+    }});
+  app.events.ready();
+  app.events.appmessage({payload:snapshot()});
+  assert.equal(app.sent.at(-1).ACTIVITY_ERROR, 'STALE_REVISION');
+  assert.equal(clock.timers.size, 1);
+  clock.next();
+  assert.equal(requests, 2);
+  assert.equal(app.sent.at(-1).ACTIVITY_LAST_REVISION, 5);
 });

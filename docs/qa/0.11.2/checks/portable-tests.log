@@ -1,0 +1,47 @@
+
+> pebble-app-timer@0.11.2 test
+> python3 scripts/test.py
+
+timer model: lifecycle, persistence, expiry and boundary checks passed
+timer collection: migration, eight slots, clocks, revisions, editing and persistence passed
+timer fonts: 86,401 countdown bounds, fixed cells, glyph coverage and raster samples passed
+timer UI: conserved sand, monotonic 24h progress, rigid state orientations and bounded finite easing passed
+timer glance runtime: UTC collisions, latest state, snapshot ownership, persisted reopen and bounded exit passed
+timer alarm feedback: repeated native pulses, Quiet Time, pending masks, cancellation and timer failure recovery passed
+✔ schema 4 cold source preserves owner clock and exposes only app navigation (6.76641ms)
+✔ schema 4 empty withdrawal after expiry keeps a newer complete-response header (2.19016ms)
+✔ summary omits exact native duration labels and preserves meaningful instance names (9.745506ms)
+✔ schema 4 pause expiry and completion acknowledgement survive cold plugin requests (3.69259ms)
+✔ native payload is saved by PKJS and read by a separate cold plugin runtime (1.786549ms)
+✔ pause and cancel update the saved run without deriving completion on the phone (0.741945ms)
+✔ storage failure never emits a successful application receipt (0.612405ms)
+✔ polling does not renew the original native lease (0.530435ms)
+✔ timer slots survive cold reads and replace old offline runs independently (3.231486ms)
+✔ invalid native slot cannot acknowledge or replace another timer (0.653676ms)
+✔ one activity manifest declaration covers summaries and every compatibility source (0.367668ms)
+✔ cold simple Timer activity supplies one countdown without mandatory display labels or elapsed detail (3.005376ms)
+✔ simple Timer keeps a paused countdown fixed through the original five-minute window (3.217217ms)
+✔ simple Timer completion keeps the acknowledged hidden tombstone through cold reads (2.312604ms)
+✔ cold Timer card is compact while detailed providers retain elapsed from the same observation (1.571656ms)
+✔ paused card clocks stay fixed and a changed duration is a new source revision (0.949108ms)
+✔ old native snapshots still work without inventing an elapsed value (0.704438ms)
+✔ conflicting duration metadata cannot mutate an accepted revision (0.670244ms)
+✔ only native completion can retain a bounded result card (0.801298ms)
+✔ both source schemas hide an expired pause without losing its saved snapshot (3.887997ms)
+✔ resuming a hidden pause republishes both source schemas with a fresh countdown (1.630025ms)
+✔ Done hides a completed run durably without cancelling it or another timer (3.457852ms)
+✔ bootstrap recovers a thrown bridge call without duplicate ready requests (0.918615ms)
+✔ bootstrap retries are bounded even when failure callbacks also throw (0.702905ms)
+✔ old transport callbacks cannot unlock the next in-flight receipt (0.574002ms)
+✔ an accepted native snapshot cancels pending bootstrap retries (0.733188ms)
+✔ a thrown receipt does not wedge later authoritative updates (1.327816ms)
+✔ a stale rejected snapshot does not cancel a necessary bootstrap retry (1.069083ms)
+ℹ tests 28
+ℹ suites 0
+ℹ pass 28
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 80.862751
+timer UI state: offscreen clocks, shared row windows, native completion and visible status invalidation passed

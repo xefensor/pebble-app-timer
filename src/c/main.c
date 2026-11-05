@@ -514,7 +514,7 @@ static void prv_inbox(DictionaryIterator *iter, void *context) {
 }
 
 static void prv_connection(bool connected) {
-  pa_publisher_set_connected(&s_publisher, connected);
+  if (!pa_publisher_set_connected(&s_publisher, connected)) return;
   if (connected) {
     s_retries = 0;
     if (s_have_flight) pa_publisher_retry(&s_publisher);

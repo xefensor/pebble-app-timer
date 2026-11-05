@@ -148,3 +148,12 @@ only after a successful acknowledgement/Snooze or process teardown; other
 pending alarms continue. Check Quiet Time before every pulse. Native model,
 saved alarm mask and Wakeup ownership remain authoritative. Repeating feedback
 requires the Timer process; never claim background motor behavior after exit.
+
+Version 0.11.2 hardens the single PKJS queue: settle callbacks once, release
+the slot on a thrown SDK send and bound failed startup requests to three total
+attempts. Cancel pending bootstrap retries only after publisher acceptance,
+not a transport ACK or rejected snapshot. Duplicate ready/connection events
+must not trigger another full reconfirmation/publication. Keep native receipt
+tickets, storage, observations and alarm ownership intact. Use the packaged
+transport benchmark for work/recovery evidence; it does not measure real radio
+delivery, battery life or native vibration.

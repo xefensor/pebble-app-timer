@@ -15,28 +15,53 @@ var busy = false;
 function flush() {
   if (busy || !queue.length) return;
   busy = true;
-  var message = queue.shift();
-  function done() { busy = false; flush(); }
-  Pebble.sendAppMessage(message, done, done);
+  var item = queue.shift(), settled = false;
+  function done(ok) {
+    if (settled) return;
+    settled = true;
+    busy = false;
+    if (!ok && item.failure) item.failure();
+    flush();
+  }
+  try {
+    Pebble.sendAppMessage(item.message, function () { done(true); }, function () { done(false); });
+  } catch (error) { done(false); }
 }
-function send(message) {
+function send(message, failure) {
   if (message.ACTIVITY_ACCEPTED_REVISION !== undefined) {
     queue = queue.filter(function (pending) {
-      return pending.ACTIVITY_ACCEPTED_REVISION === undefined;
+      return pending.message.ACTIVITY_ACCEPTED_REVISION === undefined;
     });
   }
-  queue.push(message);
+  queue.push({message: message, failure: failure});
   flush();
 }
 
+var requestStarted = false, requestAttempts = 0, requestTimer = null, ownerAccepted = false;
+function requestSnapshot() {
+  if (ownerAccepted || requestAttempts >= 3) return;
+  ++requestAttempts;
+  send({ ACTIVITY_REQUEST: 1, ACTIVITY_LAST_REVISION: publisher.lastRevision() }, function () {
+    if (ownerAccepted || requestAttempts >= 3 || requestTimer !== null) return;
+    requestTimer = setTimeout(function () { requestTimer = null; requestSnapshot(); }, requestAttempts * 500);
+  });
+}
 Pebble.addEventListener('ready', function () {
-  send({ ACTIVITY_REQUEST: 1, ACTIVITY_LAST_REVISION: publisher.lastRevision() });
+  if (requestStarted) return;
+  requestStarted = true;
+  requestSnapshot();
 });
 
 Pebble.addEventListener('appmessage', function (event) {
   var payload = event && event.payload;
   if (!payload || payload.ACTIVITY_SCHEMA_VERSION === undefined) return;
   var receipt = publisher.handleMessage(payload);
+  if (requestStarted && receipt && receipt.ACTIVITY_ACCEPTED_REVISION !== undefined) {
+    ownerAccepted = true;
+    if (requestTimer !== null) clearTimeout(requestTimer);
+    requestTimer = null;
+    queue = queue.filter(function (pending) { return pending.message.ACTIVITY_REQUEST === undefined; });
+  }
   if (receipt && receipt.ACTIVITY_ERROR) {
     receipt.ACTIVITY_RUN = payload.ACTIVITY_RUN;
     receipt.ACTIVITY_REVISION = payload.ACTIVITY_REVISION;

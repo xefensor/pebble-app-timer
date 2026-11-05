@@ -4,12 +4,12 @@ A native timer for **stock PebbleOS**, with activity sharing for compatible
 watchfaces such as [Dynamic](https://github.com/xefensor/dynamic-watchface).
 The first target is Pebble Time 2 (`emery`, 200 × 228).
 
-Timer **0.11.1** is a local development candidate with the current time in its
-header, clearer falling sand and a repeating alarm vibration until acknowledged
-or snoozed. The clock follows the watch's 12/24-hour preference. The hourglass
-still rests with sand at the bottom during setup, flips on Start and lies
-horizontally when paused.
-The local test package is [Timer-0.11.1.pbw](releases/Timer-0.11.1.pbw).
+Timer **0.11.2** is a local development candidate with more reliable activity
+sharing: transient startup sends retry, thrown bridge calls recover and late
+duplicate callbacks cannot release another message's queue slot. Duplicate
+ready/connection events no longer force redundant handoffs. It retains the
+clock header, clear falling sand and repeating alarm from 0.11.1.
+The local test package is [Timer-0.11.2.pbw](releases/Timer-0.11.2.pbw).
 
 Dashboard Pause/Resume is deferred by choice. Separate stock PebbleOS apps cannot
 control each other's workers or cancel each other's alarms. The proposed
@@ -59,6 +59,20 @@ Use [Dynamic 0.16.0](https://github.com/xefensor/dynamic-watchface/releases/tag/
 for activity presentation and [Open Activity 0.1.5](https://github.com/xefensor/pebble-app-open-activity/releases/tag/v0.1.5)
 for the separately configured Primary/Secondary shortcuts. Install each app
 separately; the Activities library is already bundled.
+
+## Version 0.11.2
+
+- Settle each phone transport callback once and recover after thrown send calls.
+  A late callback cannot unlock a newer in-flight message.
+- Retry a failed bootstrap send at most twice, after 500ms and 1,000ms. Stop
+  pending retries after a verified native snapshot is accepted. A rejected
+  stale snapshot is not proof that bootstrap succeeded.
+- Ignore duplicate ready/connection notifications. Preserve one native queue,
+  application receipts, source observations, leases and native timer ownership.
+- Verify actual packaged scripts: five duplicate ready events now send one
+  request rather than five; a transient bridge exception recovers, and duplicate
+  callbacks retain one in-flight owner. These are transport-work measurements,
+  not physical battery percentages. See [validation](docs/qa/0.11.2/).
 
 ## Version 0.11.1
 
@@ -396,7 +410,7 @@ The dependency is installed from `vendor/pebble-activities-0.4.0.tgz`; its
 provenance and SHA-256 are recorded in [vendor/README.md](vendor/README.md).
 
 The distribution build clears the SDK cache so dependency updates cannot leave
-stale phone JavaScript in the PBW. It writes `dist/Timer-0.11.1.pbw`, its debugging ZIP and checksums. It bundles the provider
+stale phone JavaScript in the PBW. It writes `dist/Timer-0.11.2.pbw`, its debugging ZIP and checksums. It bundles the provider
 JavaScript and sets `manifestVersion: 2`, including `plugin.js` alongside PKJS
 and the watch binary. A plain `pebble build` creates a development PBW without
 that extra provider bundle; use `npm run build` for an installable shared-activity

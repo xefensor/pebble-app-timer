@@ -1,5 +1,26 @@
 # Timer validation
 
+## 0.11.2 activity transport reliability
+
+All 28 JavaScript checks, eight portable C suites and 42 Python regressions pass.
+SDK build, font/license identity and the actual packaged PKJS/provider handoff
+pass. Six new regressions cover thrown sends, bounded bootstrap retries,
+duplicate ready/callback handling, acceptance cancellation and stale rejection.
+
+The [actual packaged transport comparison](qa/0.11.2/transport-work.json) shows
+five duplicate ready events falling from five requests to one. A thrown first
+send previously escaped and wedged the queue; the candidate recovers with two
+requests and an accepted receipt. Duplicate callbacks previously allow two
+simultaneous sends in the simulation; the candidate holds one queue owner.
+No retry timer remains after recovery.
+
+The [identity report](qa/0.11.2/ownership-identity.json) verifies unchanged native
+rendering/clock, model, storage, alarm, Glance and provider sources. The existing
+0.11.1 native captures retain their historical scope; this transport pass does
+not claim another native layout capture batch. Shared Activities remains 0.4.0
+because the separately reviewed 0.4.3 changes affect host consumers only.
+Evidence and limits are indexed in [versioned QA](qa/0.11.2/).
+
 ## 0.11.1 clock, falling sand and repeating feedback
 
 Eight portable C suites, 22 JS checks and 42 Python regressions pass. The new

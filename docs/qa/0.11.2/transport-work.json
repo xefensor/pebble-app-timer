@@ -1,0 +1,38 @@
+{
+  "result": "PASS",
+  "scope": "Actual packaged scripts with simulated bridge events/timers; no real phone, radio or hardware battery measurement.",
+  "baseline": {
+    "identity": {
+      "version": "0.11.1",
+      "scriptSha256": "ba9d11d1544d98ce9ad4fd5a24075b81ec786dedd2a5c69507246ce0b2652479"
+    },
+    "duplicateReadyRequests": 5,
+    "temporaryFailure": {
+      "bootstrapThrew": true,
+      "requestAttempts": 1,
+      "acceptedReceipts": 0,
+      "pendingRetryTimers": 0
+    },
+    "duplicateCallbacks": {
+      "peakConcurrentMessages": 2,
+      "messagesBeforeCurrentReceiptCompletes": 3
+    }
+  },
+  "candidate": {
+    "identity": {
+      "version": "0.11.2",
+      "scriptSha256": "0c09a9b6f01bad04bad67b2e6c0fd37de56107cd92622ab616ce0b0b881233a9"
+    },
+    "duplicateReadyRequests": 1,
+    "temporaryFailure": {
+      "bootstrapThrew": false,
+      "requestAttempts": 2,
+      "acceptedReceipts": 1,
+      "pendingRetryTimers": 0
+    },
+    "duplicateCallbacks": {
+      "peakConcurrentMessages": 1,
+      "messagesBeforeCurrentReceiptCompletes": 2
+    }
+  }
+}
