@@ -1,8 +1,12 @@
 # Timer
 
 A native timer for **stock PebbleOS**, with activity sharing for compatible
-watchfaces such as [Dynamic](https://github.com/xefensor/dynamic-watchface).
+watchfaces such as [Dynamic](https://github.com/xefensor/pebble-watchface-dynamic).
 The first target is Pebble Time 2 (`emery`, 200 × 228).
+
+The [XOCE repository migration](docs/REPOSITORY-MIGRATION.md) updates Dynamic and
+library source locations while preserving Timer's package, app identity and
+published release files.
 
 Timer **0.12.0** is available as a [GitHub development prerelease](https://github.com/xefensor/pebble-app-timer/releases/tag/v0.12.0)
 with **Reset** in More options.
@@ -58,7 +62,7 @@ screenshots are unscaled and unchanged. The
 alarm and launcher scope. The [approved browser concept](docs/design/Timer-UI-Preview.html)
 remains design evidence, not a native or physical-watch capture.
 
-Use [Dynamic 0.16.0](https://github.com/xefensor/dynamic-watchface/releases/tag/v0.16.0)
+Use [Dynamic 0.16.0](https://github.com/xefensor/pebble-watchface-dynamic/releases/tag/v0.16.0)
 for activity presentation and [Open Activity 0.1.5](https://github.com/xefensor/pebble-app-open-activity/releases/tag/v0.1.5)
 for the separately configured Primary/Secondary shortcuts. Install each app
 separately; the Activities library is already bundled.
@@ -333,7 +337,7 @@ properties. Every view keeps the original native identity, revision and
 timestamps. Polling cannot renew source observation or validity, and a
 five-minute-old paused timer remains saved in Timer after its activity expires.
 
-[Pebble Activities](https://github.com/xefensor/pebble-activities) supplies the
+[Pebble Activities](https://github.com/xefensor/pebble-lib-activities) supplies the
 shared library and source convention. It is not another installed app or
 background service. Timer's plugin may also appear in the phone app's Plugins
 list because the same PBW provides both a watchapp and a data source.

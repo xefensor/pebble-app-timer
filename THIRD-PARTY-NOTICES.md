@@ -6,7 +6,7 @@ attribution, carried in `LICENSE` in the source checkout and packaged PBW.
 ## Pebble Activities
 
 The app bundles shared native and JavaScript helpers from
-[xefensor/pebble-activities](https://github.com/xefensor/pebble-activities), pinned
+[Pebble Activities](https://github.com/xefensor/pebble-lib-activities), pinned
 to the reviewed tarball recorded in `vendor/ACTIVITIES.json`. That dependency uses the PolyForm
 Noncommercial License 1.0.0 with its required attribution. Its original licence
 is retained in `licenses/pebble-activities-LICENSE.txt` in the packaged PBW and

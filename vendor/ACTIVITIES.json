@@ -1,7 +1,7 @@
 {
   "package": "pebble-activities",
   "version": "0.4.0",
-  "repository": "https://github.com/xefensor/pebble-activities",
+  "repository": "https://github.com/xefensor/pebble-lib-activities",
   "artifact": "pebble-activities-0.4.0.tgz",
   "sha256": "9e640aea91d08633e91e59dab3d1e0ee6243efe0109d971e42d356a4d67affbe",
   "integrity": "sha512-L1PKmeSojO9TMavz48qC5MBrBsEI6UBsPjy+rkgrnJxT6P0IobqYLdVHrdEgMxjydJhN19fFGjx4mc5jDuETdA==",

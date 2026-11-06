@@ -33,6 +33,10 @@ service. Keep timer behaviour independent of Dynamic's presentation.
 
 ## Dependencies and packaging
 
+- The Activities source repository is `xefensor/pebble-lib-activities`; its
+  package/import/header name remains `pebble-activities`. Keep the pinned
+  tarball's bytes, source commit and checksums when changing only its canonical
+  repository location. See `docs/REPOSITORY-MIGRATION.md`.
 - Install with `npm ci --ignore-scripts`. Use the versioned tarball in `vendor/`;
   never rely on a sibling library checkout. Record updated provenance and hashes.
   Version 0.9.0 keeps Activities 0.4.0; `vendor/ACTIVITIES.json` records

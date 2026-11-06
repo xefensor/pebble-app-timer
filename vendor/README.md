@@ -28,10 +28,10 @@ The following pin belongs to the published Timer 0.2.0 testing release and is
 preserved as historical provenance.
 
 `pebble-activities-0.1.2.tgz` is the immutable published package from
-[Pebble Activities v0.1.2](https://github.com/xefensor/pebble-activities/releases/tag/v0.1.2):
+[Pebble Activities v0.1.2](https://github.com/xefensor/pebble-lib-activities/releases/tag/v0.1.2):
 
 - Source commit: `baac66dc88a6be6062dc8fe57156fdb96007b3c7`
-- Download: <https://github.com/xefensor/pebble-activities/releases/download/v0.1.2/pebble-activities-0.1.2.tgz>
+- Download: <https://github.com/xefensor/pebble-lib-activities/releases/download/v0.1.2/pebble-activities-0.1.2.tgz>
 - SHA-256: `dd49a628fa14c319648bb782eb15502a485cf225c77f5f709e86c74aa57be0f6`
 - Licence: PolyForm Noncommercial License 1.0.0, including the package's required
   attribution.
