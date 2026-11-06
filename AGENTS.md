@@ -175,12 +175,39 @@ Existing records upgrade without a format rewrite; older binaries do not support
 the new visible-cancelled Ready representation. Preserve the unchanged paused
 lease, terminal-history, publisher receipt and single-queue rules.
 
-## Approved UI/UX alignment (implementation pending)
+## Shared UI/UX alignment — local 0.13.0 candidate
 
-Read [the UI/UX alignment handoff](docs/UX-ALIGNMENT.md) before the next
-interface implementation. It links the canonical local XOCE design standard
-and records this app's remaining work, including applicable stay-open phone
-settings with confirmed inline Save feedback. This is an approved future target,
-not a claim that the released app already implements it. Current lifecycle,
-storage, privacy, native ownership and release rules above still apply. The
-documentation update does not change runtime code or frozen release artifacts.
+Read [the UI alignment record](docs/UX-ALIGNMENT.md) and the canonical sibling
+XOCE standard before interface changes. Version 0.13.0 applies neutral native
+light/dark roles, inverted selection, target-specific Delete and a minimal
+phone Appearance page. Timer editing and alarms remain watch-owned.
+
+- The user chose phone settings for appearance. Do not add an on-watch theme
+  row or duplicate timer controls on the phone. The page has exactly one
+  Light/Dark selector plus disclosed help, using EN/CS labels.
+- Native appearance key 2105 is independent of every timer bank, migration,
+  Wakeup and publication key. Write and read back before applying a new theme;
+  preserve the previous palette on failure. Restore it before the first frame.
+  Key 2104 remains the existing AppGlance checkpoint: never reuse it. Keep the
+  source-derived namespace audit and actual shared-store Glance/appearance
+  coexistence regression; separate per-module storage mocks cannot prove this.
+- Append-only keys TIMER_APPEARANCE (1024) and TIMER_APPEARANCE_VERSION (1025)
+  carry the version-1 appearance update. They do not project or control timers.
+- `src/pkjs/settings.js` owns phone appearance defaults, validation and exact
+  storage acknowledgement. `settings-page.js` owns the one shared template;
+  generate `config.html` through `scripts/generate-config.cjs` and bundle it.
+- Save stays open with Saving…/✓ Saved/Unsaved changes. Do not automatically
+  focus fields or scroll to the top. Known rejection and an uncertain write
+  remain distinct; uncertain state preserves the draft and explicit readback.
+- Use the live PKJS writer when present, and recheck topology after a plugin
+  save. Keep separate Android DOM/native-store regressions. Appearance shares
+  the existing PKJS queue with bounded retries and coalescing; no second queue.
+- `scripts/github-release.py` must verify the exact local settings module,
+  generated config HTML and plugin rebuild inputs as well as the Activities pin.
+- `scripts/check-settings.cjs` runs actual optimized PBW pages/handlers in local
+  Chromium with a simulated SDK bridge. `scripts/emulator-ui-system.py` runs
+  actual distribution native bytes/resources in isolated QEMU with direct QA
+  AppMessages. Keep those evidence boundaries explicit.
+
+Existing timer/model/privacy/release rules above still apply. The candidate is
+local; published versions and immutable release assets remain unchanged.

@@ -10,6 +10,7 @@
 #include "timer_glance.h"
 #include "timer_hourglass.h"
 #include "timer_alarm_feedback.h"
+#include "timer_appearance.h"
 
 #define LEGACY_MODEL_KEY 2100
 #define WAKEUP_KEY 2101
@@ -48,6 +49,7 @@ static uint32_t s_edit[3] = {0, 10, 0};
 static uint32_t s_edit_initial_seconds;
 static unsigned s_edit_field, s_option, s_confirm_choice;
 static bool s_focused, s_ready;
+static bool s_dark, s_appearance_error;
 static TimeUnits s_tick_units;
 static bool s_exit_pending;
 static AppTimer *s_motion_timer;
@@ -469,7 +471,16 @@ static void prv_reset_publication(void) {
 
 static void prv_inbox(DictionaryIterator *iter, void *context) {
   (void)context;
-  uint32_t value;
+  uint32_t value,appearance_version,appearance;
+  if (prv_u32(dict_find(iter,MESSAGE_KEY_TIMER_APPEARANCE_VERSION),&appearance_version)&&
+      appearance_version==1&&prv_u32(dict_find(iter,MESSAGE_KEY_TIMER_APPEARANCE),&appearance)&&appearance<=1) {
+    const bool dark=appearance==1;
+    if (timer_appearance_save(dark)) {
+      const bool changed=s_dark!=dark||s_appearance_error;
+      s_dark=dark;s_appearance_error=false;
+      if (changed) { if(s_window)window_set_background_color(s_window,s_screen==SCREEN_ALARM||s_dark?GColorBlack:GColorWhite);prv_refresh(); }
+    } else { s_appearance_error=true;prv_refresh(); }
+  }
   if (prv_u32(dict_find(iter, MESSAGE_KEY_ACTIVITY_REQUEST), &value) && value) {
     s_phone_ready = false;
     const uint32_t now = prv_now();
@@ -536,11 +547,12 @@ static TimerUiView prv_view(void) {
   return (TimerUiView){.screen=s_screen,.collection=&s_collection,
       .menu=s_menu,.selected=s_selected,.edit_field=s_edit_field,
       .option=s_option,.confirm_choice=s_confirm_choice,.edit=s_edit,
-      .editing_new=s_edit_slot<0,.now=prv_now(),
+      .editing_new=s_edit_slot<0,.dark=s_dark,.now=prv_now(),
       .editing_ready=s_edit_slot>=0&&
           activity_timer_ready(&s_collection.slots[s_edit_slot]),
       .issue=s_storage_error?"Changes not saved":
-          s_alarm_error?"Alarm not set":NULL,
+          s_alarm_error?"Alarm not set":s_appearance_error?"Theme not saved":NULL,
+      .appearance_issue=s_appearance_error&&!s_storage_error&&!s_alarm_error,
       .status=prv_status(),
       .hourglass_transition=s_glass_motion&&s_screen==SCREEN_DETAIL,
       .hourglass_angle=(int16_t)(s_glass_motion?
@@ -612,7 +624,7 @@ static void prv_motion_tick(void *context) {
 
 static void prv_transition(void) {
   prv_stop_motion();
-  if (s_window) window_set_background_color(s_window,s_screen==SCREEN_ALARM?GColorBlack:GColorWhite);
+  if (s_window) window_set_background_color(s_window,s_screen==SCREEN_ALARM||s_dark?GColorBlack:GColorWhite);
   prv_refresh();
 }
 
@@ -855,13 +867,14 @@ static void prv_init(void) {
   TIMER_DIAG("launch reason=%d wakeup=%d id=%ld cookie=%ld",(int)launch_reason(),wakeup_launch,(long)launch_id,(long)cookie);
   (void)wakeup_launch;(void)launch_id;(void)cookie;
   prv_load();
+  s_dark=timer_appearance_load();
   timer_glance_update(&s_collection, prv_now());
   if (persist_exists(WAKEUP_KEY))s_wakeup=persist_read_int(WAKEUP_KEY);
   uint32_t previous_ticket=0;persist_read_data(PUBLICATION_KEY,&previous_ticket,sizeof(previous_ticket));
   pa_publisher_init(&s_publisher,previous_ticket,connection_service_peek_pebble_app_connection());
   timer_fonts_init();
   s_window=window_create();
-  window_set_background_color(s_window,GColorWhite);
+  window_set_background_color(s_window,s_dark?GColorBlack:GColorWhite);
   window_set_click_config_provider(s_window,prv_click_config);
   Layer *root=window_get_root_layer(s_window);
   s_canvas=layer_create(layer_get_bounds(root));

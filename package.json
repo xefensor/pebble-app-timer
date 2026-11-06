@@ -1,6 +1,6 @@
 {
   "name": "pebble-app-timer",
-  "version": "0.12.0",
+  "version": "0.13.0",
   "author": "Xef",
   "private": true,
   "license": "SEE LICENSE IN LICENSE",
@@ -89,7 +89,9 @@
       "ACTIVITY_PUBLISH_SESSION": 1020,
       "ACTIVITY_SLOT": 1021,
       "ACTIVITY_TOTAL_DURATION": 1022,
-      "ACTIVITY_SHOW_TERMINAL": 1023
+      "ACTIVITY_SHOW_TERMINAL": 1023,
+      "TIMER_APPEARANCE": 1024,
+      "TIMER_APPEARANCE_VERSION": 1025
     },
     "plugin": {
       "description": "Native Timer snapshots as activity/summary with an app destination and legacy compatibility sources. Native timers own their alarms; this plugin shares their original state.",
@@ -282,7 +284,11 @@
           }
         }
       ]
-    }
+    },
+    "capabilities": [
+      "configurable"
+    ],
+    "configPage": "config.html"
   },
   "repository": {
     "type": "git",

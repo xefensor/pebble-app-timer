@@ -9,6 +9,7 @@ import zipfile
 root = Path(__file__).resolve().parents[1]
 library = root / "node_modules/pebble-activities"
 package = json.loads((root / "package.json").read_text())
+subprocess.run(['node', str(root / 'scripts/generate-config.cjs')], check=True, cwd=root)
 # SDK incremental JS signatures do not include transitive npm source changes.
 # Distribution builds must rebundle the pinned dependency as well as native code.
 subprocess.run(["pebble", "clean"], check=True, cwd=root)
@@ -25,6 +26,8 @@ with zipfile.ZipFile(pbw) as source:
     entries = {name: source.read(name) for name in source.namelist()}
 appinfo = json.loads(entries["appinfo.json"])
 appinfo["manifestVersion"] = 2
+appinfo["configPage"] = package["pebble"]["configPage"]
+entries["config.html"] = (root / "config.html").read_bytes()
 appinfo["usesPermissions"] = package["pebble"]["usesPermissions"]
 appinfo["plugin"] = package["pebble"]["plugin"]
 entries["appinfo.json"] = json.dumps(appinfo, indent=2).encode()

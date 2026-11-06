@@ -81,7 +81,7 @@ def zip_files(content):
 
 def critical(path):
     return path.startswith(("src/", "resources/", "vendor/", "include/", "licenses/")) or path in {
-        "package.json", "package-lock.json", "wscript", "LICENSE", "THIRD-PARTY-NOTICES.md",
+        "package.json", "package-lock.json", "config.html", "wscript", "LICENSE", "THIRD-PARTY-NOTICES.md",
         "THIRD_PARTY.md", "scripts/build.py", "scripts/build-js.js", "scripts/package-release.py",
         "scripts/package-source.py", "scripts/release_licenses.py"} or path.startswith("scripts/")
 
@@ -160,6 +160,9 @@ def validate_timer_pkjs(root, commit, prefix, files, dependency=None):
             expected["./~/pebble-activities/dist/js/view.js"] = "src/js/view.js"
         if "src/js/activity.js" in dependency:
             expected["./~/pebble-activities/dist/js/activity.js"] = "src/js/activity.js"
+    entry_source = committed(root, commit, expected["./src/pkjs/index.js"]).decode()
+    if re.search(r"require\(\s*['\"]\./settings['\"]\s*\)", entry_source):
+        expected["./src/pkjs/settings.js"] = "src/pkjs/settings.js"
     mapped = {}
     originals = {}
     for path, text in zip(mapping["sources"], mapping["sourcesContent"]):
@@ -173,7 +176,7 @@ def validate_timer_pkjs(root, commit, prefix, files, dependency=None):
         require(module, "Timer PKJS source has no module identity: " + path)
         mapped[path] = int(module[1])
         if path in expected:
-            original = (dependency[expected[path]] if dependency is not None and path != "./src/pkjs/index.js"
+            original = (dependency[expected[path]] if dependency is not None and path.startswith("./~/")
                         else committed(root, commit, expected[path])).decode()
             webpack_source(text, original, path)
         else:
@@ -188,7 +191,8 @@ def validate_timer_pkjs(root, commit, prefix, files, dependency=None):
             target = ({"pebble-activities/publisher": "./~/pebble-activities/dist/js/publisher.js",
                        "./wire": "./~/pebble-activities/dist/js/wire.js",
                        "./activity": "./~/pebble-activities/dist/js/activity.js",
-                       "./view": "./~/pebble-activities/dist/js/view.js"} if dependency is not None else
+                       "./view": "./~/pebble-activities/dist/js/view.js",
+                       "./settings": "./src/pkjs/settings.js"} if dependency is not None else
                       {"pebble-activities/publisher": "publisher.js", "./wire": "wire.js"}).get(match[2])
             require(target in mapped, "Unsupported timer PKJS import: " + match[2])
             return "__webpack_require__(" + str(mapped[target]) + ")"
@@ -275,6 +279,10 @@ def validate_timer(root, config, commit, package, files, debug=None):
     require(info.get("shortName") == info.get("longName") == expected["displayName"], "Timer display name differs")
     require(info.get("appKeys") == expected["messageKeys"], "Timer native keys differ")
     require(info["plugin"].get("script") == "plugin.js" and files.get("plugin.js"), "Timer plugin is missing")
+    if expected.get("configPage"):
+        require(info.get("configPage") == expected["configPage"] and
+                files.get(expected["configPage"]) == committed(root, commit, expected["configPage"]),
+                "Timer configuration page differs")
     dependency = timer_dependency(root, commit, package)
     require(files.get("LICENSE") == committed(root, commit, "LICENSE"), "Timer license differs")
     require(files.get("licenses/pebble-activities-LICENSE.txt") == dependency["LICENSE"], "Activities license differs")
@@ -308,7 +316,10 @@ def validate_timer(root, config, commit, package, files, debug=None):
     validate_timer_pkjs(root, commit, "", source_files, dependency)
     with tempfile.TemporaryDirectory(prefix="timer-release-plugin-") as directory:
         checkout = Path(directory)
-        for name in ("scripts/bundle-js.py", "scripts/verify-timer-bundle.js", "src/plugin/index.js"):
+        inputs = ["scripts/bundle-js.py", "scripts/verify-timer-bundle.js", "src/plugin/index.js"]
+        if expected.get("configPage"):
+            inputs.append("src/pkjs/settings.js")
+        for name in inputs:
             destination = checkout / name
             destination.parent.mkdir(parents=True, exist_ok=True)
             destination.write_bytes(committed(root, commit, name))

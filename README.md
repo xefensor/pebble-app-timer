@@ -8,6 +8,22 @@ The [XOCE repository migration](docs/REPOSITORY-MIGRATION.md) updates Dynamic an
 library source locations while preserving Timer's package, app identity and
 published release files.
 
+Timer **0.13.0 is a local candidate** implementing the shared XOCE UI.
+The current local build is `dist/Timer-0.13.0.pbw`; it has not been published.
+Its phone settings contain one **Watch appearance** choice (Light/Dark), with
+English/Czech labels and a confirmed **✓ Saved** indicator that leaves the page
+open. Timer creation and alarm controls remain on the watch.
+
+1. Open Timer on the watch, then open its settings in the Pebble phone app.
+2. Choose Light or Dark and press Save. The page stays open with ✓ Saved.
+3. Timer applies appearance through its existing phone connection and keeps
+   the last confirmed watch appearance for its next startup.
+
+Saving confirms phone settings; it does not start, pause, reset or otherwise
+change any timer. Timer keeps native countdown/alarm ownership. The phone page
+follows the phone's own light/dark appearance independently of the watch choice.
+See [UI alignment and validation](docs/UX-ALIGNMENT.md) for evidence and limits.
+
 Timer **0.12.0** is available as a [GitHub development prerelease](https://github.com/xefensor/pebble-app-timer/releases/tag/v0.12.0)
 with **Reset** in More options.
 Reset stops the current countdown and restores its saved duration as **Ready**.
@@ -66,6 +82,33 @@ Use [Dynamic 0.16.2](https://github.com/xefensor/pebble-watchface-dynamic/releas
 for activity presentation and [Open Activity 0.1.6](https://github.com/xefensor/pebble-app-open-activity/releases/tag/v0.1.6)
 for the separately configured Primary/Secondary shortcuts. Install each app
 separately; the Activities library is already bundled.
+
+## Version 0.13.0
+
+- Apply neutral Light/Dark roles across the existing native list, editor,
+  countdown, options and confirmation screens, retaining the blue hourglass.
+  Alarms keep their deliberate high-contrast dark treatment.
+- Keep the title/local-time header, 166px content/34px contextual action bar,
+  fixed countdown, bounded hourglass poses, ordinary Back and native alarms.
+  Editor selection now uses the same strong foreground/background inversion.
+- Identify Delete by the saved duration and list position when several timers
+  exist. Keep remains selected initially; Back returns to the same Options row.
+  Critical failure instructions use the readable 18px interface role.
+- Add a small bundled phone Appearance page and config handler. Save stays open
+  with Saving…, ✓ Saved and Unsaved changes. Unconfirmed writes retain the
+  draft and offer Reload saved or retry. Existing active-runtime/native-store
+  separation is checked before reporting the exact saved phone choice.
+- Keep appearance preference key 2105 outside timer banks. Append appearance
+  message keys 1024/1025 without renumbering existing activity keys. The single
+  phone queue coalesces appearance updates and bounds retry work.
+- Preserve the activity source contracts, five-minute paused visibility,
+  Reset-to-Ready, saved repeat durations and independent timer slots. No remote
+  Timer controls or phone timer editor are added.
+
+This candidate is validated with automated model/package tests, actual
+packaged-page Chromium checks and native Emery QEMU captures. It is not a
+real-phone WebView, physical-watch or measured-battery validation. See
+[the 0.13.0 record](docs/qa/0.13.0/validation.json).
 
 ## Version 0.12.0
 

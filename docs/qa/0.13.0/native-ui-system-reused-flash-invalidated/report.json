@@ -1,0 +1,459 @@
+{
+  "version": "0.13.0",
+  "result": "INVALIDATED",
+  "scope": "Actual Emery QEMU using distribution native payload; direct QA AppMessage theme delivery, no phone JS/real phone/physical watch",
+  "pbwSha256": "9e5b35638507b5b042a0aa9fe866723c4ab523ac9250f5238e9bdc3c3c504acd",
+  "nativePayloadSha256": {
+    "emery/app_resources.pbpack": "a35ebc1371147dbe65bf1cafa0362d6236583eac9b1210192a0f369adfa08c49",
+    "emery/manifest.json": "bb4de6ffa98e8ab25e45f5e21717a8bc744b89abb22654e622b51852bedf9bdd",
+    "emery/pebble-app.bin": "efbd942d0ae386f182131f6f551377145e70a625394410cf730563ee0af74275"
+  },
+  "nativeOnlySha256": "96cb77dd33263918245bb78e151156757ec59b845585709e4f7158e5ffd2e3ec",
+  "captures": [
+    {
+      "file": "list-light.png",
+      "sha256": "913928370f882cacb278c3aaa39abfead3dfa9aee515e6541689c2565c790e6e"
+    },
+    {
+      "file": "list-dark.png",
+      "sha256": "913928370f882cacb278c3aaa39abfead3dfa9aee515e6541689c2565c790e6e"
+    },
+    {
+      "file": "running-dark.png",
+      "sha256": "913928370f882cacb278c3aaa39abfead3dfa9aee515e6541689c2565c790e6e"
+    },
+    {
+      "file": "running-light.png",
+      "sha256": "913928370f882cacb278c3aaa39abfead3dfa9aee515e6541689c2565c790e6e"
+    },
+    {
+      "file": "paused-light.png",
+      "sha256": "913928370f882cacb278c3aaa39abfead3dfa9aee515e6541689c2565c790e6e"
+    },
+    {
+      "file": "paused-dark.png",
+      "sha256": "913928370f882cacb278c3aaa39abfead3dfa9aee515e6541689c2565c790e6e"
+    },
+    {
+      "file": "options-dark.png",
+      "sha256": "913928370f882cacb278c3aaa39abfead3dfa9aee515e6541689c2565c790e6e"
+    },
+    {
+      "file": "delete-dark-safe-default.png",
+      "sha256": "913928370f882cacb278c3aaa39abfead3dfa9aee515e6541689c2565c790e6e"
+    },
+    {
+      "file": "delete-light-safe-default.png",
+      "sha256": "913928370f882cacb278c3aaa39abfead3dfa9aee515e6541689c2565c790e6e"
+    },
+    {
+      "file": "delete-cancel-keeps-selection.png",
+      "sha256": "49b2c8db832da82d3290e4e95a93237159d2ae954d67a49079e484b044a1641f"
+    },
+    {
+      "file": "ready-light.png",
+      "sha256": "301a736f7ebd3bde546e1605faf10fb6e770a6bdaca3907f9a596a0e06a7dc39"
+    },
+    {
+      "file": "ready-dark.png",
+      "sha256": "e4adaea517825c3efd1d42418b25dbd041479101d04bc00cce89c05122194a71"
+    },
+    {
+      "file": "reopened-dark-first-frame.png",
+      "sha256": "2e47999f1718ebce882b0550f06cfaddf5cf2866497533129216b406b7218791"
+    },
+    {
+      "file": "ready-editor-dark.png",
+      "sha256": "d82b96578f69b845ad7903d31059df24a3a2267835c31bfceeda12029cce090b"
+    },
+    {
+      "file": "ready-editor-light.png",
+      "sha256": "4e6eb5b554321dc55bfb96c906804c91d74075aba1fc1ff089a05940a6b12a37"
+    },
+    {
+      "file": "empty-light.png",
+      "sha256": "24877ee0914b59d12b35ae112e47e2fc72b9e5cc33361d3a53fb559554c3f30a"
+    },
+    {
+      "file": "empty-dark.png",
+      "sha256": "e04e9b55829b67ddf829879a59e05d206060469a7c2a77fa43db11ec1c3d0253"
+    },
+    {
+      "file": "new-editor-dark.png",
+      "sha256": "b8450372f3cced2cea5687af961f62a60cc476f7ae191eb21d0dde09b0a10e57"
+    },
+    {
+      "file": "alarm-dark-treatment.png",
+      "sha256": "07138d0b6f2af898d02217ce2f595aa077d2fbaca3c7dfe1c64d66b4dc2c6cf7"
+    },
+    {
+      "file": "critical-list-dark.png",
+      "sha256": "2131a5279b18ed4b70e2450eb0d7e587611861b489be802cca9774eaabef6806"
+    },
+    {
+      "file": "critical-delete-dark.png",
+      "sha256": "259c9d892a978ce9eba8f0f7e0d5dc95cb10d80926325ceed2c1ddc9a6432cd9"
+    },
+    {
+      "file": "critical-delete-light.png",
+      "sha256": "908c0f3cef050c73246650e192f2043e2e8ea92238cb43aaf9e4e41e7e277772"
+    },
+    {
+      "file": "critical-cancel-keeps-options.png",
+      "sha256": "b27f21bccc667a57b73021097e5b0a37d036e39199a8e201f030e28057d2ea0c"
+    }
+  ],
+  "proofs": {
+    "appearanceIndependentOfOwnerState": {
+      "before": {
+        "0": {
+          "1000": 1,
+          "1021": 0,
+          "1001": "6b49d300:00000001",
+          "1002": 31,
+          "1020": 85,
+          "1003": "active",
+          "1004": "timer",
+          "1005": "deadline",
+          "1006": "10 min timer",
+          "1007": "",
+          "1008": "10 min timer",
+          "1009": 1793981533,
+          "1010": 1793982191,
+          "1011": 1793982131,
+          "1012": 0,
+          "1013": 0,
+          "1022": 600,
+          "1023": 0,
+          "1018": 0
+        },
+        "1": {
+          "1000": 1,
+          "1021": 1,
+          "1001": "6b49d301:00000001",
+          "1002": 32,
+          "1020": 86,
+          "1003": "active",
+          "1004": "timer",
+          "1005": "deadline",
+          "1006": "10 min timer",
+          "1007": "",
+          "1008": "10 min timer",
+          "1009": 1793981533,
+          "1010": 1793982191,
+          "1011": 1793982131,
+          "1012": 0,
+          "1013": 0,
+          "1022": 600,
+          "1023": 0,
+          "1018": 0
+        },
+        "2": {
+          "1000": 1,
+          "1021": 2,
+          "1001": "6b49d302:00000001",
+          "1002": 33,
+          "1020": 87,
+          "1003": "paused",
+          "1004": "timer",
+          "1005": "deadline",
+          "1006": "10 min timer",
+          "1007": "",
+          "1008": "10 min timer",
+          "1009": 1793981531,
+          "1010": 1793981831,
+          "1011": 0,
+          "1012": 480,
+          "1013": 0,
+          "1022": 600,
+          "1023": 0,
+          "1018": 0
+        },
+        "3": {
+          "1000": 1,
+          "1021": 3,
+          "1001": "6b49d303:00000001",
+          "1002": 34,
+          "1020": 88,
+          "1003": "paused",
+          "1004": "timer",
+          "1005": "deadline",
+          "1006": "10 min timer",
+          "1007": "",
+          "1008": "10 min timer",
+          "1009": 1793981531,
+          "1010": 1793981831,
+          "1011": 0,
+          "1012": 480,
+          "1013": 0,
+          "1022": 600,
+          "1023": 0,
+          "1018": 0
+        },
+        "4": {
+          "1000": 1,
+          "1021": 4,
+          "1001": "6b49d304:00000001",
+          "1002": 35,
+          "1020": 89,
+          "1003": "completed",
+          "1004": "timer",
+          "1005": "none",
+          "1006": "10 min timer",
+          "1007": "",
+          "1008": "10 min timer",
+          "1009": 1793981431,
+          "1010": 1793981491,
+          "1011": 0,
+          "1012": 0,
+          "1013": 0,
+          "1022": 600,
+          "1023": 0,
+          "1018": 0
+        },
+        "5": {
+          "1000": 1,
+          "1021": 5,
+          "1001": "6b49d305:00000001",
+          "1002": 36,
+          "1020": 90,
+          "1003": "completed",
+          "1004": "timer",
+          "1005": "none",
+          "1006": "10 min timer",
+          "1007": "",
+          "1008": "10 min timer",
+          "1009": 1793981431,
+          "1010": 1793981491,
+          "1011": 0,
+          "1012": 0,
+          "1013": 0,
+          "1022": 600,
+          "1023": 0,
+          "1018": 0
+        },
+        "6": {
+          "1000": 1,
+          "1021": 6,
+          "1001": "6b49d306:00000001",
+          "1002": 37,
+          "1020": 91,
+          "1003": "completed",
+          "1004": "timer",
+          "1005": "none",
+          "1006": "10 min timer",
+          "1007": "",
+          "1008": "10 min timer",
+          "1009": 1793981431,
+          "1010": 1793981491,
+          "1011": 0,
+          "1012": 0,
+          "1013": 0,
+          "1022": 600,
+          "1023": 0,
+          "1018": 0
+        },
+        "7": {
+          "1000": 1,
+          "1021": 7,
+          "1001": "6b49d307:00000001",
+          "1002": 38,
+          "1020": 92,
+          "1003": "active",
+          "1004": "timer",
+          "1005": "deadline",
+          "1006": "24 h timer",
+          "1007": "",
+          "1008": "24 h timer",
+          "1009": 1793981533,
+          "1010": 1794067991,
+          "1011": 1794067931,
+          "1012": 0,
+          "1013": 0,
+          "1022": 86400,
+          "1023": 0,
+          "1018": 0
+        }
+      },
+      "after": {
+        "0": {
+          "1000": 1,
+          "1021": 0,
+          "1001": "6b49d300:00000001",
+          "1002": 39,
+          "1020": 93,
+          "1003": "active",
+          "1004": "timer",
+          "1005": "deadline",
+          "1006": "10 min timer",
+          "1007": "",
+          "1008": "10 min timer",
+          "1009": 1793981534,
+          "1010": 1793982191,
+          "1011": 1793982131,
+          "1012": 0,
+          "1013": 0,
+          "1022": 600,
+          "1023": 0,
+          "1018": 0
+        },
+        "1": {
+          "1000": 1,
+          "1021": 1,
+          "1001": "6b49d301:00000001",
+          "1002": 40,
+          "1020": 94,
+          "1003": "active",
+          "1004": "timer",
+          "1005": "deadline",
+          "1006": "10 min timer",
+          "1007": "",
+          "1008": "10 min timer",
+          "1009": 1793981534,
+          "1010": 1793982191,
+          "1011": 1793982131,
+          "1012": 0,
+          "1013": 0,
+          "1022": 600,
+          "1023": 0,
+          "1018": 0
+        },
+        "2": {
+          "1000": 1,
+          "1021": 2,
+          "1001": "6b49d302:00000001",
+          "1002": 41,
+          "1020": 95,
+          "1003": "paused",
+          "1004": "timer",
+          "1005": "deadline",
+          "1006": "10 min timer",
+          "1007": "",
+          "1008": "10 min timer",
+          "1009": 1793981531,
+          "1010": 1793981831,
+          "1011": 0,
+          "1012": 480,
+          "1013": 0,
+          "1022": 600,
+          "1023": 0,
+          "1018": 0
+        },
+        "3": {
+          "1000": 1,
+          "1021": 3,
+          "1001": "6b49d303:00000001",
+          "1002": 42,
+          "1020": 96,
+          "1003": "paused",
+          "1004": "timer",
+          "1005": "deadline",
+          "1006": "10 min timer",
+          "1007": "",
+          "1008": "10 min timer",
+          "1009": 1793981531,
+          "1010": 1793981831,
+          "1011": 0,
+          "1012": 480,
+          "1013": 0,
+          "1022": 600,
+          "1023": 0,
+          "1018": 0
+        },
+        "4": {
+          "1000": 1,
+          "1021": 4,
+          "1001": "6b49d304:00000001",
+          "1002": 43,
+          "1020": 97,
+          "1003": "completed",
+          "1004": "timer",
+          "1005": "none",
+          "1006": "10 min timer",
+          "1007": "",
+          "1008": "10 min timer",
+          "1009": 1793981431,
+          "1010": 1793981491,
+          "1011": 0,
+          "1012": 0,
+          "1013": 0,
+          "1022": 600,
+          "1023": 0,
+          "1018": 0
+        },
+        "5": {
+          "1000": 1,
+          "1021": 5,
+          "1001": "6b49d305:00000001",
+          "1002": 44,
+          "1020": 98,
+          "1003": "completed",
+          "1004": "timer",
+          "1005": "none",
+          "1006": "10 min timer",
+          "1007": "",
+          "1008": "10 min timer",
+          "1009": 1793981431,
+          "1010": 1793981491,
+          "1011": 0,
+          "1012": 0,
+          "1013": 0,
+          "1022": 600,
+          "1023": 0,
+          "1018": 0
+        },
+        "6": {
+          "1000": 1,
+          "1021": 6,
+          "1001": "6b49d306:00000001",
+          "1002": 45,
+          "1020": 99,
+          "1003": "completed",
+          "1004": "timer",
+          "1005": "none",
+          "1006": "10 min timer",
+          "1007": "",
+          "1008": "10 min timer",
+          "1009": 1793981431,
+          "1010": 1793981491,
+          "1011": 0,
+          "1012": 0,
+          "1013": 0,
+          "1022": 600,
+          "1023": 0,
+          "1018": 0
+        },
+        "7": {
+          "1000": 1,
+          "1021": 7,
+          "1001": "6b49d307:00000001",
+          "1002": 46,
+          "1020": 100,
+          "1003": "active",
+          "1004": "timer",
+          "1005": "deadline",
+          "1006": "24 h timer",
+          "1007": "",
+          "1008": "24 h timer",
+          "1009": 1793981534,
+          "1010": 1794067991,
+          "1011": 1794067931,
+          "1012": 0,
+          "1013": 0,
+          "1022": 86400,
+          "1023": 0,
+          "1018": 0
+        }
+      },
+      "anchorsEqual": true,
+      "runningObservationNote": "Explicit native snapshot reconfirmation advances running observations; compare fixed run/state/deadline/expiry and paused/terminal observations."
+    },
+    "pausedBodyStatic": true,
+    "persistedThemeReopenedWithoutPhoneJavascript": true,
+    "deleteSafeDefaultAndCancel": true,
+    "appearanceIndependentOfExhaustedTimerBanks": true
+  },
+  "physicalDeviceVerified": false,
+  "phoneJavascriptExecuted": false,
+  "invalidatedReason": "Repeated QEMU run reused stock flash with missed Wakeup system overlay; capture checks did not establish app visibility. Fresh isolated flash and explicit Timer header/sidebar checks required."
+}

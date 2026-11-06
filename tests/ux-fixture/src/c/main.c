@@ -17,6 +17,52 @@ typedef struct {
 typedef struct { uint32_t magic, version, generation, bytes, checksum, alarms; } Header;
 static Window *window;
 static TextLayer *label;
+
+#if UX_FIXTURE_MODE == 8
+/* Read-only persistence probe. Same UUID, no timer/model/alarm writes. This is
+ * an emulator fixture only; it is never part of the shipping Timer payload. */
+static void report_persistence(void *context) {
+  (void)context;
+  uint8_t bytes[256];
+  const int length=persist_read_data(2104,bytes,sizeof(bytes));
+  uint32_t magic=0,stored_checksum=0,checksum=UINT32_C(2166136261);
+  if(length>=8) {
+    memcpy(&magic,bytes,sizeof(magic));
+    memcpy(&stored_checksum,bytes+length-4,sizeof(stored_checksum));
+    for(int i=0;i<length-4;++i)checksum=(checksum^bytes[i])*UINT32_C(16777619);
+  }
+  uint32_t banks=UINT32_C(2166136261);
+  for(uint32_t key=2120;key<=2145;++key) {
+    if(key>2121&&key<2130)continue;
+    const int size=persist_read_data(key,bytes,sizeof(bytes));
+    banks=(banks^key)*UINT32_C(16777619);
+    banks=(banks^(uint32_t)size)*UINT32_C(16777619);
+    for(int i=0;i<size;++i)banks=(banks^bytes[i])*UINT32_C(16777619);
+  }
+  DictionaryIterator *out;
+  if(app_message_outbox_begin(&out)!=APP_MSG_OK)return;
+  dict_write_uint32(out,3000,1);
+  dict_write_uint32(out,3001,length>0?(uint32_t)length:0);
+  dict_write_uint32(out,3002,magic);
+  dict_write_uint32(out,3003,length>8&&stored_checksum==checksum);
+  dict_write_uint32(out,3004,(uint32_t)persist_get_size(2105));
+  dict_write_uint32(out,3005,(uint32_t)persist_read_int(2105));
+  dict_write_uint32(out,3006,stored_checksum);
+  dict_write_uint32(out,3007,banks);
+  app_message_outbox_send();
+}
+int main(void) {
+  window=window_create();window_set_background_color(window,GColorWhite);
+  label=text_layer_create(GRect(5,55,190,120));
+  text_layer_set_text(label,"Read-only QA\nGlance + Appearance\nNo timer writes");
+  layer_add_child(window_get_root_layer(window),text_layer_get_layer(label));
+  window_stack_push(window,false);
+  app_message_open(256,256);
+  app_timer_register(500,report_persistence,NULL);
+  app_event_loop();
+  text_layer_destroy(label);window_destroy(window);
+}
+#else
 int main(void) {
   wakeup_cancel_all();
   persist_delete(2100); persist_delete(2101); persist_delete(2120); persist_delete(2121);
@@ -85,3 +131,5 @@ int main(void) {
   layer_add_child(window_get_root_layer(window),text_layer_get_layer(label));
   window_stack_push(window,false);app_event_loop();text_layer_destroy(label);window_destroy(window);
 }
+
+#endif

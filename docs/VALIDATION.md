@@ -1,5 +1,40 @@
 # Timer validation
 
+## 0.13.0 shared UI — local candidate
+
+The native app uses neutral Light/Dark surfaces, consistent inverted selection,
+the existing blue hourglass and a target-specific Delete confirmation with Keep
+selected initially. Appearance lives in the bundled phone settings by Xef's
+decision; timer creation, editing and alarm ownership remain on the watch.
+
+The [versioned validation record](qa/0.13.0/validation.json) identifies the exact
+candidate PBW and links the native, font and phone-page evidence. Nine portable
+C suites, 34 JavaScript checks and 45 Python release regressions pass. The SDK
+build reports 36,988 bytes RAM footprint and 22,802 resource bytes. The only
+build warning is the existing SDK linker's RWX segment warning.
+
+Packaged optimized config/PKJS/plugin checks cover exact phone persistence,
+independent Android DOM/native stores, Save staying open, close/reopen and full
+browser restart, uncertain acknowledgements, recovery, EN/CS and constrained
+layouts. These use a simulated SDK bridge in actual Chromium, not a real phone.
+Fresh stock-derived Emery QEMU captures cover 26 native compositions. Every
+capture requires visible Timer title, local clock and contextual sidebar with
+the expected palette; all 26 were also visually inspected. A prior run using a
+reused flash was invalidated after an OS missed-Wakeup overlay intercepted its
+inputs. Its separate report is explicitly marked INVALIDATED and is not passing
+evidence. Native phone delivery is simulated with direct AppMessages; persisted
+appearance is checked by reopening without phone JavaScript. A read-only
+same-UUID fixture probes actual Glance/checkpoint and Appearance records between
+native launches, including both write orders. Portable tests link both modules
+against one shared store and protect all native owner/bank keys; a source-derived
+namespace audit independently prevents collisions. The earlier key 2104 local
+candidate is invalidated and superseded by Appearance 2105; 2104 remains AppGlance.
+
+The candidate preserves the UUID, eight timers, model/bank versions, native
+Wakeup ownership and Activities 0.4.0 contracts. Theme uses isolated native key
+2105 and appended message keys 1024/1025. This work has not published a release,
+measured battery use or verified a physical watch or real phone WebView.
+
 ## 0.12.0 Reset without starting
 
 More options now resets the selected timer to its saved duration as Ready.

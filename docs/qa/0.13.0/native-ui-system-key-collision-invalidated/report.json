@@ -1,0 +1,784 @@
+{
+  "version": "0.13.0",
+  "result": "INVALIDATED",
+  "scope": "Actual Emery QEMU using distribution native payload; direct QA AppMessage theme delivery, no phone JS/real phone/physical watch",
+  "pbwSha256": "38d8433fb9220b57005881b14266516aada726faf5172e3f65add4a58cb4b9d1",
+  "nativePayloadSha256": {
+    "emery/app_resources.pbpack": "a35ebc1371147dbe65bf1cafa0362d6236583eac9b1210192a0f369adfa08c49",
+    "emery/manifest.json": "7ae2b0b65c1c7b19a5a9696d71ff253d94e7fbd7026b4d5a605a554b73ca6e23",
+    "emery/pebble-app.bin": "a684b1f92951fcd30e476261f7955e4fbc56e653547f8b29081c7f79f290a6e7"
+  },
+  "nativeOnlySha256": "6b8af2b8dd100e02a5cb89c2030e1e14ad6d6a73b2c68955fbd48a7925e3fc28",
+  "captures": [
+    {
+      "file": "list-light.png",
+      "sha256": "0d318628f2c1f1875e13118114edcc39f7f6c3ad5ab8a7922529ac870faeda8a",
+      "appVisibility": {
+        "background": [
+          255,
+          255,
+          255
+        ],
+        "sidebar": [
+          0,
+          0,
+          0
+        ],
+        "titleInkPixels": 274,
+        "clockInkPixels": 193
+      }
+    },
+    {
+      "file": "list-dark.png",
+      "sha256": "e92762cc1224f2db7eddb503a47111e2053c000a38b5f4a2bdeae753223ebcd7",
+      "appVisibility": {
+        "background": [
+          0,
+          0,
+          0
+        ],
+        "sidebar": [
+          255,
+          255,
+          255
+        ],
+        "titleInkPixels": 274,
+        "clockInkPixels": 193
+      }
+    },
+    {
+      "file": "running-dark.png",
+      "sha256": "13baa4e94066d29dcec5007bb37784cc237bbd181b2f93b8460574449dc0c91f",
+      "appVisibility": {
+        "background": [
+          0,
+          0,
+          0
+        ],
+        "sidebar": [
+          255,
+          255,
+          255
+        ],
+        "titleInkPixels": 231,
+        "clockInkPixels": 193
+      }
+    },
+    {
+      "file": "running-light.png",
+      "sha256": "2aeb64e5ed63de236dd8bd0dd040c5df24e2bf44393872a7870149b64de5a328",
+      "appVisibility": {
+        "background": [
+          255,
+          255,
+          255
+        ],
+        "sidebar": [
+          0,
+          0,
+          0
+        ],
+        "titleInkPixels": 231,
+        "clockInkPixels": 193
+      }
+    },
+    {
+      "file": "paused-light.png",
+      "sha256": "20d11b4c223841267d1744860e544111344ec97b32228700914f13a5df723b41",
+      "appVisibility": {
+        "background": [
+          255,
+          255,
+          255
+        ],
+        "sidebar": [
+          0,
+          0,
+          0
+        ],
+        "titleInkPixels": 320,
+        "clockInkPixels": 193
+      }
+    },
+    {
+      "file": "paused-dark.png",
+      "sha256": "90bd3ddb8b1fcc541dd8f0f6afe5b752171945e3527c8fd1dde6865304b260dc",
+      "appVisibility": {
+        "background": [
+          0,
+          0,
+          0
+        ],
+        "sidebar": [
+          255,
+          255,
+          255
+        ],
+        "titleInkPixels": 320,
+        "clockInkPixels": 193
+      }
+    },
+    {
+      "file": "options-dark.png",
+      "sha256": "74be7d36a1040a98f2cbdbeb60c24a9e3390f29d2c20a3f00ddea032ccd9909c",
+      "appVisibility": {
+        "background": [
+          0,
+          0,
+          0
+        ],
+        "sidebar": [
+          255,
+          255,
+          255
+        ],
+        "titleInkPixels": 379,
+        "clockInkPixels": 193
+      }
+    },
+    {
+      "file": "delete-dark-safe-default.png",
+      "sha256": "21e7b5646d84b760d666ec6b4a8761ca73e291d22245cfec064c164739ee782e",
+      "appVisibility": {
+        "background": [
+          0,
+          0,
+          0
+        ],
+        "sidebar": [
+          255,
+          255,
+          255
+        ],
+        "titleInkPixels": 309,
+        "clockInkPixels": 193
+      }
+    },
+    {
+      "file": "delete-light-safe-default.png",
+      "sha256": "2b0e7e71acfcb5048322c0131110c5fc44346a5a403fa93f6fa84790f36e083a",
+      "appVisibility": {
+        "background": [
+          255,
+          255,
+          255
+        ],
+        "sidebar": [
+          0,
+          0,
+          0
+        ],
+        "titleInkPixels": 309,
+        "clockInkPixels": 193
+      }
+    },
+    {
+      "file": "delete-cancel-keeps-selection.png",
+      "sha256": "5088c7b4720e952704be6f482641c7091473acd1b66bfe1d073a251b89c00fc2",
+      "appVisibility": {
+        "background": [
+          255,
+          255,
+          255
+        ],
+        "sidebar": [
+          0,
+          0,
+          0
+        ],
+        "titleInkPixels": 379,
+        "clockInkPixels": 193
+      }
+    },
+    {
+      "file": "ready-light.png",
+      "sha256": "997c8f749e7894958c87f7d8ef52ab54f8425b24f34443112ba46bd221cd59cd",
+      "appVisibility": {
+        "background": [
+          255,
+          255,
+          255
+        ],
+        "sidebar": [
+          0,
+          0,
+          0
+        ],
+        "titleInkPixels": 294,
+        "clockInkPixels": 193
+      }
+    },
+    {
+      "file": "ready-dark.png",
+      "sha256": "4e3bc4ecb6832e1b3bdcb078981ca907f65c6cbba8a54b62612d9f22e312b0f7",
+      "appVisibility": {
+        "background": [
+          0,
+          0,
+          0
+        ],
+        "sidebar": [
+          255,
+          255,
+          255
+        ],
+        "titleInkPixels": 294,
+        "clockInkPixels": 193
+      }
+    },
+    {
+      "file": "reopened-dark.png",
+      "sha256": "b586667151576534f93ed3f5b9230236f038ea41e09cc320b6232af465e4ebe2",
+      "appVisibility": {
+        "background": [
+          0,
+          0,
+          0
+        ],
+        "sidebar": [
+          255,
+          255,
+          255
+        ],
+        "titleInkPixels": 274,
+        "clockInkPixels": 193
+      }
+    },
+    {
+      "file": "remaining-editor-dark.png",
+      "sha256": "1c50ca594aa0ccb8cfc79ce49613ef7e324a7c947f1f935b0edfe2863b7a4fe2",
+      "appVisibility": {
+        "background": [
+          0,
+          0,
+          0
+        ],
+        "sidebar": [
+          255,
+          255,
+          255
+        ],
+        "titleInkPixels": 502,
+        "clockInkPixels": 193
+      }
+    },
+    {
+      "file": "remaining-editor-light.png",
+      "sha256": "90604a8b36f78c1b48e7cef090312fb18b730ebd005a47981b561590f37b5624",
+      "appVisibility": {
+        "background": [
+          255,
+          255,
+          255
+        ],
+        "sidebar": [
+          0,
+          0,
+          0
+        ],
+        "titleInkPixels": 502,
+        "clockInkPixels": 193
+      }
+    },
+    {
+      "file": "empty-light.png",
+      "sha256": "3cd8d50b587ae7d034f3520c5073e577c8404b0d0053456102456a91bba8037f",
+      "appVisibility": {
+        "background": [
+          255,
+          255,
+          255
+        ],
+        "sidebar": [
+          0,
+          0,
+          0
+        ],
+        "titleInkPixels": 429,
+        "clockInkPixels": 193
+      }
+    },
+    {
+      "file": "empty-dark.png",
+      "sha256": "646e8b4d688b47c40610f6252246b41f1e15b4061c39b82c2bbad75066b3426a",
+      "appVisibility": {
+        "background": [
+          0,
+          0,
+          0
+        ],
+        "sidebar": [
+          255,
+          255,
+          255
+        ],
+        "titleInkPixels": 429,
+        "clockInkPixels": 193
+      }
+    },
+    {
+      "file": "new-editor-dark.png",
+      "sha256": "089ae07f15a0fc3ba6dbd3535fc67f8b60951c36fb2e76ed0ca655863b0649e3",
+      "appVisibility": {
+        "background": [
+          0,
+          0,
+          0
+        ],
+        "sidebar": [
+          255,
+          255,
+          255
+        ],
+        "titleInkPixels": 429,
+        "clockInkPixels": 193
+      }
+    },
+    {
+      "file": "alarm-dark-treatment.png",
+      "sha256": "6563b5b7dcbf45f2edf40812d99b82149b8258dfda7bab25c398a3843d629116",
+      "appVisibility": {
+        "background": [
+          0,
+          0,
+          0
+        ],
+        "sidebar": [
+          85,
+          85,
+          85
+        ],
+        "titleInkPixels": 361,
+        "clockInkPixels": 193
+      }
+    },
+    {
+      "file": "critical-list-dark.png",
+      "sha256": "c59b7cc3d2df7a848255448547d8467f828ab190c2931891d4f059035c0dfa3f",
+      "appVisibility": {
+        "background": [
+          0,
+          0,
+          0
+        ],
+        "sidebar": [
+          255,
+          255,
+          255
+        ],
+        "titleInkPixels": 274,
+        "clockInkPixels": 193
+      }
+    },
+    {
+      "file": "critical-delete-dark.png",
+      "sha256": "6eb82f5d289d2dd8191a95fd6a68b1ec07462bc5bbde44d737cc8740fc91254c",
+      "appVisibility": {
+        "background": [
+          0,
+          0,
+          0
+        ],
+        "sidebar": [
+          255,
+          255,
+          255
+        ],
+        "titleInkPixels": 309,
+        "clockInkPixels": 193
+      }
+    },
+    {
+      "file": "critical-delete-light.png",
+      "sha256": "5c0211963d00c803df4b7942c2c3f6c4f8d81fb33e79455d8c00bda2bcec7378",
+      "appVisibility": {
+        "background": [
+          255,
+          255,
+          255
+        ],
+        "sidebar": [
+          0,
+          0,
+          0
+        ],
+        "titleInkPixels": 309,
+        "clockInkPixels": 193
+      }
+    },
+    {
+      "file": "critical-cancel-keeps-options.png",
+      "sha256": "09e936a10d2d1de881ceb1e40b1061aa26af0e5b0741dce73e501d41acf5843f",
+      "appVisibility": {
+        "background": [
+          255,
+          255,
+          255
+        ],
+        "sidebar": [
+          0,
+          0,
+          0
+        ],
+        "titleInkPixels": 353,
+        "clockInkPixels": 193
+      }
+    }
+  ],
+  "proofs": {
+    "appearanceIndependentOfOwnerState": {
+      "before": {
+        "0": {
+          "1000": 1,
+          "1021": 0,
+          "1001": "6b49d300:00000001",
+          "1002": 31,
+          "1020": 1,
+          "1003": "active",
+          "1004": "timer",
+          "1005": "deadline",
+          "1006": "10 min timer",
+          "1007": "",
+          "1008": "10 min timer",
+          "1009": 1793982068,
+          "1010": 1793982726,
+          "1011": 1793982666,
+          "1012": 0,
+          "1013": 0,
+          "1022": 600,
+          "1023": 0,
+          "1018": 0
+        },
+        "1": {
+          "1000": 1,
+          "1021": 1,
+          "1001": "6b49d301:00000001",
+          "1002": 32,
+          "1020": 2,
+          "1003": "active",
+          "1004": "timer",
+          "1005": "deadline",
+          "1006": "10 min timer",
+          "1007": "",
+          "1008": "10 min timer",
+          "1009": 1793982068,
+          "1010": 1793982726,
+          "1011": 1793982666,
+          "1012": 0,
+          "1013": 0,
+          "1022": 600,
+          "1023": 0,
+          "1018": 0
+        },
+        "2": {
+          "1000": 1,
+          "1021": 2,
+          "1001": "6b49d302:00000001",
+          "1002": 33,
+          "1020": 3,
+          "1003": "paused",
+          "1004": "timer",
+          "1005": "deadline",
+          "1006": "10 min timer",
+          "1007": "",
+          "1008": "10 min timer",
+          "1009": 1793982066,
+          "1010": 1793982366,
+          "1011": 0,
+          "1012": 480,
+          "1013": 0,
+          "1022": 600,
+          "1023": 0,
+          "1018": 0
+        },
+        "3": {
+          "1000": 1,
+          "1021": 3,
+          "1001": "6b49d303:00000001",
+          "1002": 34,
+          "1020": 4,
+          "1003": "paused",
+          "1004": "timer",
+          "1005": "deadline",
+          "1006": "10 min timer",
+          "1007": "",
+          "1008": "10 min timer",
+          "1009": 1793982066,
+          "1010": 1793982366,
+          "1011": 0,
+          "1012": 480,
+          "1013": 0,
+          "1022": 600,
+          "1023": 0,
+          "1018": 0
+        },
+        "4": {
+          "1000": 1,
+          "1021": 4,
+          "1001": "6b49d304:00000001",
+          "1002": 35,
+          "1020": 5,
+          "1003": "completed",
+          "1004": "timer",
+          "1005": "none",
+          "1006": "10 min timer",
+          "1007": "",
+          "1008": "10 min timer",
+          "1009": 1793981966,
+          "1010": 1793982026,
+          "1011": 0,
+          "1012": 0,
+          "1013": 0,
+          "1022": 600,
+          "1023": 0,
+          "1018": 0
+        },
+        "5": {
+          "1000": 1,
+          "1021": 5,
+          "1001": "6b49d305:00000001",
+          "1002": 36,
+          "1020": 6,
+          "1003": "completed",
+          "1004": "timer",
+          "1005": "none",
+          "1006": "10 min timer",
+          "1007": "",
+          "1008": "10 min timer",
+          "1009": 1793981966,
+          "1010": 1793982026,
+          "1011": 0,
+          "1012": 0,
+          "1013": 0,
+          "1022": 600,
+          "1023": 0,
+          "1018": 0
+        },
+        "6": {
+          "1000": 1,
+          "1021": 6,
+          "1001": "6b49d306:00000001",
+          "1002": 37,
+          "1020": 7,
+          "1003": "completed",
+          "1004": "timer",
+          "1005": "none",
+          "1006": "10 min timer",
+          "1007": "",
+          "1008": "10 min timer",
+          "1009": 1793981966,
+          "1010": 1793982026,
+          "1011": 0,
+          "1012": 0,
+          "1013": 0,
+          "1022": 600,
+          "1023": 0,
+          "1018": 0
+        },
+        "7": {
+          "1000": 1,
+          "1021": 7,
+          "1001": "6b49d307:00000001",
+          "1002": 38,
+          "1020": 8,
+          "1003": "active",
+          "1004": "timer",
+          "1005": "deadline",
+          "1006": "24 h timer",
+          "1007": "",
+          "1008": "24 h timer",
+          "1009": 1793982068,
+          "1010": 1794068526,
+          "1011": 1794068466,
+          "1012": 0,
+          "1013": 0,
+          "1022": 86400,
+          "1023": 0,
+          "1018": 0
+        }
+      },
+      "after": {
+        "0": {
+          "1000": 1,
+          "1021": 0,
+          "1001": "6b49d300:00000001",
+          "1002": 39,
+          "1020": 9,
+          "1003": "active",
+          "1004": "timer",
+          "1005": "deadline",
+          "1006": "10 min timer",
+          "1007": "",
+          "1008": "10 min timer",
+          "1009": 1793982069,
+          "1010": 1793982726,
+          "1011": 1793982666,
+          "1012": 0,
+          "1013": 0,
+          "1022": 600,
+          "1023": 0,
+          "1018": 0
+        },
+        "1": {
+          "1000": 1,
+          "1021": 1,
+          "1001": "6b49d301:00000001",
+          "1002": 40,
+          "1020": 10,
+          "1003": "active",
+          "1004": "timer",
+          "1005": "deadline",
+          "1006": "10 min timer",
+          "1007": "",
+          "1008": "10 min timer",
+          "1009": 1793982069,
+          "1010": 1793982726,
+          "1011": 1793982666,
+          "1012": 0,
+          "1013": 0,
+          "1022": 600,
+          "1023": 0,
+          "1018": 0
+        },
+        "2": {
+          "1000": 1,
+          "1021": 2,
+          "1001": "6b49d302:00000001",
+          "1002": 41,
+          "1020": 11,
+          "1003": "paused",
+          "1004": "timer",
+          "1005": "deadline",
+          "1006": "10 min timer",
+          "1007": "",
+          "1008": "10 min timer",
+          "1009": 1793982066,
+          "1010": 1793982366,
+          "1011": 0,
+          "1012": 480,
+          "1013": 0,
+          "1022": 600,
+          "1023": 0,
+          "1018": 0
+        },
+        "3": {
+          "1000": 1,
+          "1021": 3,
+          "1001": "6b49d303:00000001",
+          "1002": 42,
+          "1020": 12,
+          "1003": "paused",
+          "1004": "timer",
+          "1005": "deadline",
+          "1006": "10 min timer",
+          "1007": "",
+          "1008": "10 min timer",
+          "1009": 1793982066,
+          "1010": 1793982366,
+          "1011": 0,
+          "1012": 480,
+          "1013": 0,
+          "1022": 600,
+          "1023": 0,
+          "1018": 0
+        },
+        "4": {
+          "1000": 1,
+          "1021": 4,
+          "1001": "6b49d304:00000001",
+          "1002": 43,
+          "1020": 13,
+          "1003": "completed",
+          "1004": "timer",
+          "1005": "none",
+          "1006": "10 min timer",
+          "1007": "",
+          "1008": "10 min timer",
+          "1009": 1793981966,
+          "1010": 1793982026,
+          "1011": 0,
+          "1012": 0,
+          "1013": 0,
+          "1022": 600,
+          "1023": 0,
+          "1018": 0
+        },
+        "5": {
+          "1000": 1,
+          "1021": 5,
+          "1001": "6b49d305:00000001",
+          "1002": 44,
+          "1020": 14,
+          "1003": "completed",
+          "1004": "timer",
+          "1005": "none",
+          "1006": "10 min timer",
+          "1007": "",
+          "1008": "10 min timer",
+          "1009": 1793981966,
+          "1010": 1793982026,
+          "1011": 0,
+          "1012": 0,
+          "1013": 0,
+          "1022": 600,
+          "1023": 0,
+          "1018": 0
+        },
+        "6": {
+          "1000": 1,
+          "1021": 6,
+          "1001": "6b49d306:00000001",
+          "1002": 45,
+          "1020": 15,
+          "1003": "completed",
+          "1004": "timer",
+          "1005": "none",
+          "1006": "10 min timer",
+          "1007": "",
+          "1008": "10 min timer",
+          "1009": 1793981966,
+          "1010": 1793982026,
+          "1011": 0,
+          "1012": 0,
+          "1013": 0,
+          "1022": 600,
+          "1023": 0,
+          "1018": 0
+        },
+        "7": {
+          "1000": 1,
+          "1021": 7,
+          "1001": "6b49d307:00000001",
+          "1002": 46,
+          "1020": 16,
+          "1003": "active",
+          "1004": "timer",
+          "1005": "deadline",
+          "1006": "24 h timer",
+          "1007": "",
+          "1008": "24 h timer",
+          "1009": 1793982069,
+          "1010": 1794068526,
+          "1011": 1794068466,
+          "1012": 0,
+          "1013": 0,
+          "1022": 86400,
+          "1023": 0,
+          "1018": 0
+        }
+      },
+      "anchorsEqual": true,
+      "runningObservationNote": "Explicit native snapshot reconfirmation advances running observations; compare fixed run/state/deadline/expiry and paused/terminal observations."
+    },
+    "pausedBodyStatic": true,
+    "persistedThemeReopenedWithoutPhoneJavascript": true,
+    "deleteSafeDefaultAndCancel": true,
+    "appearanceIndependentOfExhaustedTimerBanks": true
+  },
+  "physicalDeviceVerified": false,
+  "phoneJavascriptExecuted": false,
+  "freshStockDerivedFlash": true,
+  "qemuState": "/home/xela/Projekty/Pebble/.recovery-tools/emulator-timer-ui-0.13.0-1793982064389019230",
+  "appVisibilityAssertions": "Expected native foreground/background, physical-button sidebar and visible title/time required for every capture",
+  "invalidation": "The local candidate used Appearance2104, colliding with the existing AppGlance checkpoint. Rendering captures are historical only and do not validate preference/Glance coexistence; superseded by the2105 candidate and fresh shared-persistence run."
+}

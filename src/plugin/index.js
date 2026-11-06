@@ -58,3 +58,12 @@ Pebble.registerSourceHandler(function (request, respond) {
   }
   return provider.handleSource(request, respond);
 });
+
+// Appearance configuration shares the app UUID but no native timer bank/state.
+// The current phone app can invoke this handler while Timer is closed.
+if (typeof Pebble.registerConfigHandler === 'function') {
+  var settings = require('../pkjs/settings');
+  Pebble.registerConfigHandler(function(message, respond) {
+    settings.handle(localStorage, message, respond);
+  });
+}

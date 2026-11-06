@@ -1,5 +1,6 @@
 #include <pebble.h>
 #include "../src/c/timer_glance.h"
+#include "../src/c/timer_appearance.h"
 
 #include <assert.h>
 #include <stdio.h>
@@ -16,8 +17,16 @@ struct AppTimer {
 static struct AppTimer timers[16];
 static uint64_t wall_ms;
 static uint64_t monotonic_ms;
-static uint8_t persisted[256];
-static int persisted_size;
+/* One shared key-addressed Pebble store for both real modules. Independent
+ * mocks previously hid a real Appearance/AppGlance namespace collision. */
+static uint8_t store[64][256];
+static int sizes[64];
+#define persisted store[4]
+#define persisted_size sizes[4]
+static unsigned record(uint32_t key) {
+  assert(key>=2100 && key<2164);
+  return key-2100;
+}
 static bool fail_timer, fail_persist, fail_slice;
 static unsigned attempts, accepted, exits, staged_count, visible_count;
 static size_t slice_limit;
@@ -51,23 +60,30 @@ bool app_timer_cancel(AppTimer *timer) {
   timer->active=false;
   return active;
 }
-int persist_get_size(uint32_t key) {
-  assert(key==2104);
-  return persisted_size;
-}
+bool persist_exists(uint32_t key) { return sizes[record(key)]>=0; }
+int persist_get_size(uint32_t key) { return sizes[record(key)]; }
 int persist_read_data(uint32_t key, void *data, size_t size) {
-  assert(key==2104);
-  if (persisted_size<0) return -1;
-  const size_t length=size<(size_t)persisted_size?size:(size_t)persisted_size;
-  memcpy(data,persisted,length);
+  const unsigned slot=record(key);
+  if (sizes[slot]<0) return -1;
+  const size_t length=size<(size_t)sizes[slot]?size:(size_t)sizes[slot];
+  memcpy(data,store[slot],length);
   return (int)length;
 }
 int persist_write_data(uint32_t key, const void *data, size_t size) {
-  assert(key==2104 && size<=sizeof(persisted));
+  const unsigned slot=record(key);
+  assert(size<=sizeof(store[slot]));
   if (fail_persist) return -1;
-  memcpy(persisted,data,size);
-  persisted_size=(int)size;
+  memcpy(store[slot],data,size);
+  sizes[slot]=(int)size;
   return (int)size;
+}
+int32_t persist_read_int(uint32_t key) {
+  int32_t value=0;
+  (void)persist_read_data(key,&value,sizeof(value));
+  return value;
+}
+int persist_write_int(uint32_t key,int32_t value) {
+  return persist_write_data(key,&value,sizeof(value));
 }
 AppGlanceResult app_glance_add_slice(AppGlanceReloadSession *session, AppGlanceSlice slice) {
   (void)session;
@@ -120,8 +136,8 @@ static unsigned active_timers(void) {
 static void reset(void) {
   timer_glance_deinit();
   memset(timers,0,sizeof(timers));
-  memset(persisted,0,sizeof(persisted));
-  persisted_size=-1;
+  memset(store,0,sizeof(store));
+  for(unsigned i=0;i<64;++i)sizes[i]=-1;
   wall_ms=UINT64_C(1800000000200);
   monotonic_ms=0;
   accepted_at=time(NULL); /* An unknown prior entry may share this UTC second. */
@@ -259,13 +275,56 @@ static void limited_slices_refresh_remaining_deadlines(void) {
   assert(accepted==2); /* The persisted partial queue now covers the remainder. */
 }
 
+static void appearance_and_glance_share_one_store(void) {
+  reset();
+  /* Existing native records, including both complete bank ranges, are sentinels
+   * in the very same store. Neither UI preference nor derived Glance may write
+   * any byte of these alarm/model/publication records. */
+  const uint32_t owner_keys[]={2100,2101,2102,2103,2120,2121,
+    2130,2131,2132,2133,2134,2135,2136,2137,
+    2138,2139,2140,2141,2142,2143,2144,2145};
+  for(unsigned i=0;i<sizeof(owner_keys)/sizeof(owner_keys[0]);++i)
+    assert(persist_write_int(owner_keys[i],(int32_t)(owner_keys[i]^0x78563412u))==4);
+  TimerCollection collection=running(600);
+  assert(timer_appearance_save(true));
+  timer_glance_update(&collection,(uint32_t)time(NULL));
+  advance(800);
+  assert(accepted==1 && persisted_size>4 && timer_appearance_load());
+  uint8_t checkpoint[256];
+  const int length=persisted_size;
+  memcpy(checkpoint,persisted,(size_t)length);
+  assert(timer_appearance_save(false));
+  assert(!timer_appearance_load() && persisted_size==length);
+  assert(memcmp(checkpoint,persisted,(size_t)length)==0);
+  timer_glance_deinit();
+  timer_glance_update(&collection,(uint32_t)time(NULL));
+  advance(1200);
+  assert(attempts==1 && !timer_appearance_load());
+  assert(timer_collection_pause(&collection,0,(uint32_t)time(NULL)));
+  timer_glance_update(&collection,(uint32_t)time(NULL));
+  advance(1000);
+  assert(accepted==2 && visible_count==0 && !timer_appearance_load());
+  memcpy(checkpoint,persisted,(size_t)persisted_size);
+  assert(timer_appearance_save(true) && timer_appearance_load());
+  assert(memcmp(checkpoint,persisted,(size_t)persisted_size)==0);
+  timer_glance_deinit();
+  timer_glance_update(&collection,(uint32_t)time(NULL));
+  advance(1000);
+  assert(attempts==2 && timer_appearance_load());
+  for(unsigned i=0;i<sizeof(owner_keys)/sizeof(owner_keys[0]);++i) {
+    assert(persist_get_size(owner_keys[i])==4);
+    assert(persist_read_int(owner_keys[i])==(int32_t)(owner_keys[i]^0x78563412u));
+  }
+}
+
 int main(void) {
   same_second_pause_and_exit();
   snapshots_latest_wins_and_handshakes();
   persisted_reopen_and_corruption();
   failures_never_trap_exit();
   limited_slices_refresh_remaining_deadlines();
+  appearance_and_glance_share_one_store();
   timer_glance_deinit();
-  puts("timer glance runtime: UTC collisions, latest state, snapshot ownership, persisted reopen and bounded exit passed");
+  puts("timer glance runtime: UTC collisions, latest state, snapshot ownership, persisted reopen, bounded exit and shared-store Appearance coexistence passed");
   return 0;
 }

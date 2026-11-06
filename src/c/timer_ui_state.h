@@ -13,6 +13,7 @@ typedef struct {
   unsigned menu, selected, edit_field, option, confirm_choice;
   const uint32_t *edit;
   bool editing_new, editing_ready;
+  bool dark, appearance_issue;
   uint32_t now;
   const char *status, *issue;
   bool hourglass_transition;
