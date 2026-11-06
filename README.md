@@ -62,8 +62,8 @@ screenshots are unscaled and unchanged. The
 alarm and launcher scope. The [approved browser concept](docs/design/Timer-UI-Preview.html)
 remains design evidence, not a native or physical-watch capture.
 
-Use [Dynamic 0.16.0](https://github.com/xefensor/pebble-watchface-dynamic/releases/tag/v0.16.0)
-for activity presentation and [Open Activity 0.1.5](https://github.com/xefensor/pebble-app-open-activity/releases/tag/v0.1.5)
+Use [Dynamic 0.16.2](https://github.com/xefensor/pebble-watchface-dynamic/releases/tag/v0.16.2)
+for activity presentation and [Open Activity 0.1.6](https://github.com/xefensor/pebble-app-open-activity/releases/tag/v0.1.6)
 for the separately configured Primary/Secondary shortcuts. Install each app
 separately; the Activities library is already bundled.
 
