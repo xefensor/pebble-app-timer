@@ -1,13 +1,13 @@
 # Timer: current UI
 
-The accepted UI is merged into main; implementation version 0.14.4 remains
-unpublished. Published downloads retain their original versions and interfaces.
+The current release is 0.14.5. Earlier downloads and frozen evidence retain
+their original versions and interfaces.
 
 Watch timer controls stay on the watch. The phone has one Light/Dark appearance selector and confirmed Save-and-stay. The 34 px contrasting action rail spans every screen row; headers and footers stay inside 166 px. Header title and clock 26, primary utility 24 and secondary 22 use Roboto Condensed Bold; dominant values use Fredoka. Keep two 80 px list rows or one above a complete critical warning, all eight selections visible and rigid 120 ms choices. Long elapsed/counter values and warnings stay complete.
 
-## Shared UI development branch
+## Shared UI
 
-The current development branch uses the pinned `pebble-xoce-ui` package for the
+The current release uses the pinned `pebble-xoce-ui` package for the
 32 px header, 8 px common text inset, measured-ink centering, canonical icons,
 full-height action rail and physical-button feedback. On Emery the three rail
 centers are y=54/114/174 with one 18 px icon grid. A held button moves its icon
@@ -22,7 +22,7 @@ Timer still owns its fonts, layers, input handlers, animation timers and state.
 The library installs no input callbacks. The rigid 120 ms vertical selection,
 editor feedback, custom Fredoka digit rendering and animated hourglass remain
 Timer-specific. Shared drawing cannot delay an owner operation or change alarm
-handling. This branch does not change the app version or published downloads.
+handling. Earlier published downloads remain unchanged.
 
 The editor follows Pebble's own Timer
 [SelectionLayer](https://github.com/coredevices/pebble-apps/blob/f8ce1857422b048dcfa8df18a69d866d5b9b06fb/timer/src/selection_layer.c):

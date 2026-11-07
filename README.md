@@ -5,6 +5,24 @@ Main contains the current implementation. [Development](CONTRIBUTING.md),
 are the active contributor references. Public downloads and frozen evidence keep
 their original versions; a merge to main is not publication.
 
+## Version 0.14.5
+
+- Adopt shared XOCE headers, readable type roles, full-height action rails, canonical icons and stock Pebble action-bar feedback.
+- Keep one timer anchored at the first-row position. Match native duration-editor movement while retaining rigid 120 ms menu selection.
+- Preserve a valid later alarm when scheduling its replacement fails. Keep timer ownership, eight slots, persistence and explicit Reset/Start behavior.
+- Bundle UI 0.1.1 and the confirmed stay-open appearance settings page.
+
+GitHub development prerelease for Pebble Time 2 / Emery with SDK 4.33.1.
+Validation covers portable tests, packaged runtimes and isolated native emulator
+checks. Physical phone/watch and fresh browser testing remain unverified.
+
+[Release validation](docs/qa/0.14.5/validation.json) records the exact package and native payload.
+
+Download the [PBW](https://github.com/xefensor/pebble-app-timer/releases/download/v0.14.5/Timer-0.14.5.pbw),
+[source](https://github.com/xefensor/pebble-app-timer/releases/download/v0.14.5/Timer-0.14.5-source.zip),
+[debug files](https://github.com/xefensor/pebble-app-timer/releases/download/v0.14.5/Timer-0.14.5-debug.zip), and
+[checksums](https://github.com/xefensor/pebble-app-timer/releases/download/v0.14.5/SHA256SUMS.txt).
+
 A native timer for **stock PebbleOS**, with activity sharing for compatible
 watchfaces such as [Dynamic](https://github.com/xefensor/pebble-watchface-dynamic).
 The first target is Pebble Time 2 (`emery`, 200 × 228).
@@ -13,10 +31,8 @@ The [XOCE repository migration](docs/REPOSITORY-MIGRATION.md) updates Dynamic an
 library source locations while preserving Timer's package, app identity and
 published release files.
 
-Timer **0.14.4 is the merged local UI implementation** on
-`main`. See the
+Timer **0.14.5** includes the current shared watch UI. See the
 [redesign and native previews](docs/REDESIGN.md).
-The current local build is `dist/Timer-0.14.4.pbw`; it has not been published.
 Its phone settings contain one **Watch appearance** choice (Light/Dark), with
 English/Czech labels and a confirmed **✓ Saved** indicator that leaves the page
 open. Timer creation and alarm controls remain on the watch.
@@ -31,7 +47,7 @@ change any timer. Timer keeps native countdown/alarm ownership. The phone page
 follows the phone's own light/dark appearance independently of the watch choice.
 See [UI alignment and validation](docs/UX-ALIGNMENT.md) for evidence and limits.
 
-Timer **0.12.0** is available as a [GitHub development prerelease](https://github.com/xefensor/pebble-app-timer/releases/tag/v0.12.0)
+The earlier Timer **0.12.0** is available as a [GitHub development prerelease](https://github.com/xefensor/pebble-app-timer/releases/tag/v0.12.0)
 with **Reset** in More options.
 Reset stops the current countdown and restores its saved duration as **Ready**.
 It stays stopped until you press Select to start, including after closing and
@@ -85,8 +101,8 @@ screenshots are unscaled and unchanged. The
 alarm and launcher scope. The [approved browser concept](docs/design/Timer-UI-Preview.html)
 remains design evidence, not a native or physical-watch capture.
 
-Use [Dynamic 0.16.2](https://github.com/xefensor/pebble-watchface-dynamic/releases/tag/v0.16.2)
-for activity presentation and [Open Activity 0.1.6](https://github.com/xefensor/pebble-app-open-activity/releases/tag/v0.1.6)
+Use [Dynamic 0.18.3](https://github.com/xefensor/pebble-watchface-dynamic/releases/tag/v0.18.3)
+for activity presentation and [Open Activity 0.3.3](https://github.com/xefensor/pebble-app-open-activity/releases/tag/v0.3.3)
 for the separately configured Primary/Secondary shortcuts. Install each app
 separately; the Activities library is already bundled.
 

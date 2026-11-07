@@ -1,0 +1,56 @@
+{
+  "version": "0.14.5",
+  "sdk": "4.33.1",
+  "platform": "emery",
+  "result": "PASS",
+  "pbwSha256": "6b68f02dbea0bfdfe01678c03d11ef24997e7d9224b42a3338b3745720b2ade4",
+  "nativePayloadSha256": {
+    "emery/app_resources.pbpack": "5e693142a8537851976c02a6a4b411168425cc8979875083100ca6182236e139",
+    "emery/manifest.json": "035d46a62ef02eb04317b4669a17bb1adb66cbd5c393e36c27d52fe1a116c248",
+    "emery/pebble-app.bin": "07f34552cf8e75730d1e9291844f96df891ab2b0569f1e49be07a4c620c2ca83"
+  },
+  "portableTests": "PASS",
+  "packagedIdentityAndRuntimeChecks": "PASS",
+  "nativeScope": "Actual candidate native payload in fresh isolated Emery QEMU; simulated AppMessages and buttons. No phone runtime or physical device. Screenshot acquisition is host timed.",
+  "nativeChecks": {
+    "light": {
+      "top": 50,
+      "height": 80,
+      "railWidth": 34,
+      "railHeight": 228
+    },
+    "dark": {
+      "top": 50,
+      "height": 80,
+      "railWidth": 34,
+      "railHeight": 228
+    },
+    "reopened": {
+      "top": 50,
+      "height": 80,
+      "railWidth": 34,
+      "railHeight": 228
+    }
+  },
+  "visualReview": {
+    "reviewedExamples": [
+      {
+        "file": "one-timer-light.png",
+        "sha256": "281947ca58c5f835b66a554d515b8f6a788427e35a2b90596b3ce46af46a489a"
+      },
+      {
+        "file": "one-timer-dark.png",
+        "sha256": "f1372c613249d25aebb8e3808f281c0a70a9cb58c95ba26d1fbc27fecc0a45e2"
+      },
+      {
+        "file": "value-up-settled.png",
+        "sha256": "d83be83df70d3e684e9deb9e14b72532f6602582a94aaa8cdf339706a15776ea"
+      }
+    ],
+    "scope": "Inspected actual captures; sample data in isolated Emery QEMU"
+  },
+  "physicalPhone": "not run",
+  "physicalWatch": "not run",
+  "freshBrowser": "not run",
+  "saveAndReopenVerified": true
+}
