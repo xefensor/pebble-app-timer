@@ -14,6 +14,18 @@ int main(void) {
   TimerListWindow list = timer_ui_list_window(&view);
   assert(list.first == 0 && list.rows == 2 && list.count == 8);
   assert(timer_ui_needs_tick(&view));
+  /* A single timer occupies the ordinary first row. Adding a second timer
+   * must not move the first one down/up or change its selection geometry. */
+  TimerCollection single;
+  timer_collection_init(&single, 43, 1000);
+  assert(timer_collection_create(&single, 600, 1000) == 0);
+  TimerUiView one = {.screen=SCREEN_LIST, .collection=&single, .menu=1, .now=1000};
+  const int first_row_top=timer_ui_list_top(&view);
+  assert(timer_ui_list_top(&one)==first_row_top);
+  one.menu=0;
+  assert(timer_ui_list_top(&one)==first_row_top);
+  assert(timer_collection_create(&single, 300, 1000) == 1);
+  assert(timer_ui_list_top(&one)==first_row_top);
   view.menu = 8;
   list = timer_ui_list_window(&view);
   assert(list.first == 6 && list.slots[6] == 6);

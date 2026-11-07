@@ -11,15 +11,28 @@ The current development branch uses the pinned `pebble-xoce-ui` package for the
 32 px header, 8 px common text inset, measured-ink centering, canonical icons,
 full-height action rail and physical-button feedback. On Emery the three rail
 centers are y=54/114/174 with one 18 px icon grid. A held button moves its icon
-5 px toward the content; release settles over a bounded 144 ms cubic curve.
+5 px toward the content; release settles over a bounded 144 ms quadratic
+EaseOut curve at a 33 ms cadence, matching Pebble's Emery action bar.
 Confirmation choices are full-column rectangles, 30 px high on a 36 px stride,
 with left-aligned 24-point labels and an initial safe "Keep timer" choice.
+An ordinary one-timer list uses the same first-row anchor as a longer list;
+adding another timer does not recenter the first row.
 
 Timer still owns its fonts, layers, input handlers, animation timers and state.
 The library installs no input callbacks. The rigid 120 ms vertical selection,
 editor feedback, custom Fredoka digit rendering and animated hourglass remain
 Timer-specific. Shared drawing cannot delay an owner operation or change alarm
 handling. This branch does not change the app version or published downloads.
+
+The editor follows Pebble's own Timer
+[SelectionLayer](https://github.com/coredevices/pebble-apps/blob/f8ce1857422b048dcfa8df18a69d866d5b9b06fb/timer/src/selection_layer.c):
+field changes slide the whole box for 107 ms with EaseIn, add only the 3 px
+field gap, then settle that gap for 179 ms with EaseOut. A value edit moves the
+previous glyph toward Up/Down for 107 ms, then shows the new glyph while a 6 px
+extension on that edge settles over 214 ms. Logical edits remain immediate;
+repeating input and Select settle this visual feedback before consuming current
+state. The 120 ms rigid vertical selection remains the explicit readability
+choice; the bounded hourglass illustration remains Timer's own animation.
 
 Native state, verified banks, deadlines and Wakeups are authoritative. Preserve eight slots, saved repeat duration, acknowledgement and migration compatibility. A transport ACK is not a saved-state receipt. Paused sharing expires after five minutes without renewing its observation. Zero does not establish completion. Keep one AppMessage queue. Appearance keys are separate from timer/Glance keys; appearance never changes a timer. Back, critical warnings, safe Keep-first Delete and immediate owner operations remain available.
 

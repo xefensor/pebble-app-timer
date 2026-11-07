@@ -7,6 +7,16 @@
  * native menu's long stretch; owner state and button dispatch never wait. */
 typedef struct { int16_t x, y, w, h; } TimerMotionRect;
 #define TIMER_MENU_MOTION_MS 120u
+#define TIMER_FIELD_SLIDE_MS 107u
+#define TIMER_FIELD_SETTLE_MS 179u
+#define TIMER_VALUE_TEXT_MS 107u
+#define TIMER_VALUE_SETTLE_MS 214u
+
+typedef struct {
+  int8_t text_y, box_y;
+  uint8_t box_growth;
+  bool previous_value;
+} TimerValueMotion;
 
 static inline int timer_motion_ease(int from, int to, uint32_t elapsed,
                                    uint32_t duration) {
@@ -16,28 +26,31 @@ static inline int timer_motion_ease(int from, int to, uint32_t elapsed,
   return from + (to - from) * eased / 1024;
 }
 
-static inline TimerMotionRect timer_motion_selection(TimerMotionRect from,
-    TimerMotionRect to, uint32_t elapsed, uint32_t stretch, uint32_t settle) {
-  if (elapsed >= stretch + settle) return to;
-  const bool horizontal = from.x != to.x;
-  const int a = horizontal ? from.x : from.y;
-  const int b = horizontal ? to.x : to.y;
-  const int size = horizontal ? to.w : to.h;
-  const int from_size = horizontal ? from.w : from.h;
-  int first, last;
-  const uint32_t recovery = elapsed > stretch ? elapsed - stretch : 0;
-  if (b > a) {
-    first = timer_motion_ease(a, b, recovery, settle);
-    last = elapsed < stretch ? timer_motion_ease(a + from_size, b + size + 3, elapsed, stretch) :
-        timer_motion_ease(b + size + 3, b + size, recovery, settle);
-  } else {
-    first = elapsed < stretch ? timer_motion_ease(a, b - 3, elapsed, stretch) :
-        timer_motion_ease(b - 3, b, recovery, settle);
-    last = timer_motion_ease(a + from_size, b + size, recovery, settle);
-  }
+static inline int timer_motion_ease_in(int from, int to, uint32_t elapsed,
+                                      uint32_t duration) {
+  if (!duration || elapsed >= duration) return to;
+  const int32_t progress = (int32_t)(elapsed * 1024u / duration);
+  return from + (to - from) * (progress * progress / 1024) / 1024;
+}
+
+/* Pebble Timer's SelectionLayer moves the whole field, then removes just the
+ * inter-field padding. It never stretches a box across two whole fields. */
+static inline TimerMotionRect timer_motion_field(TimerMotionRect from,
+    TimerMotionRect to, uint32_t elapsed) {
+  if (elapsed >= TIMER_FIELD_SLIDE_MS + TIMER_FIELD_SETTLE_MS) return to;
   TimerMotionRect result = to;
-  if (horizontal) { result.x = first; result.w = last - first; }
-  else { result.y = first; result.h = last - first; }
+  const bool left = to.x < from.x;
+  if (elapsed < TIMER_FIELD_SLIDE_MS) {
+    result.x = timer_motion_ease_in(from.x, to.x - (left ? 3 : 0),
+        elapsed, TIMER_FIELD_SLIDE_MS);
+    result.w = timer_motion_ease_in(from.w, to.w + 3,
+        elapsed, TIMER_FIELD_SLIDE_MS);
+  } else {
+    const int padding = timer_motion_ease(3, 0,
+        elapsed - TIMER_FIELD_SLIDE_MS, TIMER_FIELD_SETTLE_MS);
+    result.x -= left ? padding : 0;
+    result.w += padding;
+  }
   return result;
 }
 
@@ -50,8 +63,19 @@ static inline TimerMotionRect timer_motion_menu(TimerMotionRect from,
   return result;
 }
 
-static inline int timer_motion_bump(uint32_t elapsed) {
-  if (elapsed >= 321u) return 0;
-  return elapsed < 107u ? timer_motion_ease(0, 3, elapsed, 107u) :
-      timer_motion_ease(3, 0, elapsed - 107u, 214u);
+/* Same two stages as Pebble Timer: old glyph toward the pressed edge, then
+ * the new glyph in a six-pixel directional extension that settles. */
+static inline TimerValueMotion timer_motion_value(uint32_t elapsed, int direction) {
+  TimerValueMotion result = {0};
+  if (elapsed >= TIMER_VALUE_TEXT_MS + TIMER_VALUE_SETTLE_MS) return result;
+  if (elapsed < TIMER_VALUE_TEXT_MS) {
+    result.previous_value = true;
+    result.text_y = direction * timer_motion_ease_in(0, 10, elapsed, TIMER_VALUE_TEXT_MS);
+  } else {
+    result.box_growth = timer_motion_ease(6, 0,
+        elapsed - TIMER_VALUE_TEXT_MS, TIMER_VALUE_SETTLE_MS);
+    result.box_y = direction < 0 ? -(int)result.box_growth : 0;
+    result.text_y = direction * (int)(result.box_growth / 2);
+  }
+  return result;
 }

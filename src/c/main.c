@@ -62,6 +62,8 @@ static uint32_t s_ui_motion_started;
 static enum { UI_MOTION_NONE, UI_MOTION_MENU, UI_MOTION_FIELD, UI_MOTION_VALUE } s_ui_motion;
 static TimerMotionRect s_ui_from, s_ui_to;
 static Screen s_ui_motion_screen;
+static uint32_t s_ui_previous_value;
+static int8_t s_ui_value_direction;
 static AppTimer *s_icon_timer;
 static int s_icon_button=-1;
 static bool s_icon_releasing;
@@ -577,9 +579,11 @@ static TimerUiView prv_view(void) {
       (s_ui_motion==UI_MOTION_MENU||s_ui_motion==UI_MOTION_FIELD);
   view.selection_rect=s_ui_motion==UI_MOTION_MENU?
       timer_motion_menu(s_ui_from,s_ui_to,elapsed):
-      timer_motion_selection(s_ui_from,s_ui_to,elapsed,107u,179u);
-  view.editor_bump=s_ui_motion_screen==s_screen&&s_ui_motion==UI_MOTION_VALUE?
-      timer_motion_bump(elapsed):0;
+      timer_motion_field(s_ui_from,s_ui_to,elapsed);
+  if(s_ui_motion_screen==s_screen&&s_ui_motion==UI_MOTION_VALUE) {
+    view.editor_motion=timer_motion_value(elapsed,s_ui_value_direction);
+    view.editor_previous_value=s_ui_previous_value;
+  }
   if(s_icon_button>=0&&s_icon_button<3)view.action_offset[s_icon_button]=
       -(s_icon_releasing?xoce_ui_press_offset(prv_millis()-s_icon_started):XOCE_UI_PRESS_DISTANCE);
   return view;
@@ -655,13 +659,14 @@ static void prv_stop_ui_motion(void) {
 static void prv_ui_motion_tick(void *context) {
   (void)context;s_ui_motion_timer=NULL;
   const uint32_t duration=s_ui_motion==UI_MOTION_MENU?TIMER_MENU_MOTION_MS:
-      s_ui_motion==UI_MOTION_FIELD?286u:321u;
+      s_ui_motion==UI_MOTION_FIELD?TIMER_FIELD_SLIDE_MS+TIMER_FIELD_SETTLE_MS:
+      TIMER_VALUE_TEXT_MS+TIMER_VALUE_SETTLE_MS;
   if(!s_focused||s_ui_motion_screen!=s_screen||s_ui_motion==UI_MOTION_NONE||
       prv_millis()-s_ui_motion_started>=duration) {
     prv_stop_ui_motion();return;
   }
   if(s_canvas)layer_mark_dirty(s_canvas);
-  s_ui_motion_timer=app_timer_register(30,prv_ui_motion_tick,NULL);
+  s_ui_motion_timer=app_timer_register(XOCE_UI_PRESS_FRAME_MS,prv_ui_motion_tick,NULL);
   if(!s_ui_motion_timer)prv_stop_ui_motion();
 }
 
@@ -676,7 +681,7 @@ static void prv_icon_tick(void *context) {
   (void)context;s_icon_timer=NULL;
   if(!s_focused||prv_millis()-s_icon_started>=XOCE_UI_PRESS_RELEASE_MS){prv_stop_icon_motion();return;}
   if(s_canvas)layer_mark_dirty(s_canvas);
-  s_icon_timer=app_timer_register(30,prv_icon_tick,NULL);
+  s_icon_timer=app_timer_register(XOCE_UI_PRESS_FRAME_MS,prv_icon_tick,NULL);
   if(!s_icon_timer)prv_stop_icon_motion();
 }
 
@@ -717,7 +722,8 @@ static bool prv_selection_rect(const TimerUiView *view, TimerMotionRect *rect) {
   return true;
 }
 
-static void prv_animate_ui(const TimerUiView *before, bool repeating, ButtonId button) {
+static void prv_animate_ui(const TimerUiView *before, bool repeating, ButtonId button,
+                           uint32_t previous_value) {
   const TimerUiView after=prv_view();
   const bool pending=before->selection_transition;
   TimerMotionRect from,to;
@@ -732,7 +738,11 @@ static void prv_animate_ui(const TimerUiView *before, bool repeating, ButtonId b
     /* Locked and invalid cells keep their explicit semantic fill. */
     if(s_edit[0]==24||seconds<ACTIVITY_TIMER_MIN_SECONDS)return;
     if(before->edit_field!=after.edit_field)s_ui_motion=UI_MOTION_FIELD;
-    else if(button==BUTTON_ID_UP||button==BUTTON_ID_DOWN)s_ui_motion=UI_MOTION_VALUE;
+    else if(button==BUTTON_ID_UP||button==BUTTON_ID_DOWN) {
+      s_ui_motion=UI_MOTION_VALUE;
+      s_ui_previous_value=previous_value;
+      s_ui_value_direction=button==BUTTON_ID_UP?-1:1;
+    }
   } else if(from.y!=to.y) {
     /* Skips and scroll changes settle immediately. Animate only one visible
      * neighbour so a rapid event cannot send the highlight through the page. */
@@ -947,6 +957,7 @@ static void prv_click(ClickRecognizerRef recognizer, void *context) {
    * logical target, matching MenuLayer without delaying the action. */
   if(button==BUTTON_ID_SELECT)prv_stop_ui_motion();
   const TimerUiView previous_view=prv_view();
+  const uint32_t previous_edit_value=s_edit[s_edit_field];
   const unsigned previous_slot=s_selected;
   const uint32_t previous_run=s_selected<TIMER_COLLECTION_CAPACITY?
       s_collection.slots[s_selected].run:0;
@@ -959,7 +970,7 @@ static void prv_click(ClickRecognizerRef recognizer, void *context) {
           prv_millis()-s_motion_started,300u):prv_glass_pose();
   prv_press(button);
   if (s_screen!=before) prv_transition();
-  else prv_animate_ui(&previous_view,repeating,button);
+  else prv_animate_ui(&previous_view,repeating,button,previous_edit_value);
   if(s_screen==SCREEN_DETAIL&&s_selected<TIMER_COLLECTION_CAPACITY) {
     const ActivityTimerModel *timer=&s_collection.slots[s_selected];
     if(before==SCREEN_EDITOR&&

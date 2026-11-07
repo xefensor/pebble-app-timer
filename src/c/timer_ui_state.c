@@ -19,7 +19,8 @@ int timer_ui_list_top(const TimerUiView *view) {
   const TimerListWindow list=timer_ui_list_window(view);
   const bool replacing=list.count==TIMER_COLLECTION_CAPACITY&&timer_collection_can_create(view->collection)&&!list.menu;
   const int bottom=view->issue&&view->issue[0]?174:replacing?188:228;
-  const unsigned rows=list.count<list.rows?list.count:list.rows;
+  // Keep the viewport's first-row anchor when only one timer fills it.
+  const unsigned rows=list.rows;
   const int height=rows?TIMER_LIST_ROW_HEIGHT+(int)(rows-1)*TIMER_LIST_ROW_STRIDE:0;
   return 40+(bottom-40-height)/2;
 }

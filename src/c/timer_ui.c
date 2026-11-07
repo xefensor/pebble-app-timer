@@ -327,10 +327,11 @@ static void editor_screen(GContext *ctx,const TimerUiView *view) {
     const int x=5+(int)field*53;const bool selected=view->edit_field==field;
     const GColor bg=selected?(locked?ui_line():invalid&&field==2?AMBER:ui_fg()):ui_bg();
     const GColor ink=selected?(locked?ui_muted():invalid&&field==2?GColorBlack:ui_bg()):ui_fg();
-    const int bump=selected?view->editor_bump:0;
-    if(selected&&!view->selection_transition){graphics_context_set_fill_color(ctx,bg);graphics_fill_rect(ctx,GRect(x-bump,96-bump,50+bump*2,52+bump*2),3,GCornersAll);}
-    char value[4];snprintf(value,sizeof(value),"%02lu",(unsigned long)view->edit[field]);
-    timer_fonts_digits_box(ctx,value,36,GRect(x,96-bump,50,52),view->selection_transition?ui_fg():ink,view->selection_transition?ui_bg():bg);
+    const TimerValueMotion motion=selected?view->editor_motion:(TimerValueMotion){0};
+    if(selected&&!view->selection_transition){graphics_context_set_fill_color(ctx,bg);graphics_fill_rect(ctx,GRect(x,96+motion.box_y,50,52+motion.box_growth),3,GCornersAll);}
+    const uint32_t shown=motion.previous_value?view->editor_previous_value:view->edit[field];
+    char value[4];snprintf(value,sizeof(value),"%02lu",(unsigned long)shown);
+    timer_fonts_digits_box(ctx,value,36,GRect(x,96+motion.text_y,50,52),view->selection_transition?ui_fg():ink,view->selection_transition?ui_bg():bg);
     label(ctx,units[field],22,GRect(x,154,50,24),selected?ui_fg():ui_muted(),GTextAlignmentCenter);
   }
   moving_selection(ctx,view);

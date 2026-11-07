@@ -61,5 +61,11 @@ The seed/probe helpers share Timer’s UUID and replace test state; use only
 isolated emulators. `python3 scripts/check-native-centering.py` measures the
 resulting native captures.
 
+`python3 scripts/emulator-editor-motion.py` checks the ordinary one-timer row
+in both themes, close/reopen, bounded editor movement and saving an edit before
+its feedback finishes. It uses the mode-0 fixture and the current candidate in
+a fresh isolated Emery QEMU state. PNG acquisition windows are host timings;
+the accompanying GIFs are illustrative playback, not physical-watch timings.
+
 [Repository maintenance validation](docs/qa/repository-rework-2026-11-07/validation.json)
 records the preserved baseline and this pass’s checks.

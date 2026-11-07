@@ -22,7 +22,8 @@ typedef struct {
   int16_t hourglass_angle;
   bool selection_transition;
   TimerMotionRect selection_rect;
-  int8_t editor_bump;
+  TimerValueMotion editor_motion;
+  uint32_t editor_previous_value;
   int8_t action_offset[3];
 } TimerUiView;
 
