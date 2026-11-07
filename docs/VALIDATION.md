@@ -1,5 +1,13 @@
 # Timer validation
 
+## 0.14.3 action rail — local review candidate
+
+The rail follows the page background with an inset divider, larger bold action
+icons and3px press travel. Current [evidence](qa/0.14.3/validation.json) binds
+native pixel bounds, edge clearance, both themes and immediate input behavior to
+the exact PBW. The full readable text/body layout and native ownership stay intact.
+The historical reports below keep their original versions and verification scope.
+
 ## 0.13.0 shared UI — local candidate
 
 The native app uses neutral Light/Dark surfaces, consistent inverted selection,

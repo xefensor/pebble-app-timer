@@ -300,3 +300,19 @@ After visual approval, run current-geometry native suites plus
 boundary/Back restore and unchanged owner/bank checks. Keep immutable preview
 sets under candidate-hash directories and bind final QA to the exact finalPBW.
 Package standalone source last. Preserve all0.14.1 artifacts and prior evidence.
+
+## Action-rail correction — local 0.14.3
+
+Xef rejected the running screen's right-side treatment. The current candidate
+uses the page background for the34px action rail, with a neutral1px divider at
+x166 and inset ends. Alarm uses black with white icons. Do not reintroduce the
+floating inverted block between full-width header/footer bands from0.14.2.
+All screens use larger bold action glyphs (about20px painted bounds,3px strokes),
+24px slots centered at48/114/180 and3px press travel/144ms return. Preserve at
+least3px right-edge clearance even while pressed. Ellipsis dots must remain
+separate; their small natural height is intentional. Idle and pressed glyphs
+must retain their full shape. Screen-changing presses may immediately show the
+new action and must cancel old-screen feedback; do not delay timer operations
+for a screenshot or decorative motion. Body typography/layout, rigid120ms choices,
+owner/alarm/storage and phone settings remain unchanged. Verify actual native
+pixels in both themes, editor/menu/list/confirmation/alarm and critical states.

@@ -1,0 +1,52 @@
+{
+  "version": "0.14.3",
+  "pbwSha256": "d3daa09416d7353095f55aba4e62883dcbd6fe8fc88a01f916e5d6ffe71e8d53",
+  "nativePayloadSha256": {
+    "emery/app_resources.pbpack": "5e693142a8537851976c02a6a4b411168425cc8979875083100ca6182236e139",
+    "emery/manifest.json": "d8ddebd0713e5f04d9299c7e42bae8e8400406e426e0c93875d02808b24e3d40",
+    "emery/pebble-app.bin": "74b7de6359b87b148f96b496f9e690613c58987c24b3c9511302bcdafdb6e4a7"
+  },
+  "captures": [
+    {
+      "file": "list-light.png",
+      "sha256": "f041eb604352d38a7bd1a5755e27cf603434a8bbbef9a17c54b467cf461cd685",
+      "headerClockInkPixels": 484
+    },
+    {
+      "file": "running-light.png",
+      "sha256": "de18918c3379075e5c8a347ece495da5fcf70397f3d8665b930933c76b9a583d",
+      "headerClockInkPixels": 484
+    },
+    {
+      "file": "editor-light.png",
+      "sha256": "61af3b33f430d3df5e68350932fff5e7165aa6c66e677028feae6f8a431505b8",
+      "headerClockInkPixels": 484
+    },
+    {
+      "file": "options-light.png",
+      "sha256": "24b6f3ece3474d0cce5428d7886c80c1d4955e05e5cec353820dab0603df291b",
+      "headerClockInkPixels": 484
+    },
+    {
+      "file": "long-running-light.png",
+      "sha256": "e2675ac4573ce47fd9fe0bd66e80ce48c9915896ab33ba5d8d67e101eaea8405",
+      "headerClockInkPixels": 484
+    },
+    {
+      "file": "critical-list-light.png",
+      "sha256": "5a82105a3a601d64317a90e4164112bdce87526c97aa9b41fe4d4389422f69e3",
+      "headerClockInkPixels": 484
+    },
+    {
+      "file": "critical-options-light.png",
+      "sha256": "6b603d45ab94062ba854ef18b9a29dd7cb677fcbedc00cb23003f16f575aa12c",
+      "headerClockInkPixels": 484
+    },
+    {
+      "file": "critical-delete-light.png",
+      "sha256": "03298126a917a3a8c656a826ee58f39e5c3aabe19596ec3c0ad200f32c12b229",
+      "headerClockInkPixels": 484
+    }
+  ],
+  "scope": "Actual distribution-native Emery QEMU representative compositions; isolated stock-data fixtures. Early visual review, not full QA or physical-watch proof."
+}

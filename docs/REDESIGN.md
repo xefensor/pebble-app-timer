@@ -1,4 +1,47 @@
-# Timer 0.14.2 — readable whole compositions
+# Timer 0.14.3 — action rail revision
+
+Xef rejected the right side of the0.14.2 running screenshot. This local proposal
+on `design/pebble-native-redesign` replaces its floating inverted block with a
+rail matching the page background and a thin neutral divider. The divider has
+6px vertical end insets and yields to full-width header/footer bands.
+
+Action glyphs are larger and bolder: approximately20px painted bounds with3px
+strokes, centered in24px slots at48/114/180. The pencil, Pause/Play, arrows,
+check and editor controls share the weight. More retains three separate dots.
+The icons have room below the header and above the footer; all keep at least3px
+right-edge space during their shorter3px press movement. Release still takes
+144ms. A screen-changing press acts immediately and clears prior-screen feedback.
+The alarm has the same layout on its black surface with white icons.
+
+The running, paused, Ready, list, editor, Options, confirmation, alarm and critical
+screens use this same rail. The previous whole-screen text scale,166px body,
+full-width header/footer, native owner operations and rigid120ms choices remain.
+Phone controller, appearance persistence, native timer banks and deadlines are
+unchanged. This is a review alternative; main and earlier artifacts are retained.
+
+Current native evidence:
+
+- [Running, light](qa/0.14.3/native-ui-system/running-light.png) and
+  [dark](qa/0.14.3/native-ui-system/running-dark.png).
+- [List](qa/0.14.3/native-ui-system/list-light.png),
+  [editor](qa/0.14.3/native-ui-system/remaining-editor-light.png),
+  [Options](qa/0.14.3/native-ui-system/options-dark.png),
+  [Delete](qa/0.14.3/native-ui-system/delete-light-safe-default.png) and
+  [alarm](qa/0.14.3/native-ui-system/alarm-dark-treatment.png).
+- [Exact native rail audit](qa/0.14.3/native-rail/d3daa09416d7/report.json),
+  [independent press checks](qa/0.14.3/native-actions/report.json),
+  [appearance/lifecycle suite](qa/0.14.3/native-ui-system/report.json) and
+  [validation record](qa/0.14.3/validation.json).
+
+These are unmodified Emery emulator frames using the distribution's native
+payload and isolated fixtures. Phone delivery is simulated with QA AppMessages.
+[Phone preview](qa/0.14.3/phone-preview.html) uses the unchanged actual page with
+a local mock bridge. Fresh browser, physical phone/watch comfort and timing
+are unverified. No push or publication is part of this revision.
+
+Local review artifacts: `dist/Timer-0.14.3.pbw` and `releases/Timer-0.14.3*`.
+
+## Whole-composition foundation — 0.14.2 (historical evidence)
 
 This local revision stays on `design/pebble-native-redesign`, after the
 0.14.1 review (`fad44ed`). Main and all previous versioned artifacts remain

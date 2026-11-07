@@ -1,4 +1,4 @@
-# Timer shared UI — local 0.14.2 review branch
+# Timer shared UI — local 0.14.3 review branch
 
 The shared reference remains in the local sibling `xoce` checkout at
 `src/pages/docs/design/pebble-ui-system.md`, also available through
@@ -6,6 +6,15 @@ The shared reference remains in the local sibling `xoce` checkout at
 The canonical standard remains the baseline. This branch is an alternative for
 Xef to compare, documented in [REDESIGN.md](REDESIGN.md). No website or
 release has been published by this work.
+
+## Action rail in 0.14.3
+
+The current proposal follows Xef's rejection of the running view's right side.
+Its34px rail now matches the page, uses an inset neutral divider, and has larger
+bold icons at48/114/180. A3px press preserves the edge inset; immediate timer
+operations and144ms release feedback remain. The alarm keeps a black surface
+and white actions. Every native screen shares this treatment. See current
+[design and evidence](REDESIGN.md) and [rail checks](qa/0.14.3/validation.json).
 
 ## Whole-composition correction in 0.14.2
 

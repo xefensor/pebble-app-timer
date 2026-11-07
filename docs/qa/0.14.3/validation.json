@@ -1,0 +1,84 @@
+{
+  "version": "0.14.3",
+  "result": "PASS",
+  "branch": "design/pebble-native-redesign",
+  "previousCandidate": "d50335fa6bd92fb8ebad2d6632feedccd3743787",
+  "pbwSha256": "d3daa09416d7353095f55aba4e62883dcbd6fe8fc88a01f916e5d6ffe71e8d53",
+  "scope": "Action rail backgrounds/divider/icon size/spacing and shorter physical feedback; existing native body/owner/phone sources retained",
+  "checks": {
+    "npmTest": "34 JavaScript tests and portable native suites PASS",
+    "build": "PASS",
+    "actualOptimizedBundleAndSettings": "PASS",
+    "exactFontsAndConfig": "PASS",
+    "nativeReports": {
+      "native-ui-system/report.json": {
+        "captures": 26,
+        "sha256": "827515123286a853157783184a57bd87e3d381661424ff99d6e2463eff8e0673"
+      },
+      "native-actions/report.json": {
+        "captures": 9,
+        "sha256": "85270ad97ca4e80717ffdd512c7a89e23f3bab1f1664fe71857641e894abecfe"
+      },
+      "native-rail/d3daa09416d7/report.json": {
+        "captures": 23,
+        "sha256": "58be50b38c1ea30d87039aa524788c357ef6f0d6b61ac71428d02369df649d62"
+      },
+      "composition-review/d3daa09416d7/report.json": {
+        "captures": 8,
+        "sha256": "8a4e1a1ac832c810a950f2595db5eea6abc170cb0c3764411f4d3bf0a110a672"
+      }
+    },
+    "nativeTextCentering": "27 roles PASS",
+    "earlierArtifactBytes": {
+      "result": "PASS",
+      "count": 47
+    },
+    "unchangedOwnerPhoneAndBodySources": {
+      "src/c/timer_model.c": "972b52fd2ed6d2e14cc54acd4e274baa421accb9b0aa1b174ddf1092ea32f75f",
+      "src/c/timer_collection.c": "289d3e354ef51acafca4d5f62c216c410aaa2f2f5491afd580a8d593fad5eb63",
+      "src/c/timer_fonts.c": "b89faf3dfff6f6bbf371fd6574986c7002c7a056725c31260ac473f3755e7202",
+      "src/c/timer_ui_state.c": "88449d2e96571a587234a6ca0e791be52a59dc1f2c417d6bf0278de06160672e",
+      "src/c/timer_hourglass.h": "9a048638957b89cb7eac48f08b7610badf91ad926047b6376c6005a78633c13f",
+      "src/c/timer_appearance.c": "23496ee0aa971091cfffca92f8c6d8de936e31e1ca85f9c46dfb674e630a908d",
+      "src/c/timer_glance.c": "a4b8daf7567d86226ed94982c09666ec8c45e3cc70e6f7e93920236f7e9f305a",
+      "src/c/timer_alarm_feedback.c": "34ee88328b3bdfc0bf9ae898c56a90a721519840b8ff8052ee8fc7a026c8aac4",
+      "src/pkjs/index.js": "ab93719aab6bf27ea08cf59e219df4c3e8658b5bf56b6fc8ab21d5d5235a9140",
+      "src/pkjs/settings.js": "7dd2cb2656e2d204a2bf8822499d18f54ed26b1e86d8ce340adc919c125a19e6",
+      "src/pkjs/settings-page.js": "fe2544561e5223a14e195d4762c35bcee89734cdeb9aaffc94983d44393329e6",
+      "src/plugin/index.js": "7094f7de7965aed40005dc4369e80fb8af3a316c6aeb494a6ac65134461a5252",
+      "config.html": "ea465cac1eca8483214d5bdb2e6196268324893e96eefe12c52fabca2650a98b"
+    }
+  },
+  "rail": {
+    "width": 34,
+    "background": "Matches page; alarm black",
+    "dividerX": 166,
+    "dividerYWithFooter": [
+      38,
+      191
+    ],
+    "dividerYWithoutFooter": [
+      38,
+      221
+    ],
+    "iconCentersY": [
+      48,
+      114,
+      180
+    ],
+    "pressDistance": 3,
+    "releaseDurationMs": 144,
+    "pressedRightmostPixelAtMost": 196,
+    "separateMoreDots": 3
+  },
+  "nativePayloadSha256": {
+    "emery/app_resources.pbpack": "5e693142a8537851976c02a6a4b411168425cc8979875083100ca6182236e139",
+    "emery/manifest.json": "d8ddebd0713e5f04d9299c7e42bae8e8400406e426e0c93875d02808b24e3d40",
+    "emery/pebble-app.bin": "74b7de6359b87b148f96b496f9e690613c58987c24b3c9511302bcdafdb6e4a7"
+  },
+  "physicalWatchVerified": false,
+  "realPhoneVerified": false,
+  "freshBrowserVerified": false,
+  "phonePreviewUsesMock": true,
+  "pushedOrPublished": false
+}

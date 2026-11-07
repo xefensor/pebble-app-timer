@@ -23,6 +23,7 @@
 #define RETRY_LIMIT 3
 #define BAR_WIDTH 34
 #define CONTENT_WIDTH (200 - BAR_WIDTH)
+#define ACTION_PRESS_OFFSET 3
 
 #if defined(ACTIVITY_TIMER_DIAGNOSTICS) && ACTIVITY_TIMER_DIAGNOSTICS
 #define TIMER_DIAG(...) APP_LOG(APP_LOG_LEVEL_INFO, __VA_ARGS__)
@@ -580,7 +581,7 @@ static TimerUiView prv_view(void) {
   view.editor_bump=s_ui_motion_screen==s_screen&&s_ui_motion==UI_MOTION_VALUE?
       timer_motion_bump(elapsed):0;
   if(s_icon_button>=0&&s_icon_button<3)view.action_offset[s_icon_button]=
-      s_icon_releasing?timer_motion_ease(5,0,prv_millis()-s_icon_started,144u):5;
+      s_icon_releasing?timer_motion_ease(ACTION_PRESS_OFFSET,0,prv_millis()-s_icon_started,144u):ACTION_PRESS_OFFSET;
   return view;
 }
 

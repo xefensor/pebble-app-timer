@@ -23,7 +23,9 @@ from pipe_emulator import connect
 p=connect();target=uuid.UUID('50e9ef12-a5ab-4369-a3b5-3447bfba5151')
 pbw=ROOT/'dist'/('Timer-'+VERSION+'.pbw');native=ROOT/'build/action-feedback-native-only.pbw'
 sha=lambda data:hashlib.sha256(data).hexdigest()
+candidate_sha=sha(pbw.read_bytes())
 with zipfile.ZipFile(pbw) as archive,zipfile.ZipFile(native,'w') as output:
+    payload={n:sha(archive.read(n)) for n in archive.namelist() if n.startswith('emery/')}
     for entry in archive.infolist():
         if entry.filename=='appinfo.json' or entry.filename.startswith('emery/'):
             output.writestr(entry,archive.read(entry.filename))
@@ -39,25 +41,28 @@ def shot(name):
     path=OUT/(name+'.png');Image.frombytes('RGB',(200,228),data).save(path)
     captures.append({'file':path.name,'sha256':sha(path.read_bytes())});return data
 def ink(data,y):
-    points=[(x,row) for row in range(max(32,y-13),y+14) for x in range(166,200)
-            if data[(row*200+x)*3:(row*200+x)*3+3]==b'\xff\xff\xff']
+    # The rail follows the light page; exclude its1px semantic divider.
+    points=[(x,row) for row in range(max(32,y-13),y+14) for x in range(167,200)
+            if data[(row*200+x)*3:(row*200+x)*3+3]==b'\x00\x00\x00']
     assert points,'Expected the action icon to remain available'
     return {'pixels':len(points),'left':min(x for x,_ in points),'right':max(x for x,_ in points),
             'centerX':sum(x for x,_ in points)/len(points)}
 install(ROOT/'build/fixture-mode5.pbw');stop();install(native)
 tap('Select');tap('Up') # Remaining editor, minutes selected; +/− both available.
 checks={}
-for name,y in (('Up',44),('Down',184),('Select',114)):
+for name,y in (('Up',48),('Down',180),('Select',114)):
     if name=='Select':tap('Back') # Hours→minutes keeps the same Next icon.
     before=ink(shot(name.lower()+'-before'),y)
     press(name);time.sleep(.075);pressed=ink(shot(name.lower()+'-pressed'),y)
     release();time.sleep(.45);settled=ink(shot(name.lower()+'-settled'),y)
     assert pressed['pixels']==before['pixels'],(name,'icon shape/availability changed',before,pressed)
-    assert pressed['left']-before['left']==5 and pressed['right']-before['right']==5,(name,before,pressed)
-    assert abs(pressed['centerX']-before['centerX']-5)<.01,(name,before,pressed)
+    assert pressed['left']-before['left']==3 and pressed['right']-before['right']==3,(name,before,pressed)
+    assert abs(pressed['centerX']-before['centerX']-3)<.01,(name,before,pressed)
+    assert pressed['right']<=196,(name,'Pressed icon violates3px screen-edge inset',pressed)
     assert settled==before,(name,'release did not settle',before,settled)
-    checks[name]={'idle':before,'pressed':pressed,'settled':settled,'shiftPixels':5}
-report={'result':'PASS','version':VERSION,'pbwSha256':sha(pbw.read_bytes()),'checks':checks,'captures':captures,
+    checks[name]={'idle':before,'pressed':pressed,'settled':settled,'shiftPixels':3}
+assert sha(pbw.read_bytes())==candidate_sha,'Candidate changed during native action QA'
+report={'result':'PASS','version':VERSION,'pbwSha256':candidate_sha,'nativePayloadSha256':payload,'checks':checks,'captures':captures,
  'scope':'Actual distribution native payload in isolated Emery QEMU; each still-available physical icon checked independently. No real phone/watch or animation timing claim.'}
 (OUT/'report.json').write_text(json.dumps(report,indent=2)+'\n')
 print(json.dumps({'result':'PASS','path':str(OUT/'report.json'),'checks':checks}))

@@ -1,0 +1,114 @@
+{
+  "result": "PASS",
+  "version": "0.14.3",
+  "pbwSha256": "d3daa09416d7353095f55aba4e62883dcbd6fe8fc88a01f916e5d6ffe71e8d53",
+  "nativePayloadSha256": {
+    "emery/app_resources.pbpack": "5e693142a8537851976c02a6a4b411168425cc8979875083100ca6182236e139",
+    "emery/manifest.json": "d8ddebd0713e5f04d9299c7e42bae8e8400406e426e0c93875d02808b24e3d40",
+    "emery/pebble-app.bin": "74b7de6359b87b148f96b496f9e690613c58987c24b3c9511302bcdafdb6e4a7"
+  },
+  "checks": {
+    "Up": {
+      "idle": {
+        "pixels": 97,
+        "left": 174,
+        "right": 192,
+        "centerX": 183.0
+      },
+      "pressed": {
+        "pixels": 97,
+        "left": 177,
+        "right": 195,
+        "centerX": 186.0
+      },
+      "settled": {
+        "pixels": 97,
+        "left": 174,
+        "right": 192,
+        "centerX": 183.0
+      },
+      "shiftPixels": 3
+    },
+    "Down": {
+      "idle": {
+        "pixels": 53,
+        "left": 174,
+        "right": 192,
+        "centerX": 183.0
+      },
+      "pressed": {
+        "pixels": 53,
+        "left": 177,
+        "right": 195,
+        "centerX": 186.0
+      },
+      "settled": {
+        "pixels": 53,
+        "left": 174,
+        "right": 192,
+        "centerX": 183.0
+      },
+      "shiftPixels": 3
+    },
+    "Select": {
+      "idle": {
+        "pixels": 103,
+        "left": 173,
+        "right": 193,
+        "centerX": 184.6504854368932
+      },
+      "pressed": {
+        "pixels": 103,
+        "left": 176,
+        "right": 196,
+        "centerX": 187.6504854368932
+      },
+      "settled": {
+        "pixels": 103,
+        "left": 173,
+        "right": 193,
+        "centerX": 184.6504854368932
+      },
+      "shiftPixels": 3
+    }
+  },
+  "captures": [
+    {
+      "file": "up-before.png",
+      "sha256": "48ad820d9cf4e4a8dc6078830c9c27692a4ccc1a5f60064d84a45cceb125b5b5"
+    },
+    {
+      "file": "up-pressed.png",
+      "sha256": "394180626df1ca973247d69d0882808bc1b4271ed0698e28a2c4175facfc042d"
+    },
+    {
+      "file": "up-settled.png",
+      "sha256": "c7aa0ca4610b8ad3c684db4be1ddc2c5afd985fcaf47b8ed1837e991003a5826"
+    },
+    {
+      "file": "down-before.png",
+      "sha256": "c7aa0ca4610b8ad3c684db4be1ddc2c5afd985fcaf47b8ed1837e991003a5826"
+    },
+    {
+      "file": "down-pressed.png",
+      "sha256": "c01fa6327bb4e5b5bac73af839b9c27f65ee66c856e8538a29f07c7e5cda5c48"
+    },
+    {
+      "file": "down-settled.png",
+      "sha256": "48ad820d9cf4e4a8dc6078830c9c27692a4ccc1a5f60064d84a45cceb125b5b5"
+    },
+    {
+      "file": "select-before.png",
+      "sha256": "e8547ee882dc51e58cbe1942ad9801705c2d6fce2c2aa20634a84dc9a4623b2a"
+    },
+    {
+      "file": "select-pressed.png",
+      "sha256": "e1d0644ce9ec74a6124f20aa5ca90a1b17491250f4a5022047a8c5c7ceb6c4d9"
+    },
+    {
+      "file": "select-settled.png",
+      "sha256": "48ad820d9cf4e4a8dc6078830c9c27692a4ccc1a5f60064d84a45cceb125b5b5"
+    }
+  ],
+  "scope": "Actual distribution native payload in isolated Emery QEMU; each still-available physical icon checked independently. No real phone/watch or animation timing claim."
+}
