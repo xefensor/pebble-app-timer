@@ -19,6 +19,12 @@ int persist_get_size(uint32_t key);
 int persist_read_data(uint32_t key, void *data, size_t size);
 int persist_write_data(uint32_t key, const void *data, size_t size);
 
+typedef int32_t WakeupId;
+WakeupId wakeup_schedule(time_t timestamp, int32_t cookie, bool notify_if_missed);
+bool wakeup_query(WakeupId id, time_t *timestamp);
+void wakeup_cancel(WakeupId id);
+void wakeup_cancel_all(void);
+
 typedef uint32_t PublishedId;
 typedef struct AppGlanceReloadSession { unsigned unused; } AppGlanceReloadSession;
 typedef struct {

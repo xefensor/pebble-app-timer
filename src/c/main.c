@@ -12,6 +12,7 @@
 #include "timer_hourglass.h"
 #include "timer_alarm_feedback.h"
 #include "timer_appearance.h"
+#include "timer_wakeup.h"
 
 #define LEGACY_MODEL_KEY 2100
 #define WAKEUP_KEY 2101
@@ -295,28 +296,22 @@ static void prv_open_alarm(void) {
 static void prv_schedule_alarm(void) {
   uint32_t deadline = 0;
   const uint32_t now = prv_now();
+  time_t existing = 0;
+  if (s_wakeup >= 0 && !wakeup_query(s_wakeup, &existing)) existing = 0;
+  TimerWakeup previous = { .id = -1, .deadline = 0 };
   for (unsigned i = 0; i < TIMER_COLLECTION_CAPACITY; ++i) {
     const ActivityTimerModel *timer = &s_collection.slots[i];
-    if (timer_collection_visible(&s_collection, i) && timer->state == ACTIVITY_TIMER_RUNNING &&
-        timer->deadline > now && (!deadline || timer->deadline < deadline)) deadline = timer->deadline;
+    if (!timer_collection_visible(&s_collection, i) || timer->state != ACTIVITY_TIMER_RUNNING ||
+        timer->deadline <= now) continue;
+    if (!deadline || timer->deadline < deadline) deadline = timer->deadline;
+    if (existing == (time_t)timer->deadline) previous = (TimerWakeup){s_wakeup, timer->deadline};
   }
-  time_t existing = 0;
-  if (deadline && s_wakeup >= 0 && wakeup_query(s_wakeup, &existing) && (uint32_t)existing == deadline) {
-    s_alarm_deadline = deadline;
-    s_alarm_error = false;
-    return;
-  }
-  wakeup_cancel_all();
-  s_wakeup = -1;
-  s_alarm_deadline = 0;
-  s_alarm_error = false;
-  if (deadline) {
-    s_wakeup = wakeup_schedule((time_t)deadline, (int32_t)s_collection.revision, true);
-    s_alarm_error = s_wakeup < 0 || !wakeup_query(s_wakeup, &existing) || (uint32_t)existing != deadline;
-    if (!s_alarm_error) s_alarm_deadline = deadline;
-  }
-  if (s_wakeup >= 0) persist_write_int(WAKEUP_KEY, s_wakeup);
-  else persist_delete(WAKEUP_KEY);
+  const TimerWakeup next = timer_wakeup_replace(previous, deadline, (int32_t)s_collection.revision);
+  s_alarm_deadline = next.deadline;
+  s_alarm_error = deadline != next.deadline;
+  if (next.id < 0) persist_delete(WAKEUP_KEY);
+  else if (next.id != s_wakeup) persist_write_int(WAKEUP_KEY, next.id);
+  s_wakeup = next.id;
   TIMER_DIAG("alarm now=%lu deadline=%lu id=%ld error=%d", (unsigned long)now,
       (unsigned long)deadline, (long)s_wakeup, s_alarm_error);
 }
