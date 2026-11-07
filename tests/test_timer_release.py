@@ -304,6 +304,11 @@ class TimerReleaseTests(unittest.TestCase):
         self.assertEqual(selected["releases/Timer-1.2.3.pbw"], release.digest(timer.read_bytes()))
         self.assertEqual(selected["releases/Timer-1.2.3-source.zip"], release.digest(source.read_bytes()))
         self.assertEqual(selected['releases/Timer-1.2.3-debug.zip'], release.digest(debug_bytes))
+        frozen = {path: path.read_bytes() for path in self.root.joinpath('releases').glob('Timer-1.2.3*')}
+        with self.assertRaisesRegex(ValueError, 'Frozen Timer artifacts'):
+            packager.package(self.root)
+        for path, content in frozen.items():
+            self.assertEqual(path.read_bytes(), content)
 
     def test_unbuilt_or_wrong_identity_pbw_does_not_touch_frozen_artifacts(self):
         self.write("releases/Timer-1.2.3.pbw", b"frozen")

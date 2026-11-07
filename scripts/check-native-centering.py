@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
 """Measure actual final Timer PNG ink; no host-renderer approximation."""
 from pathlib import Path
+from repo_workflow import candidate as candidate_pbw, qa_output
 import hashlib,json
 from PIL import Image
 
 ROOT=Path(__file__).resolve().parents[1]
 VERSION=json.loads((ROOT/'package.json').read_text())['version']
-OUT=ROOT/'docs/qa'/VERSION
+OUT=qa_output(ROOT, '')
 UI=OUT/'native-ui-system'
 checks=[]
 def check(role,file,box,background,max_offset=1.5,min_inset=2):

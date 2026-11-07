@@ -7,6 +7,8 @@ import subprocess
 import zipfile
 
 root = Path(__file__).resolve().parents[1]
+from repo_workflow import build_output
+output_directory = build_output(root, 'Timer')
 library = root / "node_modules/pebble-activities"
 package = json.loads((root / "package.json").read_text())
 subprocess.run(['node', str(root / 'scripts/generate-config.cjs')], check=True, cwd=root)
@@ -75,8 +77,8 @@ entries["licenses/Apache-2.0.txt"] = (root / "licenses/Apache-2.0.txt").read_byt
 if (root / 'src/c/generated_clock_glyphs.h').exists():
     for notice in ("OFL-Fredoka.txt", "OFL-RobotoCondensed.txt"):
         entries["licenses/" + notice] = (root / "resources/fonts" / notice).read_bytes()
-destination = root / "dist" / ("Timer-" + package["version"] + ".pbw")
-destination.parent.mkdir(exist_ok=True)
+destination = output_directory / ("Timer-" + package["version"] + ".pbw")
+destination.parent.mkdir(parents=True, exist_ok=True)
 debug_destination = destination.with_name("Timer-" + package["version"] + "-debug.zip")
 for path, contents in ((destination, entries), (debug_destination, debug)):
     with zipfile.ZipFile(path, "w", zipfile.ZIP_DEFLATED) as output:
@@ -90,3 +92,6 @@ for path, contents in ((destination, entries), (debug_destination, debug)):
     for path in (destination, debug_destination)))
 print(destination)
 print(debug_destination)
+
+from repo_workflow import record_build
+record_build(root, destination, debug_destination)

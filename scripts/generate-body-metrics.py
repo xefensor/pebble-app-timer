@@ -86,7 +86,8 @@ def main():
     else:
         if not target.exists() or target.read_text() != header:
             target.write_text(header)
-        out = ROOT/'docs/qa'/package['version']
+        from repo_workflow import qa_output
+        out = qa_output(ROOT, 'fonts')
         out.mkdir(parents=True, exist_ok=True)
         (out/'body-metrics.json').write_text(json.dumps({'scope': 'Exact SDK PFO ink bounds; extended Latin017F, apostrophe and ellipsis verified', 'resources': proof}, indent=2)+'\n')
     print(('Verified' if args.check else 'Generated')+' exact body metrics:', json.dumps(proof))

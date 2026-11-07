@@ -5,6 +5,7 @@ Uses the isolated FIFO helper and the documented mode-5 stock-data fixture.
 No real phone/watch is used. Keep each icon available while pressing it.
 """
 from pathlib import Path
+from repo_workflow import candidate as candidate_pbw, qa_output
 import hashlib,json,os,sys,time,uuid,zipfile
 from pebble_tool.commands.install import ToolAppInstaller
 from pebble_tool.commands.emucontrol import send_data_to_qemu
@@ -15,13 +16,13 @@ from PIL import Image
 
 ROOT=Path(__file__).resolve().parents[1]
 VERSION=json.loads((ROOT/'package.json').read_text())['version']
-OUT=ROOT/'docs/qa'/VERSION/os.environ.get('TIMER_ACTION_QA_DIR','native-actions')
+OUT=qa_output(ROOT, '')/os.environ.get('TIMER_ACTION_QA_DIR','native-actions')
 OUT.mkdir(parents=True,exist_ok=True)
 os.environ['PEBBLE_QA_STATE']=str(ROOT.parent/'.recovery-tools'/('emulator-timer-actions-'+str(time.time_ns())))
 sys.path.insert(0,str(ROOT.parent/'recovery-validation'))
 from pipe_emulator import connect
 p=connect();target=uuid.UUID('50e9ef12-a5ab-4369-a3b5-3447bfba5151')
-pbw=ROOT/'dist'/('Timer-'+VERSION+'.pbw');native=ROOT/'build/action-feedback-native-only.pbw'
+pbw=candidate_pbw(ROOT, 'Timer');native=ROOT/'build/action-feedback-native-only.pbw'
 sha=lambda data:hashlib.sha256(data).hexdigest()
 candidate_sha=sha(pbw.read_bytes())
 with zipfile.ZipFile(pbw) as archive,zipfile.ZipFile(native,'w') as output:

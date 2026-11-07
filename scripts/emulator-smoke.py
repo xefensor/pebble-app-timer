@@ -6,6 +6,7 @@ storage and must never run against hardware. TIMER_QA_PHASE can split the run
 into ui/background/motion phases; all use the same final native payload.
 """
 from pathlib import Path
+from repo_workflow import candidate as candidate_pbw, qa_output
 import argparse
 import hashlib
 import json
@@ -24,12 +25,12 @@ from PIL import Image
 
 ROOT = Path(__file__).resolve().parents[1]
 VERSION = json.loads((ROOT / 'package.json').read_text())['version']
-OUT = Path(environ.get('TIMER_QA_OUTPUT', str(ROOT / 'docs/qa' / VERSION / 'native')))
+OUT = Path(environ.get('TIMER_QA_OUTPUT', str(qa_output(ROOT, '') / 'native')))
 OUT.mkdir(parents=True, exist_ok=True)
 PHASE = environ.get('TIMER_QA_PHASE', 'all')
 if PHASE not in ('all', 'ui', 'background', 'motion'):
     raise SystemExit('TIMER_QA_PHASE must be all, ui, background or motion')
-FINAL = ROOT / 'dist' / ('Timer-' + VERSION + '.pbw')
+FINAL = candidate_pbw(ROOT, 'Timer')
 NATIVE = ROOT / 'build/timer-native-only-candidate.pbw'
 TARGET = uuid.UUID('50e9ef12-a5ab-4369-a3b5-3447bfba5151')
 

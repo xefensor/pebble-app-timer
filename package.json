@@ -9,8 +9,15 @@
     "pebble-activities": "file:vendor/pebble-activities-0.4.0.tgz"
   },
   "scripts": {
-    "test": "python3 scripts/test.py",
-    "build": "python3 scripts/build.py"
+    "test": "python3 scripts/test.py && npm run test:workflow && npm run check:docs",
+    "build": "python3 scripts/build.py",
+    "build:release": "python3 scripts/build.py --release",
+    "test:workflow": "python3 -m unittest discover -s tests -p test_development_workflow.py",
+    "test:source": "python3 scripts/test.py",
+    "check:config": "node scripts/generate-config.cjs --check",
+    "check:artifact": "python3 scripts/check-artifact.py",
+    "release:source": "python3 scripts/package-release.py",
+    "check:docs": "python3 scripts/check-docs.py"
   },
   "pebble": {
     "displayName": "Timer",

@@ -22,6 +22,9 @@ def package(root):
             raise ValueError('Build the packaged Timer PBW for this version first')
     releases = root / 'releases'
     releases.mkdir(exist_ok=True)
+    protected=[releases/(name+suffix) for suffix in ('.pbw','-debug.zip','-source.zip')]
+    if any(path.exists() for path in protected):
+        raise ValueError('Frozen Timer artifacts already exist; use a new version.')
     target = releases / (name + '.pbw')
     target.write_bytes(pbw)
     debug = releases / (name + '-debug.zip')

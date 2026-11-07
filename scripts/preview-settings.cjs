@@ -2,7 +2,7 @@
 // Offline layout review of the exact generated template. No native/phone write.
 const fs=require('node:fs'),path=require('node:path');
 const root=path.resolve(__dirname,'..'),version=require('../package.json').version;
-const out=path.join(root,'docs/qa',version,'phone-preview.html');
+const out=path.join(process.env.PEBBLE_QA_OUTPUT_ROOT||path.join(root,'build/qa'),'phone-preview.html');
 function mockBridge(){
   var saved={version:1,theme:'light'};
   window.Pebble={targets:function(){return Promise.resolve([{id:'plugin'}]);},

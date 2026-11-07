@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Early composition review of the actual packaged native app; no phone/hardware."""
 from pathlib import Path
+from repo_workflow import candidate as candidate_pbw, qa_output
 import hashlib,json,os,sys,time,uuid,zipfile
 from pebble_tool.commands.install import ToolAppInstaller
 from pebble_tool.commands.emucontrol import send_data_to_qemu
@@ -9,9 +10,9 @@ from libpebble2.communication.transports.qemu.protocol import QemuButton
 from libpebble2.services.screenshot import Screenshot
 from PIL import Image
 root=Path(__file__).resolve().parents[1];version=json.loads((root/'package.json').read_text())['version']
-pbw=root/'dist'/('Timer-'+version+'.pbw');native=root/'build/composition-native-only.pbw'
+pbw=candidate_pbw(root, 'Timer');native=root/'build/composition-native-only.pbw'
 sha=lambda b:hashlib.sha256(b).hexdigest()
-candidate_sha=sha(pbw.read_bytes());out=root/'docs/qa'/version/'composition-review'/candidate_sha[:12]
+candidate_sha=sha(pbw.read_bytes());out=qa_output(root, '')/'composition-review'/candidate_sha[:12]
 assert not out.exists(),'Use the completed immutable report for this exact candidate, or a new candidate build.'
 out.mkdir(parents=True)
 with zipfile.ZipFile(pbw) as source,zipfile.ZipFile(native,'w') as dest:

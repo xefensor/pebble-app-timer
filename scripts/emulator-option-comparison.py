@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
-"""Capture historical option motion without changing the historical artifact."""
+"""HISTORICAL TOOL: intentionally examines frozen Timer0.14.0, not a current candidate.
+Capture historical option motion without changing the historical artifact."""
 from pathlib import Path
+from repo_workflow import candidate as candidate_pbw, qa_output
 import hashlib,json,os,sys,time,uuid,zipfile
 from pebble_tool.commands.install import ToolAppInstaller
 from pebble_tool.commands.emucontrol import send_data_to_qemu
@@ -11,7 +13,7 @@ from PIL import Image
 
 ROOT=Path(__file__).resolve().parents[1]
 VERSION=json.loads((ROOT/'package.json').read_text())['version']
-OUT=ROOT/'docs/qa'/VERSION/'previous-option-motion';OUT.mkdir(parents=True,exist_ok=True)
+OUT=qa_output(ROOT, '')/'previous-option-motion';OUT.mkdir(parents=True,exist_ok=True)
 pbw=ROOT/'releases/Timer-0.14.0.pbw';native=ROOT/'build/previous-option-native-only.pbw'
 sha=lambda value:hashlib.sha256(value).hexdigest()
 with zipfile.ZipFile(pbw) as source,zipfile.ZipFile(native,'w') as dest:

@@ -4,6 +4,7 @@ Build both tests/deadline-fixture offsets before running. Replaces isolated
 emulator storage; never select a physical watch. No phone JavaScript is run.
 """
 from pathlib import Path
+from repo_workflow import candidate as candidate_pbw, qa_output
 import argparse
 import hashlib
 import json
@@ -22,9 +23,9 @@ from PIL import Image
 
 ROOT = Path(__file__).resolve().parents[1]
 VERSION = json.loads((ROOT / 'package.json').read_text())['version']
-OUT = Path(environ.get('TIMER_QA_OUTPUT', str(ROOT / 'docs/qa' / VERSION / 'native'))) / 'deadlines'
+OUT = Path(environ.get('TIMER_QA_OUTPUT', str(qa_output(ROOT, '') / 'native'))) / 'deadlines'
 OUT.mkdir(parents=True, exist_ok=True)
-FINAL = ROOT / 'dist' / ('Timer-' + VERSION + '.pbw')
+FINAL = candidate_pbw(ROOT, 'Timer')
 NATIVE = ROOT / 'build/timer-native-only-candidate.pbw'
 for filename in ('timer_model.c', 'timer_model.h', 'timer_collection.c', 'timer_collection.h'):
     assert (ROOT / 'tests/deadline-fixture/src/c' / filename).read_bytes() == (ROOT / 'src/c' / filename).read_bytes(), 'Refresh deadline fixture source copies'

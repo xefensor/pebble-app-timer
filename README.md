@@ -1,5 +1,10 @@
 # Timer
 
+Main contains the current implementation. [Development](CONTRIBUTING.md),
+[current maintenance contracts](docs/MAINTENANCE.md) and [release policy](docs/RELEASING.md)
+are the active contributor references. Public downloads and frozen evidence keep
+their original versions; a merge to main is not publication.
+
 A native timer for **stock PebbleOS**, with activity sharing for compatible
 watchfaces such as [Dynamic](https://github.com/xefensor/pebble-watchface-dynamic).
 The first target is Pebble Time 2 (`emery`, 200 × 228).
@@ -8,8 +13,8 @@ The [XOCE repository migration](docs/REPOSITORY-MIGRATION.md) updates Dynamic an
 library source locations while preserving Timer's package, app identity and
 published release files.
 
-Timer **0.14.4 is a local redesign candidate** on
-`design/pebble-native-redesign`, for Xef's review. See the
+Timer **0.14.4 is the merged local UI implementation** on
+`main`. See the
 [redesign and native previews](docs/REDESIGN.md).
 The current local build is `dist/Timer-0.14.4.pbw`; it has not been published.
 Its phone settings contain one **Watch appearance** choice (Light/Dark), with
@@ -106,7 +111,7 @@ Phone help has explicit symmetric padding; existing Save/storage code is unchang
 
 ## Version 0.14.0
 
-This local review branch uses stock Gothic utility text, larger menu roles,
+The initial 0.14.0 trial used stock Gothic utility text, larger menu roles,
 filled pencil and consistent action icons, elastic menu selection and tactile
 duration-field feedback. Fredoka countdowns, the blue hourglass, native alarms,
 eight timer slots and explicit Reset-to-Ready/Start stay intact. Physical action
@@ -115,7 +120,7 @@ skipped for held repeats and cancelled under a covering window.
 
 The phone page gains the shared spacing, short blue identity rule, neutral
 headings, theme-aware Save and reduced-motion-aware control/disclosure feedback.
-It keeps exactly one Watch appearance selector and the existing confirmed-save
+It kept exactly one Watch appearance selector and the existing confirmed-save
 and draft handling. See [design rationale and evidence](docs/REDESIGN.md).
 
 ## Version 0.13.0
@@ -500,35 +505,8 @@ vibration remains owned by Timer, independently of either display source.
 
 ## Build and check
 
-Use Node.js, Python 3, a C99 compiler, and a Pebble SDK with Emery support:
-
-```sh
-npm ci --ignore-scripts
-npm test
-npm run build
-```
-
-The dependency is installed from `vendor/pebble-activities-0.4.0.tgz`; its
-provenance and SHA-256 are recorded in [vendor/README.md](vendor/README.md).
-
-The distribution build clears the SDK cache so dependency updates cannot leave
-stale phone JavaScript in the PBW. It writes `dist/Timer-0.12.0.pbw`, its debugging ZIP and checksums. It bundles the provider
-JavaScript and sets `manifestVersion: 2`, including `plugin.js` alongside PKJS
-and the watch binary. A plain `pebble build` creates a development PBW without
-that extra provider bundle; use `npm run build` for an installable shared-activity
-build. The packaged PBW includes the app and library licences and SDK notices.
-
-Portable tests check the native timer model and isolated PKJS/storage/provider
-handoff. Artifact checks exercise the packaged scripts. These do not substitute
-for the actual phone or watch checks below.
-
-Run the release-helper tests with
-`python3 -m unittest discover -s tests -p 'test_*release.py'`. After building,
-`python3 scripts/package-release.py` freezes the PBW, standalone source archive
-and checksums. Committed artifacts are validated before GitHub publication.
-
-See [validation](docs/VALIDATION.md) for the current release’s portable tests,
-actual emulator captures and remaining physical-watch/real-phone checks.
+Use [CONTRIBUTING](CONTRIBUTING.md) for current setup, safe candidate builds and
+verification. Release preparation is a separate [explicit workflow](docs/RELEASING.md).
 
 ## Actual phone and watch checks
 

@@ -1,0 +1,440 @@
+{
+  "result": "PASS",
+  "version": "0.14.4",
+  "pbwSha256": "1f073ff69001f68931be50b4507618b0ca43dac60ed395d2dd1438ee123332e3",
+  "scope": "Exact Emery PNG interiors: complete text groups, option/confirmation/editor cells, warning lines and full-width footers. Header clock actual ink19px. Bounding boxes exclude physical action icons and progress rails. No physical-watch/phone-rendering proof.",
+  "checks": [
+    {
+      "role": "selected countdown/state/saved-duration group",
+      "capture": "list-light.png",
+      "captureSha256": "8eddfe44c15a18abc2728787b07dcda10604255038e209ef38347030eebf1164",
+      "frame": [
+        10,
+        50,
+        148,
+        130
+      ],
+      "inkTop": 54,
+      "inkBottom": 124,
+      "topInset": 4,
+      "bottomInset": 5,
+      "verticalCentreOffset": -0.5
+    },
+    {
+      "role": "second countdown/state/saved-duration group",
+      "capture": "list-light.png",
+      "captureSha256": "8eddfe44c15a18abc2728787b07dcda10604255038e209ef38347030eebf1164",
+      "frame": [
+        10,
+        138,
+        148,
+        218
+      ],
+      "inkTop": 142,
+      "inkBottom": 212,
+      "topInset": 4,
+      "bottomInset": 5,
+      "verticalCentreOffset": -0.5
+    },
+    {
+      "role": "Edit remaining",
+      "capture": "options-dark.png",
+      "captureSha256": "ea67927623b014ad8fe4fa724fb595cbe301644d365908d6c83445b50893b11c",
+      "frame": [
+        9,
+        68,
+        157,
+        106
+      ],
+      "inkTop": 76,
+      "inkBottom": 98,
+      "topInset": 8,
+      "bottomInset": 7,
+      "verticalCentreOffset": 0.5
+    },
+    {
+      "role": "Reset",
+      "capture": "options-dark.png",
+      "captureSha256": "ea67927623b014ad8fe4fa724fb595cbe301644d365908d6c83445b50893b11c",
+      "frame": [
+        9,
+        112,
+        157,
+        150
+      ],
+      "inkTop": 122,
+      "inkBottom": 139,
+      "topInset": 10,
+      "bottomInset": 10,
+      "verticalCentreOffset": 0.0
+    },
+    {
+      "role": "Delete option",
+      "capture": "options-dark.png",
+      "captureSha256": "ea67927623b014ad8fe4fa724fb595cbe301644d365908d6c83445b50893b11c",
+      "frame": [
+        9,
+        156,
+        157,
+        194
+      ],
+      "inkTop": 166,
+      "inkBottom": 183,
+      "topInset": 10,
+      "bottomInset": 10,
+      "verticalCentreOffset": 0.0
+    },
+    {
+      "role": "Keep selected",
+      "capture": "delete-light-safe-default.png",
+      "captureSha256": "0fe3ded08741781f4ecad0033383043a2fceb7b9416a55f0175272225bfd17c6",
+      "frame": [
+        6,
+        160,
+        160,
+        190
+      ],
+      "inkTop": 164,
+      "inkBottom": 186,
+      "topInset": 4,
+      "bottomInset": 3,
+      "verticalCentreOffset": 0.5
+    },
+    {
+      "role": "Delete choice",
+      "capture": "delete-light-safe-default.png",
+      "captureSha256": "0fe3ded08741781f4ecad0033383043a2fceb7b9416a55f0175272225bfd17c6",
+      "frame": [
+        6,
+        196,
+        160,
+        226
+      ],
+      "inkTop": 202,
+      "inkBottom": 219,
+      "topInset": 6,
+      "bottomInset": 6,
+      "verticalCentreOffset": 0.0
+    },
+    {
+      "role": "editor selected digits",
+      "capture": "new-editor-dark.png",
+      "captureSha256": "e2d8e3538db0cd0493f80a8ad316c7cbffd81336a5b6e71a712bb1721a1923b5",
+      "frame": [
+        61,
+        96,
+        105,
+        148
+      ],
+      "inkTop": 108,
+      "inkBottom": 134,
+      "topInset": 12,
+      "bottomInset": 13,
+      "verticalCentreOffset": -0.5
+    },
+    {
+      "role": "editor HRS",
+      "capture": "new-editor-dark.png",
+      "captureSha256": "e2d8e3538db0cd0493f80a8ad316c7cbffd81336a5b6e71a712bb1721a1923b5",
+      "frame": [
+        5,
+        154,
+        55,
+        178
+      ],
+      "inkTop": 158,
+      "inkBottom": 173,
+      "topInset": 4,
+      "bottomInset": 4,
+      "verticalCentreOffset": 0.0
+    },
+    {
+      "role": "editor MIN",
+      "capture": "new-editor-dark.png",
+      "captureSha256": "e2d8e3538db0cd0493f80a8ad316c7cbffd81336a5b6e71a712bb1721a1923b5",
+      "frame": [
+        58,
+        154,
+        108,
+        178
+      ],
+      "inkTop": 158,
+      "inkBottom": 173,
+      "topInset": 4,
+      "bottomInset": 4,
+      "verticalCentreOffset": 0.0
+    },
+    {
+      "role": "editor SEC",
+      "capture": "new-editor-dark.png",
+      "captureSha256": "e2d8e3538db0cd0493f80a8ad316c7cbffd81336a5b6e71a712bb1721a1923b5",
+      "frame": [
+        111,
+        154,
+        161,
+        178
+      ],
+      "inkTop": 158,
+      "inkBottom": 173,
+      "topInset": 4,
+      "bottomInset": 4,
+      "verticalCentreOffset": 0.0
+    },
+    {
+      "role": "complete footer new-editor-dark.png",
+      "capture": "new-editor-dark.png",
+      "captureSha256": "e2d8e3538db0cd0493f80a8ad316c7cbffd81336a5b6e71a712bb1721a1923b5",
+      "frame": [
+        6,
+        198,
+        160,
+        228
+      ],
+      "inkTop": 204,
+      "inkBottom": 220,
+      "topInset": 6,
+      "bottomInset": 7,
+      "verticalCentreOffset": -0.5
+    },
+    {
+      "role": "complete footer options-dark.png",
+      "capture": "options-dark.png",
+      "captureSha256": "ea67927623b014ad8fe4fa724fb595cbe301644d365908d6c83445b50893b11c",
+      "frame": [
+        6,
+        198,
+        160,
+        228
+      ],
+      "inkTop": 204,
+      "inkBottom": 220,
+      "topInset": 6,
+      "bottomInset": 7,
+      "verticalCentreOffset": -0.5
+    },
+    {
+      "role": "critical primary critical-delete-light.png",
+      "capture": "critical-delete-light.png",
+      "captureSha256": "790d409b20160941f1bdf633fdc245c026dd85aae67aebd9da41ac243aa82a5d",
+      "frame": [
+        6,
+        35,
+        160,
+        58
+      ],
+      "inkTop": 38,
+      "inkBottom": 54,
+      "topInset": 3,
+      "bottomInset": 3,
+      "verticalCentreOffset": 0.0
+    },
+    {
+      "role": "Keep Timer open critical-delete-light.png",
+      "capture": "critical-delete-light.png",
+      "captureSha256": "790d409b20160941f1bdf633fdc245c026dd85aae67aebd9da41ac243aa82a5d",
+      "frame": [
+        6,
+        60,
+        160,
+        83
+      ],
+      "inkTop": 61,
+      "inkBottom": 80,
+      "topInset": 1,
+      "bottomInset": 2,
+      "verticalCentreOffset": -0.5
+    },
+    {
+      "role": "complete warning group critical-delete-light.png",
+      "capture": "critical-delete-light.png",
+      "captureSha256": "790d409b20160941f1bdf633fdc245c026dd85aae67aebd9da41ac243aa82a5d",
+      "frame": [
+        6,
+        32,
+        160,
+        86
+      ],
+      "inkTop": 38,
+      "inkBottom": 80,
+      "topInset": 6,
+      "bottomInset": 5,
+      "verticalCentreOffset": 0.5
+    },
+    {
+      "role": "critical primary critical-list-dark.png",
+      "capture": "critical-list-dark.png",
+      "captureSha256": "3d0a7e6554a8e63006b53f7d8806cfdaa7ebd043a26d4445e3dd566b1551eff0",
+      "frame": [
+        6,
+        177,
+        160,
+        200
+      ],
+      "inkTop": 180,
+      "inkBottom": 196,
+      "topInset": 3,
+      "bottomInset": 3,
+      "verticalCentreOffset": 0.0
+    },
+    {
+      "role": "Keep Timer open critical-list-dark.png",
+      "capture": "critical-list-dark.png",
+      "captureSha256": "3d0a7e6554a8e63006b53f7d8806cfdaa7ebd043a26d4445e3dd566b1551eff0",
+      "frame": [
+        6,
+        202,
+        160,
+        225
+      ],
+      "inkTop": 203,
+      "inkBottom": 222,
+      "topInset": 1,
+      "bottomInset": 2,
+      "verticalCentreOffset": -0.5
+    },
+    {
+      "role": "complete warning group critical-list-dark.png",
+      "capture": "critical-list-dark.png",
+      "captureSha256": "3d0a7e6554a8e63006b53f7d8806cfdaa7ebd043a26d4445e3dd566b1551eff0",
+      "frame": [
+        6,
+        174,
+        160,
+        228
+      ],
+      "inkTop": 180,
+      "inkBottom": 222,
+      "topInset": 6,
+      "bottomInset": 5,
+      "verticalCentreOffset": 0.5
+    },
+    {
+      "role": "header title list-light.png",
+      "capture": "list-light.png",
+      "captureSha256": "8eddfe44c15a18abc2728787b07dcda10604255038e209ef38347030eebf1164",
+      "frame": [
+        8,
+        0,
+        90,
+        31
+      ],
+      "inkTop": 5,
+      "inkBottom": 25,
+      "topInset": 5,
+      "bottomInset": 5,
+      "verticalCentreOffset": 0.0
+    },
+    {
+      "role": "header clock list-light.png",
+      "capture": "list-light.png",
+      "captureSha256": "8eddfe44c15a18abc2728787b07dcda10604255038e209ef38347030eebf1164",
+      "frame": [
+        94,
+        0,
+        158,
+        31
+      ],
+      "inkTop": 6,
+      "inkBottom": 24,
+      "topInset": 6,
+      "bottomInset": 6,
+      "verticalCentreOffset": 0.0
+    },
+    {
+      "role": "header title ready-light.png",
+      "capture": "ready-light.png",
+      "captureSha256": "762ff58b5b2b96dd79e16ee4d5eed4a6a5ceecac1b192cd6b753826803a77ac9",
+      "frame": [
+        8,
+        0,
+        90,
+        31
+      ],
+      "inkTop": 3,
+      "inkBottom": 27,
+      "topInset": 3,
+      "bottomInset": 3,
+      "verticalCentreOffset": 0.0
+    },
+    {
+      "role": "header clock ready-light.png",
+      "capture": "ready-light.png",
+      "captureSha256": "762ff58b5b2b96dd79e16ee4d5eed4a6a5ceecac1b192cd6b753826803a77ac9",
+      "frame": [
+        94,
+        0,
+        158,
+        31
+      ],
+      "inkTop": 6,
+      "inkBottom": 24,
+      "topInset": 6,
+      "bottomInset": 6,
+      "verticalCentreOffset": 0.0
+    },
+    {
+      "role": "header title remaining-editor-light.png",
+      "capture": "remaining-editor-light.png",
+      "captureSha256": "fd817e937b4171c126817aa6ffdb204330f7a7fc1b4ed12300ff9de63391462f",
+      "frame": [
+        8,
+        0,
+        90,
+        31
+      ],
+      "inkTop": 6,
+      "inkBottom": 25,
+      "topInset": 6,
+      "bottomInset": 5,
+      "verticalCentreOffset": 0.5
+    },
+    {
+      "role": "header clock remaining-editor-light.png",
+      "capture": "remaining-editor-light.png",
+      "captureSha256": "fd817e937b4171c126817aa6ffdb204330f7a7fc1b4ed12300ff9de63391462f",
+      "frame": [
+        94,
+        0,
+        158,
+        31
+      ],
+      "inkTop": 6,
+      "inkBottom": 24,
+      "topInset": 6,
+      "bottomInset": 6,
+      "verticalCentreOffset": 0.0
+    },
+    {
+      "role": "header title alarm-dark-treatment.png",
+      "capture": "alarm-dark-treatment.png",
+      "captureSha256": "e9d669c9988d931c616da74cbd453671fe355aee037414e8a0b7c9556a383dab",
+      "frame": [
+        8,
+        0,
+        90,
+        31
+      ],
+      "inkTop": 6,
+      "inkBottom": 25,
+      "topInset": 6,
+      "bottomInset": 5,
+      "verticalCentreOffset": 0.5
+    },
+    {
+      "role": "header clock alarm-dark-treatment.png",
+      "capture": "alarm-dark-treatment.png",
+      "captureSha256": "e9d669c9988d931c616da74cbd453671fe355aee037414e8a0b7c9556a383dab",
+      "frame": [
+        94,
+        0,
+        158,
+        31
+      ],
+      "inkTop": 6,
+      "inkBottom": 24,
+      "topInset": 6,
+      "bottomInset": 6,
+      "verticalCentreOffset": 0.0
+    }
+  ]
+}

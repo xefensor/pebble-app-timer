@@ -5,6 +5,7 @@ Uses isolated stock-derived QEMU data and distribution-native bytes. Screenshots
 sample real frames; they do not measure physical timing or button feel.
 """
 from pathlib import Path
+from repo_workflow import candidate as candidate_pbw, qa_output
 import hashlib,json,os,sys,time,uuid,zipfile
 from pebble_tool.commands.install import ToolAppInstaller
 from pebble_tool.commands.emucontrol import send_data_to_qemu
@@ -14,8 +15,8 @@ from libpebble2.services.screenshot import Screenshot
 from libpebble2.services.appmessage import AppMessageService,Uint8
 from PIL import Image
 ROOT=Path(__file__).resolve().parents[1];VERSION=json.loads((ROOT/'package.json').read_text())['version']
-PBW=ROOT/'dist'/('Timer-'+VERSION+'.pbw');sha=lambda b:hashlib.sha256(b).hexdigest();candidate=sha(PBW.read_bytes())
-OUT=ROOT/'docs/qa'/VERSION/'native-rail'/candidate[:12]
+PBW=candidate_pbw(ROOT, 'Timer');sha=lambda b:hashlib.sha256(b).hexdigest();candidate=sha(PBW.read_bytes())
+OUT=qa_output(ROOT, '')/'native-rail'/candidate[:12]
 assert not OUT.exists(),'Use completed immutable candidate evidence or build a new candidate.'
 OUT.mkdir(parents=True);NATIVE=ROOT/'build/rail-native-only.pbw';target=uuid.UUID('50e9ef12-a5ab-4369-a3b5-3447bfba5151')
 with zipfile.ZipFile(PBW) as source,zipfile.ZipFile(NATIVE,'w') as out:

@@ -5,6 +5,7 @@ Requires build/fixture-mode5.pbw from the documented isolated UX fixture.
 The screenshot RPC samples frames; this is not hardware motion/battery timing.
 """
 from pathlib import Path
+from repo_workflow import candidate as candidate_pbw, qa_output
 import hashlib,json,os,sys,time,uuid,zipfile
 from pebble_tool.commands.install import ToolAppInstaller
 from pebble_tool.commands.emucontrol import send_data_to_qemu
@@ -17,13 +18,13 @@ from PIL import Image
 
 ROOT=Path(__file__).resolve().parents[1]
 VERSION=json.loads((ROOT/'package.json').read_text())['version']
-OUT=ROOT/'docs/qa'/VERSION/'native-motion';OUT.mkdir(parents=True,exist_ok=True)
+OUT=qa_output(ROOT, '')/'native-motion';OUT.mkdir(parents=True,exist_ok=True)
 state=ROOT.parent/'.recovery-tools'/('emulator-timer-redesign-'+str(time.time_ns()))
 os.environ['PEBBLE_QA_STATE']=str(state)
 sys.path.insert(0,str(ROOT.parent/'recovery-validation'))
 from pipe_emulator import connect
 p=connect();target=uuid.UUID('50e9ef12-a5ab-4369-a3b5-3447bfba5151')
-pbw=ROOT/'dist'/('Timer-'+VERSION+'.pbw');native=ROOT/'build/redesign-native-only.pbw'
+pbw=candidate_pbw(ROOT, 'Timer');native=ROOT/'build/redesign-native-only.pbw'
 sha=lambda data:hashlib.sha256(data).hexdigest()
 with zipfile.ZipFile(pbw) as archive,zipfile.ZipFile(native,'w') as output:
     payload={n:sha(archive.read(n)) for n in archive.namelist() if n.startswith('emery/')}

@@ -6,6 +6,7 @@ TIMER_QA_PIPE=1 only for this workspace's isolated FIFO transport. Direct Python
 AppMessage observations/receipts are a QA fixture, not a phone/plugin test.
 """
 from pathlib import Path
+from repo_workflow import candidate as candidate_pbw, qa_output
 import argparse
 import atexit
 import hashlib
@@ -29,12 +30,12 @@ from PIL import Image
 
 ROOT = Path(__file__).resolve().parents[1]
 VERSION = json.loads((ROOT / 'package.json').read_text())['version']
-OUT = Path(os.environ.get('TIMER_QA_OUTPUT', ROOT / 'docs/qa' / VERSION / 'native'))
+OUT = Path(os.environ.get('TIMER_QA_OUTPUT', qa_output(ROOT, '') / 'native'))
 OUT.mkdir(parents=True, exist_ok=True)
 PHASE = os.environ.get('TIMER_QA_PHASE', 'migration')
 REQUIRED_PHASES = set(os.environ.get('TIMER_QA_EXPECT_PHASES',
     'migration,ux,capacity,launcher,nearby,equal').split(','))
-FINAL = ROOT / 'dist' / ('Timer-' + VERSION + '.pbw')
+FINAL = candidate_pbw(ROOT, 'Timer')
 NATIVE = Path(os.environ.get('TIMER_QA_NATIVE_PBW', ROOT / 'build/timer-ux-native-only.pbw'))
 TARGET = uuid.UUID('50e9ef12-a5ab-4369-a3b5-3447bfba5151')
 digest = lambda value: hashlib.sha256(value).hexdigest()

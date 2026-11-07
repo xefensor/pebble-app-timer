@@ -1,0 +1,41 @@
+{
+  "date": "2026-11-07",
+  "scope": "Repository maintenance; preserve features, accepted UI, public API, dependency pins and frozen releases.",
+  "portableChecks": "PASS",
+  "checksRun": [
+    "npm test",
+    "npm run check:docs",
+    "npm run build",
+    "npm run test:workflow",
+    "npm run check:artifact"
+  ],
+  "preservation": {
+    "baseline": "559f2cac638294fcdefed0fc31cd6bdc895789e2",
+    "protectedFilesChecked": 1532,
+    "result": "PASS",
+    "packageMetadataUnchangedExceptScripts": true
+  },
+  "sdkBuild": "PASS",
+  "nativeEvidence": [
+    {
+      "report": "native-ui-system-report.json",
+      "source": "pebble-app-timer/build/qa/native-ui-system/report.json",
+      "sha256": "88fd6c4cc7d6eb5410800190febedb3b0f869ba6057e1e574a99d19091f1b18a"
+    },
+    {
+      "report": "centering.json",
+      "source": "pebble-app-timer/build/qa/centering.json",
+      "sha256": "6bbaf56d09a9385f174fc602f6520404ab695b915bde4ac9e3611ca36d067f0a"
+    }
+  ],
+  "evidencePolicy": "New development PBWs, captures and package tarballs are disposable under build/. These reports record this run; original versioned evidence and artifacts were not overwritten.",
+  "browserVerification": "No fresh browser execution in this maintenance pass. Existing browser evidence remains historical.",
+  "physicalDeviceVerification": false,
+  "pushed": false,
+  "published": false,
+  "nativeCommands": [
+    "python3 scripts/build-fixtures.py",
+    "python3 scripts/emulator-ui-system.py",
+    "python3 scripts/check-native-centering.py"
+  ]
+}
