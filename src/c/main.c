@@ -7,6 +7,7 @@
 
 #include "timer_collection.h"
 #include "timer_ui.h"
+#include "localization.h"
 #include "timer_fonts.h"
 #include "timer_glance.h"
 #include "timer_hourglass.h"
@@ -266,13 +267,13 @@ static void prv_format(uint32_t seconds, char *text, size_t size) {
 
 static void prv_name(const ActivityTimerModel *timer, char *text, size_t size) {
   if (!(timer->repeat_seconds % 3600))
-    snprintf(text, size, "%lu h timer", (unsigned long)(timer->repeat_seconds / 3600));
+    snprintf(text, size, app_text("%lu h timer"), (unsigned long)(timer->repeat_seconds / 3600));
   else if (!(timer->repeat_seconds % 60))
-    snprintf(text, size, "%lu min timer", (unsigned long)(timer->repeat_seconds / 60));
+    snprintf(text, size, app_text("%lu min timer"), (unsigned long)(timer->repeat_seconds / 60));
   else {
     char duration[16];
     prv_format(timer->repeat_seconds, duration, sizeof(duration));
-    snprintf(text, size, "%s timer", duration);
+    snprintf(text, size, app_text("%s timer"), duration);
   }
 }
 

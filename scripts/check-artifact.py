@@ -23,3 +23,6 @@ spec=importlib.util.spec_from_file_location('fonts',root/'scripts/check-timer-fo
 fonts=importlib.util.module_from_spec(spec);spec.loader.exec_module(fonts)
 fonts.audit(args.pbw)
 print('Timer candidate: identity, current inputs, runtime, settings and exact fonts PASS')
+
+import subprocess
+subprocess.run(["python3",str(root / "scripts/check-localization-fonts.py"),"--pbw",str(args.pbw)],check=True)

@@ -13,6 +13,7 @@ from repo_workflow import build_output
 output_directory = build_output(root, "Timer")
 library = root / "node_modules/pebble-activities"
 package = json.loads((root / "package.json").read_text())
+subprocess.run(["python3", str(root / "scripts/generate-localization.py")], cwd=root, check=True)
 subprocess.run(["node", str(root / "scripts/generate-config.cjs")], check=True, cwd=root)
 # SDK incremental JS signatures do not include transitive npm source changes.
 # Distribution builds must rebundle the pinned dependency as well as native code.

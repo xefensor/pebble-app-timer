@@ -50,13 +50,15 @@ def audit(pbw, root=ROOT):
     package = json.loads((root / 'package.json').read_text())
     provenance = json.loads((root / 'resources/fonts/font-provenance.json').read_text())
     media = package['pebble']['resources']['media']
-    require(len(media) == 3 and [m['name'] for m in media] == ['FONT_BODY_22', 'FONT_BODY_24', 'FONT_BODY_26'],
+    font_media = [m for m in media if m['type']=='font']
+    require(len(media)==4 and media[-1]=={'type':'raw','name':'LOCALIZATION','file':'localization.bin'}, 'Native locale resource differs')
+    require(len(font_media) == 3 and [m['name'] for m in font_media] == ['FONT_BODY_22', 'FONT_BODY_24', 'FONT_BODY_26'],
             'Utility font resource roles differ')
     require(all(m['type']=='font' and m['file']=='fonts/RobotoCondensed-Bold.ttf' and
-                m['extended'] is True and m['characterRegex']==r'[\u0020-\u017F\u2019\u2026]' for m in media),
+                m['extended'] is True and m['characterRegex']==r'[\u0020-\u024F\u2019\u2026]' for m in font_media),
             'Utility font source, extended indexing or declared coverage differs')
     utility = (root / 'src/c/timer_fonts.c').read_text()
-    require(all('RESOURCE_ID_'+m['name'] in utility for m in media) and
+    require(all('RESOURCE_ID_'+m['name'] in utility for m in font_media) and
             'fonts_load_custom_font' in utility and 'fonts_unload_custom_font' in utility and
             '#include "generated_body_metrics.h"' in utility,
             'Utility resource lifetime or exact alignment tables are missing')

@@ -1,4 +1,5 @@
 #include "timer_ui.h"
+#include "localization.h"
 #include "timer_fonts.h"
 #include "timer_hourglass.h"
 #include <pebble-xoce-ui/pebble-xoce-ui.h>
@@ -47,7 +48,7 @@ static void moving_selection(GContext *ctx, const TimerUiView *view) {
 }
 
 static void label(GContext *ctx,const char *value,int point,GRect bounds,GColor ink,GTextAlignment align) {
-  timer_fonts_text_box(ctx,value,point,bounds,ink,align);
+  timer_fonts_text_box(ctx,app_text(value),point,bounds,ink,align);
 }
 static void centered_label(GContext *ctx,const char *value,int point,int top,int height,GColor ink) {
   label(ctx,value,point,GRect(XOCE_UI_INSET,top,UI_WIDTH-2*XOCE_UI_INSET,height),ink,GTextAlignmentCenter);
@@ -65,7 +66,7 @@ static void header(GContext *ctx,const TimerUiView *view,const char *title,GColo
   const bool twenty_four=clock_is_24h_style();
   if(local){strftime(wall_clock,sizeof(wall_clock),twenty_four?"%H:%M":"%I:%M",local);if(!twenty_four&&wall_clock[0]=='0')memmove(wall_clock,wall_clock+1,strlen(wall_clock));}
   else clock_copy_time_string(wall_clock,sizeof(wall_clock));
-  xoce_ui_draw_header(ctx,UI_WIDTH,title,wall_clock,ink,ui_line(),header_text,NULL);
+  xoce_ui_draw_header(ctx,UI_WIDTH,app_heading(title),wall_clock,ink,ui_line(),header_text,NULL);
 }
 
 static void clock_text(uint32_t seconds, char *buffer, size_t capacity) {
@@ -266,7 +267,7 @@ static void main_screen(GContext *ctx,const TimerUiView *view) {
   hourglass(ctx,left,ready?timer->repeat_seconds:timer->configured_seconds,UI_CENTER,glass_y,glass_size,angle,paused?AMBER:BLUE,ui_fg(),timer->state==ACTIVITY_TIMER_RUNNING,view->now);
   if(!view->issue) {
     if(ready)snprintf(support,sizeof(support),"Select to start");
-    else {clock_text(activity_timer_elapsed(timer,view->now),clock,sizeof(clock));snprintf(support,sizeof(support),"Elapsed %s",clock);}
+    else {clock_text(activity_timer_elapsed(timer,view->now),clock,sizeof(clock));snprintf(support,sizeof(support),app_text("Elapsed %s"),clock);}
     footer(ctx,support,22);
   }
 }
@@ -300,7 +301,7 @@ static void list_screen(GContext *ctx,const TimerUiView *view) {
     const int digit_width=(timer_font_digits_width_q8(clock,32)+128)/256;
     timer_fonts_digits_box(ctx,clock,32,GRect(XOCE_UI_INSET,digit_top,digit_width,32),ink,background);
     label(ctx,state,22,GRect(XOCE_UI_INSET,digit_top+33,143,23),secondary,GTextAlignmentLeft);
-    if(!ready){snprintf(saved,sizeof(saved),"Set %s",duration);label(ctx,saved,22,GRect(XOCE_UI_INSET,y+56,143,22),secondary,GTextAlignmentLeft);}
+    if(!ready){snprintf(saved,sizeof(saved),app_text("Set %s"),duration);label(ctx,saved,22,GRect(XOCE_UI_INSET,y+56,143,22),secondary,GTextAlignmentLeft);}
     const uint32_t total=ready?timer->repeat_seconds:timer->configured_seconds;
     const unsigned fill=total?(unsigned)(((uint64_t)left*28+total/2)/total):0,bounded=fill>28?28:fill;
     rect(ctx,GRect(151,digit_top+2,4,28),selected?ui_muted():ui_line());
@@ -353,14 +354,14 @@ static void alarm_screen(GContext *ctx,const TimerUiView *view) {
 
 static void options_screen(GContext *ctx,const TimerUiView *view) {
   const ActivityTimerModel *timer=&view->collection->slots[view->selected];char duration[20],reset[32];
-  duration_text(timer->repeat_seconds,duration,sizeof(duration),false);snprintf(reset,sizeof(reset),"Reset %s",duration);
+  duration_text(timer->repeat_seconds,duration,sizeof(duration),false);snprintf(reset,sizeof(reset),app_text("Reset %s"),duration);
   const char *options[]={activity_timer_ready(timer)?"Edit duration":"Edit remaining",reset,"Delete timer"};
   bar(ctx,view,view->option?XOCE_ICON_UP:XOCE_ICON_NONE,XOCE_ICON_CHECK,view->option<2?XOCE_ICON_DOWN:XOCE_ICON_NONE,ui_fg());
   const unsigned count=timer_collection_count(view->collection);unsigned position=1;
   for(unsigned row=0;row<count;++row)if(timer_collection_visible_slot(view->collection,row)==(int)view->selected)position=row+1;
   char heading[32],context[40];snprintf(heading,sizeof(heading),count>1?"%u/%u":"Options",position,count);
-  snprintf(context,sizeof(context),"%s · %s",duration,timer->state==ACTIVITY_TIMER_RUNNING?"Running":timer->state==ACTIVITY_TIMER_PAUSED?"Paused":activity_timer_ready(timer)?"Ready":"Time's up");
-  if(timer_fonts_text_width(context,22)>154)snprintf(context,sizeof(context),"%s %s",duration,timer->state==ACTIVITY_TIMER_RUNNING?"Running":timer->state==ACTIVITY_TIMER_PAUSED?"Paused":activity_timer_ready(timer)?"Ready":"Done");
+  snprintf(context,sizeof(context),"%s · %s",duration,timer->state==ACTIVITY_TIMER_RUNNING?app_text("Running"):timer->state==ACTIVITY_TIMER_PAUSED?app_text("Paused"):activity_timer_ready(timer)?app_text("Ready"):app_text("Time's up"));
+  if(timer_fonts_text_width(context,22)>154)snprintf(context,sizeof(context),"%s %s",duration,timer->state==ACTIVITY_TIMER_RUNNING?app_text("Running"):timer->state==ACTIVITY_TIMER_PAUSED?app_text("Paused"):activity_timer_ready(timer)?app_text("Ready"):app_text("Done"));
   header(ctx,view,heading,ui_fg());if(!view->issue)centered_label(ctx,context,22,36,26,ui_muted());
   for(unsigned row=0;row<3;++row){const int y=timer_ui_option_top(view)+(int)row*TIMER_OPTION_STRIDE;const bool selected=!view->selection_transition&&view->option==row;
     if(selected)rect(ctx,GRect(0,y,UI_WIDTH,TIMER_OPTION_HEIGHT),ui_fg());
@@ -378,7 +379,7 @@ static void confirm_screen(GContext *ctx,const TimerUiView *view) {
   const bool issue=view->issue&&view->issue[0];const ActivityTimerModel *timer=&view->collection->slots[view->selected];char duration[24],target[64];
   duration_text(timer->repeat_seconds,duration,sizeof(duration),false);const unsigned count=timer_collection_count(view->collection);unsigned position=1;
   for(unsigned row=0;row<count;++row)if(timer_collection_visible_slot(view->collection,row)==(int)view->selected)position=row+1;
-  snprintf(target,sizeof(target),"%s timer",duration);char heading[32];snprintf(heading,sizeof(heading),count>1?"%u/%u":"Delete",position,count);
+  snprintf(target,sizeof(target),app_text("%s timer"),duration);char heading[32];snprintf(heading,sizeof(heading),count>1?"%u/%u":"Delete",position,count);
   bar(ctx,view,view->confirm_choice?XOCE_ICON_UP:XOCE_ICON_NONE,XOCE_ICON_CHECK,view->confirm_choice?XOCE_ICON_NONE:XOCE_ICON_DOWN,ui_fg());header(ctx,view,heading,ui_fg());
   if(!issue)icon(ctx,XOCE_ICON_TRASH,UI_CENTER,54,ui_fg());
   centered_label(ctx,"Delete timer?",24,issue?90:77,26,ui_fg());

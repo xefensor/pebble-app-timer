@@ -10,7 +10,7 @@
     "pebble-xoce-ui": "file:vendor/pebble-xoce-ui-0.1.1.tgz"
   },
   "scripts": {
-    "test": "python3 scripts/test.py && npm run test:workflow && npm run check:docs && npm run test:release",
+    "test": "python3 scripts/test.py && node --test tests/localization*.test.js && npm run test:workflow && npm run check:docs && npm run test:release && python3 scripts/test-localization.py",
     "build": "python3 scripts/build.py",
     "build:release": "python3 scripts/build.py --release",
     "test:workflow": "python3 -m unittest discover -s tests -p test_development_workflow.py",
@@ -22,7 +22,8 @@
     "release:prepare": "python3 scripts/github-release.py prepare",
     "release:publish": "python3 scripts/github-release.py publish",
     "test:release": "python3 -m unittest discover -s tests -p \"test_*release*.py\"",
-    "check:setup": "python3 scripts/check-setup.py"
+    "check:setup": "python3 scripts/check-setup.py",
+    "check:localization": "python3 scripts/generate-localization.py --check"
   },
   "pebble": {
     "displayName": "Timer",
@@ -42,22 +43,27 @@
           "type": "font",
           "name": "FONT_BODY_22",
           "file": "fonts/RobotoCondensed-Bold.ttf",
-          "characterRegex": "[\\u0020-\\u017F\\u2019\\u2026]",
+          "characterRegex": "[\\u0020-\\u024F\\u2019\\u2026]",
           "extended": true
         },
         {
           "type": "font",
           "name": "FONT_BODY_24",
           "file": "fonts/RobotoCondensed-Bold.ttf",
-          "characterRegex": "[\\u0020-\\u017F\\u2019\\u2026]",
+          "characterRegex": "[\\u0020-\\u024F\\u2019\\u2026]",
           "extended": true
         },
         {
           "type": "font",
           "name": "FONT_BODY_26",
           "file": "fonts/RobotoCondensed-Bold.ttf",
-          "characterRegex": "[\\u0020-\\u017F\\u2019\\u2026]",
+          "characterRegex": "[\\u0020-\\u024F\\u2019\\u2026]",
           "extended": true
+        },
+        {
+          "type": "raw",
+          "name": "LOCALIZATION",
+          "file": "localization.bin"
         }
       ]
     },

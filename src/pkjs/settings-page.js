@@ -2,20 +2,14 @@
 
 var settingsStyle = require('pebble-xoce-ui/settings-style');
 
-function behavior() {
+function behavior(initial) {
   'use strict';
-  var cs=typeof navigator!=='undefined'&&/^cs(?:-|$)/i.test(navigator.language||'');
-  var words={
-    intro:['Appearance for Timer on your watch.','Vzhled aplikace Timer na hodinkách.'],appearance:['Appearance','Vzhled'],theme:['Watch appearance','Vzhled hodinek'],light:['Light','Světlý'],dark:['Dark','Tmavý'],
-    hint:['The watch appearance is independent of this phone page.','Vzhled hodinek je nezávislý na vzhledu této stránky.'],help:['Setup & help','Nastavení a nápověda'],
-    helpText:['Create, pause, reset and manage timers on the watch. These settings change appearance only.','Časovače vytváříte, pozastavujete, obnovujete a spravujete na hodinkách. Toto nastavení mění pouze vzhled.'],
-    delivery:['Saved appearance applies when Timer is open and connected. Timer keeps its last confirmed appearance on startup.','Uložený vzhled se použije při otevření aplikace Timer a připojených hodinkách. Při spuštění Timer použije poslední potvrzený vzhled.'],
-    save:['Save','Uložit'],discard:['Discard','Zahodit změny'],reload:['Reload saved','Načíst uložené'],retry:['Retry loading','Zkusit načíst znovu'],
-    loading:['Loading settings…','Načítání nastavení…'],loadingChoice:['Loading saved choice…','Načítání uložené volby…'],notLoaded:['Not loaded','Nenačteno'],none:['No changes to save.','Žádné změny k uložení.'],dirty:['Unsaved changes','Neuložené změny'],saving:['Saving…','Ukládání…'],saved:['✓ Saved','✓ Uloženo'],
-    uncertain:['Save not confirmed. Reload saved settings or try again.','Uložení není potvrzené. Načtěte uložené nastavení nebo to zkuste znovu.'],failed:['Couldn’t save. Try again.','Nepodařilo se uložit. Zkuste to znovu.'],loadFailed:['Could not load settings. Retry, or reopen this page from Pebble.','Nastavení se nepodařilo načíst. Zkuste to znovu nebo stránku znovu otevřete z aplikace Pebble.'],repair:['Saved settings could not be read. Review this choice before saving.','Uložené nastavení se nepodařilo přečíst. Před uložením zkontrolujte zvolený vzhled.'],reloaded:['Saved settings reloaded.','Uložené nastavení bylo znovu načteno.']
-  };
-  function t(key){return words[key][cs?1:0];}
-  document.documentElement.lang=cs?'cs':'en';
+  var code=String(typeof navigator!=='undefined'&&navigator.language||'en').toLowerCase().split(/[_.@-]/)[0];
+  if(code==='nb'||code==='nn')code='no';
+  if(initial.languages.indexOf(code)<0)code='en';
+  var words=initial.words[code];
+  function t(key){var phrase=initial.phone[key];return words[phrase]||phrase;}
+  document.documentElement.lang=code;
   Array.prototype.forEach.call(document.querySelectorAll('[data-t]'),function(el){el.textContent=t(el.getAttribute('data-t'));});
   var field=document.getElementById('theme'),form=document.getElementById('settings');
   var save=document.getElementById('save'),discard=document.getElementById('discard'),retry=document.getElementById('retry'),status=document.getElementById('status'),actions=document.getElementById('actions');
@@ -93,6 +87,6 @@ function behavior() {
 function render(){return [
   '<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Timer</title><style id="xoce-settings-style">',
   settingsStyle,
-  '</style></head><body><main><header><h1>Timer</h1><p data-t="intro">Appearance for Timer on your watch.</p></header><form id="settings"><section class="card"><h2 data-t="appearance">Appearance</h2><label for="theme" data-t="theme">Watch appearance</label><select id="theme" aria-describedby="theme-help" disabled><option value="" disabled hidden selected data-t="loadingChoice">Loading saved choice…</option><option value="light" data-t="light">Light</option><option value="dark" data-t="dark">Dark</option></select><p id="theme-help" class="hint" data-t="hint">The watch appearance is independent of this phone page.</p></section></form><details class="card"><summary data-t="help">Setup &amp; help</summary><p data-t="helpText">Create, pause, reset and manage timers on the watch. These settings change appearance only.</p><p data-t="delivery">Saved appearance applies when Timer is open and connected. Timer keeps its last confirmed appearance on startup.</p></details></main><footer id="actions"><div class="footer-inner"><p id="status" class="status" role="status" aria-live="polite" data-t="loading">Loading settings…</p><div class="actions"><button id="retry" type="button" hidden data-t="retry">Retry loading</button><button id="discard" type="button" disabled data-t="discard">Discard</button><button id="save" type="submit" form="settings" disabled data-t="save">Save</button></div></div></footer><script>(',behavior.toString(),')();</script></body></html>'
+  '</style></head><body><main><header><h1>Timer</h1><p data-t="intro">Appearance for Timer on your watch.</p></header><form id="settings"><section class="card"><h2 data-t="appearance">Appearance</h2><label for="theme" data-t="theme">Watch appearance</label><select id="theme" aria-describedby="theme-help" disabled><option value="" disabled hidden selected data-t="loadingChoice">Loading saved choice…</option><option value="light" data-t="light">Light</option><option value="dark" data-t="dark">Dark</option></select><p id="theme-help" class="hint" data-t="hint">The watch appearance is independent of this phone page.</p></section></form><details class="card"><summary data-t="help">Setup &amp; help</summary><p data-t="helpText">Create, pause, reset and manage timers on the watch. These settings change appearance only.</p><p data-t="delivery">Saved appearance applies when Timer is open and connected. Timer keeps its last confirmed appearance on startup.</p></details></main><footer id="actions"><div class="footer-inner"><p id="status" class="status" role="status" aria-live="polite" data-t="loading">Loading settings…</p><div class="actions"><button id="retry" type="button" hidden data-t="retry">Retry loading</button><button id="discard" type="button" disabled data-t="discard">Discard</button><button id="save" type="submit" form="settings" disabled data-t="save">Save</button></div></div></footer><script>(',behavior.toString(),')(',JSON.stringify(require('../common/translations.json')).replace(/</g,'\\u003c'),');</script></body></html>'
 ].join('\n');}
 module.exports={config:render};

@@ -41,6 +41,8 @@ def generate(packed, media):
     lines = ['// Generated from the exact SDK PFO resources by scripts/generate-body-metrics.py.', '#pragma once']
     wildcards, proof = [], []
     for i, item in enumerate(media):
+        if item['type'] != 'font':
+            continue
         number, offset, size, crc = struct.unpack_from('<4I', packed, 12+i*16)
         if number != i+1:
             raise ValueError('Unexpected resource ID ordering')
@@ -48,7 +50,7 @@ def generate(packed, media):
         if len(data) != size:
             raise ValueError('Truncated font resource')
         wildcard, rows = parse_pfo(data)
-        required = [ord('Ř'), ord('Ů'), ord('ž'), 0x2019, 0x2026]
+        required = [ord('Ř'), ord('Ů'), ord('ž'), 0x2019, 0x2026, 0x218, 0x219, 0x21a, 0x21b]
         printable = list(range(0x20, 0x7f)) + list(range(0xa0, 0x180))
         if not all(code in rows for code in printable):
             raise ValueError('Font missing declared printable Latin codepoint')
