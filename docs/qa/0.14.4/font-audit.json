@@ -1,0 +1,66 @@
+{
+  "result": "PASS",
+  "version": "0.14.4",
+  "pbwSha256": "e882f66f1e711e7ded11d184e08d76d0341a4f573951672f4fad4d52a766e78a",
+  "bodyFonts": [
+    {
+      "resource": "FONT_BODY_22",
+      "bytes": 10620,
+      "glyphs": 322,
+      "sha256": "68e5d05cb780a1d66502bfa30b417db6785b377ebbb1d486c1eef94c64319f91",
+      "extendedLatinGlyphsVerified": [
+        "\u0158",
+        "\u016e",
+        "\u017e",
+        "\u2019",
+        "\u2026"
+      ]
+    },
+    {
+      "resource": "FONT_BODY_24",
+      "bytes": 11788,
+      "glyphs": 322,
+      "sha256": "84f4250046b88a6018b0e91853c82e20c53f625e60f1c823101f78821e969595",
+      "extendedLatinGlyphsVerified": [
+        "\u0158",
+        "\u016e",
+        "\u017e",
+        "\u2019",
+        "\u2026"
+      ]
+    },
+    {
+      "resource": "FONT_BODY_26",
+      "bytes": 13104,
+      "glyphs": 322,
+      "sha256": "7f636f3801c547aa87baa84b930a4553947b55cb137d4e5bfab59a5882679da5",
+      "extendedLatinGlyphsVerified": [
+        "\u0158",
+        "\u016e",
+        "\u017e",
+        "\u2019",
+        "\u2026"
+      ]
+    }
+  ],
+  "packagedResourcesBytes": 39620,
+  "roundedClockTables": {
+    "clock_points": {
+      "rows": 1049,
+      "bytes": 4196,
+      "nativeIdentity": true
+    },
+    "clock_contours": {
+      "rows": 19,
+      "bytes": 114,
+      "nativeIdentity": true
+    },
+    "clock_glyphs": {
+      "rows": 11,
+      "bytes": 220,
+      "nativeIdentity": true
+    }
+  },
+  "fontLicensesMatchSource": true,
+  "scope": "Exact unchanged font sources/notices, linked Fredoka outlines and three extended Roboto Condensed PFOs/alignment tables. Coverage verified in compiled PFOs, including Czech glyphs. Native captures separately verify whole-composition ink, fitting and motion."
+}

@@ -36,7 +36,7 @@ def tap(name,count=1):
     for _ in range(count):press(name);time.sleep(.04);release();time.sleep(.23)
 def theme(dark):service.send_message(target,{1024:Uint8(int(dark)),1025:Uint8(1)});time.sleep(.25)
 def glyph(im,y,dark=False):
-    color=(255,255,255) if dark else (0,0,0)
+    color=(0,0,0) if dark else (255,255,255)
     return {(x,row) for row in range(y-12,y+13) for x in range(167,200) if im.getpixel((x,row))==color}
 def bounds(points):
     assert points
@@ -54,23 +54,22 @@ def components(points):
 def shot(name,dark=False,footer=False,available=(True,True,True),pressed=None):
     data=b''.join(Screenshot(p).grab_image());assert len(data)==200*228*3
     im=Image.frombytes('RGB',(200,228),data);path=OUT/(name+'.png');im.save(path)
-    background=(0,0,0) if dark else (255,255,255);divider=(85,85,85) if dark else (170,170,170)
-    # The screen edge remains the page surface: no floating black/white block.
-    assert all(im.getpixel((199,y))==background for y in range(0,228)),name+' edge palette'
-    end=191 if footer else 221
-    assert all(im.getpixel((166,y))==divider for y in range(38,end+1)),name+' divider'
-    assert all(im.getpixel((166,y))==background for y in range(32,38)),name+' header clearance'
-    assert all(im.getpixel((166,y))==background for y in range(end+1,198 if footer else 228)),name+' lower clearance'
+    alarm=name.startswith('alarm-')
+    background=(0,0,0) if dark else (255,255,255)
+    rail=(85,85,85) if alarm else (255,255,255) if dark else (0,0,0)
+    assert all(im.getpixel((x,y))==rail for y in range(228) for x in (166,167,198,199)),name+' full-height rail'
+    # Header clock and complete footer stay to the left of the action column.
+    assert sum(im.getpixel((x,y))!=background for y in range(1,30) for x in range(94,158))>=160,name+' header clock'
     items=[]
     for index,y in enumerate((48,114,180)):
-        points=glyph(im,y,dark)
+        points=glyph(im,y,dark and not alarm)
         assert bool(points)==available[index],(name,index,'availability',len(points))
         if not points:continue
         box=bounds(points);right_limit=196
         assert box[0]>=173 and box[2]<=right_limit,(name,index,'horizontal clearance',box)
         assert box[1]>=y-10 and box[3]<=y+10,(name,index,'24px slot clearance',box)
         items.append({'button':('Up','Select','Down')[index],'pixels':len(points),'inkBounds':box})
-    captures.append({'file':path.name,'sha256':sha(path.read_bytes()),'dark':dark,'footer':footer,'dividerY':[38,end],'icons':items,'pressedButton':pressed})
+    captures.append({'file':path.name,'sha256':sha(path.read_bytes()),'dark':dark,'footer':footer,'railY':[0,227],'railColor':list(rail),'icons':items,'pressedButton':pressed})
     return im
 
 def same_shift(before,after,y,dark=False,shift=3):
@@ -108,6 +107,6 @@ seed(6);theme(False);shot('critical-list-light',available=(True,True,False));tap
 tap('Back',2);tap('Down');shot('critical-options-light',available=(False,True,True));tap('Down',2);tap('Select');shot('critical-confirm-light',available=(False,True,True))
 assert sha(PBW.read_bytes())==candidate,'Candidate changed during focused native QA'
 report={'result':'PASS','version':VERSION,'pbwSha256':candidate,'nativePayloadSha256':payload,'captures':captures,'checks':checks,
- 'proofs':{'neutralRailMatchesPageInBothThemesAndAlarm':True,'dividerAndHeaderFooterClearance':True,'allPaintedGlyphsInside24pxSlots':True,'screenEdgeInsetAtLeast3px':True,'moreHasThreeSeparateDots':True,'pausePressImmediatelyShowsPlayAndResultingGlyphMovesRigid3px':True,'editMoreScreenChangesCancelPreviousFeedback':True},
+ 'proofs':{'contrastingRailFullHeightInBothThemesAndAlarm':True,'headerFooterStayInsideContentColumn':True,'allPaintedGlyphsInside24pxSlots':True,'screenEdgeInsetAtLeast3px':True,'moreHasThreeSeparateDots':True,'pausePressImmediatelyShowsPlayAndResultingGlyphMovesRigid3px':True,'editMoreScreenChangesCancelPreviousFeedback':True},
  'scope':'Exact packaged native bytes in isolated stock-derived Emery FIFO QEMU. Direct QA theme AppMessages; no phone JS/physical watch. Up/Down activate screen changes immediately, so held captures show the destination and cancellation, not a fabricated old-screen pencil/More press. Select immediately changes Pause to Play; resulting Play held/settled glyphs establish rigid3px feedback.'}
 (OUT/'report.json').write_text(json.dumps(report,indent=2)+'\n');print(json.dumps({'result':'PASS','captures':len(captures),'path':str(OUT/'report.json')}))

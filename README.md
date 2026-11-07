@@ -8,10 +8,10 @@ The [XOCE repository migration](docs/REPOSITORY-MIGRATION.md) updates Dynamic an
 library source locations while preserving Timer's package, app identity and
 published release files.
 
-Timer **0.14.3 is a local redesign candidate** on
+Timer **0.14.4 is a local redesign candidate** on
 `design/pebble-native-redesign`, for Xef's review. See the
 [redesign and native previews](docs/REDESIGN.md).
-The current local build is `dist/Timer-0.14.3.pbw`; it has not been published.
+The current local build is `dist/Timer-0.14.4.pbw`; it has not been published.
 Its phone settings contain one **Watch appearance** choice (Light/Dark), with
 English/Czech labels and a confirmed **✓ Saved** indicator that leaves the page
 open. Timer creation and alarm controls remain on the watch.

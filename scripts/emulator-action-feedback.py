@@ -41,9 +41,9 @@ def shot(name):
     path=OUT/(name+'.png');Image.frombytes('RGB',(200,228),data).save(path)
     captures.append({'file':path.name,'sha256':sha(path.read_bytes())});return data
 def ink(data,y):
-    # The rail follows the light page; exclude its1px semantic divider.
+    # Light mode has white icons on the full-height black rail.
     points=[(x,row) for row in range(max(32,y-13),y+14) for x in range(167,200)
-            if data[(row*200+x)*3:(row*200+x)*3+3]==b'\x00\x00\x00']
+            if data[(row*200+x)*3:(row*200+x)*3+3]==b'\xff\xff\xff']
     assert points,'Expected the action icon to remain available'
     return {'pixels':len(points),'left':min(x for x,_ in points),'right':max(x for x,_ in points),
             'centerX':sum(x for x,_ in points)/len(points)}

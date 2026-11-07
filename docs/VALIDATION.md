@@ -1,5 +1,13 @@
 # Timer validation
 
+## Current local0.14.4 full-height rail
+
+[Validation](qa/0.14.4/validation.json) binds the exact packaged native payload
+to full-height edge checks,26 UI/storage frames,23 focused rail frames,9 action
+frames and27 actual text groups. Header/footer copy and all1,440 clocks fit
+the content column. Native/phone ownership tests and packaged checks pass.
+Real devices and fresh browser rendering remain separate/unverified.
+
 ## 0.14.3 action rail — local review candidate
 
 The rail follows the page background with an inset divider, larger bold action

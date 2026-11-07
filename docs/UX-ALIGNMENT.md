@@ -1,4 +1,4 @@
-# Timer shared UI — local 0.14.3 review branch
+# Timer shared UI — local 0.14.4 review branch
 
 The shared reference remains in the local sibling `xoce` checkout at
 `src/pages/docs/design/pebble-ui-system.md`, also available through
@@ -7,7 +7,15 @@ The canonical standard remains the baseline. This branch is an alternative for
 Xef to compare, documented in [REDESIGN.md](REDESIGN.md). No website or
 release has been published by this work.
 
-## Action rail in 0.14.3
+## Current full-height rail in0.14.4
+
+Xef explicitly clarified that the black rail should reach top and bottom.
+Restore the original contrasting palette. The rail owns34px for all228rows;
+header/footer stay within166px. Readable26pt clock and existing utility sizes
+stay, using concise context and complete22pt footer copy. See current
+[design/evidence](REDESIGN.md). The earlier neutral proposal below is superseded.
+
+## Previous action rail in0.14.3 (superseded)
 
 The current proposal follows Xef's rejection of the running view's right side.
 Its34px rail now matches the page, uses an inset neutral divider, and has larger

@@ -1,0 +1,54 @@
+{
+  "result": "PASS",
+  "version": "0.14.4",
+  "branch": "design/pebble-native-redesign",
+  "previousCandidateCommit": "73ed9c094eccadb7377ee72ace058d5972cc8c76",
+  "pbwSha256": "e882f66f1e711e7ded11d184e08d76d0341a4f573951672f4fad4d52a766e78a",
+  "nativePayloadSha256": {
+    "emery/app_resources.pbpack": "5e693142a8537851976c02a6a4b411168425cc8979875083100ca6182236e139",
+    "emery/manifest.json": "6e66be886314719d6bd8fe753ddf4097a5df9f5f6a5e3cba880b3395e2e880d4",
+    "emery/pebble-app.bin": "e908a9433eeee2a1c532d00d71ad5356f728a2ed632236e093132b05a67465d3"
+  },
+  "nativeReports": {
+    "native-ui-system/report.json": {
+      "captures": 26,
+      "checks": 0,
+      "sha256": "c5d933e9aba7c22fc64ee54e907c87d451f521af1f65c8d2ec18dd2e6117cdb0"
+    },
+    "native-actions/report.json": {
+      "captures": 9,
+      "checks": 3,
+      "sha256": "c52b949f911d7cd8180c7befba1cf5137b817c66538d515eec76dc9702ae032b"
+    },
+    "native-rail/e882f66f1e71/report.json": {
+      "captures": 23,
+      "checks": 1,
+      "sha256": "27a2f5be93178303e2fe4a1a1b78900f587e317d3f2462c8e4226c39acac7484"
+    }
+  },
+  "fullHeightActionRail": {
+    "x": [
+      166,
+      199
+    ],
+    "y": [
+      0,
+      227
+    ],
+    "headerAndFooterConfinedToContent": true,
+    "clockFontPointSize": 26,
+    "clockInkHeight": 19,
+    "palette": "Original contrasting Light/Dark; Timer alarm retains dark-gray"
+  },
+  "buildAndAutomatedTests": "PASS",
+  "packagedRuntimeChecks": "PASS",
+  "earlierArtifactsByteIdentical": 50,
+  "identityProtocolPermissionsUnchanged": true,
+  "phoneControllerUnchanged": true,
+  "freshBrowserVerified": false,
+  "realPhoneVerified": false,
+  "physicalWatchVerified": false,
+  "pushedOrPublished": false,
+  "completeHeaderFooterAndClockFit": "chrome-fit.json",
+  "textInkRoles": 27
+}

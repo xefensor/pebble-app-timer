@@ -1,4 +1,41 @@
-# Timer 0.14.3 — action rail revision
+# Timer0.14.4 — continuous action rail
+
+Xef clarified that the black rail is fine; it must reach the very top and bottom.
+The contrasting rail is restored and owns all34px on the right, y0–227. Light
+uses black/white icons, Dark uses the original inverse palette, and the alarm
+retains its dark-gray rail. No header or footer paints over it.
+
+Header and footer now belong to the166px content column. The clock stays26pt
+(19px actual capital ink). Short context labels retain26pt; a list/Options/Delete
+with multiple timers shows its exact selected position rather than squeezing
+redundant words beside the clock. Editor labels are New/Edit/Saved/Replace and
+the alarm says Alarm. The body still names Delete, target duration and safe
+choices. Footer copy uses the existing22pt secondary role consistently; even
+Elapsed23:59:59 fits completely. Concise Min:5seconds/Still timing and sharing
+status equivalents retain full meaning without an ellipsis.
+
+The larger icons,3px press,144ms release and rigid120ms option response remain.
+Native deadline, Wakeup, bank, identity and phone settings behavior is unchanged.
+This is local on `design/pebble-native-redesign`; main and prior artifacts remain.
+
+- [Running light](qa/0.14.4/native-ui-system/running-light.png),
+  [dark](qa/0.14.4/native-ui-system/running-dark.png),
+  [editor](qa/0.14.4/native-ui-system/remaining-editor-light.png),
+  [alarm](qa/0.14.4/native-ui-system/alarm-dark-treatment.png).
+- [Validation](qa/0.14.4/validation.json), [all26 native UI/storage captures](qa/0.14.4/native-ui-system/report.json),
+  [independent3px action checks](qa/0.14.4/native-actions/report.json),
+  [full header/footer/1,440-clock fitting](qa/0.14.4/chrome-fit.json) and
+  [actual text centering](qa/0.14.4/centering.json).
+
+Native screenshots use exact packaged code in isolated Emery QEMU with synthetic
+fixtures/direct AppMessages. Fresh browser and real phone/watch behavior remain
+unverified. [Phone preview](qa/0.14.4/phone-preview.html) uses the unchanged real
+template with an explicitly mocked bridge. Nothing is pushed or published.
+
+The previous proposals/evidence below are historical; their neutral rail and
+full-width header/footer descriptions do not describe0.14.4.
+
+## Previous0.14.3 neutral-rail proposal — superseded
 
 Xef rejected the right side of the0.14.2 running screenshot. This local proposal
 on `design/pebble-native-redesign` replaces its floating inverted block with a

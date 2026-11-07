@@ -62,18 +62,18 @@ static void centered_label(GContext *ctx,const char *value,int point,int top,int
   label(ctx,value,point,GRect(6,top,UI_WIDTH-12,height),ink,GTextAlignmentCenter);
 }
 static void footer(GContext *ctx,const char *value,int point) {
-  rect(ctx,GRect(0,198,200,30),ui_bg());
-  label(ctx,value,point,GRect(6,198,188,30),ui_muted(),GTextAlignmentCenter);
+  rect(ctx,GRect(0,198,UI_WIDTH,30),ui_bg());
+  label(ctx,value,point,GRect(6,198,UI_WIDTH-12,30),ui_muted(),GTextAlignmentCenter);
 }
 static void header(GContext *ctx,const TimerUiView *view,const char *title,GColor ink) {
   char wall_clock[8];const time_t timestamp=(time_t)view->now;const struct tm *local=localtime(&timestamp);
   const bool twenty_four=clock_is_24h_style();
   if(local){strftime(wall_clock,sizeof(wall_clock),twenty_four?"%H:%M":"%I:%M",local);if(!twenty_four&&wall_clock[0]=='0')memmove(wall_clock,wall_clock+1,strlen(wall_clock));}
   else clock_copy_time_string(wall_clock,sizeof(wall_clock));
-  const int clock_width=64,clock_x=194-clock_width;
+  const int clock_width=64,clock_x=UI_WIDTH-8-clock_width;
   label(ctx,title,26,GRect(8,0,clock_x-12,32),ink,GTextAlignmentLeft);
   label(ctx,wall_clock,26,GRect(clock_x,0,clock_width,32),ink,GTextAlignmentRight);
-  graphics_context_set_stroke_color(ctx,ui_line());segment(ctx,8,31,192,31);
+  graphics_context_set_stroke_color(ctx,ui_line());segment(ctx,8,31,UI_WIDTH-8,31);
 }
 
 static void clock_text(uint32_t seconds, char *buffer, size_t capacity) {
@@ -162,11 +162,9 @@ static void icon(GContext *ctx, Icon which, int x, int y, GColor color) {
 }
 
 static void bar(GContext *ctx, const TimerUiView *view, Icon up, Icon select, Icon down, GColor background) {
-  const bool has_footer=(view->screen==SCREEN_EDITOR)||(!view->issue&&(view->screen==SCREEN_DETAIL||view->screen==SCREEN_OPTIONS));
-  rect(ctx,GRect(UI_WIDTH,32,34,has_footer?166:196),background);
+  // The physical action rail owns this column from the first to the last row.
+  rect(ctx,GRect(UI_WIDTH,0,34,228),background);
   const GColor ink=background.argb==GColorWhite.argb?GColorBlack:GColorWhite;
-  graphics_context_set_stroke_color(ctx,background.argb==GColorWhite.argb?GColorLightGray:GColorDarkGray);
-  segment(ctx,UI_WIDTH,38,UI_WIDTH,has_footer?191:221);
   icon(ctx,up,183+view->action_offset[0],48,ink);
   icon(ctx,select,183+view->action_offset[1],114,ink);
   icon(ctx,down,183+view->action_offset[2],180,ink);
@@ -311,8 +309,8 @@ static void main_screen(GContext *ctx,const TimerUiView *view) {
   const ActivityTimerModel *timer=&view->collection->slots[view->selected];
   const bool paused=timer->state==ACTIVITY_TIMER_PAUSED,finished=timer->state==ACTIVITY_TIMER_FINISHED,ready=activity_timer_ready(timer);
   const uint32_t left=ready?timer->repeat_seconds:activity_timer_remaining(timer,view->now);
-  bar(ctx,view,ICON_EDIT,paused||finished||ready?ICON_PLAY:ICON_PAUSE,ICON_MORE,ui_bg());
-  header(ctx,view,paused?"Paused":ready?"Ready":finished?"Finished":"Timer",ui_fg());
+  bar(ctx,view,ICON_EDIT,paused||finished||ready?ICON_PLAY:ICON_PAUSE,ICON_MORE,ui_fg());
+  header(ctx,view,paused?"Paused":ready?"Ready":finished?"Ended":"Timer",ui_fg());
   char clock[20],support[40];
   const bool long_time=left>=3600;
   if(long_time) {
@@ -335,7 +333,7 @@ static void main_screen(GContext *ctx,const TimerUiView *view) {
   if(!view->issue) {
     if(ready)snprintf(support,sizeof(support),"Select to start");
     else {clock_text(activity_timer_elapsed(timer,view->now),clock,sizeof(clock));snprintf(support,sizeof(support),"Elapsed %s",clock);}
-    footer(ctx,support,24);
+    footer(ctx,support,22);
   }
 }
 
@@ -343,10 +341,10 @@ static void list_screen(GContext *ctx,const TimerUiView *view) {
   const TimerListWindow list=timer_ui_list_window(view);const unsigned count=list.count,menu=list.menu;
   const bool full=!timer_collection_can_create(view->collection),replacing=!full&&count==TIMER_COLLECTION_CAPACITY;
   const unsigned first_menu=full&&count?1:0;
-  bar(ctx,view,menu>first_menu?ICON_UP:ICON_NONE,menu?ICON_NEXT:full?ICON_NONE:ICON_PLUS,menu<count?ICON_DOWN:ICON_NONE,ui_bg());
+  bar(ctx,view,menu>first_menu?ICON_UP:ICON_NONE,menu?ICON_NEXT:full?ICON_NONE:ICON_PLUS,menu<count?ICON_DOWN:ICON_NONE,ui_fg());
   char heading[32];
-  if(menu)snprintf(heading,sizeof(heading),"%s %u/%u",full?"Full":"Timers",menu,count);
-  else snprintf(heading,sizeof(heading),replacing?"Replace":"New timer");
+  if(menu)snprintf(heading,sizeof(heading),"%u/%u",menu,count);
+  else snprintf(heading,sizeof(heading),replacing?"Replace":"New");
   header(ctx,view,heading,ui_fg());
   if(!count) {
     hourglass(ctx,1,1,UI_CENTER,110,78,180,BLUE,ui_fg(),false,view->now);
@@ -387,9 +385,9 @@ static void editor_screen(GContext *ctx,const TimerUiView *view) {
   static const char *units[]={"HRS","MIN","SEC"};
   const uint32_t total=view->edit[0]*3600+view->edit[1]*60+view->edit[2];
   const bool locked=view->edit[0]==24&&view->edit_field>0,invalid=total<ACTIVITY_TIMER_MIN_SECONDS;
-  bar(ctx,view,locked?ICON_NONE:ICON_PLUS,view->edit_field<2?ICON_NEXT:invalid?ICON_NONE:ICON_CHECK,locked?ICON_NONE:ICON_MINUS,ui_bg());
+  bar(ctx,view,locked?ICON_NONE:ICON_PLUS,view->edit_field<2?ICON_NEXT:invalid?ICON_NONE:ICON_CHECK,locked?ICON_NONE:ICON_MINUS,ui_fg());
   const bool reuse=view->editing_new&&timer_collection_count(view->collection)==TIMER_COLLECTION_CAPACITY;
-  header(ctx,view,view->editing_new?(reuse?"Replace":"New timer"):view->editing_ready?"Saved timer":"Remaining",ui_fg());
+  header(ctx,view,view->editing_new?(reuse?"Replace":"New"):view->editing_ready?"Saved":"Edit",ui_fg());
   if(!view->issue)hourglass(ctx,1,1,UI_CENTER,65,44,180,BLUE,ui_fg(),false,view->now);
   for(unsigned field=0;field<3;++field) {
     const int x=5+(int)field*53;const bool selected=view->edit_field==field;
@@ -404,12 +402,12 @@ static void editor_screen(GContext *ctx,const TimerUiView *view) {
   moving_selection(ctx,view);
   const char *back=view->edit[0]==24?"24 hours max":reuse?"Oldest ready slot":view->edit_field==0?"Back to cancel":view->edit_field==1?"Back for hours":"Back for minutes";
   centered_label(ctx,back,22,176,22,ui_muted());
-  const char *select=invalid?"At least 5 seconds":view->edit_field<2?"Select: next":view->editing_new?"Select: start":"Select: save";
+  const char *select=invalid?"Min: 5 seconds":view->edit_field<2?"Select: next":view->editing_new?"Select: start":"Select: save";
   footer(ctx,select,22);
 }
 
 static void alarm_screen(GContext *ctx,const TimerUiView *view) {
-  rect(ctx,GRect(0,0,200,228),GColorBlack);bar(ctx,view,ICON_SNOOZE,ICON_CHECK,ICON_NONE,GColorBlack);header(ctx,view,"Time's up",GColorWhite);
+  rect(ctx,GRect(0,0,200,228),GColorBlack);bar(ctx,view,ICON_SNOOZE,ICON_CHECK,ICON_NONE,GColorDarkGray);header(ctx,view,"Alarm",GColorWhite);
   const ActivityTimerModel *timer=&view->collection->slots[view->selected];char duration[20];clock_text(timer->repeat_seconds,duration,sizeof(duration));
   const bool issue=view->issue&&view->issue[0];
   timer_fonts_digits_box(ctx,duration,issue?30:timer->repeat_seconds>=3600?32:47,GRect(8,38,150,issue?29:48),GColorWhite,GColorBlack);
@@ -422,10 +420,10 @@ static void options_screen(GContext *ctx,const TimerUiView *view) {
   const ActivityTimerModel *timer=&view->collection->slots[view->selected];char duration[20],reset[32];
   duration_text(timer->repeat_seconds,duration,sizeof(duration),false);snprintf(reset,sizeof(reset),"Reset %s",duration);
   const char *options[]={activity_timer_ready(timer)?"Edit duration":"Edit remaining",reset,"Delete timer"};
-  bar(ctx,view,view->option?ICON_UP:ICON_NONE,ICON_CHECK,view->option<2?ICON_DOWN:ICON_NONE,ui_bg());
+  bar(ctx,view,view->option?ICON_UP:ICON_NONE,ICON_CHECK,view->option<2?ICON_DOWN:ICON_NONE,ui_fg());
   const unsigned count=timer_collection_count(view->collection);unsigned position=1;
   for(unsigned row=0;row<count;++row)if(timer_collection_visible_slot(view->collection,row)==(int)view->selected)position=row+1;
-  char heading[32],context[40];snprintf(heading,sizeof(heading),count>1?"Timer %u/%u":"Options",position,count);
+  char heading[32],context[40];snprintf(heading,sizeof(heading),count>1?"%u/%u":"Options",position,count);
   snprintf(context,sizeof(context),"%s · %s",duration,timer->state==ACTIVITY_TIMER_RUNNING?"Running":timer->state==ACTIVITY_TIMER_PAUSED?"Paused":activity_timer_ready(timer)?"Ready":"Time's up");
   if(timer_fonts_text_width(context,22)>154)snprintf(context,sizeof(context),"%s %s",duration,timer->state==ACTIVITY_TIMER_RUNNING?"Running":timer->state==ACTIVITY_TIMER_PAUSED?"Paused":activity_timer_ready(timer)?"Ready":"Done");
   header(ctx,view,heading,ui_fg());if(!view->issue)centered_label(ctx,context,22,36,26,ui_muted());
@@ -434,7 +432,10 @@ static void options_screen(GContext *ctx,const TimerUiView *view) {
     label(ctx,options[row],24,GRect(9,y,148,TIMER_OPTION_HEIGHT),selected?ui_bg():ui_fg(),GTextAlignmentLeft);
   }
   moving_selection(ctx,view);
-  const char *status=view->status&&view->status[0]?view->status:activity_timer_ready(timer)?"Back to timer":"Back keeps timing";
+  const char *status=view->status&&view->status[0]?view->status:activity_timer_ready(timer)?"Back to timer":"Still timing";
+  if(!strcmp(status,"Phone disconnected"))status="Phone offline";
+  else if(!strcmp(status,"Sharing unavailable"))status="Sharing failed";
+  else if(!strcmp(status,"Shared with phone"))status="Phone received";
   if(!view->issue)footer(ctx,status,22);
 }
 
@@ -442,8 +443,8 @@ static void confirm_screen(GContext *ctx,const TimerUiView *view) {
   const bool issue=view->issue&&view->issue[0];const ActivityTimerModel *timer=&view->collection->slots[view->selected];char duration[24],target[64];
   duration_text(timer->repeat_seconds,duration,sizeof(duration),false);const unsigned count=timer_collection_count(view->collection);unsigned position=1;
   for(unsigned row=0;row<count;++row)if(timer_collection_visible_slot(view->collection,row)==(int)view->selected)position=row+1;
-  snprintf(target,sizeof(target),"%s timer",duration);char heading[32];snprintf(heading,sizeof(heading),count>1?"Delete %u/%u":"Delete",position,count);
-  bar(ctx,view,view->confirm_choice?ICON_UP:ICON_NONE,ICON_CHECK,view->confirm_choice?ICON_NONE:ICON_DOWN,ui_bg());header(ctx,view,heading,ui_fg());
+  snprintf(target,sizeof(target),"%s timer",duration);char heading[32];snprintf(heading,sizeof(heading),count>1?"%u/%u":"Delete",position,count);
+  bar(ctx,view,view->confirm_choice?ICON_UP:ICON_NONE,ICON_CHECK,view->confirm_choice?ICON_NONE:ICON_DOWN,ui_fg());header(ctx,view,heading,ui_fg());
   if(!issue)icon(ctx,ICON_TRASH,UI_CENTER,54,ui_fg());
   centered_label(ctx,"Delete timer?",24,issue?90:77,26,ui_fg());
   centered_label(ctx,target,22,issue?116:108,24,ui_fg());

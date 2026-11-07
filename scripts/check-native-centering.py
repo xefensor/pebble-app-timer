@@ -37,7 +37,7 @@ check('editor selected digits','new-editor-dark.png',(61,96,105,148),255)
 for role,x in [('HRS',5),('MIN',58),('SEC',111)]:
     check('editor '+role,'new-editor-dark.png',(x,154,x+50,178),0)
 for file in ['new-editor-dark.png','options-dark.png']:
-    check('complete footer '+file,file,(6,198,194,228),0)
+    check('complete footer '+file,file,(6,198,160,228),0)
 for file,top in [('critical-delete-light.png',32),('critical-list-dark.png',174)]:
     check('critical primary '+file,file,(6,top+3,160,top+26),170)
     # The two text lines share the complete 54px warning surface. A descender
@@ -46,8 +46,8 @@ for file,top in [('critical-delete-light.png',32),('critical-list-dark.png',174)
     check('complete warning group '+file,file,(6,top,160,top+54),170,min_inset=3)
 for file in ['list-light.png','ready-light.png','remaining-editor-light.png','alarm-dark-treatment.png']:
     background=Image.open(UI/file).convert('RGB').getpixel((0,0))[0]
-    title=check('header title '+file,file,(8,0,126,31),background)
-    clock=check('header clock '+file,file,(130,0,194,31),background)
+    title=check('header title '+file,file,(8,0,90,31),background)
+    clock=check('header clock '+file,file,(94,0,158,31),background)
     assert clock['inkBottom']-clock['inkTop']+1>=19,clock
     assert abs(title['verticalCentreOffset']-clock['verticalCentreOffset'])<=.5
 report={'result':'PASS','version':VERSION,

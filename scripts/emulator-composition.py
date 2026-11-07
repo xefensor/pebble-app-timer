@@ -32,7 +32,7 @@ def tap(button,count=1):
 def shot(name):
     time.sleep(.3);data=b''.join(Screenshot(p).grab_image());path=out/(name+'.png')
     frame=Image.frombytes('RGB',(200,228),data);frame.save(path)
-    clock_pixels=sum(max(frame.getpixel((x,y)))<96 for y in range(1,30) for x in range(130,196))
+    clock_pixels=sum(max(frame.getpixel((x,y)))<96 for y in range(1,30) for x in range(94,158))
     assert clock_pixels>=160,(name,'header clock missing',clock_pixels)
     captures.append({'file':path.name,'sha256':sha(path.read_bytes()),'headerClockInkPixels':clock_pixels})
 def seed(mode):install(root/'build'/('fixture-mode'+str(mode)+'.pbw'));stop();install(native)

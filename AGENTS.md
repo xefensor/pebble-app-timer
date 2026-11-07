@@ -316,3 +316,18 @@ new action and must cancel old-screen feedback; do not delay timer operations
 for a screenshot or decorative motion. Body typography/layout, rigid120ms choices,
 owner/alarm/storage and phone settings remain unchanged. Verify actual native
 pixels in both themes, editor/menu/list/confirmation/alarm and critical states.
+
+## Full-height action rail — local 0.14.4 (current requirement)
+
+Xef clarified that black is welcome: the rejected part is the action rail stopping
+below the header and above the footer. This supersedes0.14.3's neutral-rail proposal.
+Use the original contrasting rail palette (black in Light, inverse in Dark;
+dark-gray alarm rail), always x166..199/y0..227. Header, separator, footer and
+warning paint stay entirely inside166px. Keep the26pt clock; shorten redundant
+header context rather than squeezing text. Lists/options/confirmations retain
+an explicit selected position when multiple timers exist. Editor uses New/Edit/
+Saved/Replace; alarm uses Alarm. Footer roles are consistently22pt; full elapsed
+23:59:59 fits154px. Complete concise hints must never ellipsize. Preserve the
+larger icons,3px press and144ms release from0.14.3, rigid120ms choices, native
+ownership and all saved settings. Full-height native pixel assertions must cover
+all screens, top and bottom, both palettes and actual errors/alarms.

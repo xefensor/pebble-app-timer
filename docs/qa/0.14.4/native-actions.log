@@ -1,0 +1,14 @@
+Emery QEMU connected through local FIFOs; no phone runtime
+N/A%[=                                                      ]   0.0 B/s 0:00:00
+N/A%[=                                                    ]  85.3 KiB/s 0:00:00
+N/A%[=                                                    ]  67.4 KiB/s 0:00:00
+N/A%[=                                                      ]   0.0 B/s 0:00:00
+N/A%[=                                                    ] 107.7 KiB/s 0:00:00
+N/A%[=                                                    ] 158.3 KiB/s 0:00:00
+N/A%[=                                                    ] 166.2 KiB/s 0:00:00
+N/A%[=                                                    ] 139.3 KiB/s 0:00:00
+N/A%[=                                                    ] 150.0 KiB/s 0:00:00
+N/A%[=                                                    ] 153.7 KiB/s 0:00:00
+N/A%[=                                                    ] 157.2 KiB/s 0:00:00
+N/A%[=                                                    ] 143.2 KiB/s 0:00:00
+{"result": "PASS", "path": "/home/xela/Projekty/Pebble/pebble-app-timer/docs/qa/0.14.4/native-actions/report.json", "checks": {"Up": {"idle": {"pixels": 97, "left": 174, "right": 192, "centerX": 183.0}, "pressed": {"pixels": 97, "left": 177, "right": 195, "centerX": 186.0}, "settled": {"pixels": 97, "left": 174, "right": 192, "centerX": 183.0}, "shiftPixels": 3}, "Down": {"idle": {"pixels": 53, "left": 174, "right": 192, "centerX": 183.0}, "pressed": {"pixels": 53, "left": 177, "right": 195, "centerX": 186.0}, "settled": {"pixels": 53, "left": 174, "right": 192, "centerX": 183.0}, "shiftPixels": 3}, "Select": {"idle": {"pixels": 103, "left": 173, "right": 193, "centerX": 184.6504854368932}, "pressed": {"pixels": 103, "left": 176, "right": 196, "centerX": 187.6504854368932}, "settled": {"pixels": 103, "left": 173, "right": 193, "centerX": 184.6504854368932}, "shiftPixels": 3}}}
