@@ -43,7 +43,7 @@ for file,top in [('critical-delete-light.png',32),('critical-list-dark.png',174)
     check('critical primary '+file,file,(6,top+3,160,top+26),170)
     # The two text lines share the complete 54px warning surface. A descender
     # can use 20px of a 23px line; verify its cell and the full band's padding.
-    check('Keep Timer open '+file,file,(6,top+28,160,top+51),170,min_inset=1)
+    check('Keep app open '+file,file,(8,top+28,158,top+51),170,min_inset=1)
     check('complete warning group '+file,file,(6,top,160,top+54),170,min_inset=3)
 for file in ['list-light.png','ready-light.png','remaining-editor-light.png','alarm-dark-treatment.png']:
     background=Image.open(UI/file).convert('RGB').getpixel((0,0))[0]

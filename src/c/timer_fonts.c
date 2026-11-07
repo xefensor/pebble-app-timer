@@ -1,4 +1,5 @@
 #include "timer_fonts.h"
+#include <pebble-xoce-ui/pebble-xoce-ui.h>
 
 #include <stddef.h>
 #include <stdio.h>
@@ -24,7 +25,7 @@ typedef struct {
 
 typedef struct { uint16_t code; int16_t top,bottom; } TimerGlyphInk;
 #include "generated_body_metrics.h"
-static const int s_sizes[]={22,24,26};
+static const int s_sizes[]={XOCE_UI_SECONDARY_POINT,XOCE_UI_BODY_POINT,XOCE_UI_HEADER_POINT};
 static const uint32_t s_resources[]={RESOURCE_ID_FONT_BODY_22,RESOURCE_ID_FONT_BODY_24,RESOURCE_ID_FONT_BODY_26};
 static GFont s_body[3];
 static unsigned prv_index(int point) { return point<=22?0:point<=24?1:2; }
@@ -88,8 +89,7 @@ void timer_fonts_text_box(GContext *ctx,const char *text,int point,GRect bounds,
   if(!ctx||!text||bounds.size.w<=0||bounds.size.h<=0)return;
   char fitted[160];prv_fit(fitted,text,point,bounds.size.w);const TimerGlyphInk ink=prv_ink(fitted,point);
   if(ink.top==255)return;
-  const int h=ink.bottom-ink.top+1;
-  prv_draw(ctx,fitted,point,bounds.origin.x,bounds.origin.y+(bounds.size.h-h)/2-ink.top,bounds.size.w,color,align);
+  prv_draw(ctx,fitted,point,bounds.origin.x,xoce_ui_text_origin_y(bounds,ink.top,ink.bottom),bounds.size.w,color,align);
 }
 void timer_fonts_text_top(GContext *ctx,const char *text,int point,int x,int top,int width,GColor color,GTextAlignment align) {
   if(!ctx||!text||width<=0)return;

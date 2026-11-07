@@ -51,17 +51,18 @@ def ink(data,y):
 install(ROOT/'build/fixture-mode5.pbw');stop();install(native)
 tap('Select');tap('Up') # Remaining editor, minutes selected; +/− both available.
 checks={}
-for name,y in (('Up',48),('Down',180),('Select',114)):
+for name,y in (('Up',54),('Down',174),('Select',114)):
     if name=='Select':tap('Back') # Hours→minutes keeps the same Next icon.
     before=ink(shot(name.lower()+'-before'),y)
     press(name);time.sleep(.075);pressed=ink(shot(name.lower()+'-pressed'),y)
     release();time.sleep(.45);settled=ink(shot(name.lower()+'-settled'),y)
     assert pressed['pixels']==before['pixels'],(name,'icon shape/availability changed',before,pressed)
-    assert pressed['left']-before['left']==3 and pressed['right']-before['right']==3,(name,before,pressed)
-    assert abs(pressed['centerX']-before['centerX']-3)<.01,(name,before,pressed)
+    assert pressed['left']-before['left']==-5 and pressed['right']-before['right']==-5,(name,before,pressed)
+    assert abs(pressed['centerX']-before['centerX']+5)<.01,(name,before,pressed)
+    assert pressed['left']>=168,(name,'Pressed icon leaves the action rail inset',pressed)
     assert pressed['right']<=196,(name,'Pressed icon violates3px screen-edge inset',pressed)
     assert settled==before,(name,'release did not settle',before,settled)
-    checks[name]={'idle':before,'pressed':pressed,'settled':settled,'shiftPixels':3}
+    checks[name]={'idle':before,'pressed':pressed,'settled':settled,'shiftPixels':-5}
 assert sha(pbw.read_bytes())==candidate_sha,'Candidate changed during native action QA'
 report={'result':'PASS','version':VERSION,'pbwSha256':candidate_sha,'nativePayloadSha256':payload,'checks':checks,'captures':captures,
  'scope':'Actual distribution native payload in isolated Emery QEMU; each still-available physical icon checked independently. No real phone/watch or animation timing claim.'}

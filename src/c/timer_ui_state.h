@@ -1,6 +1,7 @@
 #pragma once
 
 #include "timer_collection.h"
+#include <pebble-xoce-ui/metrics.h>
 #include "timer_ui_motion.h"
 
 typedef enum {
@@ -36,8 +37,8 @@ typedef struct {
 #define TIMER_OPTION_HEIGHT 38
 #define TIMER_OPTION_STRIDE 44
 #define TIMER_CONFIRM_TOP 160
-#define TIMER_CONFIRM_HEIGHT 30
-#define TIMER_CONFIRM_STRIDE 36
+#define TIMER_CONFIRM_HEIGHT XOCE_UI_CHOICE_HEIGHT
+#define TIMER_CONFIRM_STRIDE XOCE_UI_CHOICE_STRIDE
 static inline int timer_ui_option_top(const TimerUiView *view) {
   return view->issue&&view->issue[0]?94:TIMER_OPTION_TOP;
 }

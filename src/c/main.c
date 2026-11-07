@@ -1,4 +1,5 @@
 #include <pebble.h>
+#include <pebble-xoce-ui/pebble-xoce-ui.h>
 #include <pebble-activities/pebble-activities.h>
 #include <limits.h>
 #include <stdlib.h>
@@ -21,9 +22,8 @@
 #define BANK_STRIDE 8
 #define CHUNK_BYTES 200u
 #define RETRY_LIMIT 3
-#define BAR_WIDTH 34
+#define BAR_WIDTH ACTION_BAR_WIDTH
 #define CONTENT_WIDTH (200 - BAR_WIDTH)
-#define ACTION_PRESS_OFFSET 3
 
 #if defined(ACTIVITY_TIMER_DIAGNOSTICS) && ACTIVITY_TIMER_DIAGNOSTICS
 #define TIMER_DIAG(...) APP_LOG(APP_LOG_LEVEL_INFO, __VA_ARGS__)
@@ -581,7 +581,7 @@ static TimerUiView prv_view(void) {
   view.editor_bump=s_ui_motion_screen==s_screen&&s_ui_motion==UI_MOTION_VALUE?
       timer_motion_bump(elapsed):0;
   if(s_icon_button>=0&&s_icon_button<3)view.action_offset[s_icon_button]=
-      s_icon_releasing?timer_motion_ease(ACTION_PRESS_OFFSET,0,prv_millis()-s_icon_started,144u):ACTION_PRESS_OFFSET;
+      -(s_icon_releasing?xoce_ui_press_offset(prv_millis()-s_icon_started):XOCE_UI_PRESS_DISTANCE);
   return view;
 }
 
@@ -674,7 +674,7 @@ static void prv_stop_icon_motion(void) {
 
 static void prv_icon_tick(void *context) {
   (void)context;s_icon_timer=NULL;
-  if(!s_focused||prv_millis()-s_icon_started>=144u){prv_stop_icon_motion();return;}
+  if(!s_focused||prv_millis()-s_icon_started>=XOCE_UI_PRESS_RELEASE_MS){prv_stop_icon_motion();return;}
   if(s_canvas)layer_mark_dirty(s_canvas);
   s_icon_timer=app_timer_register(30,prv_icon_tick,NULL);
   if(!s_icon_timer)prv_stop_icon_motion();

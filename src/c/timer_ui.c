@@ -1,12 +1,13 @@
 #include "timer_ui.h"
 #include "timer_fonts.h"
 #include "timer_hourglass.h"
+#include <pebble-xoce-ui/pebble-xoce-ui.h>
 
 #include <stdio.h>
 #include <string.h>
 
-#define UI_WIDTH 166
-#define UI_CENTER 83
+#define UI_WIDTH (200 - ACTION_BAR_WIDTH)
+#define UI_CENTER (UI_WIDTH / 2)
 #define BLUE GColorPictonBlue
 #define AMBER GColorChromeYellow
 
@@ -16,12 +17,6 @@ static GColor ui_bg(void) { return s_dark ? GColorBlack : GColorWhite; }
 static GColor ui_fg(void) { return s_dark ? GColorWhite : GColorBlack; }
 static GColor ui_muted(void) { return s_dark ? GColorLightGray : GColorDarkGray; }
 static GColor ui_line(void) { return s_dark ? GColorDarkGray : GColorLightGray; }
-
-typedef enum {
-  ICON_NONE, ICON_EDIT, ICON_PAUSE, ICON_PLAY, ICON_MORE, ICON_PLUS,
-  ICON_MINUS, ICON_NEXT, ICON_CHECK, ICON_SNOOZE, ICON_UP, ICON_DOWN,
-  ICON_TRASH
-} Icon;
 
 static void rect(GContext *ctx, GRect frame, GColor color) {
   graphics_context_set_fill_color(ctx, color);
@@ -51,29 +46,26 @@ static void moving_selection(GContext *ctx, const TimerUiView *view) {
   graphics_release_frame_buffer(ctx,frame);
 }
 
-static void segment(GContext *ctx, int x1, int y1, int x2, int y2) {
-  graphics_draw_line(ctx, GPoint(x1, y1), GPoint(x2, y2));
-}
-
 static void label(GContext *ctx,const char *value,int point,GRect bounds,GColor ink,GTextAlignment align) {
   timer_fonts_text_box(ctx,value,point,bounds,ink,align);
 }
 static void centered_label(GContext *ctx,const char *value,int point,int top,int height,GColor ink) {
-  label(ctx,value,point,GRect(6,top,UI_WIDTH-12,height),ink,GTextAlignmentCenter);
+  label(ctx,value,point,GRect(XOCE_UI_INSET,top,UI_WIDTH-2*XOCE_UI_INSET,height),ink,GTextAlignmentCenter);
 }
 static void footer(GContext *ctx,const char *value,int point) {
   rect(ctx,GRect(0,198,UI_WIDTH,30),ui_bg());
-  label(ctx,value,point,GRect(6,198,UI_WIDTH-12,30),ui_muted(),GTextAlignmentCenter);
+  label(ctx,value,point,GRect(XOCE_UI_INSET,198,UI_WIDTH-2*XOCE_UI_INSET,30),ui_muted(),GTextAlignmentCenter);
+}
+static void header_text(GContext *ctx,const char *text,int point,GRect bounds,
+                        GColor ink,GTextAlignment align,void *context) {
+  (void)context;label(ctx,text,point,bounds,ink,align);
 }
 static void header(GContext *ctx,const TimerUiView *view,const char *title,GColor ink) {
   char wall_clock[8];const time_t timestamp=(time_t)view->now;const struct tm *local=localtime(&timestamp);
   const bool twenty_four=clock_is_24h_style();
   if(local){strftime(wall_clock,sizeof(wall_clock),twenty_four?"%H:%M":"%I:%M",local);if(!twenty_four&&wall_clock[0]=='0')memmove(wall_clock,wall_clock+1,strlen(wall_clock));}
   else clock_copy_time_string(wall_clock,sizeof(wall_clock));
-  const int clock_width=64,clock_x=UI_WIDTH-8-clock_width;
-  label(ctx,title,26,GRect(8,0,clock_x-12,32),ink,GTextAlignmentLeft);
-  label(ctx,wall_clock,26,GRect(clock_x,0,clock_width,32),ink,GTextAlignmentRight);
-  graphics_context_set_stroke_color(ctx,ui_line());segment(ctx,8,31,UI_WIDTH-8,31);
+  xoce_ui_draw_header(ctx,UI_WIDTH,title,wall_clock,ink,ui_line(),header_text,NULL);
 }
 
 static void clock_text(uint32_t seconds, char *buffer, size_t capacity) {
@@ -100,74 +92,16 @@ static void duration_text(uint32_t seconds, char *buffer, size_t capacity,
   }
 }
 
-static void icon(GContext *ctx, Icon which, int x, int y, GColor color) {
-  graphics_context_set_stroke_color(ctx, color);
-  graphics_context_set_fill_color(ctx, color);
-  graphics_context_set_stroke_width(ctx, 3);
-  switch (which) {
-    case ICON_EDIT: {
-      GPoint points[] = {{x-9,y+10},{x-7,y+3},{x+3,y-9},{x+9,y-3},{x-3,y+8}};
-      GPath path = {.num_points=5,.points=points};
-      gpath_draw_filled(ctx, &path);
-      graphics_context_set_stroke_color(ctx,color.argb==GColorWhite.argb?GColorBlack:GColorWhite);
-      graphics_context_set_stroke_width(ctx,2);
-      segment(ctx,x+1,y-6,x+6,y-1);
-      break;
-    }
-    case ICON_PAUSE:
-      rect(ctx,GRect(x-9,y-10,6,20),color);
-      rect(ctx,GRect(x+3,y-10,6,20),color);
-      break;
-    case ICON_PLAY: {
-      GPoint points[] = {{x-5,y-10},{x+10,y},{x-5,y+10}};
-      GPath path = {.num_points=3,.points=points};
-      gpath_draw_filled(ctx,&path);
-      break;
-    }
-    case ICON_MORE:
-      for (int offset=-8;offset<=8;offset+=8) graphics_fill_circle(ctx,GPoint(x+offset,y),2);
-      break;
-    case ICON_PLUS:
-      segment(ctx,x,y-8,x,y+8);
-      /* fall through */
-    case ICON_MINUS:
-      segment(ctx,x-8,y,x+8,y);
-      break;
-    case ICON_NEXT:
-      segment(ctx,x-9,y,x+9,y);segment(ctx,x+1,y-8,x+9,y);segment(ctx,x+1,y+8,x+9,y);
-      break;
-    case ICON_CHECK:
-      segment(ctx,x-9,y,x-3,y+7);segment(ctx,x-3,y+7,x+9,y-8);
-      break;
-    case ICON_SNOOZE:
-      graphics_draw_circle(ctx,GPoint(x,y),9);
-      segment(ctx,x-8,y-8,x-8,y-1);segment(ctx,x-8,y-1,x-1,y-1);
-      segment(ctx,x,y-5,x,y);segment(ctx,x,y,x+4,y+3);
-      break;
-    case ICON_UP:
-      segment(ctx,x-8,y+4,x,y-4);segment(ctx,x,y-4,x+8,y+4);
-      break;
-    case ICON_DOWN:
-      segment(ctx,x-8,y-4,x,y+4);segment(ctx,x,y+4,x+8,y-4);
-      break;
-    case ICON_TRASH:
-      segment(ctx,x-8,y-5,x+8,y-5);segment(ctx,x-6,y-4,x-6,y+8);
-      segment(ctx,x-6,y+8,x+6,y+8);segment(ctx,x+6,y+8,x+6,y-4);
-      segment(ctx,x-2,y-8,x+2,y-8);segment(ctx,x-2,y-1,x-2,y+5);
-      segment(ctx,x+2,y-1,x+2,y+5);
-      break;
-    default: break;
-  }
-  graphics_context_set_stroke_width(ctx,1);
+static void icon(GContext *ctx, XoceUiIcon which, int x, int y, GColor color) {
+  xoce_ui_draw_icon(ctx,which,GPoint(x,y),XOCE_UI_RAIL_ICON_SIZE,color);
 }
 
-static void bar(GContext *ctx, const TimerUiView *view, Icon up, Icon select, Icon down, GColor background) {
-  // The physical action rail owns this column from the first to the last row.
-  rect(ctx,GRect(UI_WIDTH,0,34,228),background);
+static void bar(GContext *ctx, const TimerUiView *view, XoceUiIcon up,
+                XoceUiIcon select, XoceUiIcon down, GColor background) {
+  const XoceUiIcon icons[]={up,select,down};
   const GColor ink=background.argb==GColorWhite.argb?GColorBlack:GColorWhite;
-  icon(ctx,up,183+view->action_offset[0],48,ink);
-  icon(ctx,select,183+view->action_offset[1],114,ink);
-  icon(ctx,down,183+view->action_offset[2],180,ink);
+  xoce_ui_draw_action_bar(ctx,GRect(UI_WIDTH,0,ACTION_BAR_WIDTH,228),icons,
+                          view->action_offset,background,ink);
 }
 
 typedef struct { int8_t x,y; } OutlinePoint;
@@ -309,7 +243,7 @@ static void main_screen(GContext *ctx,const TimerUiView *view) {
   const ActivityTimerModel *timer=&view->collection->slots[view->selected];
   const bool paused=timer->state==ACTIVITY_TIMER_PAUSED,finished=timer->state==ACTIVITY_TIMER_FINISHED,ready=activity_timer_ready(timer);
   const uint32_t left=ready?timer->repeat_seconds:activity_timer_remaining(timer,view->now);
-  bar(ctx,view,ICON_EDIT,paused||finished||ready?ICON_PLAY:ICON_PAUSE,ICON_MORE,ui_fg());
+  bar(ctx,view,XOCE_ICON_EDIT,paused||finished||ready?XOCE_ICON_PLAY:XOCE_ICON_PAUSE,XOCE_ICON_MORE,ui_fg());
   header(ctx,view,paused?"Paused":ready?"Ready":finished?"Ended":"Timer",ui_fg());
   char clock[20],support[40];
   const bool long_time=left>=3600;
@@ -341,7 +275,7 @@ static void list_screen(GContext *ctx,const TimerUiView *view) {
   const TimerListWindow list=timer_ui_list_window(view);const unsigned count=list.count,menu=list.menu;
   const bool full=!timer_collection_can_create(view->collection),replacing=!full&&count==TIMER_COLLECTION_CAPACITY;
   const unsigned first_menu=full&&count?1:0;
-  bar(ctx,view,menu>first_menu?ICON_UP:ICON_NONE,menu?ICON_NEXT:full?ICON_NONE:ICON_PLUS,menu<count?ICON_DOWN:ICON_NONE,ui_fg());
+  bar(ctx,view,menu>first_menu?XOCE_ICON_UP:XOCE_ICON_NONE,menu?XOCE_ICON_NEXT:full?XOCE_ICON_NONE:XOCE_ICON_PLUS,menu<count?XOCE_ICON_DOWN:XOCE_ICON_NONE,ui_fg());
   char heading[32];
   if(menu)snprintf(heading,sizeof(heading),"%u/%u",menu,count);
   else snprintf(heading,sizeof(heading),replacing?"Replace":"New");
@@ -364,9 +298,9 @@ static void list_screen(GContext *ctx,const TimerUiView *view) {
     const char *state=timer->state==ACTIVITY_TIMER_RUNNING?"Running":timer->state==ACTIVITY_TIMER_PAUSED?"Paused":ready?"Ready":"Time's up";
     const int digit_top=y+(ready?12:0);
     const int digit_width=(timer_font_digits_width_q8(clock,32)+128)/256;
-    timer_fonts_digits_box(ctx,clock,32,GRect(12,digit_top,digit_width,32),ink,background);
-    label(ctx,state,22,GRect(12,digit_top+33,140,23),secondary,GTextAlignmentLeft);
-    if(!ready){snprintf(saved,sizeof(saved),"Set %s",duration);label(ctx,saved,22,GRect(12,y+56,140,22),secondary,GTextAlignmentLeft);}
+    timer_fonts_digits_box(ctx,clock,32,GRect(XOCE_UI_INSET,digit_top,digit_width,32),ink,background);
+    label(ctx,state,22,GRect(XOCE_UI_INSET,digit_top+33,143,23),secondary,GTextAlignmentLeft);
+    if(!ready){snprintf(saved,sizeof(saved),"Set %s",duration);label(ctx,saved,22,GRect(XOCE_UI_INSET,y+56,143,22),secondary,GTextAlignmentLeft);}
     const uint32_t total=ready?timer->repeat_seconds:timer->configured_seconds;
     const unsigned fill=total?(unsigned)(((uint64_t)left*28+total/2)/total):0,bounded=fill>28?28:fill;
     rect(ctx,GRect(151,digit_top+2,4,28),selected?ui_muted():ui_line());
@@ -378,14 +312,14 @@ static void list_screen(GContext *ctx,const TimerUiView *view) {
     const unsigned thumb=(height*list.rows+count/2)/count,offset=list.first*(height-thumb)/(count-list.rows);
     rect(ctx,GRect(162,top,2,height),ui_line());rect(ctx,GRect(162,top+(int)offset,2,thumb),ui_fg());
   }
-  if(replacing&&!menu&&!view->issue)centered_label(ctx,"Oldest ready slot",22,194,34,ui_muted());
+  if(replacing&&!menu&&!view->issue)centered_label(ctx,"Oldest ready",22,194,34,ui_muted());
 }
 
 static void editor_screen(GContext *ctx,const TimerUiView *view) {
   static const char *units[]={"HRS","MIN","SEC"};
   const uint32_t total=view->edit[0]*3600+view->edit[1]*60+view->edit[2];
   const bool locked=view->edit[0]==24&&view->edit_field>0,invalid=total<ACTIVITY_TIMER_MIN_SECONDS;
-  bar(ctx,view,locked?ICON_NONE:ICON_PLUS,view->edit_field<2?ICON_NEXT:invalid?ICON_NONE:ICON_CHECK,locked?ICON_NONE:ICON_MINUS,ui_fg());
+  bar(ctx,view,locked?XOCE_ICON_NONE:XOCE_ICON_PLUS,view->edit_field<2?XOCE_ICON_NEXT:invalid?XOCE_ICON_NONE:XOCE_ICON_CHECK,locked?XOCE_ICON_NONE:XOCE_ICON_MINUS,ui_fg());
   const bool reuse=view->editing_new&&timer_collection_count(view->collection)==TIMER_COLLECTION_CAPACITY;
   header(ctx,view,view->editing_new?(reuse?"Replace":"New"):view->editing_ready?"Saved":"Edit",ui_fg());
   if(!view->issue)hourglass(ctx,1,1,UI_CENTER,65,44,180,BLUE,ui_fg(),false,view->now);
@@ -400,14 +334,14 @@ static void editor_screen(GContext *ctx,const TimerUiView *view) {
     label(ctx,units[field],22,GRect(x,154,50,24),selected?ui_fg():ui_muted(),GTextAlignmentCenter);
   }
   moving_selection(ctx,view);
-  const char *back=view->edit[0]==24?"24 hours max":reuse?"Oldest ready slot":view->edit_field==0?"Back to cancel":view->edit_field==1?"Back for hours":"Back for minutes";
+  const char *back=view->edit[0]==24?"24 hours max":reuse?"Oldest ready":view->edit_field==0?"Back to cancel":view->edit_field==1?"Back for hours":"Back for minutes";
   centered_label(ctx,back,22,176,22,ui_muted());
   const char *select=invalid?"Min: 5 seconds":view->edit_field<2?"Select: next":view->editing_new?"Select: start":"Select: save";
   footer(ctx,select,22);
 }
 
 static void alarm_screen(GContext *ctx,const TimerUiView *view) {
-  rect(ctx,GRect(0,0,200,228),GColorBlack);bar(ctx,view,ICON_SNOOZE,ICON_CHECK,ICON_NONE,GColorDarkGray);header(ctx,view,"Alarm",GColorWhite);
+  rect(ctx,GRect(0,0,200,228),GColorBlack);bar(ctx,view,XOCE_ICON_SNOOZE,XOCE_ICON_CHECK,XOCE_ICON_NONE,GColorDarkGray);header(ctx,view,"Alarm",GColorWhite);
   const ActivityTimerModel *timer=&view->collection->slots[view->selected];char duration[20];clock_text(timer->repeat_seconds,duration,sizeof(duration));
   const bool issue=view->issue&&view->issue[0];
   timer_fonts_digits_box(ctx,duration,issue?30:timer->repeat_seconds>=3600?32:47,GRect(8,38,150,issue?29:48),GColorWhite,GColorBlack);
@@ -420,7 +354,7 @@ static void options_screen(GContext *ctx,const TimerUiView *view) {
   const ActivityTimerModel *timer=&view->collection->slots[view->selected];char duration[20],reset[32];
   duration_text(timer->repeat_seconds,duration,sizeof(duration),false);snprintf(reset,sizeof(reset),"Reset %s",duration);
   const char *options[]={activity_timer_ready(timer)?"Edit duration":"Edit remaining",reset,"Delete timer"};
-  bar(ctx,view,view->option?ICON_UP:ICON_NONE,ICON_CHECK,view->option<2?ICON_DOWN:ICON_NONE,ui_fg());
+  bar(ctx,view,view->option?XOCE_ICON_UP:XOCE_ICON_NONE,XOCE_ICON_CHECK,view->option<2?XOCE_ICON_DOWN:XOCE_ICON_NONE,ui_fg());
   const unsigned count=timer_collection_count(view->collection);unsigned position=1;
   for(unsigned row=0;row<count;++row)if(timer_collection_visible_slot(view->collection,row)==(int)view->selected)position=row+1;
   char heading[32],context[40];snprintf(heading,sizeof(heading),count>1?"%u/%u":"Options",position,count);
@@ -429,7 +363,7 @@ static void options_screen(GContext *ctx,const TimerUiView *view) {
   header(ctx,view,heading,ui_fg());if(!view->issue)centered_label(ctx,context,22,36,26,ui_muted());
   for(unsigned row=0;row<3;++row){const int y=timer_ui_option_top(view)+(int)row*TIMER_OPTION_STRIDE;const bool selected=!view->selection_transition&&view->option==row;
     if(selected)rect(ctx,GRect(0,y,UI_WIDTH,TIMER_OPTION_HEIGHT),ui_fg());
-    label(ctx,options[row],24,GRect(9,y,148,TIMER_OPTION_HEIGHT),selected?ui_bg():ui_fg(),GTextAlignmentLeft);
+    label(ctx,options[row],24,GRect(XOCE_UI_INSET,y,UI_WIDTH-2*XOCE_UI_INSET,TIMER_OPTION_HEIGHT),selected?ui_bg():ui_fg(),GTextAlignmentLeft);
   }
   moving_selection(ctx,view);
   const char *status=view->status&&view->status[0]?view->status:activity_timer_ready(timer)?"Back to timer":"Still timing";
@@ -444,16 +378,16 @@ static void confirm_screen(GContext *ctx,const TimerUiView *view) {
   duration_text(timer->repeat_seconds,duration,sizeof(duration),false);const unsigned count=timer_collection_count(view->collection);unsigned position=1;
   for(unsigned row=0;row<count;++row)if(timer_collection_visible_slot(view->collection,row)==(int)view->selected)position=row+1;
   snprintf(target,sizeof(target),"%s timer",duration);char heading[32];snprintf(heading,sizeof(heading),count>1?"%u/%u":"Delete",position,count);
-  bar(ctx,view,view->confirm_choice?ICON_UP:ICON_NONE,ICON_CHECK,view->confirm_choice?ICON_NONE:ICON_DOWN,ui_fg());header(ctx,view,heading,ui_fg());
-  if(!issue)icon(ctx,ICON_TRASH,UI_CENTER,54,ui_fg());
+  bar(ctx,view,view->confirm_choice?XOCE_ICON_UP:XOCE_ICON_NONE,XOCE_ICON_CHECK,view->confirm_choice?XOCE_ICON_NONE:XOCE_ICON_DOWN,ui_fg());header(ctx,view,heading,ui_fg());
+  if(!issue)icon(ctx,XOCE_ICON_TRASH,UI_CENTER,54,ui_fg());
   centered_label(ctx,"Delete timer?",24,issue?90:77,26,ui_fg());
   centered_label(ctx,target,22,issue?116:108,24,ui_fg());
   centered_label(ctx,"Cannot undo",22,140,18,ui_muted());
   const bool keep=!view->selection_transition&&!view->confirm_choice,remove=!view->selection_transition&&view->confirm_choice;
   if(keep)rect(ctx,GRect(0,TIMER_CONFIRM_TOP,UI_WIDTH,TIMER_CONFIRM_HEIGHT),ui_fg());
-  centered_label(ctx,"Keep timer",24,TIMER_CONFIRM_TOP,TIMER_CONFIRM_HEIGHT,keep?ui_bg():ui_fg());
+  label(ctx,"Keep timer",XOCE_UI_BODY_POINT,GRect(XOCE_UI_INSET,TIMER_CONFIRM_TOP,UI_WIDTH-2*XOCE_UI_INSET,TIMER_CONFIRM_HEIGHT),keep?ui_bg():ui_fg(),GTextAlignmentLeft);
   if(remove)rect(ctx,GRect(0,TIMER_CONFIRM_TOP+TIMER_CONFIRM_STRIDE,UI_WIDTH,TIMER_CONFIRM_HEIGHT),ui_fg());
-  centered_label(ctx,"Delete timer",24,TIMER_CONFIRM_TOP+TIMER_CONFIRM_STRIDE,TIMER_CONFIRM_HEIGHT,remove?ui_bg():ui_fg());
+  label(ctx,"Delete timer",XOCE_UI_BODY_POINT,GRect(XOCE_UI_INSET,TIMER_CONFIRM_TOP+TIMER_CONFIRM_STRIDE,UI_WIDTH-2*XOCE_UI_INSET,TIMER_CONFIRM_HEIGHT),remove?ui_bg():ui_fg(),GTextAlignmentLeft);
   moving_selection(ctx,view);
 }
 
@@ -465,6 +399,6 @@ void timer_ui_draw(GContext *ctx,const TimerUiView *view) {
     rect(ctx,GRect(0,top,UI_WIDTH,54),AMBER);
     const char *message=!strcmp(view->issue,"Changes not saved")?"Not saved":view->issue;
     centered_label(ctx,message,22,top+3,23,GColorBlack);
-    centered_label(ctx,view->appearance_issue?"Retry phone app":"Keep Timer open",22,top+28,23,GColorBlack);
+    centered_label(ctx,view->appearance_issue?"Retry phone app":"Keep app open",22,top+28,23,GColorBlack);
   }
 }

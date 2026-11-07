@@ -4,7 +4,7 @@
 const fs=require('node:fs'),path=require('node:path'),os=require('node:os'),assert=require('node:assert/strict'),crypto=require('node:crypto');
 const {execFileSync,spawn}=require('node:child_process');
 const root=path.resolve(__dirname,'..'),version=require('../package.json').version;
-const artifact=path.join(root,'dist/Timer-'+version+'.pbw'),out=path.join(process.env.PEBBLE_QA_OUTPUT_ROOT||path.join(root,'build/qa'),'settings');fs.mkdirSync(out,{recursive:true});
+const artifact=path.resolve(process.env.PEBBLE_PBW||path.join(root,'build/candidate/Timer-'+version+'.pbw')),out=path.join(process.env.PEBBLE_QA_OUTPUT_ROOT||path.join(root,'build/qa'),'settings');fs.mkdirSync(out,{recursive:true});
 const files=JSON.parse(execFileSync('python3',['-c','import sys,json,zipfile\nwith zipfile.ZipFile(sys.argv[1]) as z: print(json.dumps({n:z.read(n).decode() for n in ["config.html","plugin.js","pebble-js-app.js"]}))',artifact],{encoding:'utf8'}));
 assert.equal(files['config.html'],fs.readFileSync(path.join(root,'config.html'),'utf8'));
 const sha=v=>crypto.createHash('sha256').update(v).digest('hex'),scratch=fs.mkdtempSync(path.join(os.tmpdir(),'timer-settings-browser-')),profile=path.join(scratch,'profile');
