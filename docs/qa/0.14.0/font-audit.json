@@ -1,0 +1,25 @@
+{
+  "result": "PASS",
+  "version": "0.14.0",
+  "pbwSha256": "49552faee79b82c07e44888eb63726945b39370c3008a8e1e14db46a9bec51b0",
+  "bodyFonts": "OS Gothic 18 Bold / 24 / 24 Bold; no packaged bitmap fonts",
+  "roundedClockTables": {
+    "clock_points": {
+      "rows": 1049,
+      "bytes": 4196,
+      "nativeIdentity": true
+    },
+    "clock_contours": {
+      "rows": 19,
+      "bytes": 114,
+      "nativeIdentity": true
+    },
+    "clock_glyphs": {
+      "rows": 11,
+      "bytes": 220,
+      "nativeIdentity": true
+    }
+  },
+  "fontLicensesMatchSource": true,
+  "scope": "Exact unchanged source/notices and linked Fredoka outlines; zero packaged bitmap fonts and OS Gothic source roles. Native captures separately verify pixels, fitting and motion."
+}

@@ -1,0 +1,76 @@
+{
+  "scope": "Fresh integrated build; SDK generatedAt is not deterministic. Final exact QA PBW restored without altering any payload bytes.",
+  "checks": {
+    "LICENSE": {
+      "equal": true,
+      "qaSha256": "d98d3677d07448a915a4ec03e84d888c3e7ead3eaa8b371288705be3d497d40f",
+      "rebuildSha256": "d98d3677d07448a915a4ec03e84d888c3e7ead3eaa8b371288705be3d497d40f"
+    },
+    "THIRD-PARTY-NOTICES.md": {
+      "equal": true,
+      "qaSha256": "0520b373104c893bd50db4905813ef0e0280556e529e43cc712510acdcc89b85",
+      "rebuildSha256": "0520b373104c893bd50db4905813ef0e0280556e529e43cc712510acdcc89b85"
+    },
+    "appinfo.json": {
+      "equal": true,
+      "qaSha256": "e119e97864e1224e9ce8e1dc05002ea01ab8114d775dfcecab43d806452dfbd6",
+      "rebuildSha256": "e119e97864e1224e9ce8e1dc05002ea01ab8114d775dfcecab43d806452dfbd6"
+    },
+    "config.html": {
+      "equal": true,
+      "qaSha256": "ea465cac1eca8483214d5bdb2e6196268324893e96eefe12c52fabca2650a98b",
+      "rebuildSha256": "ea465cac1eca8483214d5bdb2e6196268324893e96eefe12c52fabca2650a98b"
+    },
+    "emery/app_resources.pbpack": {
+      "equal": true,
+      "qaSha256": "5e693142a8537851976c02a6a4b411168425cc8979875083100ca6182236e139",
+      "rebuildSha256": "5e693142a8537851976c02a6a4b411168425cc8979875083100ca6182236e139"
+    },
+    "emery/manifest.json": {
+      "equal": false,
+      "qaSha256": "8f4c3df3bbc5baa4dfaa2fe32ebe82af3657f3e807a8915a88e5fe5a01d49d0c",
+      "rebuildSha256": "13bdae57a6c437ffad6887b14f437789c5ae73799f3649708de3822d0e7c3ff1"
+    },
+    "emery/pebble-app.bin": {
+      "equal": true,
+      "qaSha256": "0dbdf7834bd0fe2588a0e57139ca7167c733c7a2a833b753df691e27d74a2d2f",
+      "rebuildSha256": "0dbdf7834bd0fe2588a0e57139ca7167c733c7a2a833b753df691e27d74a2d2f"
+    },
+    "licenses/Apache-2.0.txt": {
+      "equal": true,
+      "qaSha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+      "rebuildSha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+    },
+    "licenses/OFL-Fredoka.txt": {
+      "equal": true,
+      "qaSha256": "5c9e7eee5c6b25f4b05b8d53b2e470ea4962f9ced742d044a98f7d95d1375bab",
+      "rebuildSha256": "5c9e7eee5c6b25f4b05b8d53b2e470ea4962f9ced742d044a98f7d95d1375bab"
+    },
+    "licenses/OFL-RobotoCondensed.txt": {
+      "equal": true,
+      "qaSha256": "0e4cc6ece88573545be2ed25835363662a6182ba4a4c1b5c8feda52add30e8a6",
+      "rebuildSha256": "0e4cc6ece88573545be2ed25835363662a6182ba4a4c1b5c8feda52add30e8a6"
+    },
+    "licenses/pebble-activities-LICENSE.txt": {
+      "equal": true,
+      "qaSha256": "d98d3677d07448a915a4ec03e84d888c3e7ead3eaa8b371288705be3d497d40f",
+      "rebuildSha256": "d98d3677d07448a915a4ec03e84d888c3e7ead3eaa8b371288705be3d497d40f"
+    },
+    "pebble-js-app.js": {
+      "equal": true,
+      "qaSha256": "942ecf19f8fb11ad8959559d36b3ca919a8a51de2716037e90228adcaa57f285",
+      "rebuildSha256": "942ecf19f8fb11ad8959559d36b3ca919a8a51de2716037e90228adcaa57f285"
+    },
+    "plugin.js": {
+      "equal": true,
+      "qaSha256": "c6acc4c2f0acd06b1dcffc3fca22737e48fef4cf94d9ed7f28fd3d3034d91348",
+      "rebuildSha256": "c6acc4c2f0acd06b1dcffc3fca22737e48fef4cf94d9ed7f28fd3d3034d91348"
+    }
+  },
+  "sdkGeneratedAt": {
+    "qa": 1794046950,
+    "rebuild": 1794047332
+  },
+  "finalPbwSha256": "b3963c8fe0606f5ce80ca87c3073a7d456d1ef776abf38d62616ff659ecb31ca",
+  "result": "PASS"
+}

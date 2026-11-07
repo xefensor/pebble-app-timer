@@ -1,0 +1,506 @@
+{
+  "result": "PASS",
+  "version": "0.14.2",
+  "pbwSha256": "b3963c8fe0606f5ce80ca87c3073a7d456d1ef776abf38d62616ff659ecb31ca",
+  "nativePayloadSha256": {
+    "emery/app_resources.pbpack": "5e693142a8537851976c02a6a4b411168425cc8979875083100ca6182236e139",
+    "emery/manifest.json": "8f4c3df3bbc5baa4dfaa2fe32ebe82af3657f3e807a8915a88e5fe5a01d49d0c",
+    "emery/pebble-app.bin": "0dbdf7834bd0fe2588a0e57139ca7167c733c7a2a833b753df691e27d74a2d2f"
+  },
+  "captures": [
+    {
+      "file": "normal-forward-1.png",
+      "sha256": "a57331a9949d7ffaf1405993dd5d6416a9246bab9c11a53795b9d745aad0291c",
+      "selectedMenu": 1,
+      "selectedBounds": [
+        0,
+        50,
+        166,
+        80
+      ],
+      "textInkTop": 54,
+      "textInkBottom": 124,
+      "criticalOneRow": false
+    },
+    {
+      "file": "normal-forward-2.png",
+      "sha256": "18a9f3af9640840c2370552036cdd138c8be4a8498c0302cc6d856719d000f25",
+      "selectedMenu": 2,
+      "selectedBounds": [
+        0,
+        138,
+        166,
+        80
+      ],
+      "textInkTop": 142,
+      "textInkBottom": 212,
+      "criticalOneRow": false
+    },
+    {
+      "file": "normal-forward-3.png",
+      "sha256": "0367092db34a30ebd42c020841ed2be6af5e71311d24372f21e1804451b2213a",
+      "selectedMenu": 3,
+      "selectedBounds": [
+        0,
+        138,
+        166,
+        80
+      ],
+      "textInkTop": 142,
+      "textInkBottom": 212,
+      "criticalOneRow": false
+    },
+    {
+      "file": "normal-forward-4.png",
+      "sha256": "ea52ca95488b7e45ceadc08b13b31320b289e58a9d64ea63a66cd726e8f3ce79",
+      "selectedMenu": 4,
+      "selectedBounds": [
+        0,
+        138,
+        166,
+        80
+      ],
+      "textInkTop": 142,
+      "textInkBottom": 212,
+      "criticalOneRow": false
+    },
+    {
+      "file": "normal-forward-5.png",
+      "sha256": "1ab25a446c4833ee2f7c0f5cb09a5aefad603b08f52b46da2c4fbf671365d493",
+      "selectedMenu": 5,
+      "selectedBounds": [
+        0,
+        138,
+        166,
+        80
+      ],
+      "textInkTop": 142,
+      "textInkBottom": 212,
+      "criticalOneRow": false
+    },
+    {
+      "file": "normal-forward-6.png",
+      "sha256": "2d161ea5eb1e30745012cb6764afbd7d523c404d2f17dc63304edb15848de861",
+      "selectedMenu": 6,
+      "selectedBounds": [
+        0,
+        138,
+        166,
+        80
+      ],
+      "textInkTop": 154,
+      "textInkBottom": 204,
+      "criticalOneRow": false
+    },
+    {
+      "file": "normal-forward-7.png",
+      "sha256": "1b89192f5e2c243b35a39419ae600be8d64496a6400fe3f955e1f0aa5af6534b",
+      "selectedMenu": 7,
+      "selectedBounds": [
+        0,
+        138,
+        166,
+        80
+      ],
+      "textInkTop": 154,
+      "textInkBottom": 204,
+      "criticalOneRow": false
+    },
+    {
+      "file": "normal-forward-8.png",
+      "sha256": "7a7681aba8320811752cdf5e25ff3f9feb9ae6a11af608e39ac4d34a6cd62e39",
+      "selectedMenu": 8,
+      "selectedBounds": [
+        0,
+        138,
+        166,
+        80
+      ],
+      "textInkTop": 154,
+      "textInkBottom": 204,
+      "criticalOneRow": false
+    },
+    {
+      "file": "normal-lower-boundary.png",
+      "sha256": "7a7681aba8320811752cdf5e25ff3f9feb9ae6a11af608e39ac4d34a6cd62e39",
+      "selectedMenu": 8,
+      "selectedBounds": [
+        0,
+        138,
+        166,
+        80
+      ],
+      "textInkTop": 154,
+      "textInkBottom": 204,
+      "criticalOneRow": false
+    },
+    {
+      "file": "normal-back-restores-eight.png",
+      "sha256": "7a7681aba8320811752cdf5e25ff3f9feb9ae6a11af608e39ac4d34a6cd62e39",
+      "selectedMenu": 8,
+      "selectedBounds": [
+        0,
+        138,
+        166,
+        80
+      ],
+      "textInkTop": 154,
+      "textInkBottom": 204,
+      "criticalOneRow": false
+    },
+    {
+      "file": "normal-reverse-7.png",
+      "sha256": "1b89192f5e2c243b35a39419ae600be8d64496a6400fe3f955e1f0aa5af6534b",
+      "selectedMenu": 7,
+      "selectedBounds": [
+        0,
+        138,
+        166,
+        80
+      ],
+      "textInkTop": 154,
+      "textInkBottom": 204,
+      "criticalOneRow": false
+    },
+    {
+      "file": "normal-reverse-6.png",
+      "sha256": "2d161ea5eb1e30745012cb6764afbd7d523c404d2f17dc63304edb15848de861",
+      "selectedMenu": 6,
+      "selectedBounds": [
+        0,
+        138,
+        166,
+        80
+      ],
+      "textInkTop": 154,
+      "textInkBottom": 204,
+      "criticalOneRow": false
+    },
+    {
+      "file": "normal-reverse-5.png",
+      "sha256": "1ab25a446c4833ee2f7c0f5cb09a5aefad603b08f52b46da2c4fbf671365d493",
+      "selectedMenu": 5,
+      "selectedBounds": [
+        0,
+        138,
+        166,
+        80
+      ],
+      "textInkTop": 142,
+      "textInkBottom": 212,
+      "criticalOneRow": false
+    },
+    {
+      "file": "normal-reverse-4.png",
+      "sha256": "8a8218082011903ee516c5f358cb7d524451e647db468c3874257f9746bf819c",
+      "selectedMenu": 4,
+      "selectedBounds": [
+        0,
+        138,
+        166,
+        80
+      ],
+      "textInkTop": 142,
+      "textInkBottom": 212,
+      "criticalOneRow": false
+    },
+    {
+      "file": "normal-reverse-3.png",
+      "sha256": "ffd9bab1fe129e9f76dbb1fcc69b82b2d3b3ca509d9327102693c85a957d958e",
+      "selectedMenu": 3,
+      "selectedBounds": [
+        0,
+        138,
+        166,
+        80
+      ],
+      "textInkTop": 142,
+      "textInkBottom": 212,
+      "criticalOneRow": false
+    },
+    {
+      "file": "normal-reverse-2.png",
+      "sha256": "7a883e66bf12a48808418af0ff49d00dcf36aaa9d0ca6c5b5cb2f032efa37e3f",
+      "selectedMenu": 2,
+      "selectedBounds": [
+        0,
+        138,
+        166,
+        80
+      ],
+      "textInkTop": 142,
+      "textInkBottom": 212,
+      "criticalOneRow": false
+    },
+    {
+      "file": "normal-reverse-1.png",
+      "sha256": "abe037dc15a25c191ab12f8a87c653ec8a3e3d8e9c06ad1f679e08ac84c7dbdf",
+      "selectedMenu": 1,
+      "selectedBounds": [
+        0,
+        50,
+        166,
+        80
+      ],
+      "textInkTop": 54,
+      "textInkBottom": 124,
+      "criticalOneRow": false
+    },
+    {
+      "file": "critical-forward-1.png",
+      "sha256": "a5e168605b03b49aa669b75685b92c6d5cf18013e55c7bd2b01720cd4d7f0672",
+      "selectedMenu": 1,
+      "selectedBounds": [
+        0,
+        67,
+        166,
+        80
+      ],
+      "textInkTop": 71,
+      "textInkBottom": 141,
+      "criticalOneRow": true
+    },
+    {
+      "file": "critical-forward-2.png",
+      "sha256": "83b173298d8dd89c4016876a004d466b14655b51a782e9118b775cd3395d82e8",
+      "selectedMenu": 2,
+      "selectedBounds": [
+        0,
+        67,
+        166,
+        80
+      ],
+      "textInkTop": 71,
+      "textInkBottom": 141,
+      "criticalOneRow": true
+    },
+    {
+      "file": "critical-forward-3.png",
+      "sha256": "28688af301b42eb852bd705210085dd44d67a244656f6cbc76eeaa73a7653c14",
+      "selectedMenu": 3,
+      "selectedBounds": [
+        0,
+        67,
+        166,
+        80
+      ],
+      "textInkTop": 71,
+      "textInkBottom": 141,
+      "criticalOneRow": true
+    },
+    {
+      "file": "critical-forward-4.png",
+      "sha256": "29ed45dac65d52e6525f89f780e26f74574ddfaa73064fca0a9843c8e711539f",
+      "selectedMenu": 4,
+      "selectedBounds": [
+        0,
+        67,
+        166,
+        80
+      ],
+      "textInkTop": 71,
+      "textInkBottom": 141,
+      "criticalOneRow": true
+    },
+    {
+      "file": "critical-forward-5.png",
+      "sha256": "1c77170394a1e290fe85ff0fd0bedb00a900a715a69b089bdc3fa748126724b3",
+      "selectedMenu": 5,
+      "selectedBounds": [
+        0,
+        67,
+        166,
+        80
+      ],
+      "textInkTop": 71,
+      "textInkBottom": 141,
+      "criticalOneRow": true
+    },
+    {
+      "file": "critical-forward-6.png",
+      "sha256": "8d09de57b65c25c95d65061c4a9dcf79e23749f968bef58a322fcea95d4fe19a",
+      "selectedMenu": 6,
+      "selectedBounds": [
+        0,
+        67,
+        166,
+        80
+      ],
+      "textInkTop": 83,
+      "textInkBottom": 133,
+      "criticalOneRow": true
+    },
+    {
+      "file": "critical-forward-7.png",
+      "sha256": "e487a57ae745c643b8e19f7d0d09819655a7a4b942ff3908a02a5615aea522c4",
+      "selectedMenu": 7,
+      "selectedBounds": [
+        0,
+        67,
+        166,
+        80
+      ],
+      "textInkTop": 83,
+      "textInkBottom": 133,
+      "criticalOneRow": true
+    },
+    {
+      "file": "critical-forward-8.png",
+      "sha256": "e433086817f1d6114642007dfca8f34d6fbf6ef113b82419323a58ebf9428882",
+      "selectedMenu": 8,
+      "selectedBounds": [
+        0,
+        67,
+        166,
+        80
+      ],
+      "textInkTop": 83,
+      "textInkBottom": 133,
+      "criticalOneRow": true
+    },
+    {
+      "file": "critical-lower-boundary.png",
+      "sha256": "e433086817f1d6114642007dfca8f34d6fbf6ef113b82419323a58ebf9428882",
+      "selectedMenu": 8,
+      "selectedBounds": [
+        0,
+        67,
+        166,
+        80
+      ],
+      "textInkTop": 83,
+      "textInkBottom": 133,
+      "criticalOneRow": true
+    },
+    {
+      "file": "critical-back-restores-eight.png",
+      "sha256": "e433086817f1d6114642007dfca8f34d6fbf6ef113b82419323a58ebf9428882",
+      "selectedMenu": 8,
+      "selectedBounds": [
+        0,
+        67,
+        166,
+        80
+      ],
+      "textInkTop": 83,
+      "textInkBottom": 133,
+      "criticalOneRow": true
+    },
+    {
+      "file": "critical-reverse-7.png",
+      "sha256": "249ba5a84c82410f60be8feb7efe6c65a569f3f28adff40edbb5d34bfb6a7a14",
+      "selectedMenu": 7,
+      "selectedBounds": [
+        0,
+        67,
+        166,
+        80
+      ],
+      "textInkTop": 83,
+      "textInkBottom": 133,
+      "criticalOneRow": true
+    },
+    {
+      "file": "critical-reverse-6.png",
+      "sha256": "df6c0797d306109c14ddbfde87829d89bc5e98be3fd1b4fb50c9e381b80db29a",
+      "selectedMenu": 6,
+      "selectedBounds": [
+        0,
+        67,
+        166,
+        80
+      ],
+      "textInkTop": 83,
+      "textInkBottom": 133,
+      "criticalOneRow": true
+    },
+    {
+      "file": "critical-reverse-5.png",
+      "sha256": "34c36a972594fbba833a316231eba5c899557b88fe9fe536ef713cb39afb4c15",
+      "selectedMenu": 5,
+      "selectedBounds": [
+        0,
+        67,
+        166,
+        80
+      ],
+      "textInkTop": 71,
+      "textInkBottom": 141,
+      "criticalOneRow": true
+    },
+    {
+      "file": "critical-reverse-4.png",
+      "sha256": "2d4726c63ccace45cf62b77fa45f314aa149154b36fc77cd78fa494d5be60b01",
+      "selectedMenu": 4,
+      "selectedBounds": [
+        0,
+        67,
+        166,
+        80
+      ],
+      "textInkTop": 71,
+      "textInkBottom": 141,
+      "criticalOneRow": true
+    },
+    {
+      "file": "critical-reverse-3.png",
+      "sha256": "85f9ad10e63dbfff7a517dff47c4dc88f4231cc44c17625e7bd92b89c34c65d0",
+      "selectedMenu": 3,
+      "selectedBounds": [
+        0,
+        67,
+        166,
+        80
+      ],
+      "textInkTop": 71,
+      "textInkBottom": 141,
+      "criticalOneRow": true
+    },
+    {
+      "file": "critical-reverse-2.png",
+      "sha256": "2a1b28bbfdb73c027c19e461876941a38b4bf95f21f3f63d3cb47c482f83c483",
+      "selectedMenu": 2,
+      "selectedBounds": [
+        0,
+        67,
+        166,
+        80
+      ],
+      "textInkTop": 71,
+      "textInkBottom": 141,
+      "criticalOneRow": true
+    },
+    {
+      "file": "critical-reverse-1.png",
+      "sha256": "b31f0cf8198bedf61ce1196f2fa76fd07d7bc53d548e2af034fd1a004d78c551",
+      "selectedMenu": 1,
+      "selectedBounds": [
+        0,
+        67,
+        166,
+        80
+      ],
+      "textInkTop": 71,
+      "textInkBottom": 141,
+      "criticalOneRow": true
+    }
+  ],
+  "proofs": {
+    "allEightVisibleForwardAndReverse": true,
+    "long24hRowIncludedAtPosition3": true,
+    "lowerBoundaryAndBackRestore": true,
+    "normalNavigationPreservesOwnerIdentityAndDeadlines": true,
+    "criticalOneRowSelectedIndexAlwaysVisible": true,
+    "criticalBankChecksumUnchanged": [
+      4288042744,
+      4288042744
+    ]
+  },
+  "scope": "Actual packaged Emery native pixels; isolated mode5 mixed-eight and mode9 exhausted-generation-eight V1 fixtures. Native Timer alone migrates/reconciles; no diagnostic shipping code. Direct QA receipts/read-only bank checksum probe; no phone JS/physical watch.",
+  "fixtures": {
+    "5": "e1e6c636b44785c9f009cc17634be835ad79932a1b497f22793f06b7b10e9a22",
+    "8": "46bca23ee663b18deff52040802490c8866af26b149302c72c55ab2d710d0d8e",
+    "9": "1160cc9812b6df4acd5e49343751602a33e19078f755c18cbc5f3e79a7ad4668"
+  },
+  "fixtureSourceSha256": "dfdd76a56fdac79c697b5bf30ef25d50ce38fb226eff28d91b99f45cd6b43e69"
+}

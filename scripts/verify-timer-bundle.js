@@ -28,6 +28,11 @@ assert.equal(appinfo.plugin.sources.filter(source => source.category === 'activi
 assert.deepEqual(appinfo.plugin.sources.find(source => source.category === 'activity').items,
   ['summary', 'live', 'session', 'card']);
 
+assert.equal(keys.TIMER_APPEARANCE,1024,'Appearance key changed');
+assert.equal(keys.TIMER_APPEARANCE_VERSION,1025,'Appearance version key changed');
+assert.equal(appinfo.configPage,'config.html');
+assert.ok(fs.readFileSync(path.join(root,'config.html'),'utf8').includes('id="theme"'));
+
 const reverse = {};
 for (const [name, value] of Object.entries(keys)) {
   assert.ok(Number.isInteger(value) && value >= 0 && value <= 4294967295,
@@ -91,7 +96,8 @@ function verifyPkjs() {
   assert.equal(typeof events.ready, 'function', 'Packaged PKJS has no ready handler');
   assert.equal(typeof events.appmessage, 'function', 'Packaged PKJS has no message handler');
   vm.runInContext('__events.ready()', context, {timeout: 1000});
-  assert.equal(outgoing.length, 1, 'PKJS ready must request the current native snapshot');
+  assert.equal(outgoing.length, 2, 'PKJS ready reconciles appearance and requests the native snapshot');
+  assert.deepEqual(pkjsDictionary(outgoing.shift()), {TIMER_APPEARANCE:0,TIMER_APPEARANCE_VERSION:1});
   const request = pkjsDictionary(outgoing.shift());
   assert.equal(request.ACTIVITY_REQUEST, 1);
   assert.equal(request.ACTIVITY_LAST_REVISION, 0);
@@ -359,3 +365,27 @@ async function verifyReset() {
   }
 }
 verifySummary().catch(error => { console.error(error); process.exitCode = 1; });
+
+// Execute both actual optimized writers with separate Android DOM/native stores.
+function verifyAppearance() {
+  const key='timer-appearance-settings-v1',native=new Map(),dom=new Map(),events={},sent=[];
+  const nativeStorage={getItem:k=>native.get(k)??null,setItem:(k,v)=>native.set(k,v)};
+  const liveStorage={getItem:k=>dom.get(k)??null,setItem(k,v){dom.set(k,v);native.set(k,v);}};
+  let config;
+  vm.runInNewContext(fs.readFileSync(path.join(root,'plugin.js'),'utf8'),{
+    Pebble:{registerSourceHandler(){},registerConfigHandler(fn){config=fn;}},localStorage:nativeStorage,Date:FixedDate});
+  vm.runInNewContext(fs.readFileSync(path.join(root,'pebble-js-app.js'),'utf8'),{
+    Pebble:{addEventListener(name,fn){events[name]=fn;},sendAppMessage(message,ok){sent.push(message);ok();}},
+    localStorage:liveStorage,Date:FixedDate,setTimeout(){throw Error('Unexpected retry');},clearTimeout(){}});
+  const selected={version:1,theme:'dark'};
+  let receipt;events.configmessage({data:{type:'saveSettings',settings:selected},respond(value){receipt=JSON.parse(JSON.stringify(value));}});
+  assert.deepEqual(receipt,{ok:true,settings:selected});
+  assert.equal(native.get(key),JSON.stringify(selected));assert.equal(dom.get(key),native.get(key));
+  assert.equal(sent.length,1);assert.deepEqual(JSON.parse(JSON.stringify(sent[0])),{TIMER_APPEARANCE:1,TIMER_APPEARANCE_VERSION:1});
+  native.clear();for(const [k,v]of dom)native.set(k,v);
+  config({type:'getSettings'},value=>receipt=JSON.parse(JSON.stringify(value)));
+  assert.deepEqual(receipt,{ok:true,settings:selected,needsRepair:false});
+  assert.equal(native.size,1,'Appearance writes must not create timer snapshots');
+  console.log('Packaged Timer settings: exact active-writer confirmation, Android teardown and independent appearance transport passed');
+}
+verifyAppearance();

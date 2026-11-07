@@ -1,0 +1,148 @@
+{
+  "version": "0.14.2",
+  "date": "2026-11-07",
+  "status": "Local unpublished review candidate; implementation agent performs no commit/push/publication",
+  "branch": "design/pebble-native-redesign",
+  "previousReviewCommit": "fad44ed",
+  "pbwSha256": "b3963c8fe0606f5ce80ca87c3073a7d456d1ef776abf38d62616ff659ecb31ca",
+  "nativePayloadSha256": {
+    "emery/app_resources.pbpack": "5e693142a8537851976c02a6a4b411168425cc8979875083100ca6182236e139",
+    "emery/manifest.json": "8f4c3df3bbc5baa4dfaa2fe32ebe82af3657f3e807a8915a88e5fe5a01d49d0c",
+    "emery/pebble-app.bin": "0dbdf7834bd0fe2588a0e57139ca7167c733c7a2a833b753df691e27d74a2d2f"
+  },
+  "artifacts": {
+    "Timer-0.14.2.pbw": {
+      "sha256": "b3963c8fe0606f5ce80ca87c3073a7d456d1ef776abf38d62616ff659ecb31ca",
+      "bytes": 97815
+    },
+    "Timer-0.14.2-debug.zip": {
+      "sha256": "ca216d9390acb604aa794c069e7295c3fe85fc58e840bc36f69aa409cfc3ea0a",
+      "bytes": 137301
+    }
+  },
+  "checks": {
+    "npmTest": {
+      "result": "PASS",
+      "portableC": true,
+      "javascriptTests": 34,
+      "explicitJsCommand": "node --test --test-isolation=none tests/handoff.test.js tests/settings.test.js"
+    },
+    "pythonAudits": {
+      "result": "PASS",
+      "tests": 46
+    },
+    "build": "PASS",
+    "cleanRebuildPayloadIdentity": "PASS; only SDK generatedAt differs; exact original QA manifest retained",
+    "rebuildReport": "rebuild-identity.json",
+    "fontAudit": {
+      "result": "PASS",
+      "report": "font-audit.json",
+      "compiledGlyphsPerRole": 322,
+      "printableLatinThrough017F": true
+    },
+    "essentialCopyFit": {
+      "result": "PASS",
+      "checks": 15,
+      "report": "essential-copy-fit.json"
+    },
+    "packagedSettingsProviderAndNumericKeys": "PASS",
+    "generatedConfig": "PASS",
+    "native": {
+      "native-ui-system": {
+        "result": "PASS",
+        "report": "native-ui-system/report.json",
+        "captures": 26,
+        "reportSha256": "7bc625913ef013ac3e4b63b36cbe9330fddcae24f268f27967507a2da0d297cf"
+      },
+      "native-motion": {
+        "result": "PASS",
+        "report": "native-motion/report.json",
+        "captures": 47,
+        "reportSha256": "0d6181a5e0ffab4016dc60490e2a84fb2a0115dffd0caef5eff61911a12af5b6"
+      },
+      "native-actions": {
+        "result": "PASS",
+        "report": "native-actions/report.json",
+        "captures": 9,
+        "reportSha256": "f2df2f6ca98751bd6e571be680f9ddfcbace487fcd864a78cd6a71c7cbd7cb07"
+      },
+      "native-list": {
+        "result": "PASS",
+        "report": "native-list/report.json",
+        "captures": 34,
+        "reportSha256": "4d30a64bfc8c4becbd08c39a0ffc903aefdffa2290cdae8df89c03bd9d229c52"
+      },
+      "native": {
+        "result": "PASS",
+        "report": "native/ux.json",
+        "captures": 38,
+        "reportSha256": "2680c396ad645a97edf63901d230d976451ba9776a682c7caf91b9bce8ae1e4c"
+      }
+    },
+    "nativeInkCentering": {
+      "result": "PASS",
+      "roles": 27,
+      "report": "centering.json"
+    },
+    "allPreviousArtifacts": {
+      "result": "PASS",
+      "count": 44,
+      "report": "previous-artifacts.json"
+    },
+    "diffWhitespace": "PASS"
+  },
+  "approvedEarlyComposition": "composition-review/7f11f9a72788/report.json",
+  "finalFrozenComposition": "composition-review/b3963c8fe060/report.json",
+  "representativeClockInkPixels": [
+    496,
+    496,
+    496,
+    496,
+    496,
+    496,
+    496,
+    496
+  ],
+  "readability": {
+    "fonts": "Roboto Condensed Bold26header/clock,24primarylabels,22secondary/help; Fredoka primarydigits",
+    "actualVisibleInk": "clock19px; body17\u201318pxcaps; secondary16pxcaps; descender-aware bounds",
+    "layout": "Full200px header/footer bands; two80px listrows/8pxgap, one80px row above54px criticalwarning; all8positions visible; separate editor bands; hours/MM:SS long-running composition",
+    "copy": "Critical Not saved/Keep Timer open/Cannot undo stay complete; no essential instruction ellipsis; all list lines one left column"
+  },
+  "motion": {
+    "verticalChoices": "Rigid120ms ease-out, no stretch/overshoot",
+    "repeatsSkipsScrollSelect": "Immediate snap/logical target",
+    "editorHourglass": "Existing purposeful feedback retained; hourglass300ms",
+    "physicalIcons": "Existing anchors and5px press/144ms release"
+  },
+  "unchangedOwnerAndPhoneSources": {
+    "src/c/timer_model.c": "972b52fd2ed6d2e14cc54acd4e274baa421accb9b0aa1b174ddf1092ea32f75f",
+    "src/c/timer_model.h": "6c6b9c5fd17e18da23f0edb61aa4e24b56f46e086706bd921e5ce88ce8492858",
+    "src/c/timer_collection.c": "289d3e354ef51acafca4d5f62c216c410aaa2f2f5491afd580a8d593fad5eb63",
+    "src/c/timer_collection.h": "d0e7f61a03fbbc57eb32ee7dffb18d4111cc78a067ddeed83e6789969f7abbc2",
+    "src/c/timer_appearance.c": "23496ee0aa971091cfffca92f8c6d8de936e31e1ca85f9c46dfb674e630a908d",
+    "src/c/timer_glance.c": "a4b8daf7567d86226ed94982c09666ec8c45e3cc70e6f7e93920236f7e9f305a",
+    "src/c/timer_alarm_feedback.c": "34ee88328b3bdfc0bf9ae898c56a90a721519840b8ff8052ee8fc7a026c8aac4",
+    "src/pkjs/index.js": "ab93719aab6bf27ea08cf59e219df4c3e8658b5bf56b6fc8ab21d5d5235a9140",
+    "src/pkjs/settings.js": "7dd2cb2656e2d204a2bf8822499d18f54ed26b1e86d8ce340adc919c125a19e6",
+    "src/pkjs/settings-page.js": "fe2544561e5223a14e195d4762c35bcee89734cdeb9aaffc94983d44393329e6",
+    "src/plugin/index.js": "7094f7de7965aed40005dc4369e80fb8af3a316c6aeb494a6ac65134461a5252",
+    "config.html": "ea465cac1eca8483214d5bdb2e6196268324893e96eefe12c52fabca2650a98b"
+  },
+  "sdkFootprint": {
+    "resourcesBytes": 39620,
+    "staticRamBytes": 46844,
+    "availableHeapBytes": 84228,
+    "scope": "SDK estimates; no runtime peak, timing or battery claim"
+  },
+  "phone": {
+    "sourceAudit": "Existing symmetric control padding/wrapping and explicithelp padding unchanged; oneappearance selector; Save/draft/active-writer source byteidentical",
+    "browserVerified": false,
+    "browserBlocker": "Existing sandbox restriction blocks freshChromium startup; no repeat attempt",
+    "preview": "phone-preview.html",
+    "previewBridge": "Mock; no watch/phone writes"
+  },
+  "physicalWatchTested": false,
+  "realPhoneWebViewTested": false,
+  "batteryOrVibrationMeasured": false
+}

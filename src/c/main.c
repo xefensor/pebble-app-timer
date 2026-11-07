@@ -1,4 +1,5 @@
 #include <pebble.h>
+#include <pebble-xoce-ui/pebble-xoce-ui.h>
 #include <pebble-activities/pebble-activities.h>
 #include <limits.h>
 #include <stdlib.h>
@@ -10,6 +11,8 @@
 #include "timer_glance.h"
 #include "timer_hourglass.h"
 #include "timer_alarm_feedback.h"
+#include "timer_appearance.h"
+#include "timer_wakeup.h"
 
 #define LEGACY_MODEL_KEY 2100
 #define WAKEUP_KEY 2101
@@ -20,7 +23,7 @@
 #define BANK_STRIDE 8
 #define CHUNK_BYTES 200u
 #define RETRY_LIMIT 3
-#define BAR_WIDTH 34
+#define BAR_WIDTH ACTION_BAR_WIDTH
 #define CONTENT_WIDTH (200 - BAR_WIDTH)
 
 #if defined(ACTIVITY_TIMER_DIAGNOSTICS) && ACTIVITY_TIMER_DIAGNOSTICS
@@ -48,12 +51,25 @@ static uint32_t s_edit[3] = {0, 10, 0};
 static uint32_t s_edit_initial_seconds;
 static unsigned s_edit_field, s_option, s_confirm_choice;
 static bool s_focused, s_ready;
+static bool s_dark, s_appearance_error;
 static TimeUnits s_tick_units;
 static bool s_exit_pending;
 static AppTimer *s_motion_timer;
 static uint32_t s_motion_started;
 static bool s_glass_motion;
 static int s_glass_from, s_glass_to;
+static AppTimer *s_ui_motion_timer;
+static uint32_t s_ui_motion_started;
+static enum { UI_MOTION_NONE, UI_MOTION_MENU, UI_MOTION_FIELD, UI_MOTION_VALUE } s_ui_motion;
+static TimerMotionRect s_ui_from, s_ui_to;
+static Screen s_ui_motion_screen;
+static uint32_t s_ui_previous_value;
+static int8_t s_ui_value_direction;
+static AppTimer *s_icon_timer;
+static int s_icon_button=-1;
+static bool s_icon_releasing;
+static uint32_t s_icon_started;
+static Screen s_icon_screen;
 static Screen s_repeat_screen;
 static PaPublisher s_publisher;
 static ActivityTimerModel s_flight_model;
@@ -77,6 +93,9 @@ static void prv_schedule_alarm(void);
 static void prv_tick(struct tm *tick_time, TimeUnits units_changed);
 static void prv_transition(void);
 static uint32_t prv_millis(void);
+static void prv_stop_motion(void);
+static void prv_stop_ui_motion(void);
+static void prv_stop_icon_motion(void);
 static bool prv_load_bank(unsigned bank, TimerCollection *collection, SavedHeader *header);
 
 static uint32_t prv_now(void) { return (uint32_t)time(NULL); }
@@ -277,28 +296,22 @@ static void prv_open_alarm(void) {
 static void prv_schedule_alarm(void) {
   uint32_t deadline = 0;
   const uint32_t now = prv_now();
+  time_t existing = 0;
+  if (s_wakeup >= 0 && !wakeup_query(s_wakeup, &existing)) existing = 0;
+  TimerWakeup previous = { .id = -1, .deadline = 0 };
   for (unsigned i = 0; i < TIMER_COLLECTION_CAPACITY; ++i) {
     const ActivityTimerModel *timer = &s_collection.slots[i];
-    if (timer_collection_visible(&s_collection, i) && timer->state == ACTIVITY_TIMER_RUNNING &&
-        timer->deadline > now && (!deadline || timer->deadline < deadline)) deadline = timer->deadline;
+    if (!timer_collection_visible(&s_collection, i) || timer->state != ACTIVITY_TIMER_RUNNING ||
+        timer->deadline <= now) continue;
+    if (!deadline || timer->deadline < deadline) deadline = timer->deadline;
+    if (existing == (time_t)timer->deadline) previous = (TimerWakeup){s_wakeup, timer->deadline};
   }
-  time_t existing = 0;
-  if (deadline && s_wakeup >= 0 && wakeup_query(s_wakeup, &existing) && (uint32_t)existing == deadline) {
-    s_alarm_deadline = deadline;
-    s_alarm_error = false;
-    return;
-  }
-  wakeup_cancel_all();
-  s_wakeup = -1;
-  s_alarm_deadline = 0;
-  s_alarm_error = false;
-  if (deadline) {
-    s_wakeup = wakeup_schedule((time_t)deadline, (int32_t)s_collection.revision, true);
-    s_alarm_error = s_wakeup < 0 || !wakeup_query(s_wakeup, &existing) || (uint32_t)existing != deadline;
-    if (!s_alarm_error) s_alarm_deadline = deadline;
-  }
-  if (s_wakeup >= 0) persist_write_int(WAKEUP_KEY, s_wakeup);
-  else persist_delete(WAKEUP_KEY);
+  const TimerWakeup next = timer_wakeup_replace(previous, deadline, (int32_t)s_collection.revision);
+  s_alarm_deadline = next.deadline;
+  s_alarm_error = deadline != next.deadline;
+  if (next.id < 0) persist_delete(WAKEUP_KEY);
+  else if (next.id != s_wakeup) persist_write_int(WAKEUP_KEY, next.id);
+  s_wakeup = next.id;
   TIMER_DIAG("alarm now=%lu deadline=%lu id=%ld error=%d", (unsigned long)now,
       (unsigned long)deadline, (long)s_wakeup, s_alarm_error);
 }
@@ -469,7 +482,16 @@ static void prv_reset_publication(void) {
 
 static void prv_inbox(DictionaryIterator *iter, void *context) {
   (void)context;
-  uint32_t value;
+  uint32_t value,appearance_version,appearance;
+  if (prv_u32(dict_find(iter,MESSAGE_KEY_TIMER_APPEARANCE_VERSION),&appearance_version)&&
+      appearance_version==1&&prv_u32(dict_find(iter,MESSAGE_KEY_TIMER_APPEARANCE),&appearance)&&appearance<=1) {
+    const bool dark=appearance==1;
+    if (timer_appearance_save(dark)) {
+      const bool changed=s_dark!=dark||s_appearance_error;
+      s_dark=dark;s_appearance_error=false;
+      if (changed) { if(s_window)window_set_background_color(s_window,s_screen==SCREEN_ALARM||s_dark?GColorBlack:GColorWhite);prv_refresh(); }
+    } else { s_appearance_error=true;prv_refresh(); }
+  }
   if (prv_u32(dict_find(iter, MESSAGE_KEY_ACTIVITY_REQUEST), &value) && value) {
     s_phone_ready = false;
     const uint32_t now = prv_now();
@@ -533,19 +555,33 @@ static const char *prv_status(void) {
 }
 
 static TimerUiView prv_view(void) {
-  return (TimerUiView){.screen=s_screen,.collection=&s_collection,
+  TimerUiView view={.screen=s_screen,.collection=&s_collection,
       .menu=s_menu,.selected=s_selected,.edit_field=s_edit_field,
       .option=s_option,.confirm_choice=s_confirm_choice,.edit=s_edit,
-      .editing_new=s_edit_slot<0,.now=prv_now(),
+      .editing_new=s_edit_slot<0,.dark=s_dark,.now=prv_now(),
       .editing_ready=s_edit_slot>=0&&
           activity_timer_ready(&s_collection.slots[s_edit_slot]),
       .issue=s_storage_error?"Changes not saved":
-          s_alarm_error?"Alarm not set":NULL,
+          s_alarm_error?"Alarm not set":s_appearance_error?"Theme not saved":NULL,
+      .appearance_issue=s_appearance_error&&!s_storage_error&&!s_alarm_error,
       .status=prv_status(),
       .hourglass_transition=s_glass_motion&&s_screen==SCREEN_DETAIL,
       .hourglass_angle=(int16_t)(s_glass_motion?
           timer_hourglass_angle(s_glass_from,s_glass_to,
               prv_millis()-s_motion_started,300u):0)};
+  const uint32_t elapsed=prv_millis()-s_ui_motion_started;
+  view.selection_transition=s_ui_motion_screen==s_screen&&
+      (s_ui_motion==UI_MOTION_MENU||s_ui_motion==UI_MOTION_FIELD);
+  view.selection_rect=s_ui_motion==UI_MOTION_MENU?
+      timer_motion_menu(s_ui_from,s_ui_to,elapsed):
+      timer_motion_field(s_ui_from,s_ui_to,elapsed);
+  if(s_ui_motion_screen==s_screen&&s_ui_motion==UI_MOTION_VALUE) {
+    view.editor_motion=timer_motion_value(elapsed,s_ui_value_direction);
+    view.editor_previous_value=s_ui_previous_value;
+  }
+  if(s_icon_button>=0&&s_icon_button<3)view.action_offset[s_icon_button]=
+      -(s_icon_releasing?xoce_ui_press_offset(prv_millis()-s_icon_started):XOCE_UI_PRESS_DISTANCE);
+  return view;
 }
 
 static void prv_draw(Layer *layer, GContext *ctx) {
@@ -573,6 +609,13 @@ static void prv_update_ticks(void) {
 }
 
 static void prv_refresh(void) {
+  /* Native completion/Wakeup can change screens without a click. Settle
+   * every decorative family before drawing those owner-driven transitions. */
+  if(s_ui_motion!=UI_MOTION_NONE&&s_ui_motion_screen!=s_screen)prv_stop_ui_motion();
+  if(s_icon_button>=0&&s_icon_screen!=s_screen)prv_stop_icon_motion();
+  if(s_glass_motion&&s_screen!=SCREEN_DETAIL)prv_stop_motion();
+  const TimerUiView layout=prv_view();
+  if(s_have_drawn&&((s_drawn_issue&&s_drawn_issue[0])!=(layout.issue&&layout.issue[0])))prv_stop_ui_motion();
   if (s_screen==SCREEN_LIST && !s_menu && timer_collection_count(&s_collection) &&
       !timer_collection_can_create(&s_collection)) s_menu=1;
   timer_alarm_feedback_update(s_alarm_mask);
@@ -601,6 +644,112 @@ static void prv_stop_motion(void) {
   if(was_moving&&s_focused&&s_canvas)layer_mark_dirty(s_canvas);
 }
 
+static void prv_stop_ui_motion(void) {
+  if(s_ui_motion_timer){app_timer_cancel(s_ui_motion_timer);s_ui_motion_timer=NULL;}
+  const bool moving=s_ui_motion!=UI_MOTION_NONE;
+  s_ui_motion=UI_MOTION_NONE;
+  if(moving&&s_focused&&s_canvas)layer_mark_dirty(s_canvas);
+}
+
+static void prv_ui_motion_tick(void *context) {
+  (void)context;s_ui_motion_timer=NULL;
+  const uint32_t duration=s_ui_motion==UI_MOTION_MENU?TIMER_MENU_MOTION_MS:
+      s_ui_motion==UI_MOTION_FIELD?TIMER_FIELD_SLIDE_MS+TIMER_FIELD_SETTLE_MS:
+      TIMER_VALUE_TEXT_MS+TIMER_VALUE_SETTLE_MS;
+  if(!s_focused||s_ui_motion_screen!=s_screen||s_ui_motion==UI_MOTION_NONE||
+      prv_millis()-s_ui_motion_started>=duration) {
+    prv_stop_ui_motion();return;
+  }
+  if(s_canvas)layer_mark_dirty(s_canvas);
+  s_ui_motion_timer=app_timer_register(XOCE_UI_PRESS_FRAME_MS,prv_ui_motion_tick,NULL);
+  if(!s_ui_motion_timer)prv_stop_ui_motion();
+}
+
+static void prv_stop_icon_motion(void) {
+  if(s_icon_timer){app_timer_cancel(s_icon_timer);s_icon_timer=NULL;}
+  const bool moving=s_icon_button>=0;
+  s_icon_button=-1;s_icon_releasing=false;
+  if(moving&&s_focused&&s_canvas)layer_mark_dirty(s_canvas);
+}
+
+static void prv_icon_tick(void *context) {
+  (void)context;s_icon_timer=NULL;
+  if(!s_focused||prv_millis()-s_icon_started>=XOCE_UI_PRESS_RELEASE_MS){prv_stop_icon_motion();return;}
+  if(s_canvas)layer_mark_dirty(s_canvas);
+  s_icon_timer=app_timer_register(XOCE_UI_PRESS_FRAME_MS,prv_icon_tick,NULL);
+  if(!s_icon_timer)prv_stop_icon_motion();
+}
+
+static void prv_raw_press(unsigned icon) {
+  prv_stop_icon_motion();
+  if(!s_focused)return;
+  s_icon_button=(int)icon;
+  s_icon_screen=s_screen;
+  if(s_canvas)layer_mark_dirty(s_canvas);
+}
+
+static void prv_raw_release(unsigned icon) {
+  if(s_icon_button!=(int)icon||!s_focused)return;
+  s_icon_releasing=true;s_icon_started=prv_millis();prv_icon_tick(NULL);
+}
+
+/* Raw identity is explicit and independent of recognizer internals. A release
+ * of a second held button cannot settle the current button's feedback. */
+static void prv_up_press(ClickRecognizerRef r,void *c){(void)r;(void)c;prv_raw_press(0);}
+static void prv_up_release(ClickRecognizerRef r,void *c){(void)r;(void)c;prv_raw_release(0);}
+static void prv_select_press(ClickRecognizerRef r,void *c){(void)r;(void)c;prv_raw_press(1);}
+static void prv_select_release(ClickRecognizerRef r,void *c){(void)r;(void)c;prv_raw_release(1);}
+static void prv_down_press(ClickRecognizerRef r,void *c){(void)r;(void)c;prv_raw_press(2);}
+static void prv_down_release(ClickRecognizerRef r,void *c){(void)r;(void)c;prv_raw_release(2);}
+
+static bool prv_selection_rect(const TimerUiView *view, TimerMotionRect *rect) {
+  if(view->screen==SCREEN_LIST) {
+    const TimerListWindow list=timer_ui_list_window(view);
+    if(!list.menu)return false;
+    *rect=(TimerMotionRect){0,timer_ui_list_top(view)+(int)(list.menu-1-list.first)*TIMER_LIST_ROW_STRIDE,166,TIMER_LIST_ROW_HEIGHT};
+  } else if(view->screen==SCREEN_OPTIONS)
+    *rect=(TimerMotionRect){0,timer_ui_option_top(view)+(int)view->option*TIMER_OPTION_STRIDE,166,TIMER_OPTION_HEIGHT};
+  else if(view->screen==SCREEN_CONFIRM)
+    *rect=(TimerMotionRect){0,TIMER_CONFIRM_TOP+(int)view->confirm_choice*TIMER_CONFIRM_STRIDE,166,TIMER_CONFIRM_HEIGHT};
+  else if(view->screen==SCREEN_EDITOR)
+    *rect=(TimerMotionRect){5+(int)view->edit_field*53,96,50,52};
+  else return false;
+  return true;
+}
+
+static void prv_animate_ui(const TimerUiView *before, bool repeating, ButtonId button,
+                           uint32_t previous_value) {
+  const TimerUiView after=prv_view();
+  const bool pending=before->selection_transition;
+  TimerMotionRect from,to;
+  const bool have_from=prv_selection_rect(before,&from),have_to=prv_selection_rect(&after,&to);
+  if(pending)from=before->selection_rect;
+  prv_stop_ui_motion();
+  if(repeating||!s_focused||before->screen!=after.screen||!have_from||!have_to)return;
+  if(after.screen==SCREEN_LIST&&
+      timer_ui_list_window(before).first!=timer_ui_list_window(&after).first)return;
+  if(after.screen==SCREEN_EDITOR) {
+    const uint32_t seconds=s_edit[0]*3600+s_edit[1]*60+s_edit[2];
+    /* Locked and invalid cells keep their explicit semantic fill. */
+    if(s_edit[0]==24||seconds<ACTIVITY_TIMER_MIN_SECONDS)return;
+    if(before->edit_field!=after.edit_field)s_ui_motion=UI_MOTION_FIELD;
+    else if(button==BUTTON_ID_UP||button==BUTTON_ID_DOWN) {
+      s_ui_motion=UI_MOTION_VALUE;
+      s_ui_previous_value=previous_value;
+      s_ui_value_direction=button==BUTTON_ID_UP?-1:1;
+    }
+  } else if(from.y!=to.y) {
+    /* Skips and scroll changes settle immediately. Animate only one visible
+     * neighbour so a rapid event cannot send the highlight through the page. */
+    const int step=after.screen==SCREEN_LIST?TIMER_LIST_ROW_STRIDE:after.screen==SCREEN_OPTIONS?TIMER_OPTION_STRIDE:TIMER_CONFIRM_STRIDE;
+    if(from.y-to.y>step||to.y-from.y>step)return;
+    s_ui_motion=UI_MOTION_MENU;
+  }
+  if(s_ui_motion==UI_MOTION_NONE)return;
+  s_ui_from=from;s_ui_to=to;s_ui_motion_screen=s_screen;
+  s_ui_motion_started=prv_millis();prv_ui_motion_tick(NULL);
+}
+
 static void prv_motion_tick(void *context) {
   (void)context;s_motion_timer=NULL;
   const uint32_t elapsed=prv_millis()-s_motion_started;
@@ -612,7 +761,9 @@ static void prv_motion_tick(void *context) {
 
 static void prv_transition(void) {
   prv_stop_motion();
-  if (s_window) window_set_background_color(s_window,s_screen==SCREEN_ALARM?GColorBlack:GColorWhite);
+  prv_stop_ui_motion();
+  prv_stop_icon_motion();
+  if (s_window) window_set_background_color(s_window,s_screen==SCREEN_ALARM||s_dark?GColorBlack:GColorWhite);
   prv_refresh();
 }
 
@@ -632,7 +783,7 @@ static void prv_rotate_glass(int from, int to) {
 
 static void prv_focus(bool focused) {
   s_focused=focused;
-  if (!focused) prv_stop_motion();
+  if (!focused) { prv_stop_motion();prv_stop_ui_motion();prv_stop_icon_motion(); }
   else { prv_finish();prv_refresh(); }
 }
 
@@ -792,10 +943,16 @@ static void prv_press(ButtonId button) {
 static void prv_click(ClickRecognizerRef recognizer, void *context) {
   (void)context;
   const ButtonId button=click_recognizer_get_button_id(recognizer);
-  if (!click_recognizer_is_repeating(recognizer)) s_repeat_screen=s_screen;
+  const bool repeating=click_recognizer_is_repeating(recognizer);
+  if (!repeating) s_repeat_screen=s_screen;
   else if (s_repeat_screen!=s_screen || (s_screen!=SCREEN_LIST &&
       s_screen!=SCREEN_EDITOR && s_screen!=SCREEN_OPTIONS)) return;
   const Screen before=s_screen;
+  /* Activation settles the visual selection before consuming its immediate
+   * logical target, matching MenuLayer without delaying the action. */
+  if(button==BUTTON_ID_SELECT)prv_stop_ui_motion();
+  const TimerUiView previous_view=prv_view();
+  const uint32_t previous_edit_value=s_edit[s_edit_field];
   const unsigned previous_slot=s_selected;
   const uint32_t previous_run=s_selected<TIMER_COLLECTION_CAPACITY?
       s_collection.slots[s_selected].run:0;
@@ -808,6 +965,7 @@ static void prv_click(ClickRecognizerRef recognizer, void *context) {
           prv_millis()-s_motion_started,300u):prv_glass_pose();
   prv_press(button);
   if (s_screen!=before) prv_transition();
+  else prv_animate_ui(&previous_view,repeating,button,previous_edit_value);
   if(s_screen==SCREEN_DETAIL&&s_selected<TIMER_COLLECTION_CAPACITY) {
     const ActivityTimerModel *timer=&s_collection.slots[s_selected];
     if(before==SCREEN_EDITOR&&
@@ -829,6 +987,9 @@ static void prv_click_config(void *context) {
   window_single_repeating_click_subscribe(BUTTON_ID_DOWN,150,prv_click);
   window_single_click_subscribe(BUTTON_ID_SELECT,prv_click);
   window_single_click_subscribe(BUTTON_ID_BACK,prv_click);
+  window_raw_click_subscribe(BUTTON_ID_UP,prv_up_press,prv_up_release,NULL);
+  window_raw_click_subscribe(BUTTON_ID_SELECT,prv_select_press,prv_select_release,NULL);
+  window_raw_click_subscribe(BUTTON_ID_DOWN,prv_down_press,prv_down_release,NULL);
 }
 
 static void prv_tick(struct tm *tick_time, TimeUnits units_changed) {
@@ -855,13 +1016,14 @@ static void prv_init(void) {
   TIMER_DIAG("launch reason=%d wakeup=%d id=%ld cookie=%ld",(int)launch_reason(),wakeup_launch,(long)launch_id,(long)cookie);
   (void)wakeup_launch;(void)launch_id;(void)cookie;
   prv_load();
+  s_dark=timer_appearance_load();
   timer_glance_update(&s_collection, prv_now());
   if (persist_exists(WAKEUP_KEY))s_wakeup=persist_read_int(WAKEUP_KEY);
   uint32_t previous_ticket=0;persist_read_data(PUBLICATION_KEY,&previous_ticket,sizeof(previous_ticket));
   pa_publisher_init(&s_publisher,previous_ticket,connection_service_peek_pebble_app_connection());
   timer_fonts_init();
   s_window=window_create();
-  window_set_background_color(s_window,GColorWhite);
+  window_set_background_color(s_window,s_dark?GColorBlack:GColorWhite);
   window_set_click_config_provider(s_window,prv_click_config);
   Layer *root=window_get_root_layer(s_window);
   s_canvas=layer_create(layer_get_bounds(root));
@@ -887,7 +1049,7 @@ static void prv_init(void) {
 
 static void prv_deinit(void) {
   TIMER_DIAG("exit alarm=%ld deadline=%lu dirty=%u",(long)s_wakeup,(unsigned long)s_alarm_deadline,s_dirty);
-  s_ready=false;prv_stop_motion();
+  s_ready=false;prv_stop_motion();prv_stop_ui_motion();prv_stop_icon_motion();
   timer_alarm_feedback_deinit();
   timer_glance_deinit();
   if (s_retry_timer)app_timer_cancel(s_retry_timer);

@@ -5,6 +5,7 @@ SDK's 60-second exclusion interval. It is explicitly cleared before returning.
 Never run this storage-replacing procedure against a physical watch.
 """
 from pathlib import Path
+from repo_workflow import candidate as candidate_pbw, qa_output
 import argparse
 import hashlib
 import json
@@ -24,9 +25,9 @@ from PIL import Image
 
 ROOT = Path(__file__).resolve().parents[1]
 VERSION = json.loads((ROOT / 'package.json').read_text())['version']
-OUT = Path(environ.get('TIMER_QA_OUTPUT', str(ROOT / 'docs/qa' / VERSION / 'native'))) / 'errors'
+OUT = Path(environ.get('TIMER_QA_OUTPUT', str(qa_output(ROOT, '') / 'native'))) / 'errors'
 OUT.mkdir(parents=True, exist_ok=True)
-FINAL = ROOT / 'dist' / ('Timer-' + VERSION + '.pbw')
+FINAL = candidate_pbw(ROOT, 'Timer')
 NATIVE = Path(environ.get('TIMER_QA_NATIVE_PBW', ROOT / 'build/timer-error-native-only.pbw'))
 FIXTURE = ROOT / 'tests/wakeup-conflict-fixture/build/wakeup-conflict-fixture.pbw'
 TARGET = uuid.UUID('50e9ef12-a5ab-4369-a3b5-3447bfba5151')

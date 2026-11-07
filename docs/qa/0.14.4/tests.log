@@ -1,0 +1,55 @@
+
+> pebble-app-timer@0.14.4 test
+> python3 scripts/test.py
+
+timer model: lifecycle, persistence, expiry and boundary checks passed
+timer collection: migration, eight slots, clocks, revisions, editing and persistence passed
+timer fonts: 86,401 countdown bounds, fixed cells, glyph coverage and raster samples passed
+timer UI: conserved sand, monotonic 24h progress, rigid state orientations and bounded finite easing passed
+timer UI motion: rigid120ms choices, rapid reverse, elastic editor bounds and finite feedback passed
+timer glance runtime: UTC collisions, latest state, snapshot ownership, persisted reopen, bounded exit and shared-store Appearance coexistence passed
+timer alarm feedback: repeated native pulses, Quiet Time, pending masks, cancellation and timer failure recovery passed
+timer appearance: isolated key, default/reopen, unchanged-write suppression, failures and readback checks passed
+✔ schema 4 cold source preserves owner clock and exposes only app navigation (6.555459ms)
+✔ schema 4 empty withdrawal after expiry keeps a newer complete-response header (2.196991ms)
+✔ summary omits exact native duration labels and preserves meaningful instance names (9.86563ms)
+✔ schema 4 pause expiry and completion acknowledgement survive cold plugin requests (3.282443ms)
+✔ native payload is saved by PKJS and read by a separate cold plugin runtime (2.463217ms)
+✔ pause and cancel update the saved run without deriving completion on the phone (0.848771ms)
+✔ storage failure never emits a successful application receipt (0.592811ms)
+✔ polling does not renew the original native lease (0.666354ms)
+✔ timer slots survive cold reads and replace old offline runs independently (3.663642ms)
+✔ invalid native slot cannot acknowledge or replace another timer (0.688547ms)
+✔ one activity manifest declaration covers summaries and every compatibility source (0.868575ms)
+✔ cold simple Timer activity supplies one countdown without mandatory display labels or elapsed detail (2.574388ms)
+✔ simple Timer keeps a paused countdown fixed through the original five-minute window (1.950016ms)
+✔ simple Timer completion keeps the acknowledged hidden tombstone through cold reads (1.921468ms)
+✔ cold Timer card is compact while detailed providers retain elapsed from the same observation (1.840576ms)
+✔ paused card clocks stay fixed and a changed duration is a new source revision (1.087903ms)
+✔ old native snapshots still work without inventing an elapsed value (0.821072ms)
+✔ conflicting duration metadata cannot mutate an accepted revision (0.671986ms)
+✔ only native completion can retain a bounded result card (0.837006ms)
+✔ both source schemas hide an expired pause without losing its saved snapshot (3.716396ms)
+✔ resuming a hidden pause republishes both source schemas with a fresh countdown (2.083129ms)
+✔ Done hides a completed run durably without cancelling it or another timer (2.822014ms)
+✔ Reset withdraws the active timer durably while preserving its sibling and requiring a new run to Start (6.233041ms)
+✔ Reset withdraws the paused timer durably while preserving its sibling and requiring a new run to Start (5.572495ms)
+✔ failed Reset snapshot save leaves accepted activities intact and retries only when native sends again (1.878243ms)
+✔ bootstrap recovers a thrown bridge call without duplicate ready requests (0.818537ms)
+✔ bootstrap retries are bounded even when failure callbacks also throw (0.657109ms)
+✔ old transport callbacks cannot unlock the next in-flight receipt (0.604514ms)
+✔ an accepted native snapshot cancels pending bootstrap retries (0.685045ms)
+✔ a thrown receipt does not wedge later authoritative updates (1.260842ms)
+✔ a stale rejected snapshot does not cancel a necessary bootstrap retry (1.013431ms)
+✔ appearance config preserves a live Android writer through close/restart without touching timer snapshot keys (3.721869ms)
+✔ closed settings plugin changes only isolated appearance configuration (0.633165ms)
+✔ load exception stays unavailable, corrupt saved value requires explicit repair, and unconfirmed writes never report Saved (2.229255ms)
+ℹ tests 34
+ℹ suites 0
+ℹ pass 34
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 102.976364
+timer UI state: offscreen clocks, shared row windows, native completion and visible status invalidation passed

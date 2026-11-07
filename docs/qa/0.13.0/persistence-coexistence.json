@@ -1,0 +1,80 @@
+{
+  "result": "PASS",
+  "scope": "Actual native Appearance and AppGlance modules linked into the same key-addressed portable SDK store; no physical-watch claim",
+  "nativeNamespaces": {
+    "legacy": 2100,
+    "wakeup": 2101,
+    "publication": 2102,
+    "migration": 2103,
+    "appGlance": 2104,
+    "appearance": 2105,
+    "bankHeaders": [
+      2120,
+      2121
+    ],
+    "bankData": [
+      2130,
+      2145
+    ]
+  },
+  "checks": [
+    "Actual Appearance Dark write survives actual Glance checkpoint write",
+    "Actual Light preference write preserves all checkpoint bytes",
+    "Both modules deinitialize/reopen with saved appearance and a quiet valid cached checkpoint",
+    "Actual pause changes AppGlance while preserving appearance, then Dark preserves the new checkpoint",
+    "All native owner keys and both full bank ranges retain sentinels in the same store",
+    "Independent source-derived namespace audit proves every native persistence range pairwise disjoint"
+  ],
+  "regressionProof": {
+    "mutant": "Compile actual Appearance source with APPEARANCE_KEY changed from 2105 back to 2104 against the same shared-store regression",
+    "result": "REJECTED",
+    "exitCode": -6,
+    "assertion": "accepted==1 && persisted_size>4 && timer_appearance_load()"
+  },
+  "sourceSha256": {
+    "src/c/timer_appearance.c": "23496ee0aa971091cfffca92f8c6d8de936e31e1ca85f9c46dfb674e630a908d",
+    "src/c/timer_glance.c": "a4b8daf7567d86226ed94982c09666ec8c45e3cc70e6f7e93920236f7e9f305a",
+    "tests/test_timer_appearance.c": "a0e36bcf084bb148fcaec9e840f8e49ff09b2a10f3c1a147ea51a2d6c8aaa07f",
+    "tests/test_timer_glance_runtime.c": "13d9d0d986f63bff06be06c4bf0e967228ef32edbc9a1c82bbf3d843e0d034c0",
+    "tests/test_timer_persistence_keys.py": "889edc0947c808bb870134417604665bad80946f80c677d4ca8eb421d26041aa"
+  },
+  "nativeEvidence": "native-ui-system/report.json#proofs.realGlanceAndAppearanceCoexistence",
+  "limits": [
+    "Portable tests simulate the PebbleOS storage/AppGlance boundary; actual QEMU probe evidence is separately recorded",
+    "No migration from the broken2104 local candidate is provided: that candidate was not published"
+  ],
+  "pbwSha256": "9cc865102b2f74c83bbd9d624c0fbbb3687edd51844f7866ea413c20360a3f94",
+  "nativeProbeEvidence": {
+    "darkAfterGlance": {
+      "3000": 1,
+      "3001": 60,
+      "3002": 1413958723,
+      "3003": 1,
+      "3004": 4,
+      "3005": 2,
+      "3006": 508209668,
+      "3007": 3480590851
+    },
+    "lightAfterTheme": {
+      "3000": 1,
+      "3001": 60,
+      "3002": 1413958723,
+      "3003": 1,
+      "3004": 4,
+      "3005": 1,
+      "3006": 508209668,
+      "3007": 3480590851
+    },
+    "lightAfterSecondGlance": {
+      "3000": 1,
+      "3001": 60,
+      "3002": 1413958723,
+      "3003": 1,
+      "3004": 4,
+      "3005": 1,
+      "3006": 2065297035,
+      "3007": 140820418
+    },
+    "themePreservesGlanceAndBankBytes": true
+  }
+}

@@ -7,11 +7,22 @@ TimerListWindow timer_ui_list_window(const TimerUiView *view) {
   if (!view || !view->collection) return list;
   list.count = timer_collection_visible_slots(view->collection, list.slots);
   list.menu = view->menu > list.count ? list.count : view->menu;
-  list.rows = view->issue && view->issue[0] ? 2 : 3;
-  list.first = list.menu > 1 ? list.menu - 2 : 0;
+  const bool replacing=list.count==TIMER_COLLECTION_CAPACITY&&timer_collection_can_create(view->collection)&&!list.menu;
+  list.rows = ((view->issue && view->issue[0]) || replacing) ? 1 : 2;
+  list.first = list.menu > list.rows ? list.menu - list.rows : 0;
   if (list.first + list.rows > list.count)
     list.first = list.count > list.rows ? list.count - list.rows : 0;
   return list;
+}
+
+int timer_ui_list_top(const TimerUiView *view) {
+  const TimerListWindow list=timer_ui_list_window(view);
+  const bool replacing=list.count==TIMER_COLLECTION_CAPACITY&&timer_collection_can_create(view->collection)&&!list.menu;
+  const int bottom=view->issue&&view->issue[0]?174:replacing?188:228;
+  // Keep the viewport's first-row anchor when only one timer fills it.
+  const unsigned rows=list.rows;
+  const int height=rows?TIMER_LIST_ROW_HEIGHT+(int)(rows-1)*TIMER_LIST_ROW_STRIDE:0;
+  return 40+(bottom-40-height)/2;
 }
 
 bool timer_ui_needs_tick(const TimerUiView *view) {

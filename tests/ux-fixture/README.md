@@ -14,6 +14,10 @@ Mode 5 seeds eight mixed running/paused/Ready timers, including equal-duration
 timers. Mode 6 seeds a valid 30-second V1 timer at the maximum bank generation.
 The exact Timer candidate then encounters its actual exhausted-generation
 write refusal while retaining native alarm/Back behavior.
+Mode 9 combines mode 5's eight mixed timers with the exhausted bank generation,
+so actual critical-warning layouts can prove every selected item remains visible
+in the one-row readable viewport. Mode 8 is the read-only Glance/appearance/bank
+checksum probe and never writes timer data.
 
 Build all variants from this directory after activating the Pebble SDK:
 

@@ -2,7 +2,8 @@
 """Bundle static CommonJS plugin code without a package-registry dependency.
 
 Usage: bundle-js.py ENTRY OUTPUT. The pebble-activities package resolves to the
-installed, pinned dependency; all other requests must be relative source files.
+installed, pinned dependency. The shared UI stylesheet is explicitly allowed;
+all other requests must be relative source files.
 No code is executed.
 """
 import json
@@ -12,6 +13,7 @@ import sys
 
 ROOT = Path(__file__).resolve().parent.parent
 LIBRARY = ROOT / 'node_modules/pebble-activities'
+UI_STYLE = ROOT / 'node_modules/pebble-xoce-ui/src/js/settings-style.js'
 REQUIRE = re.compile(r"\brequire\(\s*(['\"])([^'\"]+)\1\s*\)")
 
 
@@ -32,7 +34,9 @@ def bundle(entry):
 
         def replace(match):
             request = match.group(2)
-            if request == 'pebble-activities':
+            if request == 'pebble-xoce-ui/settings-style':
+                target = UI_STYLE
+            elif request == 'pebble-activities':
                 target = LIBRARY / 'src/js/index.js'
             elif request.startswith('pebble-activities/'):
                 target = LIBRARY / request[len('pebble-activities/'):]

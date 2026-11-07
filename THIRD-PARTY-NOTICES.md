@@ -45,3 +45,10 @@ provenance are recorded in `resources/fonts/font-provenance.json`.
 Timer bundles no external image or audio assets. Its hourglass and action icons
 are drawn procedurally. No source or assets from `coredevices/pebble-timer` are
 included.
+
+## XOCE shared UI
+
+The locally pinned `pebble-xoce-ui` 0.1.0 library supplies shared native drawing
+and phone-settings styles. It is authored by Xef and uses the same PolyForm
+Noncommercial license as this application. Its sources and license are included
+in the committed vendor archive; it is not a separately installed service.

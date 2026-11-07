@@ -1,0 +1,263 @@
+{
+  "result": "PASS",
+  "version": "0.14.2",
+  "pbwSha256": "b3963c8fe0606f5ce80ca87c3073a7d456d1ef776abf38d62616ff659ecb31ca",
+  "scope": "Actual exact-distribution Emery native payload; FIFO QEMU, QA fixture and simulated AppMessage receipts; no phone JS, physical watch or battery/timing measurement",
+  "nativePayloadSha256": {
+    "emery/app_resources.pbpack": "5e693142a8537851976c02a6a4b411168425cc8979875083100ca6182236e139",
+    "emery/manifest.json": "8f4c3df3bbc5baa4dfaa2fe32ebe82af3657f3e807a8915a88e5fe5a01d49d0c",
+    "emery/pebble-app.bin": "0dbdf7834bd0fe2588a0e57139ca7167c733c7a2a833b753df691e27d74a2d2f"
+  },
+  "captures": [
+    {
+      "file": "quick-list-before.png",
+      "sha256": "c2c8f420ab04754cd244de2cb9b2b9b5c8838e8ba95e5c21214fbd127632816e"
+    },
+    {
+      "file": "quick-list-0.png",
+      "sha256": "dfe9acbdd5d632c3c57208451d4a3e7890365f4a8a706380e754c5efb163a1d9"
+    },
+    {
+      "file": "quick-list-1.png",
+      "sha256": "f27685b8ef35671720972f6d4557abaacf5f121da70e31cbe1b7d6c058f47e20"
+    },
+    {
+      "file": "quick-list-2.png",
+      "sha256": "8891cfef7e337093db2075dd2333183397eba2c6e61106fd3cb6f92ad86d7458"
+    },
+    {
+      "file": "quick-list-3.png",
+      "sha256": "8891cfef7e337093db2075dd2333183397eba2c6e61106fd3cb6f92ad86d7458"
+    },
+    {
+      "file": "quick-list-4.png",
+      "sha256": "8891cfef7e337093db2075dd2333183397eba2c6e61106fd3cb6f92ad86d7458"
+    },
+    {
+      "file": "quick-list-5.png",
+      "sha256": "8891cfef7e337093db2075dd2333183397eba2c6e61106fd3cb6f92ad86d7458"
+    },
+    {
+      "file": "quick-list-6.png",
+      "sha256": "8891cfef7e337093db2075dd2333183397eba2c6e61106fd3cb6f92ad86d7458"
+    },
+    {
+      "file": "quick-options-before.png",
+      "sha256": "deea917ae64a810862503efd7e9eee0812917bcfbe1de6f29d9aa8a4afffedeb"
+    },
+    {
+      "file": "quick-options-0.png",
+      "sha256": "d240c49fc26a8f2ee2406a692c1ce14f3d86e286ff7c6e28417d426a2d63463a"
+    },
+    {
+      "file": "quick-options-1.png",
+      "sha256": "62d915e80937cb88738f94f075ff72986b6988464f71716754fb085a0c53addf"
+    },
+    {
+      "file": "quick-options-2.png",
+      "sha256": "62d915e80937cb88738f94f075ff72986b6988464f71716754fb085a0c53addf"
+    },
+    {
+      "file": "quick-options-3.png",
+      "sha256": "62d915e80937cb88738f94f075ff72986b6988464f71716754fb085a0c53addf"
+    },
+    {
+      "file": "quick-options-4.png",
+      "sha256": "62d915e80937cb88738f94f075ff72986b6988464f71716754fb085a0c53addf"
+    },
+    {
+      "file": "quick-options-5.png",
+      "sha256": "62d915e80937cb88738f94f075ff72986b6988464f71716754fb085a0c53addf"
+    },
+    {
+      "file": "quick-options-6.png",
+      "sha256": "62d915e80937cb88738f94f075ff72986b6988464f71716754fb085a0c53addf"
+    },
+    {
+      "file": "rapid-options-reverse-settled.png",
+      "sha256": "deea917ae64a810862503efd7e9eee0812917bcfbe1de6f29d9aa8a4afffedeb"
+    },
+    {
+      "file": "rapid-delete-keep-first.png",
+      "sha256": "d76cb17fdae6b5ed4d7728d1da7f2792b49d4ad55f272b821d557a052e12cc3c"
+    },
+    {
+      "file": "select-during-motion-paused-correct-slot.png",
+      "sha256": "759d56c525ba18456bc615238eb3bc4f0c1f3569206449329314a1043b6157c1"
+    },
+    {
+      "file": "paused-static-before.png",
+      "sha256": "759d56c525ba18456bc615238eb3bc4f0c1f3569206449329314a1043b6157c1"
+    },
+    {
+      "file": "paused-static-after.png",
+      "sha256": "759d56c525ba18456bc615238eb3bc4f0c1f3569206449329314a1043b6157c1"
+    },
+    {
+      "file": "single-up-editor.png",
+      "sha256": "9097cdad0f819519baf014ea772b5b5bd0d1c6666adfd196a7ccc9cb68170905"
+    },
+    {
+      "file": "held-up-editor.png",
+      "sha256": "9097cdad0f819519baf014ea772b5b5bd0d1c6666adfd196a7ccc9cb68170905"
+    },
+    {
+      "file": "editor-value-bump-before.png",
+      "sha256": "9097cdad0f819519baf014ea772b5b5bd0d1c6666adfd196a7ccc9cb68170905"
+    },
+    {
+      "file": "editor-value-bump-0.png",
+      "sha256": "1542e6b16a95a0460392f1bc5b25f10aedbd9c6dd4188593cf40f382eaf4e72a"
+    },
+    {
+      "file": "editor-value-bump-1.png",
+      "sha256": "1542e6b16a95a0460392f1bc5b25f10aedbd9c6dd4188593cf40f382eaf4e72a"
+    },
+    {
+      "file": "editor-value-bump-2.png",
+      "sha256": "1542e6b16a95a0460392f1bc5b25f10aedbd9c6dd4188593cf40f382eaf4e72a"
+    },
+    {
+      "file": "editor-value-bump-3.png",
+      "sha256": "1542e6b16a95a0460392f1bc5b25f10aedbd9c6dd4188593cf40f382eaf4e72a"
+    },
+    {
+      "file": "editor-value-bump-4.png",
+      "sha256": "1542e6b16a95a0460392f1bc5b25f10aedbd9c6dd4188593cf40f382eaf4e72a"
+    },
+    {
+      "file": "editor-value-bump-5.png",
+      "sha256": "1542e6b16a95a0460392f1bc5b25f10aedbd9c6dd4188593cf40f382eaf4e72a"
+    },
+    {
+      "file": "editor-value-bump-6.png",
+      "sha256": "1542e6b16a95a0460392f1bc5b25f10aedbd9c6dd4188593cf40f382eaf4e72a"
+    },
+    {
+      "file": "editor-field-advance-before.png",
+      "sha256": "1542e6b16a95a0460392f1bc5b25f10aedbd9c6dd4188593cf40f382eaf4e72a"
+    },
+    {
+      "file": "editor-field-advance-0.png",
+      "sha256": "316af0b5589ff8f30ca6a0c4dcb4b5d6b1495e23400f5d9affd4182ab57d130f"
+    },
+    {
+      "file": "editor-field-advance-1.png",
+      "sha256": "316af0b5589ff8f30ca6a0c4dcb4b5d6b1495e23400f5d9affd4182ab57d130f"
+    },
+    {
+      "file": "editor-field-advance-2.png",
+      "sha256": "316af0b5589ff8f30ca6a0c4dcb4b5d6b1495e23400f5d9affd4182ab57d130f"
+    },
+    {
+      "file": "editor-field-advance-3.png",
+      "sha256": "316af0b5589ff8f30ca6a0c4dcb4b5d6b1495e23400f5d9affd4182ab57d130f"
+    },
+    {
+      "file": "editor-field-advance-4.png",
+      "sha256": "316af0b5589ff8f30ca6a0c4dcb4b5d6b1495e23400f5d9affd4182ab57d130f"
+    },
+    {
+      "file": "editor-field-advance-5.png",
+      "sha256": "316af0b5589ff8f30ca6a0c4dcb4b5d6b1495e23400f5d9affd4182ab57d130f"
+    },
+    {
+      "file": "editor-field-advance-6.png",
+      "sha256": "316af0b5589ff8f30ca6a0c4dcb4b5d6b1495e23400f5d9affd4182ab57d130f"
+    },
+    {
+      "file": "action-idle.png",
+      "sha256": "ba89c4dabe67b9348dc78acab66e62daf737d2f43a4400e2c5e7a8ba3496b120"
+    },
+    {
+      "file": "action-pressed.png",
+      "sha256": "ebe05322d0117de8e4d9f87bb4be6c5d95c5dd8295afdb8f55e2407dcc23de5d"
+    },
+    {
+      "file": "action-release-settled.png",
+      "sha256": "eaf6a1b93e71696fcca332d9c8634c5d9bfbc5a81f298e96f90cc96e92167e58"
+    },
+    {
+      "file": "os-cover.png",
+      "sha256": "2e5a14bbefe37afd49cd8437c8404f6dd9efc39292bfd9dbaec73747d74c8d81"
+    },
+    {
+      "file": "os-call-ended.png",
+      "sha256": "c504b0f6dc96710b81ce40e0f60f3e36eabc50ef89071fe124dab8fa69aa9937"
+    },
+    {
+      "file": "after-cover-settled.png",
+      "sha256": "eaf6a1b93e71696fcca332d9c8634c5d9bfbc5a81f298e96f90cc96e92167e58"
+    },
+    {
+      "file": "after-cover-still.png",
+      "sha256": "eaf6a1b93e71696fcca332d9c8634c5d9bfbc5a81f298e96f90cc96e92167e58"
+    },
+    {
+      "file": "cold-reopen.png",
+      "sha256": "2dfc10eb8c5837b63c5c7fc37ad680b640924c732149284d6146987ec90ba543"
+    }
+  ],
+  "sampleElapsedMilliseconds": {
+    "list": [
+      161,
+      266,
+      361,
+      457,
+      556,
+      655,
+      757
+    ],
+    "options": [
+      154,
+      256,
+      350,
+      445,
+      540,
+      635,
+      730
+    ],
+    "value": [
+      358,
+      462,
+      562,
+      664,
+      768,
+      870,
+      969
+    ],
+    "field": [
+      272,
+      373,
+      473,
+      576,
+      678,
+      780,
+      882
+    ]
+  },
+  "quickOptionPositions": [
+    92,
+    112,
+    112,
+    112,
+    112,
+    112,
+    112
+  ],
+  "selectionDurationMs": 120,
+  "selectionHeightPixels": 38,
+  "gifNote": "Actual sampled native frames; transition dwell follows host acquisition intervals, before/after dwell aids review. Screenshot RPC is not hardware timing.",
+  "proofs": {
+    "selectDuringSelectionMotionUsesImmediateCorrectTarget": true,
+    "holdDoesNotLeakAcrossEditorEntry": true,
+    "editorCancelPreservesOwnerState": true,
+    "pausedBodyStatic": true,
+    "physicalPressMovesIconAndReleaseSettles": true,
+    "coverCancelsAndReturnStaysStill": true,
+    "coldReopen": true
+  },
+  "physicalDeviceVerified": false,
+  "freshStockDerivedFlash": true,
+  "qemuState": "/home/xela/Projekty/Pebble/.recovery-tools/emulator-timer-redesign-1794046972642877182"
+}

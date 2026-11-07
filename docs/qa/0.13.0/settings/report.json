@@ -1,0 +1,41 @@
+{
+  "result": "PASS",
+  "version": "0.13.0",
+  "scope": "Actual packaged optimized config HTML and handlers in Chromium, simulated SDK and independent Android stores;not real-phone/device verification",
+  "pbwSha256": "9cc865102b2f74c83bbd9d624c0fbbb3687edd51844f7866ea413c20360a3f94",
+  "configSha256": "90eb6a867da2161ebee3652600f52bcc5b5b7600cdf336086f9351de1debb554",
+  "checks": [
+    "one Appearance selector only; no writes/default saves or autofocus;320/360px light/dark;44px targets;no overflow",
+    "active PKJS owns exact confirmed Save;page stays open;Android teardown,reload and full browser restart preserve appearance;appearance transport never acts on timers",
+    "lost acknowledgment stays uncertain;explicit Reload saved reads actual stored value without falsely claiming rollback",
+    "newly started PKJS synchronizes plugin save;confirmed disappearance permits fallback;failed/mismatched acknowledgments retain draft",
+    "load failure retains unknown disabled choice;Retry reads saved state;corrupt record requires explicit repair",
+    "EN/CS Save states and controls;short viewport moves action area into document flow"
+  ],
+  "captures": [
+    {
+      "file": "settings-320-light.png",
+      "sha256": "666d0e6a31a67b16c5a1ae3742eb6d12136b36c71f35e8ae67fb0c206b689b4e"
+    },
+    {
+      "file": "settings-320-dark.png",
+      "sha256": "9c92cbe08f9fd6ee2368e71781b8624b67c8b202ecaa96c329fba4718a50df17"
+    },
+    {
+      "file": "settings-360-light.png",
+      "sha256": "7eabba5a61cffef5930952e1565310803b377cb8eac389d95e67b05b5685f386"
+    },
+    {
+      "file": "settings-360-dark.png",
+      "sha256": "1806b08c5140a8572628143776aaaed445e9a3ba92e1a16bd11236ca22951b5c"
+    },
+    {
+      "file": "settings-320-czech-saved.png",
+      "sha256": "a4dc8e006d136349e4e12214c4cc0031e0077baf2268eefedbd566b3e536665f"
+    },
+    {
+      "file": "settings-320-short-czech.png",
+      "sha256": "d4080a75b3975a79793c4d599de1c0f5ef983fb1728ddebf1e40f0cb7d2f8edd"
+    }
+  ]
+}

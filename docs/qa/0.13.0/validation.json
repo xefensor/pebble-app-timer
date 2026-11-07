@@ -1,0 +1,204 @@
+{
+  "version": "0.13.0",
+  "result": "PASS",
+  "status": "local candidate; no commit, push, tag or publication performed by this implementation",
+  "date": "2026-11-06",
+  "baselineCommit": "c4d3b8202393baa08db6ce5693610445a88b21d0",
+  "artifacts": {
+    "pbw": {
+      "path": "dist/Timer-0.13.0.pbw",
+      "bytes": 82792,
+      "sha256": "9cc865102b2f74c83bbd9d624c0fbbb3687edd51844f7866ea413c20360a3f94"
+    },
+    "debug": {
+      "path": "dist/Timer-0.13.0-debug.zip",
+      "bytes": 137300,
+      "sha256": "ef39174436088ae5215135e6a5603439fe11f6930a7598762fcd274f782fb7ad"
+    }
+  },
+  "build": {
+    "sdk": "4.33.1",
+    "platform": "emery",
+    "resourcesBytes": 22802,
+    "ramFootprintBytes": 36988,
+    "freeHeapBytes": 94084,
+    "warnings": [
+      "Existing SDK linker LOAD segment with RWX permissions; no C compilation warnings"
+    ]
+  },
+  "checks": [
+    {
+      "command": "npm test",
+      "result": "PASS",
+      "portableCSuites": 9,
+      "javascriptTests": 34,
+      "scope": "Native owner/model/collection, fonts/hourglass, Glance, alarm feedback, UI work/state and isolated appearance; phone storage/source contracts"
+    },
+    {
+      "command": "python3 -m unittest discover -s tests -p 'test_*.py'",
+      "result": "PASS",
+      "pythonTests": 45,
+      "scope": "Release/source/map/minification/config/module/artifact regressions"
+    },
+    {
+      "command": "npm run build",
+      "result": "PASS",
+      "scope": "Production SDK build plus optimized provider/PKJS, config and licensed resources"
+    },
+    {
+      "command": "node scripts/verify-timer-bundle.js build/verified-candidate",
+      "result": "PASS",
+      "scope": "Actual optimized PBW plugin/PKJS with separate DOM/native Android-style stores and exact appearance persistence ACK"
+    },
+    {
+      "command": "scripts/github-release.py validate_timer with committed-file accessor mapped to current working tree",
+      "result": "PASS",
+      "scope": "Exact working-tree artifact/source/map/native/config/plugin-rebuild audit; committed release prepare remains for after commit"
+    },
+    {
+      "command": "python3 scripts/check-timer-fonts.py --pbw dist/Timer-0.13.0.pbw",
+      "result": "PASS",
+      "report": "fonts.json"
+    },
+    {
+      "command": "node scripts/check-settings.cjs",
+      "result": "PASS",
+      "workflowGroups": 6,
+      "captures": 6,
+      "report": "settings/report.json",
+      "scope": "Actual packaged HTML/minified handlers in Chromium with simulated SDK bridge, including full browser restart; not a real phone"
+    },
+    {
+      "command": "python3 scripts/emulator-ui-system.py",
+      "result": "PASS",
+      "captures": 26,
+      "report": "native-ui-system/report.json",
+      "scope": "Exact distribution native binary/resources in fresh stock-derived isolated Emery QEMU; direct QA AppMessages plus a read-only same-UUID persistence probe, no phone JavaScript"
+    },
+    {
+      "command": "Actual Glance and Appearance modules in one key-addressed SDK store plus source-derived namespace audit",
+      "result": "PASS",
+      "report": "persistence-coexistence.json",
+      "scope": "Both write orders, quiet cold reopen, all owner/bank keys unchanged; compiled old-key2104 mutant is rejected"
+    }
+  ],
+  "visualReview": {
+    "result": "PASS",
+    "nativeFrames": [
+      "list-light.png",
+      "list-dark.png",
+      "running-dark.png",
+      "running-light.png",
+      "paused-light.png",
+      "paused-dark.png",
+      "options-dark.png",
+      "delete-dark-safe-default.png",
+      "delete-light-safe-default.png",
+      "delete-cancel-keeps-selection.png",
+      "ready-light.png",
+      "ready-dark.png",
+      "reopened-dark.png",
+      "remaining-editor-dark.png",
+      "remaining-editor-light.png",
+      "empty-light.png",
+      "empty-dark.png",
+      "new-editor-dark.png",
+      "alarm-dark-treatment.png",
+      "critical-list-dark.png",
+      "critical-delete-dark.png",
+      "critical-delete-light.png",
+      "critical-cancel-keeps-options.png",
+      "dark-after-glance-write-and-reopen.png",
+      "light-after-theme-write-and-reopen.png",
+      "light-after-second-glance-write-and-reopen.png"
+    ],
+    "phoneFrames": [
+      "settings-320-light.png",
+      "settings-320-dark.png",
+      "settings-360-light.png",
+      "settings-360-dark.png",
+      "settings-320-czech-saved.png",
+      "settings-320-short-czech.png"
+    ],
+    "notes": "All final frames inspected. Native UI title, local clock, sidebar and palette asserted separately for every frame; no OS Wakeup overlay is accepted as Timer UI. Reopening capture verifies persisted appearance after launch, not literal frame-one timing."
+  },
+  "invalidatedRun": {
+    "report": "native-ui-system-reused-flash-invalidated/report.json",
+    "result": "INVALIDATED",
+    "reason": "A reused emulator flash displayed a stock missed-Wakeup modal, intercepted input and invalidated the earlier automated PASS. It is excluded from passing evidence. The replacement uses unique fresh flash and explicit app visibility assertions."
+  },
+  "preservedSourceIdentity": {
+    "src/c/timer_model.c": "972b52fd2ed6d2e14cc54acd4e274baa421accb9b0aa1b174ddf1092ea32f75f",
+    "src/c/timer_model.h": "6c6b9c5fd17e18da23f0edb61aa4e24b56f46e086706bd921e5ce88ce8492858",
+    "src/c/timer_collection.c": "289d3e354ef51acafca4d5f62c216c410aaa2f2f5491afd580a8d593fad5eb63",
+    "src/c/timer_collection.h": "d0e7f61a03fbbc57eb32ee7dffb18d4111cc78a067ddeed83e6789969f7abbc2",
+    "src/c/timer_glance.c": "a4b8daf7567d86226ed94982c09666ec8c45e3cc70e6f7e93920236f7e9f305a",
+    "src/c/timer_alarm_feedback.c": "34ee88328b3bdfc0bf9ae898c56a90a721519840b8ff8052ee8fc7a026c8aac4",
+    "src/c/timer_hourglass.h": "9a048638957b89cb7eac48f08b7610badf91ad926047b6376c6005a78633c13f",
+    "src/c/generated_clock_glyphs.h": "d24e8bbe3f938069b14de4483adadca00cc211082274f72e4b55ef8fc3a95981",
+    "resources/fonts/RobotoCondensed-Bold.ttf": "6e949e8aa3f6e0b4db88aacafccf0c0e55e708c4564c8f3d145792adbbf80ef6",
+    "vendor/pebble-activities-0.4.0.tgz": "9e640aea91d08633e91e59dab3d1e0ee6243efe0109d971e42d356a4d67affbe"
+  },
+  "design": {
+    "appearanceLocation": "Phone settings only",
+    "phoneLanguages": [
+      "en",
+      "cs"
+    ],
+    "nativePreferenceKey": 2105,
+    "appendOnlyMessageKeys": {
+      "TIMER_APPEARANCE": 1024,
+      "TIMER_APPEARANCE_VERSION": 1025
+    },
+    "activitiesVersion": "0.4.0",
+    "timerControls": "Watch-owned; no phone editor or Dashboard action proxy",
+    "savedMeaning": "Exact phone preference persistence; native delivery is separately retried when the app is open/connected",
+    "appGlanceCheckpointKey": 2104
+  },
+  "limits": [
+    "No real phone WebView or actual Android SDK/store permission validation",
+    "No physical watch readability/button/vibration validation",
+    "No battery or performance measurement",
+    "Emulator firmware is PebbleOS 4.33.2 from the local 4.33.1 SDK, not current physical PebbleOS 4.44.x",
+    "Native preference write failure/readback behavior is portable-SDK tested; the Theme not saved warning is not an actual storage-full emulator capture",
+    "No committed release preparation or publication performed"
+  ],
+  "invalidatedPersistenceCandidate": {
+    "report": "native-ui-system-key-collision-invalidated/report.json",
+    "result": "INVALIDATED",
+    "reason": "Unpublished local candidate mistakenly used existing AppGlance key2104 for appearance. Superseded by independent Appearance2105, shared-store and source-derived namespace regressions, and actual native read-only persistence probes. No migration from that broken local candidate is required."
+  },
+  "nativeCoexistenceProof": {
+    "darkAfterGlance": {
+      "3000": 1,
+      "3001": 60,
+      "3002": 1413958723,
+      "3003": 1,
+      "3004": 4,
+      "3005": 2,
+      "3006": 508209668,
+      "3007": 3480590851
+    },
+    "lightAfterTheme": {
+      "3000": 1,
+      "3001": 60,
+      "3002": 1413958723,
+      "3003": 1,
+      "3004": 4,
+      "3005": 1,
+      "3006": 508209668,
+      "3007": 3480590851
+    },
+    "lightAfterSecondGlance": {
+      "3000": 1,
+      "3001": 60,
+      "3002": 1413958723,
+      "3003": 1,
+      "3004": 4,
+      "3005": 1,
+      "3006": 2065297035,
+      "3007": 140820418
+    },
+    "themePreservesGlanceAndBankBytes": true
+  }
+}

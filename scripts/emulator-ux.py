@@ -6,6 +6,7 @@ TIMER_QA_PIPE=1 only for this workspace's isolated FIFO transport. Direct Python
 AppMessage observations/receipts are a QA fixture, not a phone/plugin test.
 """
 from pathlib import Path
+from repo_workflow import candidate as candidate_pbw, qa_output
 import argparse
 import atexit
 import hashlib
@@ -29,12 +30,12 @@ from PIL import Image
 
 ROOT = Path(__file__).resolve().parents[1]
 VERSION = json.loads((ROOT / 'package.json').read_text())['version']
-OUT = Path(os.environ.get('TIMER_QA_OUTPUT', ROOT / 'docs/qa' / VERSION / 'native'))
+OUT = Path(os.environ.get('TIMER_QA_OUTPUT', qa_output(ROOT, '') / 'native'))
 OUT.mkdir(parents=True, exist_ok=True)
 PHASE = os.environ.get('TIMER_QA_PHASE', 'migration')
 REQUIRED_PHASES = set(os.environ.get('TIMER_QA_EXPECT_PHASES',
     'migration,ux,capacity,launcher,nearby,equal').split(','))
-FINAL = ROOT / 'dist' / ('Timer-' + VERSION + '.pbw')
+FINAL = candidate_pbw(ROOT, 'Timer')
 NATIVE = Path(os.environ.get('TIMER_QA_NATIVE_PBW', ROOT / 'build/timer-ux-native-only.pbw'))
 TARGET = uuid.UUID('50e9ef12-a5ab-4369-a3b5-3447bfba5151')
 digest = lambda value: hashlib.sha256(value).hexdigest()
@@ -77,10 +78,17 @@ class Connection(PebbleCommand):
     valid_connections = {'emulator'}
 
 if os.environ.get('TIMER_QA_PIPE') == '1':
+    qa_state=Path(os.environ.get('PEBBLE_QA_STATE', ROOT.parent / '.recovery-tools/emulator'))
+    qa_flash=Path(os.environ.get('PEBBLE_QA_FLASH', qa_state/'spi-flash.bin'))
+    phase_environment={'flash':str(qa_flash),'qemuState':str(qa_state),
+        'isolatedTimerStockDerivedFlash':bool(os.environ.get('PEBBLE_QA_STATE') and not qa_flash.exists()),
+        'watchClockChangedDuringPhase':False}
     sys.path.insert(0, str(ROOT.parent / 'recovery-validation'))
     from pipe_emulator import connect
     p = connect()
 else:
+    phase_environment={'flash':os.environ.get('PEBBLE_QA_FLASH','SDK-managed emulator flash'),
+        'isolatedTimerStockDerivedFlash':False,'watchClockChangedDuringPhase':False}
     command = Connection()
     command._set_debugging(0)
     p = command._connect(argparse.Namespace(v=0, emulator='emery', sdk=None, vnc=False, sunlight=False))
@@ -110,11 +118,7 @@ def save_messages():
         copied = archive / (PHASE + '-' + digest(content)[:16] + '.log')
         copied.write_bytes(content)
         report.setdefault('firmwareLogs', {})[PHASE] = {'path': str(copied), 'sha256': digest(content)}
-    report.setdefault('phaseEnvironments', {})[PHASE] = {
-        'flash': os.environ.get('PEBBLE_QA_FLASH', 'shared workspace emulator flash'),
-        'isolatedTimerStockDerivedFlash': bool(os.environ.get('PEBBLE_QA_FLASH')),
-        'watchClockChangedDuringPhase': False,
-    }
+    report.setdefault('phaseEnvironments', {})[PHASE] = phase_environment
     save()
 
 atexit.register(save_messages)

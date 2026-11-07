@@ -166,6 +166,20 @@ class TimerReleaseTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "font resource metadata"):
             self.validate({**files, "appinfo.json": json.dumps(info).encode()})
 
+    def test_outline_font_notices_remain_mandatory_without_bitmap_resources(self):
+        files = self.with_custom_fonts()
+        self.package["pebble"]["resources"] = {"media": []}
+        self.write("package.json", json.dumps(self.package).encode())
+        self.write("src/c/generated_clock_glyphs.h", b"fixture linked outline input")
+        info = json.loads(files["appinfo.json"])
+        info["resources"] = {"media": []}
+        files["appinfo.json"] = json.dumps(info).encode()
+        self.commit_sha = self.commit()
+        self.validate(files)
+        for name in ("licenses/OFL-Fredoka.txt", "licenses/OFL-RobotoCondensed.txt"):
+            with self.subTest(name=name), self.assertRaisesRegex(ValueError, "font license"):
+                self.validate({key: value for key, value in files.items() if key != name})
+
     def test_pkjs_map_and_executed_module_both_must_match(self):
         # Workspace-local SDK installs emit a relative source path. Normalizing
         # that SDK module name retains duplicate and compiled-code checks.
@@ -290,6 +304,11 @@ class TimerReleaseTests(unittest.TestCase):
         self.assertEqual(selected["releases/Timer-1.2.3.pbw"], release.digest(timer.read_bytes()))
         self.assertEqual(selected["releases/Timer-1.2.3-source.zip"], release.digest(source.read_bytes()))
         self.assertEqual(selected['releases/Timer-1.2.3-debug.zip'], release.digest(debug_bytes))
+        frozen = {path: path.read_bytes() for path in self.root.joinpath('releases').glob('Timer-1.2.3*')}
+        with self.assertRaisesRegex(ValueError, 'Frozen Timer artifacts'):
+            packager.package(self.root)
+        for path, content in frozen.items():
+            self.assertEqual(path.read_bytes(), content)
 
     def test_unbuilt_or_wrong_identity_pbw_does_not_touch_frozen_artifacts(self):
         self.write("releases/Timer-1.2.3.pbw", b"frozen")

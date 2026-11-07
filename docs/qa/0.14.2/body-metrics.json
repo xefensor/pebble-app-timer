@@ -1,0 +1,44 @@
+{
+  "scope": "Exact SDK PFO ink bounds; extended Latin017F, apostrophe and ellipsis verified",
+  "resources": [
+    {
+      "resource": "FONT_BODY_22",
+      "bytes": 10620,
+      "glyphs": 322,
+      "sha256": "68e5d05cb780a1d66502bfa30b417db6785b377ebbb1d486c1eef94c64319f91",
+      "extendedLatinGlyphsVerified": [
+        "\u0158",
+        "\u016e",
+        "\u017e",
+        "\u2019",
+        "\u2026"
+      ]
+    },
+    {
+      "resource": "FONT_BODY_24",
+      "bytes": 11788,
+      "glyphs": 322,
+      "sha256": "84f4250046b88a6018b0e91853c82e20c53f625e60f1c823101f78821e969595",
+      "extendedLatinGlyphsVerified": [
+        "\u0158",
+        "\u016e",
+        "\u017e",
+        "\u2019",
+        "\u2026"
+      ]
+    },
+    {
+      "resource": "FONT_BODY_26",
+      "bytes": 13104,
+      "glyphs": 322,
+      "sha256": "7f636f3801c547aa87baa84b930a4553947b55cb137d4e5bfab59a5882679da5",
+      "extendedLatinGlyphsVerified": [
+        "\u0158",
+        "\u016e",
+        "\u017e",
+        "\u2019",
+        "\u2026"
+      ]
+    }
+  ]
+}

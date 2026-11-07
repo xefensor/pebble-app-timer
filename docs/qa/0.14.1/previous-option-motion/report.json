@@ -1,0 +1,69 @@
+{
+  "version": "0.14.0",
+  "pbwSha256": "49552faee79b82c07e44888eb63726945b39370c3008a8e1e14db46a9bec51b0",
+  "nativePayloadSha256": {
+    "emery/app_resources.pbpack": "b58d8f0fc04367f823045aafa7724dee47b1fe6674411d117e32909b3f527a31",
+    "emery/manifest.json": "74d641e15df25178238e73d26fea7807009692eda4dd305c1229199c8ac46eee",
+    "emery/pebble-app.bin": "f7d378d566969ed5e6b9af56e609b89d1f1ac4f9c2eae5ca9e3ecb4adf7e0456"
+  },
+  "captures": [
+    {
+      "file": "previous-0.14.0-option-00.png",
+      "elapsedMs": 141,
+      "sha256": "65f95bd891f2f6f3b43d86a6debd528ff117a16f676e9554011326106a68f208"
+    },
+    {
+      "file": "previous-0.14.0-option-01.png",
+      "elapsedMs": 235,
+      "sha256": "9360acd79827653389ae6c36942b726f1031cd4eff9f614091d448a6cdb6d632"
+    },
+    {
+      "file": "previous-0.14.0-option-02.png",
+      "elapsedMs": 326,
+      "sha256": "851c3f908132ec04f75299b0516788ff71f9888066fe46ff1f4146e554da247f"
+    },
+    {
+      "file": "previous-0.14.0-option-03.png",
+      "elapsedMs": 419,
+      "sha256": "e4566a835d6df6b01df9efea47b9dc83a50253cd615bc5f38e53c9a7a4c54151"
+    },
+    {
+      "file": "previous-0.14.0-option-04.png",
+      "elapsedMs": 507,
+      "sha256": "5a5dcf09b071eff316506a0d73296beabe2056ef837e6f87254f1b9e4fc44047"
+    },
+    {
+      "file": "previous-0.14.0-option-05.png",
+      "elapsedMs": 595,
+      "sha256": "5a5dcf09b071eff316506a0d73296beabe2056ef837e6f87254f1b9e4fc44047"
+    },
+    {
+      "file": "previous-0.14.0-option-06.png",
+      "elapsedMs": 683,
+      "sha256": "5a5dcf09b071eff316506a0d73296beabe2056ef837e6f87254f1b9e4fc44047"
+    },
+    {
+      "file": "previous-0.14.0-option-07.png",
+      "elapsedMs": 771,
+      "sha256": "5a5dcf09b071eff316506a0d73296beabe2056ef837e6f87254f1b9e4fc44047"
+    },
+    {
+      "file": "previous-0.14.0-option-08.png",
+      "elapsedMs": 859,
+      "sha256": "5a5dcf09b071eff316506a0d73296beabe2056ef837e6f87254f1b9e4fc44047"
+    },
+    {
+      "file": "previous-0.14.0-option-09.png",
+      "elapsedMs": 947,
+      "sha256": "5a5dcf09b071eff316506a0d73296beabe2056ef837e6f87254f1b9e4fc44047"
+    },
+    {
+      "file": "previous-0.14.0-option-10.png",
+      "elapsedMs": 1035,
+      "sha256": "5a5dcf09b071eff316506a0d73296beabe2056ef837e6f87254f1b9e4fc44047"
+    }
+  ],
+  "historicalArtifactChanged": false,
+  "scope": "Actual old0.14.0 distribution-native option frames in isolated QEMU. Stored with current review evidence for comparison; no old QA or artifact was changed.",
+  "gifTiming": "Host screenshot acquisition intervals;350/500ms before/after dwell. Not physical-watch timing."
+}

@@ -1,0 +1,913 @@
+{
+  "result": "PASS",
+  "version": "0.14.3",
+  "pbwSha256": "d3daa09416d7353095f55aba4e62883dcbd6fe8fc88a01f916e5d6ffe71e8d53",
+  "nativePayloadSha256": {
+    "emery/app_resources.pbpack": "5e693142a8537851976c02a6a4b411168425cc8979875083100ca6182236e139",
+    "emery/manifest.json": "d8ddebd0713e5f04d9299c7e42bae8e8400406e426e0c93875d02808b24e3d40",
+    "emery/pebble-app.bin": "74b7de6359b87b148f96b496f9e690613c58987c24b3c9511302bcdafdb6e4a7"
+  },
+  "captures": [
+    {
+      "file": "list-light.png",
+      "sha256": "7aeec64ee8c550979ea0b88a4fd31b01c3aaa57bf9a5d98a552a6d074adde114",
+      "dark": false,
+      "footer": false,
+      "dividerY": [
+        38,
+        221
+      ],
+      "icons": [
+        {
+          "button": "Up",
+          "pixels": 54,
+          "inkBounds": [
+            174,
+            43,
+            192,
+            53
+          ]
+        },
+        {
+          "button": "Select",
+          "pixels": 103,
+          "inkBounds": [
+            173,
+            105,
+            193,
+            123
+          ]
+        },
+        {
+          "button": "Down",
+          "pixels": 54,
+          "inkBounds": [
+            174,
+            175,
+            192,
+            185
+          ]
+        }
+      ],
+      "pressedButton": null
+    },
+    {
+      "file": "running-light.png",
+      "sha256": "5d2c71176e52ee09eb2653a223ee736616de1f6aeec2bd1d8361d6fe10d2d054",
+      "dark": false,
+      "footer": true,
+      "dividerY": [
+        38,
+        191
+      ],
+      "icons": [
+        {
+          "button": "Up",
+          "pixels": 88,
+          "inkBounds": [
+            176,
+            40,
+            191,
+            57
+          ]
+        },
+        {
+          "button": "Select",
+          "pixels": 240,
+          "inkBounds": [
+            174,
+            104,
+            191,
+            123
+          ]
+        },
+        {
+          "button": "Down",
+          "pixels": 51,
+          "inkBounds": [
+            173,
+            178,
+            193,
+            182
+          ]
+        }
+      ],
+      "pressedButton": null
+    },
+    {
+      "file": "pause-press-immediate-play.png",
+      "sha256": "fc43732de6af7187ec563c9806d87399261d75ed9bb4dd1dd504a866d9b8ce5f",
+      "dark": false,
+      "footer": true,
+      "dividerY": [
+        38,
+        191
+      ],
+      "icons": [
+        {
+          "button": "Up",
+          "pixels": 88,
+          "inkBounds": [
+            176,
+            40,
+            191,
+            57
+          ]
+        },
+        {
+          "button": "Select",
+          "pixels": 126,
+          "inkBounds": [
+            182,
+            106,
+            195,
+            122
+          ]
+        },
+        {
+          "button": "Down",
+          "pixels": 51,
+          "inkBounds": [
+            173,
+            178,
+            193,
+            182
+          ]
+        }
+      ],
+      "pressedButton": "Select"
+    },
+    {
+      "file": "paused-after-release.png",
+      "sha256": "5a34d9b6ff44b582b39799dd53e36526248c205e4a04aa551e19bdca9c50a580",
+      "dark": false,
+      "footer": true,
+      "dividerY": [
+        38,
+        191
+      ],
+      "icons": [
+        {
+          "button": "Up",
+          "pixels": 88,
+          "inkBounds": [
+            176,
+            40,
+            191,
+            57
+          ]
+        },
+        {
+          "button": "Select",
+          "pixels": 126,
+          "inkBounds": [
+            179,
+            106,
+            192,
+            122
+          ]
+        },
+        {
+          "button": "Down",
+          "pixels": 51,
+          "inkBounds": [
+            173,
+            178,
+            193,
+            182
+          ]
+        }
+      ],
+      "pressedButton": null
+    },
+    {
+      "file": "running-before-edit.png",
+      "sha256": "35e742a8de5c577adeb36281d3268a5aa2770bc85b1c88813fbb8ac85879209a",
+      "dark": false,
+      "footer": true,
+      "dividerY": [
+        38,
+        191
+      ],
+      "icons": [
+        {
+          "button": "Up",
+          "pixels": 88,
+          "inkBounds": [
+            176,
+            40,
+            191,
+            57
+          ]
+        },
+        {
+          "button": "Select",
+          "pixels": 240,
+          "inkBounds": [
+            174,
+            104,
+            191,
+            123
+          ]
+        },
+        {
+          "button": "Down",
+          "pixels": 51,
+          "inkBounds": [
+            173,
+            178,
+            193,
+            182
+          ]
+        }
+      ],
+      "pressedButton": null
+    },
+    {
+      "file": "edit-press-enters-editor.png",
+      "sha256": "7d25bd2a8d1ef8901d8e5a5abae8daccfc58dc3c15f655a655a18f768812e49e",
+      "dark": false,
+      "footer": true,
+      "dividerY": [
+        38,
+        191
+      ],
+      "icons": [
+        {
+          "button": "Up",
+          "pixels": 97,
+          "inkBounds": [
+            174,
+            39,
+            192,
+            57
+          ]
+        },
+        {
+          "button": "Select",
+          "pixels": 103,
+          "inkBounds": [
+            173,
+            105,
+            193,
+            123
+          ]
+        },
+        {
+          "button": "Down",
+          "pixels": 53,
+          "inkBounds": [
+            174,
+            179,
+            192,
+            181
+          ]
+        }
+      ],
+      "pressedButton": "Up"
+    },
+    {
+      "file": "edit-release-editor-settled.png",
+      "sha256": "7d25bd2a8d1ef8901d8e5a5abae8daccfc58dc3c15f655a655a18f768812e49e",
+      "dark": false,
+      "footer": true,
+      "dividerY": [
+        38,
+        191
+      ],
+      "icons": [
+        {
+          "button": "Up",
+          "pixels": 97,
+          "inkBounds": [
+            174,
+            39,
+            192,
+            57
+          ]
+        },
+        {
+          "button": "Select",
+          "pixels": 103,
+          "inkBounds": [
+            173,
+            105,
+            193,
+            123
+          ]
+        },
+        {
+          "button": "Down",
+          "pixels": 53,
+          "inkBounds": [
+            174,
+            179,
+            192,
+            181
+          ]
+        }
+      ],
+      "pressedButton": null
+    },
+    {
+      "file": "running-before-more.png",
+      "sha256": "8e2a05354fb182ec700aaba8e5c4eaa377ead80cd95bcf8d64b68376ffe27c64",
+      "dark": false,
+      "footer": true,
+      "dividerY": [
+        38,
+        191
+      ],
+      "icons": [
+        {
+          "button": "Up",
+          "pixels": 88,
+          "inkBounds": [
+            176,
+            40,
+            191,
+            57
+          ]
+        },
+        {
+          "button": "Select",
+          "pixels": 240,
+          "inkBounds": [
+            174,
+            104,
+            191,
+            123
+          ]
+        },
+        {
+          "button": "Down",
+          "pixels": 51,
+          "inkBounds": [
+            173,
+            178,
+            193,
+            182
+          ]
+        }
+      ],
+      "pressedButton": null
+    },
+    {
+      "file": "more-press-enters-options.png",
+      "sha256": "97cbe72347328d7b7df6d5a7beeaec67a1e19cd843257bab8b7e78e53fca8d8d",
+      "dark": false,
+      "footer": true,
+      "dividerY": [
+        38,
+        191
+      ],
+      "icons": [
+        {
+          "button": "Select",
+          "pixels": 80,
+          "inkBounds": [
+            173,
+            105,
+            193,
+            122
+          ]
+        },
+        {
+          "button": "Down",
+          "pixels": 54,
+          "inkBounds": [
+            174,
+            175,
+            192,
+            185
+          ]
+        }
+      ],
+      "pressedButton": "Down"
+    },
+    {
+      "file": "more-release-options-settled.png",
+      "sha256": "97cbe72347328d7b7df6d5a7beeaec67a1e19cd843257bab8b7e78e53fca8d8d",
+      "dark": false,
+      "footer": true,
+      "dividerY": [
+        38,
+        191
+      ],
+      "icons": [
+        {
+          "button": "Select",
+          "pixels": 80,
+          "inkBounds": [
+            173,
+            105,
+            193,
+            122
+          ]
+        },
+        {
+          "button": "Down",
+          "pixels": 54,
+          "inkBounds": [
+            174,
+            175,
+            192,
+            185
+          ]
+        }
+      ],
+      "pressedButton": null
+    },
+    {
+      "file": "options-delete-light.png",
+      "sha256": "b4c6168595ad2e5fba9aa6f057807eb33d01f863edbc862c8ef78cf174a4312a",
+      "dark": false,
+      "footer": true,
+      "dividerY": [
+        38,
+        191
+      ],
+      "icons": [
+        {
+          "button": "Up",
+          "pixels": 54,
+          "inkBounds": [
+            174,
+            43,
+            192,
+            53
+          ]
+        },
+        {
+          "button": "Select",
+          "pixels": 80,
+          "inkBounds": [
+            173,
+            105,
+            193,
+            122
+          ]
+        }
+      ],
+      "pressedButton": null
+    },
+    {
+      "file": "confirm-light.png",
+      "sha256": "56505c1199bc5e0e3ff26957318bbae7a82a6b81591c0de9d0f79c24572f31c3",
+      "dark": false,
+      "footer": false,
+      "dividerY": [
+        38,
+        221
+      ],
+      "icons": [
+        {
+          "button": "Select",
+          "pixels": 80,
+          "inkBounds": [
+            173,
+            105,
+            193,
+            122
+          ]
+        },
+        {
+          "button": "Down",
+          "pixels": 54,
+          "inkBounds": [
+            174,
+            175,
+            192,
+            185
+          ]
+        }
+      ],
+      "pressedButton": null
+    },
+    {
+      "file": "running-dark.png",
+      "sha256": "e7a926db864ecb5333b553af7a0f2b29ec817ec67f3a32deb04b55b3492d8618",
+      "dark": true,
+      "footer": true,
+      "dividerY": [
+        38,
+        191
+      ],
+      "icons": [
+        {
+          "button": "Up",
+          "pixels": 88,
+          "inkBounds": [
+            176,
+            40,
+            191,
+            57
+          ]
+        },
+        {
+          "button": "Select",
+          "pixels": 240,
+          "inkBounds": [
+            174,
+            104,
+            191,
+            123
+          ]
+        },
+        {
+          "button": "Down",
+          "pixels": 51,
+          "inkBounds": [
+            173,
+            178,
+            193,
+            182
+          ]
+        }
+      ],
+      "pressedButton": null
+    },
+    {
+      "file": "editor-dark.png",
+      "sha256": "18d769f00c0c4e8186d7e3a1148aa36d03f03a2aae6833979907036f73ae3ded",
+      "dark": true,
+      "footer": true,
+      "dividerY": [
+        38,
+        191
+      ],
+      "icons": [
+        {
+          "button": "Up",
+          "pixels": 97,
+          "inkBounds": [
+            174,
+            39,
+            192,
+            57
+          ]
+        },
+        {
+          "button": "Select",
+          "pixels": 103,
+          "inkBounds": [
+            173,
+            105,
+            193,
+            123
+          ]
+        },
+        {
+          "button": "Down",
+          "pixels": 53,
+          "inkBounds": [
+            174,
+            179,
+            192,
+            181
+          ]
+        }
+      ],
+      "pressedButton": null
+    },
+    {
+      "file": "editor-check-dark.png",
+      "sha256": "d22259f6553378dd8d597e9a5ab80845683e3ed255f5c998a97a1d292db2d290",
+      "dark": true,
+      "footer": true,
+      "dividerY": [
+        38,
+        191
+      ],
+      "icons": [
+        {
+          "button": "Up",
+          "pixels": 97,
+          "inkBounds": [
+            174,
+            39,
+            192,
+            57
+          ]
+        },
+        {
+          "button": "Select",
+          "pixels": 80,
+          "inkBounds": [
+            173,
+            105,
+            193,
+            122
+          ]
+        },
+        {
+          "button": "Down",
+          "pixels": 53,
+          "inkBounds": [
+            174,
+            179,
+            192,
+            181
+          ]
+        }
+      ],
+      "pressedButton": null
+    },
+    {
+      "file": "options-dark.png",
+      "sha256": "983331168426d8816f73e9ed2ace97cb144545868f7e6048cf8d8677e64a0757",
+      "dark": true,
+      "footer": true,
+      "dividerY": [
+        38,
+        191
+      ],
+      "icons": [
+        {
+          "button": "Select",
+          "pixels": 80,
+          "inkBounds": [
+            173,
+            105,
+            193,
+            122
+          ]
+        },
+        {
+          "button": "Down",
+          "pixels": 54,
+          "inkBounds": [
+            174,
+            175,
+            192,
+            185
+          ]
+        }
+      ],
+      "pressedButton": null
+    },
+    {
+      "file": "empty-light.png",
+      "sha256": "3d5faa65d9fe6e65a1c701e24656ce22aa68b03b52445a34987cfb7357c9ebf4",
+      "dark": false,
+      "footer": false,
+      "dividerY": [
+        38,
+        221
+      ],
+      "icons": [
+        {
+          "button": "Select",
+          "pixels": 97,
+          "inkBounds": [
+            174,
+            105,
+            192,
+            123
+          ]
+        }
+      ],
+      "pressedButton": null
+    },
+    {
+      "file": "alarm-black.png",
+      "sha256": "16b8b37b21a2e344e6ea41bf86133eee31a5e138723b97c2ad7afbdbac1d7b81",
+      "dark": true,
+      "footer": false,
+      "dividerY": [
+        38,
+        221
+      ],
+      "icons": [
+        {
+          "button": "Up",
+          "pixels": 212,
+          "inkBounds": [
+            173,
+            38,
+            193,
+            58
+          ]
+        },
+        {
+          "button": "Select",
+          "pixels": 80,
+          "inkBounds": [
+            173,
+            105,
+            193,
+            122
+          ]
+        }
+      ],
+      "pressedButton": null
+    },
+    {
+      "file": "critical-list-light.png",
+      "sha256": "6d5b1013e8a39359b2c977d4728ce809045be344d0e739311ceee214663989ba",
+      "dark": false,
+      "footer": false,
+      "dividerY": [
+        38,
+        221
+      ],
+      "icons": [
+        {
+          "button": "Up",
+          "pixels": 54,
+          "inkBounds": [
+            174,
+            43,
+            192,
+            53
+          ]
+        },
+        {
+          "button": "Select",
+          "pixels": 103,
+          "inkBounds": [
+            173,
+            105,
+            193,
+            123
+          ]
+        }
+      ],
+      "pressedButton": null
+    },
+    {
+      "file": "critical-running-light.png",
+      "sha256": "d12150a61f419c9f1aa696dcd56a6b9b6cf06db205394d525e456de5ed2377ea",
+      "dark": false,
+      "footer": false,
+      "dividerY": [
+        38,
+        221
+      ],
+      "icons": [
+        {
+          "button": "Up",
+          "pixels": 88,
+          "inkBounds": [
+            176,
+            40,
+            191,
+            57
+          ]
+        },
+        {
+          "button": "Select",
+          "pixels": 240,
+          "inkBounds": [
+            174,
+            104,
+            191,
+            123
+          ]
+        },
+        {
+          "button": "Down",
+          "pixels": 51,
+          "inkBounds": [
+            173,
+            178,
+            193,
+            182
+          ]
+        }
+      ],
+      "pressedButton": null
+    },
+    {
+      "file": "critical-editor-light.png",
+      "sha256": "dceaa7df54c77f414467f18dd1bfb399d42acf4e7e2030e8dfba7d1bf6598561",
+      "dark": false,
+      "footer": true,
+      "dividerY": [
+        38,
+        191
+      ],
+      "icons": [
+        {
+          "button": "Up",
+          "pixels": 97,
+          "inkBounds": [
+            174,
+            39,
+            192,
+            57
+          ]
+        },
+        {
+          "button": "Select",
+          "pixels": 103,
+          "inkBounds": [
+            173,
+            105,
+            193,
+            123
+          ]
+        },
+        {
+          "button": "Down",
+          "pixels": 53,
+          "inkBounds": [
+            174,
+            179,
+            192,
+            181
+          ]
+        }
+      ],
+      "pressedButton": null
+    },
+    {
+      "file": "critical-options-light.png",
+      "sha256": "955c63c44e3d66e3ae3f6264fb3300e732b96b5f6f605e6cdf540cf438734340",
+      "dark": false,
+      "footer": false,
+      "dividerY": [
+        38,
+        221
+      ],
+      "icons": [
+        {
+          "button": "Select",
+          "pixels": 80,
+          "inkBounds": [
+            173,
+            105,
+            193,
+            122
+          ]
+        },
+        {
+          "button": "Down",
+          "pixels": 54,
+          "inkBounds": [
+            174,
+            175,
+            192,
+            185
+          ]
+        }
+      ],
+      "pressedButton": null
+    },
+    {
+      "file": "critical-confirm-light.png",
+      "sha256": "4931f32f1cee96937924b03d161aeba63407c9611d5fccab5224a2d390357387",
+      "dark": false,
+      "footer": false,
+      "dividerY": [
+        38,
+        221
+      ],
+      "icons": [
+        {
+          "button": "Select",
+          "pixels": 80,
+          "inkBounds": [
+            173,
+            105,
+            193,
+            122
+          ]
+        },
+        {
+          "button": "Down",
+          "pixels": 54,
+          "inkBounds": [
+            174,
+            175,
+            192,
+            185
+          ]
+        }
+      ],
+      "pressedButton": null
+    }
+  ],
+  "checks": [
+    {
+      "role": "More",
+      "separateComponents": 3,
+      "inkBounds": [
+        173,
+        178,
+        193,
+        182
+      ]
+    }
+  ],
+  "proofs": {
+    "neutralRailMatchesPageInBothThemesAndAlarm": true,
+    "dividerAndHeaderFooterClearance": true,
+    "allPaintedGlyphsInside24pxSlots": true,
+    "screenEdgeInsetAtLeast3px": true,
+    "moreHasThreeSeparateDots": true,
+    "pausePressImmediatelyShowsPlayAndResultingGlyphMovesRigid3px": true,
+    "editMoreScreenChangesCancelPreviousFeedback": true
+  },
+  "scope": "Exact packaged native bytes in isolated stock-derived Emery FIFO QEMU. Direct QA theme AppMessages; no phone JS/physical watch. Up/Down activate screen changes immediately, so held captures show the destination and cancellation, not a fabricated old-screen pencil/More press. Select immediately changes Pause to Play; resulting Play held/settled glyphs establish rigid3px feedback."
+}

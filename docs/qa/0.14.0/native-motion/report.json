@@ -1,0 +1,158 @@
+{
+  "result": "PASS",
+  "version": "0.14.0",
+  "pbwSha256": "49552faee79b82c07e44888eb63726945b39370c3008a8e1e14db46a9bec51b0",
+  "scope": "Actual exact-distribution Emery native payload; FIFO QEMU, QA fixture and simulated AppMessage receipts; no phone JS, physical watch or battery/timing measurement",
+  "nativePayloadSha256": {
+    "emery/app_resources.pbpack": "b58d8f0fc04367f823045aafa7724dee47b1fe6674411d117e32909b3f527a31",
+    "emery/manifest.json": "74d641e15df25178238e73d26fea7807009692eda4dd305c1229199c8ac46eee",
+    "emery/pebble-app.bin": "f7d378d566969ed5e6b9af56e609b89d1f1ac4f9c2eae5ca9e3ecb4adf7e0456"
+  },
+  "captures": [
+    {
+      "file": "elastic-list-before.png",
+      "sha256": "dd4cf39f1221e532767d703346c37ca83cbf6bc9d895b565feaa04f5a32b4b1f"
+    },
+    {
+      "file": "elastic-list-0.png",
+      "sha256": "9042aa66c63718102fb49cb1dbe437f7e9ac7636c489b07d2270debf573e153e"
+    },
+    {
+      "file": "elastic-list-1.png",
+      "sha256": "478892c4851ef87903891538b878b88279196a3107c2e59bbc26e18d4be1cf70"
+    },
+    {
+      "file": "elastic-list-2.png",
+      "sha256": "8955e22575803484c16a6fbcb5cbbab9fd4e950362334de6424246c4812f2784"
+    },
+    {
+      "file": "elastic-list-3.png",
+      "sha256": "8955e22575803484c16a6fbcb5cbbab9fd4e950362334de6424246c4812f2784"
+    },
+    {
+      "file": "select-during-motion-paused-correct-slot.png",
+      "sha256": "299adfed70462ee19415f89d864d622a98290b8d0e13e3287a7f74d2a565ddd0"
+    },
+    {
+      "file": "paused-static-before.png",
+      "sha256": "299adfed70462ee19415f89d864d622a98290b8d0e13e3287a7f74d2a565ddd0"
+    },
+    {
+      "file": "paused-static-after.png",
+      "sha256": "299adfed70462ee19415f89d864d622a98290b8d0e13e3287a7f74d2a565ddd0"
+    },
+    {
+      "file": "single-up-editor.png",
+      "sha256": "ae44c59832d2229330252370edbdb366204b0bad803a0a100332128231ec133d"
+    },
+    {
+      "file": "held-up-editor.png",
+      "sha256": "ae44c59832d2229330252370edbdb366204b0bad803a0a100332128231ec133d"
+    },
+    {
+      "file": "editor-value-bump-before.png",
+      "sha256": "ae44c59832d2229330252370edbdb366204b0bad803a0a100332128231ec133d"
+    },
+    {
+      "file": "editor-value-bump-0.png",
+      "sha256": "05adbd671831654f2fb5c1bcd7d66ab7cd67b03602e34b64ee1e276a348bc857"
+    },
+    {
+      "file": "editor-value-bump-1.png",
+      "sha256": "7ccb052aa0484308f8dadc9f0abf40af52b1c0eda5169470d7312c88a0beecb2"
+    },
+    {
+      "file": "editor-value-bump-2.png",
+      "sha256": "547e25223c5b95fb1fdfcad97f3cddc34d89979edc3e94aacf5952322d940e9f"
+    },
+    {
+      "file": "editor-value-bump-3.png",
+      "sha256": "547e25223c5b95fb1fdfcad97f3cddc34d89979edc3e94aacf5952322d940e9f"
+    },
+    {
+      "file": "editor-field-advance-before.png",
+      "sha256": "547e25223c5b95fb1fdfcad97f3cddc34d89979edc3e94aacf5952322d940e9f"
+    },
+    {
+      "file": "editor-field-advance-0.png",
+      "sha256": "da51dc7bc1121855e39b5b8c986954b497c3d7fa4523ec965cabcf65d90f8fae"
+    },
+    {
+      "file": "editor-field-advance-1.png",
+      "sha256": "77621529aa0e29aa6760b04989ce6e76932d314d4d7e87c4839bfd53b57d3177"
+    },
+    {
+      "file": "editor-field-advance-2.png",
+      "sha256": "5689411fba17aa29cb55d881e92627a7128e7ad6c9a0f367654353ec94f61e9f"
+    },
+    {
+      "file": "editor-field-advance-3.png",
+      "sha256": "5689411fba17aa29cb55d881e92627a7128e7ad6c9a0f367654353ec94f61e9f"
+    },
+    {
+      "file": "action-idle.png",
+      "sha256": "1af1602e4c1e199be16e4c66f163b8d61789772554f55923547575b9378c7a72"
+    },
+    {
+      "file": "action-pressed.png",
+      "sha256": "aea1f3a9a8c8caa99844dffd8ee0873affb55f9f9eafed616ca3c6bf1cc88077"
+    },
+    {
+      "file": "action-release-settled.png",
+      "sha256": "db42fa1c2b03cabc7657c5f3d4a95bbe77b1af25b4c8b40c02b6b363bad0bd65"
+    },
+    {
+      "file": "os-cover.png",
+      "sha256": "7384d52432a90109a51dd21e32111007ec440a79f482efca46ffbc60d0aa90c5"
+    },
+    {
+      "file": "os-call-ended.png",
+      "sha256": "3c1b8dc97fbae0fb337c00e7a668ce0d929da3fb83012fe06ffdfd4c16992c8b"
+    },
+    {
+      "file": "after-cover-settled.png",
+      "sha256": "db42fa1c2b03cabc7657c5f3d4a95bbe77b1af25b4c8b40c02b6b363bad0bd65"
+    },
+    {
+      "file": "after-cover-still.png",
+      "sha256": "db42fa1c2b03cabc7657c5f3d4a95bbe77b1af25b4c8b40c02b6b363bad0bd65"
+    },
+    {
+      "file": "cold-reopen.png",
+      "sha256": "593b4a14b0d39d9b7ec459fb4182def0cce762476bd99efbf2dc3d6bd81223ee"
+    }
+  ],
+  "sampleElapsedMilliseconds": {
+    "list": [
+      177,
+      335,
+      511,
+      860
+    ],
+    "value": [
+      179,
+      338,
+      517,
+      867
+    ],
+    "field": [
+      196,
+      365,
+      546,
+      897
+    ]
+  },
+  "gifNote": "Actual sampled native frames with presentation dwell time; GIF is not a frame-rate/timing measurement.",
+  "proofs": {
+    "selectDuringSelectionMotionUsesImmediateCorrectTarget": true,
+    "holdDoesNotLeakAcrossEditorEntry": true,
+    "editorCancelPreservesOwnerState": true,
+    "pausedBodyStatic": true,
+    "physicalPressMovesIconAndReleaseSettles": true,
+    "coverCancelsAndReturnStaysStill": true,
+    "coldReopen": true
+  },
+  "physicalDeviceVerified": false,
+  "freshStockDerivedFlash": true,
+  "qemuState": "/home/xela/Projekty/Pebble/.recovery-tools/emulator-timer-redesign-1794013449714181895"
+}

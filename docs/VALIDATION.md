@@ -1,5 +1,56 @@
 # Timer validation
 
+## Current local0.14.4 full-height rail
+
+[Validation](qa/0.14.4/validation.json) binds the exact packaged native payload
+to full-height edge checks,26 UI/storage frames,23 focused rail frames,9 action
+frames and27 actual text groups. Header/footer copy and all1,440 clocks fit
+the content column. Native/phone ownership tests and packaged checks pass.
+Real devices and fresh browser rendering remain separate/unverified.
+
+## 0.14.3 action rail — local review candidate
+
+The rail follows the page background with an inset divider, larger bold action
+icons and3px press travel. Current [evidence](qa/0.14.3/validation.json) binds
+native pixel bounds, edge clearance, both themes and immediate input behavior to
+the exact PBW. The full readable text/body layout and native ownership stay intact.
+The historical reports below keep their original versions and verification scope.
+
+## 0.13.0 shared UI — local candidate
+
+The native app uses neutral Light/Dark surfaces, consistent inverted selection,
+the existing blue hourglass and a target-specific Delete confirmation with Keep
+selected initially. Appearance lives in the bundled phone settings by Xef's
+decision; timer creation, editing and alarm ownership remain on the watch.
+
+The [versioned validation record](qa/0.13.0/validation.json) identifies the exact
+candidate PBW and links the native, font and phone-page evidence. Nine portable
+C suites, 34 JavaScript checks and 45 Python release regressions pass. The SDK
+build reports 36,988 bytes RAM footprint and 22,802 resource bytes. The only
+build warning is the existing SDK linker's RWX segment warning.
+
+Packaged optimized config/PKJS/plugin checks cover exact phone persistence,
+independent Android DOM/native stores, Save staying open, close/reopen and full
+browser restart, uncertain acknowledgements, recovery, EN/CS and constrained
+layouts. These use a simulated SDK bridge in actual Chromium, not a real phone.
+Fresh stock-derived Emery QEMU captures cover 26 native compositions. Every
+capture requires visible Timer title, local clock and contextual sidebar with
+the expected palette; all 26 were also visually inspected. A prior run using a
+reused flash was invalidated after an OS missed-Wakeup overlay intercepted its
+inputs. Its separate report is explicitly marked INVALIDATED and is not passing
+evidence. Native phone delivery is simulated with direct AppMessages; persisted
+appearance is checked by reopening without phone JavaScript. A read-only
+same-UUID fixture probes actual Glance/checkpoint and Appearance records between
+native launches, including both write orders. Portable tests link both modules
+against one shared store and protect all native owner/bank keys; a source-derived
+namespace audit independently prevents collisions. The earlier key 2104 local
+candidate is invalidated and superseded by Appearance 2105; 2104 remains AppGlance.
+
+The candidate preserves the UUID, eight timers, model/bank versions, native
+Wakeup ownership and Activities 0.4.0 contracts. Theme uses isolated native key
+2105 and appended message keys 1024/1025. This work has not published a release,
+measured battery use or verified a physical watch or real phone WebView.
+
 ## 0.12.0 Reset without starting
 
 More options now resets the selected timer to its saved duration as Ready.
@@ -744,3 +795,46 @@ alarm vibration. Measure power use separately if required.
 No physical watch or phone was accessible in this execution environment; the
 final ADB check listed no attached devices. Emulator and packaged-runtime results do not
 certify Bluetooth behavior, physical vibration, phone delivery or battery use.
+
+## Local 0.14.2 whole-composition revision
+
+The candidate remains unpublished on `design/pebble-native-redesign`, after
+`fad44ed`/0.14.1. [The current validation record](qa/0.14.2/validation.json)
+binds every final native report to the same distribution PBW. The original
+approved eight-screen composition set is frozen separately under its preview
+candidate hash; a later one-row list-index correction changed the final native
+binary without changing those approved representative compositions.
+
+Robustness checks include the normal portable owner/model, collection, Glance,
+appearance, alarm feedback, outline/raster and motion tests;34 explicitly
+reported JavaScript tests;46 Python provenance/release tests; an integrated
+SDK4.33.1 distribution build; optimized packaged settings/provider execution;
+compiled PFO/linked-outline/source/license checks; and previous-artifact
+immutability. The three extended Roboto resources total39620bytes. SDK static
+RAM is46844bytes with84228bytes available heap; these are SDK estimates, not
+runtime peak-memory or battery measurements. A clean repeat build reproduced
+every executable/resource/script byte; only the SDK manifest's `generatedAt`
+changed. [The rebuild record](qa/0.14.2/rebuild-identity.json) proves that exact
+difference. The final PBW retains the original tested manifest and hash.
+
+Exact distribution-native Emery QEMU checks produced26 layout/theme/storage
+captures,47 motion/input frames,9 physical-button-feedback captures and34
+all-eight viewport captures. A further38 workflow captures cover normal edits,
+Cancel/Keep/Back restoration, Reset/Ready/Start, full/reusable collections,
+actual23:59:59 editor entry and real exhausted-generation failures through
+native completion. Twenty-seven actual PNG-ink checks verify complete groups,
+selected boxes, warnings, units, footers and the19px visible clock. Critical
+copy stays whole and all8 normal/critical selected indices stay visible in
+both directions. Navigation preserves owner identities/deadlines; a read-only
+probe preserves the critical-bank checksum. Selection remains rigid120ms;
+labels and owner actions remain immediate. The screenshot RPC samples frames
+and does not measure physical frame rate or motor behavior.
+
+All native fixtures use isolated stock-derived local FIFO emulator data and
+shipping native bytes. The UI scripts simulate AppMessage receipt/theme
+boundaries; they do not run the real phone application. Source-only phone CSS
+inspection and the labelled mock preview remain separate from browser testing.
+Fresh Chromium startup remains blocked by the existing sandbox restriction;
+real phone/WebView persistence, physical-watch readability, vibration and
+battery checks remain unperformed. Main and prior versioned artifacts remain
+unchanged. No tag, commit, push or publication is performed by this validation.

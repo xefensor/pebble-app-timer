@@ -1,6 +1,7 @@
 'use strict';
 
 var activities = require('pebble-activities/publisher');
+var settings = require('./settings');
 var publisher = activities.createPublisher({
   storage: localStorage,
   pluginUuid: '50e9ef12-a5ab-4369-a3b5-3447bfba5151',
@@ -33,9 +34,34 @@ function send(message, failure) {
       return pending.message.ACTIVITY_ACCEPTED_REVISION === undefined;
     });
   }
+  if (message.TIMER_APPEARANCE_VERSION !== undefined) {
+    queue = queue.filter(function(pending) { return pending.message.TIMER_APPEARANCE_VERSION === undefined; });
+  }
   queue.push({message: message, failure: failure});
   flush();
 }
+
+var appearanceGeneration = 0, appearanceTimer = null;
+function appearance(chosen) {
+  var message = settings.message(chosen);
+  if (!message) return;
+  var generation = ++appearanceGeneration, attempts = 0;
+  if (appearanceTimer !== null) clearTimeout(appearanceTimer);
+  appearanceTimer = null;
+  function deliver() {
+    if (generation !== appearanceGeneration) return;
+    attempts++;
+    send(message, function() {
+      if (generation === appearanceGeneration && attempts < 3)
+        appearanceTimer = setTimeout(function() { appearanceTimer = null; deliver(); }, attempts * 500);
+    });
+  }
+  deliver();
+}
+Pebble.addEventListener('configmessage', function(event) {
+  if (!event || typeof event.respond !== 'function') return;
+  settings.handle(localStorage, event.message || event.data || event.payload || event, function(response) { event.respond(response); }, appearance);
+});
 
 var requestStarted = false, requestAttempts = 0, requestTimer = null, ownerAccepted = false;
 function requestSnapshot() {
@@ -49,6 +75,10 @@ function requestSnapshot() {
 Pebble.addEventListener('ready', function () {
   if (requestStarted) return;
   requestStarted = true;
+  // Reconcile the phone choice on each runtime start, including its explicit
+  // default after a phone-store reset. Native startup keeps the last confirmed
+  // appearance until this bounded update arrives.
+  appearance(settings.load(localStorage));
   requestSnapshot();
 });
 

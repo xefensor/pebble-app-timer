@@ -27,6 +27,9 @@ function runtime(file, shared, at = now, options = {}) {
   const pebble = {
     addEventListener(name, fn) { events[name] = fn; },
     sendAppMessage(message, success, failure) {
+      // These cases isolate the owner-snapshot queue; settings.test.js covers
+      // appearance traffic through that same production queue separately.
+      if (message.TIMER_APPEARANCE_VERSION !== undefined) { if (success) success(); return; }
       sent.push(JSON.parse(JSON.stringify(message)));
       if (options.send) return options.send(message, success, failure);
       success();
@@ -47,6 +50,7 @@ function runtime(file, shared, at = now, options = {}) {
           return library.summary.defineSnapshotProvider({...options, now: () => at * 1000});
         }};
       }
+      if (name === './settings' || name === '../pkjs/settings') return require('../src/pkjs/settings');
       assert.equal(name, 'pebble-activities/publisher');
       return api;
     }
