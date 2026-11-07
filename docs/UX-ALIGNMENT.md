@@ -1,22 +1,37 @@
-# Timer shared UI — local 0.13.0 candidate
+# Timer shared UI — local 0.14.0 review branch
 
 The shared reference remains in the local sibling `xoce` checkout at
 `src/pages/docs/design/pebble-ui-system.md`, also available through
 [the local preview](http://127.0.0.1:4321/docs/design/pebble-ui-system/).
-The website and this candidate have not been published by this work.
+The canonical standard remains the baseline. This branch is an alternative for
+Xef to compare, documented in [REDESIGN.md](REDESIGN.md). No website or
+release has been published by this work.
 
 ## Implemented in this candidate
 
 - Neutral native light/dark surfaces with the existing blue hourglass,
-  Fredoka numbers, Roboto interface text and 166/34px composition.
+  Fredoka numbers, stock Gothic utility/menu text and 166/34px composition.
+  Larger Gothic 24 Bold menu/confirmation roles fit actual native ink; longer
+  list details retain the saved duration with a compact state word. Unused
+  Roboto bitmaps are no longer packaged; original source/notices are preserved.
 - Strong inverted selection in menus and the duration editor; title-left and
   local-time-right headers remain visible. Essential critical instructions
   use the 18px interface role.
 - Delete identifies saved duration and, when needed, the position among current
   timers. Keep is the initial choice; cancellation retains Options selection.
+- Native selection stretches/recoveries use 100+250ms; editor value feedback
+  uses 107+214ms and field advance uses 107+179ms. Logical targets and owner
+  operations change immediately. Select settles pending motion; held repeat
+  omits flourish. Focus loss/screen changes cancel it without replay on reveal.
+  Physical action icons move 5px right on press and return in 144ms.
+  Countdown digits remain fixed; the existing glass-only 300ms rotation remains.
 - Appearance settings live on the phone by Xef's decision. The page has one
   Watch appearance Light/Dark selector plus help, with EN/CS interface text.
-  It uses the shared phone layout, semantic neutral palette and blue accent.
+  It uses the shared phone title/intro and short blue identity line, neutral
+  section headings, 16px body/14px hints, 16px insets and 24px section gaps.
+  Controls remain at least 44px, Save is 48px with theme-aware accent contrast,
+  and status stays left aligned. Small user-triggered control/disclosure
+  transitions follow reduced-motion preference; Saved status never animates.
 - Save remains open with Saving… → ✓ Saved. Another edit shows Unsaved changes.
   A failed/uncertain write keeps the draft. Reload saved is a readback, not an
   attempt to undo a write. There is no routine keyboard focus or scroll reset.
@@ -35,23 +50,32 @@ high-contrast dark treatment in either selected appearance.
 
 ## Validation
 
-The 0.13.0 [validation record](qa/0.13.0/validation.json) links the exact native,
-font and packaged settings evidence. The checks include:
+The 0.14.0 [validation record](qa/0.14.0/validation.json) links exact artifacts,
+26 new native screenshots and sampled motion/input evidence. Checks include:
 
-- Portable owner lifecycle/storage/expiry, timer slots, native alarm feedback,
-  conserved hourglass geometry, clock bounds and visible UI-work decisions.
-- Appearance preference write failure/readback/unchanged-write suppression,
-  source-derived disjoint storage namespaces, actual Glance/preference shared-store
-  writes and cold reopen, and separate Android DOM/native settings stores.
-- Exact optimized plugin/PKJS, append-only keys, source/font/resources/config
-  identity, artifact checks and release-auditor regression tests.
-- Actual packaged config HTML and handlers in Chromium: confirmed Save stays
-  open; live/closed writers; close/reopen and browser restart; lost/mismatched
-  acknowledgements; explicit readback; load errors and repair; EN/CS; 320/360px
-  light/dark layouts, short viewports and doubled interface text.
-- Actual native Emery captures of normal and critical states in both palettes,
-  persisted appearance on reopening without phone JavaScript, unchanged timer
-  identity/deadlines through appearance changes, static pause and safe Delete.
+- Portable owner/model/storage/expiry, eight slots, native feedback, conserved
+  hourglass geometry, fixed digits and finite elastic motion (including reverse
+  presses and field bounds).
+- Exact optimized plugin/PKJS, source/config/Fredoka outline identity, retained
+  notices, zero unused bitmap resources, append-only keys and release auditors.
+- Actual distribution-native Emery appearance/storage QA: both palettes,
+  persisted appearance on reopen, unchanged deadlines/identity, static pause,
+  safe Delete, critical warnings and actual Glance/preference coexistence.
+- Actual native motion/input QA: Select during travel activates the correct
+  slot; held entry cannot leak editor repeats; editor cancellation preserves
+  owner state; raw action press/release settles; stock OS cover cancels feedback
+  and return remains still; cold reopen works.
+- Independent exact-native Up/Select/Down pixel checks prove the same icon shape
+  moves exactly 5px right during press and returns to the original idle pixels.
+  Fixed per-button raw handlers avoid implicit recognizer identity; each release
+  affects only its own button. See [the action record](qa/0.14.0/native-actions/report.json).
+
+Fresh Chromium validation is blocked by sandbox startup restrictions found in
+this session. Packaged-handler tests pass, but do not verify current browser
+pixels. The offline phone layout uses the exact generated page with an explicit
+mock/no-storage banner. The [0.13.0 record](qa/0.13.0/validation.json), including
+its browser screenshots and close/restart simulations, remains historical;
+it is never presented as a new capture.
 
 These are browser/SDK simulations and native emulator checks. Real phone
 WebView/storage/permission behavior, physical-watch readability/button feel,

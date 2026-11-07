@@ -64,7 +64,7 @@ entries["LICENSE"] = (root / "LICENSE").read_bytes()
 entries["licenses/pebble-activities-LICENSE.txt"] = (library / "LICENSE").read_bytes()
 entries["THIRD-PARTY-NOTICES.md"] = (root / "THIRD-PARTY-NOTICES.md").read_bytes()
 entries["licenses/Apache-2.0.txt"] = (root / "licenses/Apache-2.0.txt").read_bytes()
-if any(media.get("type") == "font" for media in package["pebble"].get("resources", {}).get("media", [])):
+if (root / 'src/c/generated_clock_glyphs.h').exists():
     for notice in ("OFL-Fredoka.txt", "OFL-RobotoCondensed.txt"):
         entries["licenses/" + notice] = (root / "resources/fonts" / notice).read_bytes()
 destination = root / "dist" / ("Timer-" + package["version"] + ".pbw")

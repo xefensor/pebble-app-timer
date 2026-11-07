@@ -211,3 +211,41 @@ phone Appearance page. Timer editing and alarms remain watch-owned.
 
 Existing timer/model/privacy/release rules above still apply. The candidate is
 local; published versions and immutable release assets remain unchanged.
+
+## Native redesign — local 0.14.0 review branch
+
+`design/pebble-native-redesign` is an alternative for Xef to review, documented
+in [REDESIGN.md](docs/REDESIGN.md). The canonical XOCE standard remains the
+baseline; this branch does not silently replace it or publish a release.
+
+- Use OS Gothic 18 Bold for dense utility roles and Gothic 24/24 Bold for menu
+  and confirmation roles. Fit actual native ink within the 166px content area;
+  long list details use a compact state word while retaining the saved duration.
+- Keep the exact Fredoka digit/colon outlines and both original SIL notices.
+  The six Roboto bitmaps above are historical 0.10–0.13 requirements: 0.14 uses
+  no custom bitmap resources or custom-font allocations. Preserve original
+  source assets/provenance for older releases. Audit the exact linked outlines,
+  notices, OS font roles and absence of unused bitmap resources.
+- `timer_ui_motion.h` owns finite portable feedback geometry. Menu stretch and
+  recovery take 100+250ms; editor value feedback 107+214ms and field advance
+  107+179ms. Held repeat skips flourish; Select settles pending selection before
+  activating its immediate logical target. Native timer mutations never wait.
+- Moving selection inverts only neutral pixels in a bounded framebuffer region
+  on Emery, preserving blue/amber meaning and readable labels across its edges.
+  Release the captured framebuffer in the same draw callback. Do not allocate
+  a separate screen bitmap. Do not run motion while covered or replay on reveal.
+- Raw action presses move the relevant icon 5px right, followed by 144ms release
+  feedback. Screen change, focus loss and teardown settle it; timer allocation
+  failure settles every feedback family. Running countdowns stay fixed.
+  Fixed wrappers identify Up/Select/Down independently of raw recognizers;
+  releases settle only their own button. Verify all three icons independently
+  with `scripts/emulator-action-feedback.py`, keeping the action available so
+  a screen change or hidden boundary icon cannot invalidate pixel comparisons.
+- Keep the one-selector phone page, confirmed Save/draft/uncertain readback and
+  active Android writer. Use reduced-motion-aware 160ms disclosures/144ms
+  controls. Do not animate or dismiss Saved status. The offline phone preview
+  is explicitly a mock layout and proves no real settings write.
+- Run `scripts/emulator-redesign.py` after the fixture/build procedure for real
+  distribution-native frame samples and input/focus lifecycle checks. Existing
+  native appearance/storage checks remain required. Browser restrictions and
+  real-device gaps must be recorded separately from passed native tests.

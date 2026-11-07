@@ -23,7 +23,7 @@ with tempfile.TemporaryDirectory(prefix="timer-collection-test-") as scratch:
     ], check=True)
     subprocess.run([str(binary)], check=True)
 with tempfile.TemporaryDirectory(prefix="timer-ui-test-") as scratch:
-    for name in ("timer_fonts", "timer_ui"):
+    for name in ("timer_fonts", "timer_ui", "timer_ui_motion"):
         binary = Path(scratch) / name
         subprocess.run([
             os.environ.get("CC", "cc"), "-std=c99", "-Wall", "-Wextra", "-Werror", "-pedantic",

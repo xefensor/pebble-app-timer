@@ -1,0 +1,111 @@
+{
+  "version": "0.14.0",
+  "result": "PASS_WITH_LIMITATIONS",
+  "status": "local review branch; no commit, push, tag or publication performed by implementation agent",
+  "branch": "design/pebble-native-redesign",
+  "baselineCommit": "6a2c6f074623779532104a066439c85264827d8d",
+  "date": "2026-11-07",
+  "artifacts": {
+    "pbw": {
+      "path": "dist/Timer-0.14.0.pbw",
+      "bytes": 75276,
+      "sha256": "49552faee79b82c07e44888eb63726945b39370c3008a8e1e14db46a9bec51b0"
+    },
+    "debug": {
+      "path": "dist/Timer-0.14.0-debug.zip",
+      "bytes": 137300,
+      "sha256": "5aad7c02083a8c387101313c9e44b8a5d3ec4c080dc458b42ae56d95565ed9d4"
+    }
+  },
+  "build": {
+    "sdk": "4.33.1",
+    "platform": "emery",
+    "timestamp": 1794040000,
+    "resourcesBytes": 4092,
+    "warnings": [
+      "Existing SDK linker LOAD segment with RWX permissions; no C compiler warnings"
+    ],
+    "ramFootprintBytes": 39372,
+    "freeHeapBytes": 91700
+  },
+  "checks": [
+    {
+      "command": "npm test",
+      "result": "PASS",
+      "javascriptTests": 34,
+      "scope": "Portable owner/model/slots/storage/alarms/appearance/Glance/fixed digits/hourglass/UI-state plus bounded elastic motion and rapid-reverse geometry"
+    },
+    {
+      "command": "python3 -m unittest discover -s tests -p 'test_*.py'",
+      "result": "PASS",
+      "pythonTests": 46
+    },
+    {
+      "command": "npm run build",
+      "result": "PASS",
+      "scope": "Exact distribution native/PKJS/provider/config/debug packaging"
+    },
+    {
+      "command": "python3 scripts/check-timer-fonts.py --pbw dist/Timer-0.14.0.pbw",
+      "result": "PASS",
+      "report": "font-audit.json"
+    },
+    {
+      "command": "node scripts/verify-timer-bundle.js EXTRACTED_PBW",
+      "result": "PASS",
+      "report": "packaged-runtime.txt"
+    },
+    {
+      "command": "python3 scripts/emulator-ui-system.py",
+      "result": "PASS",
+      "report": "native-ui-system/report.json",
+      "captures": 26
+    },
+    {
+      "command": "python3 scripts/emulator-redesign.py",
+      "result": "PASS",
+      "report": "native-motion/report.json"
+    },
+    {
+      "command": "git diff --check",
+      "result": "PASS"
+    },
+    {
+      "command": "python3 scripts/emulator-action-feedback.py",
+      "result": "PASS",
+      "report": "native-actions/report.json",
+      "scope": "Up/Select/Down each checked independently: identical icon shape, exactly5px right while held, exact idle pixels after release",
+      "captures": 9
+    }
+  ],
+  "browser": {
+    "result": "BLOCKED",
+    "scope": "Fresh screenshot/current browser layout not verified",
+    "reason": "Parent agent fresh Chromium startup failed with sandbox EPERM. No repeated attempt requested. Packaged handler/storage tests passed; no old screenshots reused.",
+    "offlineLayout": "phone-preview.html",
+    "previewNote": "Exact generated HTML plus labelled mock bridge. No phone/watch storage; no proof of real save."
+  },
+  "nativeVisualReview": {
+    "result": "PASS",
+    "scope": "Actual current distribution-native QEMU images; Gothic titles/labels/menu/confirm, critical controls, fixed Fredoka countdown and both palettes fit",
+    "physicalDeviceVerified": false
+  },
+  "preserved": [
+    "UUID and native storage/message namespaces",
+    "native deadlines, Wakeups, alarm feedback and eight slots",
+    "Reset-to-Ready then explicit Start",
+    "safe Keep-first Delete and target/context",
+    "phone confirmed Save/stay-open/draft/unknown-write/readback/active-writer handling"
+  ],
+  "limitations": [
+    "No real phone WebView or physical watch verification",
+    "Screenshot RPC samples/GIF dwell do not measure device frame rate or feel",
+    "No vibration or battery measurement",
+    "Canonical shared design remains the baseline; this is an alternative for review"
+  ],
+  "reviewHardening": {
+    "rawHandlers": "Explicit per-button wrappers and button-specific release; no inferred recognizer IDs",
+    "earlierCandidate": "native-actions-before-review/report.json",
+    "earlierResult": "All3 buttons passed on the earlier PBW too; no Timer raw-recognizer defect was established. Earlier evidence is not current-build proof."
+  }
+}

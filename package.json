@@ -1,6 +1,6 @@
 {
   "name": "pebble-app-timer",
-  "version": "0.13.0",
+  "version": "0.14.0",
   "author": "Xef",
   "private": true,
   "license": "SEE LICENSE IN LICENSE",
@@ -25,44 +25,7 @@
       "watchface": false
     },
     "resources": {
-      "media": [
-        {
-          "type": "font",
-          "name": "FONT_BODY_14",
-          "file": "fonts/RobotoCondensed-Bold.ttf",
-          "characterRegex": "[\\u0020-\\u007E\\u00B7\\u2019]"
-        },
-        {
-          "type": "font",
-          "name": "FONT_BODY_15",
-          "file": "fonts/RobotoCondensed-Bold.ttf",
-          "characterRegex": "[\\u0020-\\u007E\\u00B7\\u2019]"
-        },
-        {
-          "type": "font",
-          "name": "FONT_BODY_16",
-          "file": "fonts/RobotoCondensed-Bold.ttf",
-          "characterRegex": "[\\u0020-\\u007E\\u00B7\\u2019]"
-        },
-        {
-          "type": "font",
-          "name": "FONT_BODY_18",
-          "file": "fonts/RobotoCondensed-Bold.ttf",
-          "characterRegex": "[\\u0020-\\u007E\\u00B7\\u2019]"
-        },
-        {
-          "type": "font",
-          "name": "FONT_BODY_19",
-          "file": "fonts/RobotoCondensed-Bold.ttf",
-          "characterRegex": "[\\u0020-\\u007E\\u00B7\\u2019]"
-        },
-        {
-          "type": "font",
-          "name": "FONT_BODY_23",
-          "file": "fonts/RobotoCondensed-Bold.ttf",
-          "characterRegex": "[\\u0020-\\u007E\\u00B7\\u2019]"
-        }
-      ]
+      "media": []
     },
     "usesPermissions": [],
     "messageKeys": {

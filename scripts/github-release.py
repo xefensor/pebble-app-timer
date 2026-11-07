@@ -290,7 +290,8 @@ def validate_timer(root, config, commit, package, files, debug=None):
         require(files.get(notice) == committed(root, commit, notice), "Timer SDK notice differs: " + notice)
     font_media = [item for item in expected.get("resources", {}).get("media", [])
                   if item.get("type") == "font"]
-    if font_media:
+    outlined_clock = bool(git(root, 'ls-tree', commit, 'src/c/generated_clock_glyphs.h'))
+    if font_media or outlined_clock:
         require(info.get("resources") == expected["resources"], "Timer font resource metadata differs")
         for notice in ("OFL-Fredoka.txt", "OFL-RobotoCondensed.txt"):
             require(files.get("licenses/" + notice) ==

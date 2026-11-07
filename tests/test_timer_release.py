@@ -166,6 +166,20 @@ class TimerReleaseTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "font resource metadata"):
             self.validate({**files, "appinfo.json": json.dumps(info).encode()})
 
+    def test_outline_font_notices_remain_mandatory_without_bitmap_resources(self):
+        files = self.with_custom_fonts()
+        self.package["pebble"]["resources"] = {"media": []}
+        self.write("package.json", json.dumps(self.package).encode())
+        self.write("src/c/generated_clock_glyphs.h", b"fixture linked outline input")
+        info = json.loads(files["appinfo.json"])
+        info["resources"] = {"media": []}
+        files["appinfo.json"] = json.dumps(info).encode()
+        self.commit_sha = self.commit()
+        self.validate(files)
+        for name in ("licenses/OFL-Fredoka.txt", "licenses/OFL-RobotoCondensed.txt"):
+            with self.subTest(name=name), self.assertRaisesRegex(ValueError, "font license"):
+                self.validate({key: value for key, value in files.items() if key != name})
+
     def test_pkjs_map_and_executed_module_both_must_match(self):
         # Workspace-local SDK installs emit a relative source path. Normalizing
         # that SDK module name retains duplicate and compiled-code checks.

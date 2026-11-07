@@ -6,16 +6,9 @@
 #include "font_raster.h"
 #include "generated_clock_glyphs.h"
 
-#define BODY_FONT_COUNT 6u
 #define SCREEN_WIDTH 200
 #define SCREEN_HEIGHT 228
 
-static const uint8_t s_points[BODY_FONT_COUNT] = {14, 15, 16, 18, 19, 23};
-static const uint32_t s_resources[BODY_FONT_COUNT] = {
-  RESOURCE_ID_FONT_BODY_14, RESOURCE_ID_FONT_BODY_15, RESOURCE_ID_FONT_BODY_16,
-  RESOURCE_ID_FONT_BODY_18, RESOURCE_ID_FONT_BODY_19, RESOURCE_ID_FONT_BODY_23
-};
-static GFont s_body[BODY_FONT_COUNT];
 /* One glyph at a time, shared by every clock. No framebuffer, glyph bitmap,
  * allocation or unbounded text copy is needed during a draw. */
 static FontRasterPoint s_points_q8[CLOCK_GLYPH_MAX_POINTS];
@@ -28,49 +21,29 @@ typedef struct {
   GColor colors[FONT_RASTER_COVERAGE + 1];
 } ClockPaint;
 
-static unsigned prv_body_index(int point) {
-  for (unsigned i = BODY_FONT_COUNT; i > 0; --i)
-    if (s_points[i - 1] <= point) return i - 1;
-  return 0;
+static GFont prv_body(int point) {
+  return fonts_get_system_font(point >= 23 ? FONT_KEY_GOTHIC_24_BOLD :
+      point >= 19 ? FONT_KEY_GOTHIC_24 : FONT_KEY_GOTHIC_18_BOLD);
 }
 
-static GFont prv_body(unsigned index) {
-  return s_body[index] ? s_body[index] : fonts_get_system_font(FONT_KEY_GOTHIC_18_BOLD);
-}
-
-bool timer_fonts_init(void) {
-  timer_fonts_deinit();
-  for (unsigned i = 0; i < BODY_FONT_COUNT; ++i) {
-    s_body[i] = fonts_load_custom_font(resource_get_handle(s_resources[i]));
-    if (!s_body[i]) {
-      timer_fonts_deinit();
-      return false;
-    }
-  }
-  return true;
-}
-
-void timer_fonts_deinit(void) {
-  for (unsigned i = 0; i < BODY_FONT_COUNT; ++i) {
-    if (s_body[i]) fonts_unload_custom_font(s_body[i]);
-    s_body[i] = NULL;
-  }
-}
+bool timer_fonts_init(void) { return true; }
+void timer_fonts_deinit(void) {}
 
 int timer_fonts_text_width(const char *text, int point) {
-  const unsigned index = prv_body_index(point);
-  return graphics_text_layout_get_content_size(text ? text : "", prv_body(index),
+  return graphics_text_layout_get_content_size(text ? text : "", prv_body(point),
       GRect(0, 0, 2048, 128), GTextOverflowModeFill, GTextAlignmentLeft).w;
 }
 
 void timer_fonts_text(GContext *ctx, const char *text, int point, int x,
                       int baseline, int width, GColor color, GTextAlignment align) {
   if (!ctx || !text || width <= 0) return;
-  const unsigned index = prv_body_index(point);
-  const int size = s_points[index];
+  /* Gothic includes top bearing and descender clearance. Fit its visible ink
+   * to the existing baseline contract, as checked in native Emery captures,
+   * rather than treating its 18/24 name as the ink height. */
+  const int size = point >= 19 ? 24 : 18;
   graphics_context_set_text_color(ctx, color);
-  graphics_draw_text(ctx, text, prv_body(index),
-      GRect(x, baseline - size, width, size + 12), GTextOverflowModeFill, align, NULL);
+  graphics_draw_text(ctx, text, prv_body(point),
+      GRect(x, baseline - size - 2, width, size + 12), GTextOverflowModeFill, align, NULL);
 }
 
 static const ClockGlyph *prv_glyph(char code) {

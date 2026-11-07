@@ -1,6 +1,7 @@
 #pragma once
 
 #include "timer_collection.h"
+#include "timer_ui_motion.h"
 
 typedef enum {
   SCREEN_LIST, SCREEN_EDITOR, SCREEN_DETAIL, SCREEN_ALARM, SCREEN_OPTIONS,
@@ -18,6 +19,10 @@ typedef struct {
   const char *status, *issue;
   bool hourglass_transition;
   int16_t hourglass_angle;
+  bool selection_transition;
+  TimerMotionRect selection_rect;
+  int8_t editor_bump;
+  int8_t action_offset[3];
 } TimerUiView;
 
 typedef struct {
