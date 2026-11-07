@@ -1,0 +1,85 @@
+{
+  "version": "0.14.1",
+  "status": "Local review revision; no commit/push/publication by implementation agent",
+  "branch": "design/pebble-native-redesign",
+  "previousReviewCommit": "4d98c82",
+  "date": "2026-11-07",
+  "artifacts": {
+    "Timer-0.14.1.pbw": {
+      "sha256": "57c0353f5a91f418981666d599d44f28f8fa2b6d94bd684d5033ad41171e75c6",
+      "bytes": 75577
+    },
+    "Timer-0.14.1-debug.zip": {
+      "sha256": "8e136747c417e94bb37f262d7117f50b02885bfb526cbd117946b46b2c1d3253",
+      "bytes": 137301
+    }
+  },
+  "checks": {
+    "npmTest": {
+      "result": "PASS",
+      "javascriptTests": 34,
+      "portableC": true
+    },
+    "pythonAudits": {
+      "result": "PASS",
+      "tests": 46
+    },
+    "build": "PASS",
+    "exactFontAndOutlineAudit": "PASS",
+    "packagedSettingsAndProviderRuntime": "PASS",
+    "generatedConfig": "PASS",
+    "native": {
+      "native-ui-system": {
+        "captures": 26,
+        "report": "native-ui-system/report.json",
+        "result": "PASS"
+      },
+      "native-motion": {
+        "captures": 47,
+        "report": "native-motion/report.json",
+        "result": "PASS"
+      },
+      "native-actions": {
+        "captures": 9,
+        "report": "native-actions/report.json",
+        "result": "PASS"
+      }
+    },
+    "nativeInkCentring": {
+      "result": "PASS",
+      "roles": 22,
+      "report": "centering.json"
+    }
+  },
+  "selectionFix": {
+    "previousStretchMs": 100,
+    "previousSettleMs": 250,
+    "newRigidMoveMs": 120,
+    "overshootPixels": 0,
+    "scrollAndSkippedRows": "Immediate",
+    "ownerChanges": "Immediate; independent of visual motion",
+    "previousClip": "previous-option-motion/previous-0.14.0-options-switch.gif",
+    "currentClip": "native-motion/quick-options.gif"
+  },
+  "readability": {
+    "clock": "Gothic28Bold;18px native visible ink",
+    "utility": "Gothic24Bold",
+    "centering": "Actual glyph/descender/group ink margins, not nominal point sizes",
+    "scope": "Built-in English/numeric Timer strings; no arbitrary Unicode or real-device legibility claim"
+  },
+  "phone": {
+    "sourceAudit": "Symmetric field/button padding, wrapping, unchanged one-selector/save controller; help now has explicit10px vertical padding",
+    "browserVerified": false,
+    "browserBlocker": "Existing sandbox restriction prevents fresh Chromium startup; no retry attempted",
+    "preview": "phone-preview.html",
+    "previewBridge": "Mock; no phone/watch writes"
+  },
+  "previousArtifactsUnchanged": {
+    "Timer-0.14.0.pbw": "49552faee79b82c07e44888eb63726945b39370c3008a8e1e14db46a9bec51b0",
+    "Timer-0.14.0-debug.zip": "5aad7c02083a8c387101313c9e44b8a5d3ec4c080dc458b42ae56d95565ed9d4",
+    "Timer-0.14.0-source.zip": "ab831f2e00dd5240ee93af52ab9ef27e0a599fea35840b62634a6022c0172002"
+  },
+  "physicalWatchTested": false,
+  "realPhoneWebViewTested": false,
+  "batteryOrVibrationMeasured": false
+}

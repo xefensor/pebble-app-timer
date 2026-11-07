@@ -8,10 +8,10 @@ The [XOCE repository migration](docs/REPOSITORY-MIGRATION.md) updates Dynamic an
 library source locations while preserving Timer's package, app identity and
 published release files.
 
-Timer **0.14.0 is a local redesign candidate** on
+Timer **0.14.1 is a local redesign candidate** on
 `design/pebble-native-redesign`, for Xef's review. See the
 [redesign and native previews](docs/REDESIGN.md).
-The current local build is `dist/Timer-0.14.0.pbw`; it has not been published.
+The current local build is `dist/Timer-0.14.1.pbw`; it has not been published.
 Its phone settings contain one **Watch appearance** choice (Light/Dark), with
 English/Czech labels and a confirmed **✓ Saved** indicator that leaves the page
 open. Timer creation and alarm controls remain on the watch.
@@ -84,6 +84,14 @@ Use [Dynamic 0.16.2](https://github.com/xefensor/pebble-watchface-dynamic/releas
 for activity presentation and [Open Activity 0.1.6](https://github.com/xefensor/pebble-app-open-activity/releases/tag/v0.1.6)
 for the separately configured Primary/Secondary shortcuts. Install each app
 separately; the Activities library is already bundled.
+
+## Version 0.14.1
+
+This review revision prioritizes Xef's readability requirement: larger bold clock
+and utility ink, measured title/time spacing and clear two-line warning bands.
+Vertical choices now move rigidly for 120ms with no rubber-band distortion;
+rapid skips and scroll changes settle immediately. See [the updated review](docs/REDESIGN.md).
+Phone help has explicit symmetric padding; existing Save/storage code is unchanged.
 
 ## Version 0.14.0
 

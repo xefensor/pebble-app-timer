@@ -16,17 +16,35 @@ static void selection(TimerMotionRect from,TimerMotionRect to,
 }
 
 int main(void) {
-  selection((TimerMotionRect){0,40,166,54},(TimerMotionRect){0,96,166,54},100,250);
-  selection((TimerMotionRect){0,152,166,54},(TimerMotionRect){0,96,166,54},100,250);
-  selection((TimerMotionRect){0,58,166,41},(TimerMotionRect){0,101,166,41},100,250);
-  selection((TimerMotionRect){0,143,166,32},(TimerMotionRect){0,179,166,32},100,250);
+  const TimerMotionRect pairs[][2]={
+    {{0,40,166,54},{0,96,166,54}},
+    {{0,152,166,54},{0,96,166,54}},
+    {{0,58,166,41},{0,101,166,41}},
+    {{0,143,166,32},{0,179,166,32}}
+  };
+  for(unsigned n=0;n<sizeof(pairs)/sizeof(pairs[0]);++n) {
+    const TimerMotionRect from=pairs[n][0],to=pairs[n][1];
+    int previous=from.y;
+    for(uint32_t ms=0;ms<=TIMER_MENU_MOTION_MS;++ms) {
+      const TimerMotionRect r=timer_motion_menu(from,to,ms);
+      assert(r.x==to.x&&r.w==to.w&&r.h==to.h);
+      assert(r.y>=(from.y<to.y?from.y:to.y)&&r.y<=(from.y>to.y?from.y:to.y));
+      assert(to.y>from.y?r.y>=previous:r.y<=previous);
+      previous=r.y;
+    }
+    assert(previous==to.y);
+    assert(timer_motion_menu(from,to,UINT32_MAX).y==to.y);
+  }
+  /* Rapid reverse resumes a rigid visible position, never stretched edges. */
+  const TimerMotionRect mid=timer_motion_menu(pairs[0][0],pairs[0][1],40);
+  assert(mid.h==54);
+  assert(timer_motion_menu(mid,pairs[0][0],0).y==mid.y);
+  assert(timer_motion_menu(mid,pairs[0][0],120).y==40);
   selection((TimerMotionRect){58,104,50,45},(TimerMotionRect){111,104,50,45},107,179);
   selection((TimerMotionRect){58,104,50,45},(TimerMotionRect){5,104,50,45},107,179);
-  /* A reverse press continues from the currently stretched edges. */
-  selection((TimerMotionRect){0,56,166,95},(TimerMotionRect){0,40,166,54},100,250);
   for(uint32_t ms=0;ms<400;++ms)assert(timer_motion_bump(ms)>=0&&timer_motion_bump(ms)<=3);
   assert(!timer_motion_bump(0)&&timer_motion_bump(107)==3&&!timer_motion_bump(321));
   assert(!timer_motion_bump(UINT32_MAX));
   assert(timer_motion_ease(5,0,0,144)==5&&!timer_motion_ease(5,0,144,144));
-  puts("timer UI motion: elastic row/field bounds, finite endpoints, bounded value and action feedback passed");
+  puts("timer UI motion: rigid120ms choices, rapid reverse, elastic editor bounds and finite feedback passed");
 }

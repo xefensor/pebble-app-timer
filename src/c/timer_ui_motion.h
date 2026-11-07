@@ -3,9 +3,10 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-/* Public-SDK equivalents of Pebble's elastic MenuLayer and SelectionLayer
- * feedback. Geometry only: owner state and button dispatch never wait here. */
+/* Bounded feedback geometry. Readability takes priority over imitating the
+ * native menu's long stretch; owner state and button dispatch never wait. */
 typedef struct { int16_t x, y, w, h; } TimerMotionRect;
+#define TIMER_MENU_MOTION_MS 120u
 
 static inline int timer_motion_ease(int from, int to, uint32_t elapsed,
                                    uint32_t duration) {
@@ -37,6 +38,15 @@ static inline TimerMotionRect timer_motion_selection(TimerMotionRect from,
   TimerMotionRect result = to;
   if (horizontal) { result.x = first; result.w = last - first; }
   else { result.y = first; result.h = last - first; }
+  return result;
+}
+
+/* Vertical choices move as one fixed-height surface. No rubber band spans
+ * adjacent labels, and every ordinary step settles within 120ms. */
+static inline TimerMotionRect timer_motion_menu(TimerMotionRect from,
+    TimerMotionRect to, uint32_t elapsed) {
+  TimerMotionRect result = to;
+  result.y = timer_motion_ease(from.y, to.y, elapsed, TIMER_MENU_MOTION_MS);
   return result;
 }
 

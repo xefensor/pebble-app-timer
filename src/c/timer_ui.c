@@ -29,7 +29,7 @@ static void rect(GContext *ctx, GRect frame, GColor color) {
 }
 
 /* Only moving selection frames need direct pixels. Invert neutral ink and
- * surface together, so a travelling elastic highlight never hides labels.
+ * surface together, so a travelling highlight never hides labels.
  * Keep the blue progress / amber warning semantics intact. Emery is 8-bit;
  * focus loss cancels motion before any covering-window transition. */
 static void moving_selection(GContext *ctx, const TimerUiView *view) {
@@ -72,8 +72,21 @@ static void header(GContext *ctx, const TimerUiView *view, const char *title,
     if(!twenty_four&&wall_clock[0]=='0')
       memmove(wall_clock,wall_clock+1,strlen(wall_clock));
   } else clock_copy_time_string(wall_clock,sizeof(wall_clock));
-  timer_fonts_text(ctx,title,18,8,25,90,ink,GTextAlignmentLeft);
-  timer_fonts_text(ctx,wall_clock,18,102,25,56,ink,GTextAlignmentRight);
+  const int clock_width=timer_fonts_text_width(wall_clock,28);
+  const int clock_x=UI_WIDTH-8-clock_width;
+  const int title_width=clock_x-16;
+  /* Fit readable ink rather than shrinking both header roles to Gothic18.
+   * Short context labels leave a measured gap before a full 12/24h clock. */
+  const char *label=title;
+  if(timer_fonts_text_width(label,23)>title_width) {
+    if(!strcmp(title,"Timers full"))label="Full";
+    else if(!strcmp(title,"Saved timer"))label="Saved";
+    else if(!strcmp(title,"Remaining"))label="Edit time";
+    else if(!strcmp(title,"New timer"))label="New";
+  }
+  const int title_baseline=25-(strpbrk(label,"gjpqy")?2:0);
+  timer_fonts_text(ctx,label,23,8,title_baseline,title_width,ink,GTextAlignmentLeft);
+  timer_fonts_text(ctx,wall_clock,28,clock_x,27,clock_width,ink,GTextAlignmentRight);
 }
 
 static void clock_text(uint32_t seconds, char *buffer, size_t capacity) {
@@ -365,14 +378,17 @@ static void list_screen(GContext *ctx, const TimerUiView *view) {
       char clock[20],duration[24],detail[52];
       clock_text(left,clock,sizeof(clock));
       const int point=left>=3600?24:30;
-      timer_fonts_digits(ctx,clock,13+(digit_width(clock,point)+1)/2,y+29,point,foreground,background);
+      /* Centre the complete two-line ink group, including the shorter long-
+       * duration digits. Font point sizes do not describe their visible tops. */
+      const int group_offset=left>=3600?-5:-3;
+      timer_fonts_digits(ctx,clock,13+(digit_width(clock,point)+1)/2,y+29+group_offset,point,foreground,background);
       duration_text(timer->repeat_seconds,duration,sizeof(duration),false);
       snprintf(detail,sizeof(detail),"%s · %s",timer->state==ACTIVITY_TIMER_RUNNING?"Running":
                timer->state==ACTIVITY_TIMER_PAUSED?"Paused":ready?"Ready":"Time’s up",duration);
       if(timer_fonts_text_width(detail,18)>128)
         snprintf(detail,sizeof(detail),"%s · %s",timer->state==ACTIVITY_TIMER_RUNNING?"Run":
             timer->state==ACTIVITY_TIMER_PAUSED?"Paused":ready?"Ready":"Done",duration);
-      timer_fonts_text(ctx,detail,18,13,y+49,128,
+      timer_fonts_text(ctx,detail,18,13,y+49+group_offset,128,
           selected?ui_line():ui_muted(),GTextAlignmentLeft);
       const uint32_t total=ready?timer->repeat_seconds:timer->configured_seconds;
       const unsigned fill=total?
@@ -424,13 +440,13 @@ static void editor_screen(GContext *ctx, const TimerUiView *view) {
     char value[4];snprintf(value,sizeof(value),"%02lu",(unsigned long)view->edit[field]);
     timer_fonts_digits(ctx,value,x+25,138-bump,36,
         view->selection_transition?ui_fg():ink,view->selection_transition?ui_bg():background);
-    timer_fonts_text(ctx,labels[field],18,x,170,50,selected?ui_fg():ui_muted(),GTextAlignmentCenter);
+    timer_fonts_text(ctx,labels[field],18,x,171,50,selected?ui_fg():ui_muted(),GTextAlignmentCenter);
   }
   moving_selection(ctx,view);
-  if(view->edit[0]==24)text(ctx,"24 hours max",18,188,ui_muted());
-  else if(reuse)text(ctx,"Reuses oldest ready",18,188,ui_muted());
+  if(view->edit[0]==24)text(ctx,"24 hours max",18,195,ui_muted());
+  else if(reuse)text(ctx,"Reuses oldest ready",18,195,ui_muted());
   else text(ctx,view->edit_field==0?"Back to cancel":
-      view->edit_field==1?"Back for hours":"Back for minutes",18,188,ui_muted());
+      view->edit_field==1?"Back for hours":"Back for minutes",18,195,ui_muted());
   text(ctx,invalid?"At least 5 seconds":
        view->edit_field<2?"Select: next":view->editing_new?"Select: start":"Select: save",
        18,216,ui_fg());
@@ -475,7 +491,8 @@ static void options_screen(GContext *ctx, const TimerUiView *view) {
     const int y=58+(int)row*43;
     const bool selected=!view->selection_transition&&view->option==row;
     if(selected)rect(ctx,GRect(0,y,UI_WIDTH,41),ui_fg());
-    timer_fonts_text(ctx,options[row],23,12,y+29,150,selected?ui_bg():ui_fg(),GTextAlignmentLeft);
+    const int baseline=y+29-(strpbrk(options[row],"gjpqy")?2:0);
+    timer_fonts_text(ctx,options[row],23,12,baseline,150,selected?ui_bg():ui_fg(),GTextAlignmentLeft);
   }
   moving_selection(ctx,view);
   text(ctx,view->status&&view->status[0]?view->status:
@@ -504,9 +521,9 @@ static void confirm_screen(GContext *ctx, const TimerUiView *view) {
   const bool keep=!view->selection_transition&&!view->confirm_choice;
   const bool remove=!view->selection_transition&&view->confirm_choice;
   if(keep)rect(ctx,GRect(0,143,UI_WIDTH,32),ui_fg());
-  text(ctx,"Keep timer",23,167,keep?ui_bg():ui_fg());
+  text(ctx,"Keep timer",23,166,keep?ui_bg():ui_fg());
   if(remove)rect(ctx,GRect(0,179,UI_WIDTH,32),ui_fg());
-  text(ctx,"Delete timer",23,203,remove?ui_bg():ui_fg());
+  text(ctx,"Delete timer",23,204,remove?ui_bg():ui_fg());
   moving_selection(ctx,view);
 }
 
@@ -524,8 +541,8 @@ void timer_ui_draw(GContext *ctx, const TimerUiView *view) {
   }
   if(view->issue&&view->issue[0]) {
     const bool confirm=view->screen==SCREEN_CONFIRM;
-    rect(ctx,GRect(0,confirm?32:187,UI_WIDTH,confirm?35:41),AMBER);
-    text(ctx,view->issue,18,confirm?46:202,GColorBlack);
-    text(ctx,view->appearance_issue?"Retry phone settings":"Keep Timer open",18,confirm?62:220,GColorBlack);
+    rect(ctx,GRect(0,confirm?32:187,UI_WIDTH,41),AMBER);
+    text(ctx,view->issue,18,confirm?51:205,GColorBlack);
+    text(ctx,view->appearance_issue?"Retry phone settings":"Keep Timer open",18,confirm?69:223,GColorBlack);
   }
 }

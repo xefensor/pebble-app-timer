@@ -574,8 +574,9 @@ static TimerUiView prv_view(void) {
   const uint32_t elapsed=prv_millis()-s_ui_motion_started;
   view.selection_transition=s_ui_motion_screen==s_screen&&
       (s_ui_motion==UI_MOTION_MENU||s_ui_motion==UI_MOTION_FIELD);
-  view.selection_rect=timer_motion_selection(s_ui_from,s_ui_to,elapsed,
-      s_ui_motion==UI_MOTION_FIELD?107u:100u,s_ui_motion==UI_MOTION_FIELD?179u:250u);
+  view.selection_rect=s_ui_motion==UI_MOTION_MENU?
+      timer_motion_menu(s_ui_from,s_ui_to,elapsed):
+      timer_motion_selection(s_ui_from,s_ui_to,elapsed,107u,179u);
   view.editor_bump=s_ui_motion_screen==s_screen&&s_ui_motion==UI_MOTION_VALUE?
       timer_motion_bump(elapsed):0;
   if(s_icon_button>=0&&s_icon_button<3)view.action_offset[s_icon_button]=
@@ -650,7 +651,7 @@ static void prv_stop_ui_motion(void) {
 
 static void prv_ui_motion_tick(void *context) {
   (void)context;s_ui_motion_timer=NULL;
-  const uint32_t duration=s_ui_motion==UI_MOTION_MENU?350u:
+  const uint32_t duration=s_ui_motion==UI_MOTION_MENU?TIMER_MENU_MOTION_MS:
       s_ui_motion==UI_MOTION_FIELD?286u:321u;
   if(!s_focused||s_ui_motion_screen!=s_screen||s_ui_motion==UI_MOTION_NONE||
       prv_millis()-s_ui_motion_started>=duration) {
@@ -721,13 +722,21 @@ static void prv_animate_ui(const TimerUiView *before, bool repeating, ButtonId b
   if(pending)from=before->selection_rect;
   prv_stop_ui_motion();
   if(repeating||!s_focused||before->screen!=after.screen||!have_from||!have_to)return;
+  if(after.screen==SCREEN_LIST&&
+      timer_ui_list_window(before).first!=timer_ui_list_window(&after).first)return;
   if(after.screen==SCREEN_EDITOR) {
     const uint32_t seconds=s_edit[0]*3600+s_edit[1]*60+s_edit[2];
     /* Locked and invalid cells keep their explicit semantic fill. */
     if(s_edit[0]==24||seconds<ACTIVITY_TIMER_MIN_SECONDS)return;
     if(before->edit_field!=after.edit_field)s_ui_motion=UI_MOTION_FIELD;
     else if(button==BUTTON_ID_UP||button==BUTTON_ID_DOWN)s_ui_motion=UI_MOTION_VALUE;
-  } else if(from.y!=to.y)s_ui_motion=UI_MOTION_MENU;
+  } else if(from.y!=to.y) {
+    /* Skips and scroll changes settle immediately. Animate only one visible
+     * neighbour so a rapid event cannot send the highlight through the page. */
+    const int step=after.screen==SCREEN_LIST?56:after.screen==SCREEN_OPTIONS?43:36;
+    if(from.y-to.y>step||to.y-from.y>step)return;
+    s_ui_motion=UI_MOTION_MENU;
+  }
   if(s_ui_motion==UI_MOTION_NONE)return;
   s_ui_from=from;s_ui_to=to;s_ui_motion_screen=s_screen;
   s_ui_motion_started=prv_millis();prv_ui_motion_tick(NULL);

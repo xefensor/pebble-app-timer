@@ -249,3 +249,18 @@ baseline; this branch does not silently replace it or publish a release.
   distribution-native frame samples and input/focus lifecycle checks. Existing
   native appearance/storage checks remain required. Browser restrictions and
   real-device gaps must be recorded separately from passed native tests.
+
+## Readability correction — local 0.14.1
+
+Xef rejected shrinking the top time/date and the long/deformed up/down choice
+transition. Readability takes priority over matching Pebble's small text.
+Use Gothic 28 Bold for the top clock and 24Bold for utility text; compare actual
+ink, not font point names. Header title/time visible ink shares an optical centre.
+All boxes must retain readable inset ink, including critical warnings and editor.
+Vertical menu/list/confirmation choices use a rigid120ms ease-out move, without
+stretch/overshoot. Snap when a list window changes, multiple rows are skipped,
+repeat input arrives or Select activates. Keep independent editor field/value
+feedback and 300ms hourglass behavior. The old 0.14.0 stretch specification above
+is historical. Physical action icons keep their hardware-button anchors; Timer
+has no inline text/icon pairs. Preserve exact native screenshots/provenance and
+separate phone CSS source audits from browser rendering, which remains blocked.

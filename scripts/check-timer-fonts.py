@@ -48,7 +48,7 @@ def audit(pbw, root=ROOT):
     media = package['pebble']['resources']['media']
     require(media == [], 'Native Gothic utility roles must not package unused custom bitmap fonts')
     utility = (root / 'src/c/timer_fonts.c').read_text()
-    require(all(key in utility for key in ('FONT_KEY_GOTHIC_18_BOLD', 'FONT_KEY_GOTHIC_24', 'FONT_KEY_GOTHIC_24_BOLD')) and
+    require(all(key in utility for key in ('FONT_KEY_GOTHIC_24_BOLD', 'FONT_KEY_GOTHIC_28_BOLD')) and
             'fonts_load_custom_font' not in utility and 'RESOURCE_ID_FONT_BODY' not in utility,
             'Utility font roles differ from the native Gothic candidate')
     for record in provenance['files']:

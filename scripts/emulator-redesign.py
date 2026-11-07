@@ -52,10 +52,12 @@ def series(name,button):
     frames=[Image.frombytes('RGB',(200,228),shot(name+'-before'))]
     started=time.monotonic();tap(button,0)
     samples=[]
-    for n,delay in enumerate((.025,.055,.08,.25)):
-        frame=shot(name+'-'+str(n),delay);samples.append(round((time.monotonic()-started)*1000))
+    for n,offset in enumerate((.0,.035,.07,.11,.16,.24,.36)):
+        time.sleep(max(0,started+offset-time.monotonic()))
+        frame=shot(name+'-'+str(n));samples.append(round((time.monotonic()-started)*1000))
         frames.append(Image.frombytes('RGB',(200,228),frame))
-    frames[0].save(OUT/(name+'.gif'),save_all=True,append_images=frames[1:],duration=[500]+[100]*3+[700],loop=0)
+    durations=[350]+[max(20,b-a) for a,b in zip(samples,samples[1:])]+[500]
+    frames[0].save(OUT/(name+'.gif'),save_all=True,append_images=frames[1:],duration=durations,loop=0)
     return samples
 def snapshot():
     records.clear();service.send_message(target,{1017:Uint8(1),1019:Uint32(0)})
@@ -66,8 +68,36 @@ def snapshot():
 
 install(ROOT/'build/fixture-mode5.pbw');stop();install(native)
 before=snapshot()
-menu_samples=series('elastic-list','Down')
-# Move back, then activate the new logical target before its 350ms feedback ends.
+menu_samples=series('quick-list','Down')
+# Options must move as a rigid41px selection and settle within120ms. Screenshot
+# acquisition cannot establish hardware timing; portable geometry checks bound it.
+tap('Select');tap('Down')
+def choice_rows(data):
+    rows=[y for y in range(58,185) if data[(y*200+1)*3:(y*200+1)*3+3]==b'\x00\x00\x00']
+    assert len(rows)==41 and rows[-1]-rows[0]==40,rows
+    return rows[0]
+option_frames=[];option_positions=[];option_times=[]
+option_frames.append(Image.frombytes('RGB',(200,228),shot('quick-options-before')))
+assert choice_rows(option_frames[-1].tobytes())==58
+started=time.monotonic();tap('Down',0)
+for n,offset in enumerate((.0,.025,.055,.085,.13,.18,.24)):
+    time.sleep(max(0,started+offset-time.monotonic()))
+    data=shot('quick-options-'+str(n));position=choice_rows(data)
+    assert 58<=position<=101,position
+    option_positions.append(position);option_times.append(round((time.monotonic()-started)*1000))
+    option_frames.append(Image.frombytes('RGB',(200,228),data))
+assert option_positions[-1]==101
+option_frames[0].save(OUT/'quick-options.gif',save_all=True,append_images=option_frames[1:],
+ duration=[350]+[max(20,b-a) for a,b in zip(option_times,option_times[1:])]+[500],loop=0)
+tap('Up',.025);tap('Down',.025);tap('Up',.18)
+assert choice_rows(shot('rapid-options-reverse-settled'))==58
+# Two rapid Down events activate Delete's safe confirmation immediately; no
+# timer mutation is queued behind a travelling highlight. Back keeps the timer.
+tap('Down',.025);tap('Down',.025);tap('Select',.025)
+shot('rapid-delete-keep-first',.2);tap('Back');tap('Back');tap('Back')
+unchanged=snapshot()
+assert all(unchanged[k][key]==before[k][key] for k in before for key in (1001,1003,1010,1011,1012,1022,1023))
+# Move back, then activate the new logical target before its120ms feedback ends.
 tap('Up');tap('Down',.025);tap('Select',.025);tap('Select',.4)
 after=snapshot()
 assert after['1'][1003]=='paused' and after['0'][1003]=='active'
@@ -116,8 +146,9 @@ stop();launch();reopened=shot('cold-reopen',.3)
 assert reopened[:3]==bytes((255,255,255))
 report={'result':'PASS','version':VERSION,'pbwSha256':sha(pbw.read_bytes()),
  'scope':'Actual exact-distribution Emery native payload; FIFO QEMU, QA fixture and simulated AppMessage receipts; no phone JS, physical watch or battery/timing measurement',
- 'nativePayloadSha256':payload,'captures':captures,'sampleElapsedMilliseconds':{'list':menu_samples,'value':value_samples,'field':field_samples},
- 'gifNote':'Actual sampled native frames with presentation dwell time; GIF is not a frame-rate/timing measurement.',
+ 'nativePayloadSha256':payload,'captures':captures,'sampleElapsedMilliseconds':{'list':menu_samples,'options':option_times,'value':value_samples,'field':field_samples},
+ 'quickOptionPositions':option_positions,'selectionDurationMs':120,'selectionHeightPixels':41,
+ 'gifNote':'Actual sampled native frames; transition dwell follows host acquisition intervals, before/after dwell aids review. Screenshot RPC is not hardware timing.',
  'proofs':{'selectDuringSelectionMotionUsesImmediateCorrectTarget':True,'holdDoesNotLeakAcrossEditorEntry':True,'editorCancelPreservesOwnerState':True,'pausedBodyStatic':True,'physicalPressMovesIconAndReleaseSettles':True,'coverCancelsAndReturnStaysStill':True,'coldReopen':True},
  'physicalDeviceVerified':False,'freshStockDerivedFlash':True,'qemuState':str(state)}
 (OUT/'report.json').write_text(json.dumps(report,indent=2)+'\n')

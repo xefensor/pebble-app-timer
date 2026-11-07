@@ -1,4 +1,4 @@
-# Timer shared UI — local 0.14.0 review branch
+# Timer shared UI — local 0.14.1 review branch
 
 The shared reference remains in the local sibling `xoce` checkout at
 `src/pages/docs/design/pebble-ui-system.md`, also available through
@@ -7,7 +7,19 @@ The canonical standard remains the baseline. This branch is an alternative for
 Xef to compare, documented in [REDESIGN.md](REDESIGN.md). No website or
 release has been published by this work.
 
-## Implemented in this candidate
+## User correction in 0.14.1
+
+Readability takes priority over imitating Pebble's smaller utility text. The clock
+is now Gothic 28 Bold; utility/cell/status text uses bold 24. Native ink and padding
+are checked in every captured screen, with a shared optical header centre and
+larger warning line spacing. Vertical choices move rigidly for 120ms; they no
+longer stretch for 350ms. Scroll changes/skips/repeats snap, and Select stays
+immediate. See [REDESIGN](REDESIGN.md) and current [validation](qa/0.14.1/validation.json).
+
+The remaining 0.14.0 record below is historical; its elastic vertical-menu timings
+were explicitly rejected. Editor/hourglass feedback remains meaningful and bounded.
+
+## Implemented in the previous candidate
 
 - Neutral native light/dark surfaces with the existing blue hourglass,
   Fredoka numbers, stock Gothic utility/menu text and 166/34px composition.

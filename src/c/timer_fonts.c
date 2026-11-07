@@ -22,8 +22,10 @@ typedef struct {
 } ClockPaint;
 
 static GFont prv_body(int point) {
-  return fonts_get_system_font(point >= 23 ? FONT_KEY_GOTHIC_24_BOLD :
-      point >= 19 ? FONT_KEY_GOTHIC_24 : FONT_KEY_GOTHIC_18_BOLD);
+  /* Native18 has a small ink height; regular24 is too thin for a reflective
+   * display. Keep utility ink readable and hierarchy in placement/colour and
+   * the larger Fredoka primary values. */
+  return fonts_get_system_font(point>=28?FONT_KEY_GOTHIC_28_BOLD:FONT_KEY_GOTHIC_24_BOLD);
 }
 
 bool timer_fonts_init(void) { return true; }
@@ -40,7 +42,7 @@ void timer_fonts_text(GContext *ctx, const char *text, int point, int x,
   /* Gothic includes top bearing and descender clearance. Fit its visible ink
    * to the existing baseline contract, as checked in native Emery captures,
    * rather than treating its 18/24 name as the ink height. */
-  const int size = point >= 19 ? 24 : 18;
+  const int size = point>=28?28:24;
   graphics_context_set_text_color(ctx, color);
   graphics_draw_text(ctx, text, prv_body(point),
       GRect(x, baseline - size - 2, width, size + 12), GTextOverflowModeFill, align, NULL);
