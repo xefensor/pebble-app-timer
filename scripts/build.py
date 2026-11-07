@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Build the stock SDK timer and include its independently callable plugin."""
+
 from pathlib import Path
 import hashlib
 import json
@@ -8,19 +9,26 @@ import zipfile
 
 root = Path(__file__).resolve().parents[1]
 from repo_workflow import build_output
-output_directory = build_output(root, 'Timer')
+
+output_directory = build_output(root, "Timer")
 library = root / "node_modules/pebble-activities"
 package = json.loads((root / "package.json").read_text())
-subprocess.run(['node', str(root / 'scripts/generate-config.cjs')], check=True, cwd=root)
+subprocess.run(["node", str(root / "scripts/generate-config.cjs")], check=True, cwd=root)
 # SDK incremental JS signatures do not include transitive npm source changes.
 # Distribution builds must rebundle the pinned dependency as well as native code.
 subprocess.run(["pebble", "clean"], check=True, cwd=root)
 build = root / "build"
 build.mkdir(exist_ok=True)
-subprocess.run([
-    "python3", str(root / "scripts/bundle-js.py"),
-    str(root / "src/plugin/index.js"), str(build / "plugin.js")
-], check=True, cwd=root)
+subprocess.run(
+    [
+        "python3",
+        str(root / "scripts/bundle-js.py"),
+        str(root / "src/plugin/index.js"),
+        str(build / "plugin.js"),
+    ],
+    check=True,
+    cwd=root,
+)
 subprocess.run(["pebble", "build"], check=True, cwd=root)
 # Derive optical alignment from exact SDK PFOs, then relink if needed. A
 # standalone checkout needs no host font library or guessed point baselines.
@@ -29,7 +37,9 @@ previous_metrics = metrics.read_bytes()
 subprocess.run(["python3", str(root / "scripts/generate-body-metrics.py")], check=True, cwd=root)
 if metrics.read_bytes() != previous_metrics:
     subprocess.run(["pebble", "build"], check=True, cwd=root)
-subprocess.run(["python3", str(root / "scripts/generate-body-metrics.py"), "--check"], check=True, cwd=root)
+subprocess.run(
+    ["python3", str(root / "scripts/generate-body-metrics.py"), "--check"], check=True, cwd=root
+)
 # The stock SDK names the development bundle after the project directory.
 pbw = build / (root.name + ".pbw")
 with zipfile.ZipFile(pbw) as source:
@@ -54,8 +64,13 @@ for name in ("pebble-js-app.js", "plugin.js"):
     original.write_bytes(entries[name])
     output = build / "optimized" / name
     output_map = build / "optimized" / (name + ".map")
-    command = ["node", str(root / "scripts/minify-js.cjs"),
-               str(original), str(output), str(output_map)]
+    command = [
+        "node",
+        str(root / "scripts/minify-js.cjs"),
+        str(original),
+        str(output),
+        str(output_map),
+    ]
     if mapping is not None:
         input_map = build / ("original-" + name + ".map")
         input_map.write_bytes(mapping)
@@ -63,18 +78,30 @@ for name in ("pebble-js-app.js", "plugin.js"):
     subprocess.run(command, check=True, cwd=root)
     entries[name] = output.read_bytes()
     debug["minified/" + name + ".map"] = output_map.read_bytes()
-debug["optimization.json"] = json.dumps({
-    "schema": 1, "version": package["version"], "minifier": "terser@5.46.0",
-    "scripts": {name: {"sourceSha256": hashlib.sha256(debug[name]).hexdigest(),
-                       "releaseSha256": hashlib.sha256(entries[name]).hexdigest(),
-                       "mapSha256": hashlib.sha256(debug["minified/" + name + ".map"]).hexdigest()}
-                for name in ("pebble-js-app.js", "plugin.js")}
-}, indent=2).encode() + b"\n"
+debug["optimization.json"] = (
+    json.dumps(
+        {
+            "schema": 1,
+            "version": package["version"],
+            "minifier": "terser@5.46.0",
+            "scripts": {
+                name: {
+                    "sourceSha256": hashlib.sha256(debug[name]).hexdigest(),
+                    "releaseSha256": hashlib.sha256(entries[name]).hexdigest(),
+                    "mapSha256": hashlib.sha256(debug["minified/" + name + ".map"]).hexdigest(),
+                }
+                for name in ("pebble-js-app.js", "plugin.js")
+            },
+        },
+        indent=2,
+    ).encode()
+    + b"\n"
+)
 entries["LICENSE"] = (root / "LICENSE").read_bytes()
 entries["licenses/pebble-activities-LICENSE.txt"] = (library / "LICENSE").read_bytes()
 entries["THIRD-PARTY-NOTICES.md"] = (root / "THIRD-PARTY-NOTICES.md").read_bytes()
 entries["licenses/Apache-2.0.txt"] = (root / "licenses/Apache-2.0.txt").read_bytes()
-if (root / 'src/c/generated_clock_glyphs.h').exists():
+if (root / "src/c/generated_clock_glyphs.h").exists():
     for notice in ("OFL-Fredoka.txt", "OFL-RobotoCondensed.txt"):
         entries["licenses/" + notice] = (root / "resources/fonts" / notice).read_bytes()
 destination = output_directory / ("Timer-" + package["version"] + ".pbw")
@@ -87,11 +114,15 @@ for path, contents in ((destination, entries), (debug_destination, debug)):
             entry.compress_type = zipfile.ZIP_DEFLATED
             entry.external_attr = 0o644 << 16
             output.writestr(entry, content)
-(destination.parent / "SHA256SUMS.txt").write_text("".join(
-    hashlib.sha256(path.read_bytes()).hexdigest() + "  " + path.name + "\n"
-    for path in (destination, debug_destination)))
+(destination.parent / "SHA256SUMS.txt").write_text(
+    "".join(
+        hashlib.sha256(path.read_bytes()).hexdigest() + "  " + path.name + "\n"
+        for path in (destination, debug_destination)
+    )
+)
 print(destination)
 print(debug_destination)
 
 from repo_workflow import record_build
+
 record_build(root, destination, debug_destination)
