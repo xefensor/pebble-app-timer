@@ -1,0 +1,111 @@
+{
+  "result": "PASS",
+  "scope": "Exact compiled PFO advance sum for representative longest built-in labels/critical instructions, checked against actual logical columns. Native PNGs separately verify painted ink.",
+  "checks": [
+    {
+      "text": "Not saved",
+      "point": 22,
+      "advance": 88,
+      "logicalWidth": 154,
+      "fitsWithoutEllipsis": true
+    },
+    {
+      "text": "Keep Timer open",
+      "point": 22,
+      "advance": 151,
+      "logicalWidth": 154,
+      "fitsWithoutEllipsis": true
+    },
+    {
+      "text": "Cannot undo",
+      "point": 22,
+      "advance": 112,
+      "logicalWidth": 154,
+      "fitsWithoutEllipsis": true
+    },
+    {
+      "text": "Theme not saved",
+      "point": 22,
+      "advance": 152,
+      "logicalWidth": 154,
+      "fitsWithoutEllipsis": true
+    },
+    {
+      "text": "Alarm not set",
+      "point": 22,
+      "advance": 119,
+      "logicalWidth": 154,
+      "fitsWithoutEllipsis": true
+    },
+    {
+      "text": "Retry phone app",
+      "point": 22,
+      "advance": 144,
+      "logicalWidth": 154,
+      "fitsWithoutEllipsis": true
+    },
+    {
+      "text": "Reset 23:59:59",
+      "point": 24,
+      "advance": 145,
+      "logicalWidth": 148,
+      "fitsWithoutEllipsis": true
+    },
+    {
+      "text": "23:59:59 timer",
+      "point": 22,
+      "advance": 130,
+      "logicalWidth": 154,
+      "fitsWithoutEllipsis": true
+    },
+    {
+      "text": "Phone disconnected",
+      "point": 22,
+      "advance": 182,
+      "logicalWidth": 188,
+      "fitsWithoutEllipsis": true
+    },
+    {
+      "text": "Shared with phone",
+      "point": 22,
+      "advance": 165,
+      "logicalWidth": 188,
+      "fitsWithoutEllipsis": true
+    },
+    {
+      "text": "At least 5 seconds",
+      "point": 22,
+      "advance": 164,
+      "logicalWidth": 188,
+      "fitsWithoutEllipsis": true
+    },
+    {
+      "text": "Oldest ready slot",
+      "point": 22,
+      "advance": 151,
+      "logicalWidth": 154,
+      "fitsWithoutEllipsis": true
+    },
+    {
+      "text": "Back for minutes",
+      "point": 22,
+      "advance": 150,
+      "logicalWidth": 154,
+      "fitsWithoutEllipsis": true
+    },
+    {
+      "text": "Up: Snooze 1m",
+      "point": 22,
+      "advance": 133,
+      "logicalWidth": 154,
+      "fitsWithoutEllipsis": true
+    },
+    {
+      "text": "23:59",
+      "point": 26,
+      "advance": 59,
+      "logicalWidth": 64,
+      "fitsWithoutEllipsis": true
+    }
+  ]
+}

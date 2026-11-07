@@ -1,0 +1,109 @@
+{
+  "result": "PASS",
+  "version": "0.14.2",
+  "pbwSha256": "b3963c8fe0606f5ce80ca87c3073a7d456d1ef776abf38d62616ff659ecb31ca",
+  "checks": {
+    "Up": {
+      "idle": {
+        "pixels": 85,
+        "left": 175,
+        "right": 191,
+        "centerX": 183.0
+      },
+      "pressed": {
+        "pixels": 85,
+        "left": 180,
+        "right": 196,
+        "centerX": 188.0
+      },
+      "settled": {
+        "pixels": 85,
+        "left": 175,
+        "right": 191,
+        "centerX": 183.0
+      },
+      "shiftPixels": 5
+    },
+    "Down": {
+      "idle": {
+        "pixels": 47,
+        "left": 175,
+        "right": 191,
+        "centerX": 183.0
+      },
+      "pressed": {
+        "pixels": 47,
+        "left": 180,
+        "right": 196,
+        "centerX": 188.0
+      },
+      "settled": {
+        "pixels": 47,
+        "left": 175,
+        "right": 191,
+        "centerX": 183.0
+      },
+      "shiftPixels": 5
+    },
+    "Select": {
+      "idle": {
+        "pixels": 79,
+        "left": 175,
+        "right": 191,
+        "centerX": 184.16455696202533
+      },
+      "pressed": {
+        "pixels": 79,
+        "left": 180,
+        "right": 196,
+        "centerX": 189.16455696202533
+      },
+      "settled": {
+        "pixels": 79,
+        "left": 175,
+        "right": 191,
+        "centerX": 184.16455696202533
+      },
+      "shiftPixels": 5
+    }
+  },
+  "captures": [
+    {
+      "file": "up-before.png",
+      "sha256": "1e0dcc703f4646cec0812d2db18cf724412336b4ed04cb9cd642baa07793cf0d"
+    },
+    {
+      "file": "up-pressed.png",
+      "sha256": "0a458ef56f61d0b0bdf4e80b447580a4077890113e9a6ad2d7fa8ed45006b889"
+    },
+    {
+      "file": "up-settled.png",
+      "sha256": "4c564b1b72bce832d43bebb093d7381a556a1d8bcf04aac8b20cf4475aa5bd02"
+    },
+    {
+      "file": "down-before.png",
+      "sha256": "4c564b1b72bce832d43bebb093d7381a556a1d8bcf04aac8b20cf4475aa5bd02"
+    },
+    {
+      "file": "down-pressed.png",
+      "sha256": "5b47efb2576db8d3b9367489b07ee2f40d6f69ddb6e625f191a90ea5a4264e7d"
+    },
+    {
+      "file": "down-settled.png",
+      "sha256": "1e0dcc703f4646cec0812d2db18cf724412336b4ed04cb9cd642baa07793cf0d"
+    },
+    {
+      "file": "select-before.png",
+      "sha256": "106e45feda338cec862892d6be8b61c0aa5cb32519ef6315242b6a77ceaf0856"
+    },
+    {
+      "file": "select-pressed.png",
+      "sha256": "9f0c15e4d4444729dd276e7370be0659bcfb2a5d973df199df3ce098f9e67822"
+    },
+    {
+      "file": "select-settled.png",
+      "sha256": "1e0dcc703f4646cec0812d2db18cf724412336b4ed04cb9cd642baa07793cf0d"
+    }
+  ],
+  "scope": "Actual distribution native payload in isolated Emery QEMU; each still-available physical icon checked independently. No real phone/watch or animation timing claim."
+}

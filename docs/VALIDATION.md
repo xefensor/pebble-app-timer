@@ -779,3 +779,46 @@ alarm vibration. Measure power use separately if required.
 No physical watch or phone was accessible in this execution environment; the
 final ADB check listed no attached devices. Emulator and packaged-runtime results do not
 certify Bluetooth behavior, physical vibration, phone delivery or battery use.
+
+## Local 0.14.2 whole-composition revision
+
+The candidate remains unpublished on `design/pebble-native-redesign`, after
+`fad44ed`/0.14.1. [The current validation record](qa/0.14.2/validation.json)
+binds every final native report to the same distribution PBW. The original
+approved eight-screen composition set is frozen separately under its preview
+candidate hash; a later one-row list-index correction changed the final native
+binary without changing those approved representative compositions.
+
+Robustness checks include the normal portable owner/model, collection, Glance,
+appearance, alarm feedback, outline/raster and motion tests;34 explicitly
+reported JavaScript tests;46 Python provenance/release tests; an integrated
+SDK4.33.1 distribution build; optimized packaged settings/provider execution;
+compiled PFO/linked-outline/source/license checks; and previous-artifact
+immutability. The three extended Roboto resources total39620bytes. SDK static
+RAM is46844bytes with84228bytes available heap; these are SDK estimates, not
+runtime peak-memory or battery measurements. A clean repeat build reproduced
+every executable/resource/script byte; only the SDK manifest's `generatedAt`
+changed. [The rebuild record](qa/0.14.2/rebuild-identity.json) proves that exact
+difference. The final PBW retains the original tested manifest and hash.
+
+Exact distribution-native Emery QEMU checks produced26 layout/theme/storage
+captures,47 motion/input frames,9 physical-button-feedback captures and34
+all-eight viewport captures. A further38 workflow captures cover normal edits,
+Cancel/Keep/Back restoration, Reset/Ready/Start, full/reusable collections,
+actual23:59:59 editor entry and real exhausted-generation failures through
+native completion. Twenty-seven actual PNG-ink checks verify complete groups,
+selected boxes, warnings, units, footers and the19px visible clock. Critical
+copy stays whole and all8 normal/critical selected indices stay visible in
+both directions. Navigation preserves owner identities/deadlines; a read-only
+probe preserves the critical-bank checksum. Selection remains rigid120ms;
+labels and owner actions remain immediate. The screenshot RPC samples frames
+and does not measure physical frame rate or motor behavior.
+
+All native fixtures use isolated stock-derived local FIFO emulator data and
+shipping native bytes. The UI scripts simulate AppMessage receipt/theme
+boundaries; they do not run the real phone application. Source-only phone CSS
+inspection and the labelled mock preview remain separate from browser testing.
+Fresh Chromium startup remains blocked by the existing sandbox restriction;
+real phone/WebView persistence, physical-watch readability, vibration and
+battery checks remain unperformed. Main and prior versioned artifacts remain
+unchanged. No tag, commit, push or publication is performed by this validation.

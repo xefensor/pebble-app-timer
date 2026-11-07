@@ -67,9 +67,9 @@ def assert_timer(pixels,name):
  bar=b'\x55\x55\x55' if alarm else b'\xff\xff\xff' if dark_mode else b'\x00\x00\x00'
  at=lambda x,y:pixels[(y*200+x)*3:(y*200+x+1)*3]
  assert at(0,0)==bg,name+': not the expected native Timer surface'
- assert at(199,10)==bar,name+': native action bar is not visible'
- title=sum(at(x,y)!=bg for y in range(8,29) for x in range(8,98))
- clock=sum(at(x,y)!=bg for y in range(8,29) for x in range(102,158))
+ assert at(199,100)==bar,name+': native action bar is not visible'
+ title=sum(at(x,y)!=bg for y in range(1,30) for x in range(8,126))
+ clock=sum(at(x,y)!=bg for y in range(1,30) for x in range(130,194))
  assert title>=25 and clock>=20,name+': missing native title/clock; possible OS overlay'
  return {'background':list(bg),'sidebar':list(bar),'titleInkPixels':title,'clockInkPixels':clock}
 def shot(name):

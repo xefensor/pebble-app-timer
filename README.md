@@ -8,10 +8,10 @@ The [XOCE repository migration](docs/REPOSITORY-MIGRATION.md) updates Dynamic an
 library source locations while preserving Timer's package, app identity and
 published release files.
 
-Timer **0.14.1 is a local redesign candidate** on
+Timer **0.14.2 is a local redesign candidate** on
 `design/pebble-native-redesign`, for Xef's review. See the
 [redesign and native previews](docs/REDESIGN.md).
-The current local build is `dist/Timer-0.14.1.pbw`; it has not been published.
+The current local build is `dist/Timer-0.14.2.pbw`; it has not been published.
 Its phone settings contain one **Watch appearance** choice (Light/Dark), with
 English/Czech labels and a confirmed **✓ Saved** indicator that leaves the page
 open. Timer creation and alarm controls remain on the watch.
@@ -84,6 +84,17 @@ Use [Dynamic 0.16.2](https://github.com/xefensor/pebble-watchface-dynamic/releas
 for activity presentation and [Open Activity 0.1.6](https://github.com/xefensor/pebble-app-open-activity/releases/tag/v0.1.6)
 for the separately configured Primary/Secondary shortcuts. Install each app
 separately; the Activities library is already bundled.
+
+## Version 0.14.2
+
+Local review revision: one readable type hierarchy across the whole watch app,
+using Roboto Condensed Bold utilities and dominant Fredoka countdowns. Larger
+body, options, help and status text now share padded layouts with the clock.
+The list shows two spacious rows, or one above a critical warning; all eight
+timers stay reachable and visible. Long countdowns use a clear hours/MM:SS
+composition. Critical instructions remain complete. The fixed rigid120ms
+selection response, safe Keep-first Delete, native alarms, saved data and phone
+Save controller remain. See [native previews and checks](docs/REDESIGN.md).
 
 ## Version 0.14.1
 

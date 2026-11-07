@@ -32,8 +32,15 @@ static inline int timer_font_digits_width_q8(const char *text, int point) {
 bool timer_fonts_init(void);
 void timer_fonts_deinit(void);
 int timer_fonts_text_width(const char *text, int point);
+int timer_fonts_text_height(const char *text, int point);
+void timer_fonts_text_box(GContext *ctx, const char *text, int point,
+                         GRect bounds, GColor color, GTextAlignment align);
+void timer_fonts_text_top(GContext *ctx, const char *text, int point, int x,
+                         int top, int width, GColor color, GTextAlignment align);
 void timer_fonts_text(GContext *ctx, const char *text, int point, int x,
                       int baseline, int width, GColor color, GTextAlignment align);
 void timer_fonts_digits(GContext *ctx, const char *text, int center_x,
                         int baseline, int point, GColor foreground, GColor background);
+void timer_fonts_digits_box(GContext *ctx,const char *text,int point,GRect bounds,
+                           GColor foreground,GColor background);
 #endif

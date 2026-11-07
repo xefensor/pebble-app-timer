@@ -93,7 +93,7 @@ int main(void) {
       timer->deadline=now+duration;timer->valid_until=timer->deadline+60;
       collection.visible_mask|=1u<<i;
     }
-    if (UX_FIXTURE_MODE==5) {
+    if (UX_FIXTURE_MODE==5 || UX_FIXTURE_MODE==9) {
       timer->configured_seconds=600;timer->run=1;
       timer->state=i<2||i==7?1:i<4?2:3;
       timer->deadline=timer->state==1?now+(i==7?86400:600):0;
@@ -117,7 +117,7 @@ int main(void) {
     const size_t count=sizeof(collection)-offset<200?sizeof(collection)-offset:200;
     saved=saved && persist_write_data(2130+chunk,bytes+offset,count)==(int)count;
   }
-  const Header header={UINT32_C(0x54434f4c),1,UX_FIXTURE_MODE==6?UINT32_MAX:1,sizeof(collection),checksum,alarms};
+  const Header header={UINT32_C(0x54434f4c),1,UX_FIXTURE_MODE==6||UX_FIXTURE_MODE==9?UINT32_MAX:1,sizeof(collection),checksum,alarms};
   saved=saved && persist_write_data(2120,&header,sizeof(header))==(int)sizeof(header);
   saved=saved && persist_write_int(2103,1)>=0;
   window=window_create();window_set_background_color(window,GColorWhite);

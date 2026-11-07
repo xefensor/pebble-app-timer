@@ -30,8 +30,21 @@ typedef struct {
   unsigned slots[TIMER_COLLECTION_CAPACITY];
 } TimerListWindow;
 
+#define TIMER_LIST_ROW_HEIGHT 80
+#define TIMER_LIST_ROW_STRIDE 88
+#define TIMER_OPTION_TOP 68
+#define TIMER_OPTION_HEIGHT 38
+#define TIMER_OPTION_STRIDE 44
+#define TIMER_CONFIRM_TOP 160
+#define TIMER_CONFIRM_HEIGHT 30
+#define TIMER_CONFIRM_STRIDE 36
+static inline int timer_ui_option_top(const TimerUiView *view) {
+  return view->issue&&view->issue[0]?94:TIMER_OPTION_TOP;
+}
+
 /* The renderer and tick decision share exactly the same visible row window. */
 TimerListWindow timer_ui_list_window(const TimerUiView *view);
+int timer_ui_list_top(const TimerUiView *view);
 bool timer_ui_needs_tick(const TimerUiView *view);
 /* Transport state only appears in Options; critical issues appear everywhere. */
 bool timer_ui_chrome_changed(const TimerUiView *view, Screen previous_screen,

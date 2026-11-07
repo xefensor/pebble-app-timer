@@ -12,11 +12,11 @@ int main(void) {
     assert(timer_collection_pause(&collection, i, 1010));
   TimerUiView view = {.screen=SCREEN_LIST, .collection=&collection, .menu=1, .now=1010};
   TimerListWindow list = timer_ui_list_window(&view);
-  assert(list.first == 0 && list.rows == 3 && list.count == 8);
+  assert(list.first == 0 && list.rows == 2 && list.count == 8);
   assert(timer_ui_needs_tick(&view));
   view.menu = 8;
   list = timer_ui_list_window(&view);
-  assert(list.first == 5 && list.slots[5] == 5);
+  assert(list.first == 6 && list.slots[6] == 6);
   assert(!timer_ui_needs_tick(&view));
   /* Running slot zero is offscreen, but it must still become due natively. */
   assert(!timer_collection_has_due(&collection, 1059));
@@ -26,7 +26,24 @@ int main(void) {
   view.menu = 1;
   view.issue = "Alarm not set";
   list = timer_ui_list_window(&view);
-  assert(list.rows == 2 && list.first == 0);
+  assert(list.rows == 1 && list.first == 0);
+  view.menu=8;list=timer_ui_list_window(&view);
+  assert(list.first==7&&list.first+list.rows==8);
+  assert(!timer_ui_needs_tick(&view));
+  /* Every selected item remains inside the same renderer/tick window, in
+   * either direction; a warning reduces the viewport to one readable row. */
+  for(unsigned warning=0;warning<2;++warning) {
+    view.issue=warning?"Not saved":NULL;
+    for(unsigned step=0;step<16;++step) {
+      view.menu=step<8?step+1:16-step;
+      list=timer_ui_list_window(&view);
+      assert(view.menu-1>=list.first&&view.menu-1<list.first+list.rows);
+      const int top=timer_ui_list_top(&view);
+      assert(top>=40);
+      assert(top+TIMER_LIST_ROW_HEIGHT+(int)(list.rows-1)*TIMER_LIST_ROW_STRIDE<= (warning?174:228));
+    }
+  }
+  view.issue="Alarm not set";
   for (unsigned screen = SCREEN_EDITOR; screen <= SCREEN_CONFIRM; ++screen) {
     view.screen = (Screen)screen;
     view.selected = 1;

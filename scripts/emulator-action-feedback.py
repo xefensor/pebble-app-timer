@@ -39,7 +39,7 @@ def shot(name):
     path=OUT/(name+'.png');Image.frombytes('RGB',(200,228),data).save(path)
     captures.append({'file':path.name,'sha256':sha(path.read_bytes())});return data
 def ink(data,y):
-    points=[(x,row) for row in range(y-13,y+14) for x in range(166,200)
+    points=[(x,row) for row in range(max(32,y-13),y+14) for x in range(166,200)
             if data[(row*200+x)*3:(row*200+x)*3+3]==b'\xff\xff\xff']
     assert points,'Expected the action icon to remain available'
     return {'pixels':len(points),'left':min(x for x,_ in points),'right':max(x for x,_ in points),

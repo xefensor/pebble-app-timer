@@ -614,6 +614,8 @@ static void prv_refresh(void) {
   if(s_ui_motion!=UI_MOTION_NONE&&s_ui_motion_screen!=s_screen)prv_stop_ui_motion();
   if(s_icon_button>=0&&s_icon_screen!=s_screen)prv_stop_icon_motion();
   if(s_glass_motion&&s_screen!=SCREEN_DETAIL)prv_stop_motion();
+  const TimerUiView layout=prv_view();
+  if(s_have_drawn&&((s_drawn_issue&&s_drawn_issue[0])!=(layout.issue&&layout.issue[0])))prv_stop_ui_motion();
   if (s_screen==SCREEN_LIST && !s_menu && timer_collection_count(&s_collection) &&
       !timer_collection_can_create(&s_collection)) s_menu=1;
   timer_alarm_feedback_update(s_alarm_mask);
@@ -703,13 +705,13 @@ static bool prv_selection_rect(const TimerUiView *view, TimerMotionRect *rect) {
   if(view->screen==SCREEN_LIST) {
     const TimerListWindow list=timer_ui_list_window(view);
     if(!list.menu)return false;
-    *rect=(TimerMotionRect){0,40+(int)(list.menu-1-list.first)*56,166,54};
+    *rect=(TimerMotionRect){0,timer_ui_list_top(view)+(int)(list.menu-1-list.first)*TIMER_LIST_ROW_STRIDE,166,TIMER_LIST_ROW_HEIGHT};
   } else if(view->screen==SCREEN_OPTIONS)
-    *rect=(TimerMotionRect){0,58+(int)view->option*43,166,41};
+    *rect=(TimerMotionRect){0,timer_ui_option_top(view)+(int)view->option*TIMER_OPTION_STRIDE,166,TIMER_OPTION_HEIGHT};
   else if(view->screen==SCREEN_CONFIRM)
-    *rect=(TimerMotionRect){0,143+(int)view->confirm_choice*36,166,32};
+    *rect=(TimerMotionRect){0,TIMER_CONFIRM_TOP+(int)view->confirm_choice*TIMER_CONFIRM_STRIDE,166,TIMER_CONFIRM_HEIGHT};
   else if(view->screen==SCREEN_EDITOR)
-    *rect=(TimerMotionRect){5+(int)view->edit_field*53,104,50,45};
+    *rect=(TimerMotionRect){5+(int)view->edit_field*53,96,50,52};
   else return false;
   return true;
 }
@@ -733,7 +735,7 @@ static void prv_animate_ui(const TimerUiView *before, bool repeating, ButtonId b
   } else if(from.y!=to.y) {
     /* Skips and scroll changes settle immediately. Animate only one visible
      * neighbour so a rapid event cannot send the highlight through the page. */
-    const int step=after.screen==SCREEN_LIST?56:after.screen==SCREEN_OPTIONS?43:36;
+    const int step=after.screen==SCREEN_LIST?TIMER_LIST_ROW_STRIDE:after.screen==SCREEN_OPTIONS?TIMER_OPTION_STRIDE:TIMER_CONFIRM_STRIDE;
     if(from.y-to.y>step||to.y-from.y>step)return;
     s_ui_motion=UI_MOTION_MENU;
   }

@@ -17,10 +17,10 @@ static void selection(TimerMotionRect from,TimerMotionRect to,
 
 int main(void) {
   const TimerMotionRect pairs[][2]={
-    {{0,40,166,54},{0,96,166,54}},
-    {{0,152,166,54},{0,96,166,54}},
-    {{0,58,166,41},{0,101,166,41}},
-    {{0,143,166,32},{0,179,166,32}}
+    {{0,46,166,80},{0,134,166,80}},
+    {{0,134,166,80},{0,46,166,80}},
+    {{0,68,166,38},{0,112,166,38}},
+    {{0,160,166,30},{0,196,166,30}}
   };
   for(unsigned n=0;n<sizeof(pairs)/sizeof(pairs[0]);++n) {
     const TimerMotionRect from=pairs[n][0],to=pairs[n][1];
@@ -37,11 +37,11 @@ int main(void) {
   }
   /* Rapid reverse resumes a rigid visible position, never stretched edges. */
   const TimerMotionRect mid=timer_motion_menu(pairs[0][0],pairs[0][1],40);
-  assert(mid.h==54);
+  assert(mid.h==80);
   assert(timer_motion_menu(mid,pairs[0][0],0).y==mid.y);
-  assert(timer_motion_menu(mid,pairs[0][0],120).y==40);
-  selection((TimerMotionRect){58,104,50,45},(TimerMotionRect){111,104,50,45},107,179);
-  selection((TimerMotionRect){58,104,50,45},(TimerMotionRect){5,104,50,45},107,179);
+  assert(timer_motion_menu(mid,pairs[0][0],120).y==46);
+  selection((TimerMotionRect){58,96,50,52},(TimerMotionRect){111,96,50,52},107,179);
+  selection((TimerMotionRect){58,96,50,52},(TimerMotionRect){5,96,50,52},107,179);
   for(uint32_t ms=0;ms<400;++ms)assert(timer_motion_bump(ms)>=0&&timer_motion_bump(ms)<=3);
   assert(!timer_motion_bump(0)&&timer_motion_bump(107)==3&&!timer_motion_bump(321));
   assert(!timer_motion_bump(UINT32_MAX));

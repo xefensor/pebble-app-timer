@@ -69,28 +69,28 @@ def snapshot():
 install(ROOT/'build/fixture-mode5.pbw');stop();install(native)
 before=snapshot()
 menu_samples=series('quick-list','Down')
-# Options must move as a rigid41px selection and settle within120ms. Screenshot
+# Options must move as a rigid38px selection and settle within120ms. Screenshot
 # acquisition cannot establish hardware timing; portable geometry checks bound it.
 tap('Select');tap('Down')
 def choice_rows(data):
-    rows=[y for y in range(58,185) if data[(y*200+1)*3:(y*200+1)*3+3]==b'\x00\x00\x00']
-    assert len(rows)==41 and rows[-1]-rows[0]==40,rows
+    rows=[y for y in range(68,194) if data[(y*200+1)*3:(y*200+1)*3+3]==b'\x00\x00\x00']
+    assert len(rows)==38 and rows[-1]-rows[0]==37,rows
     return rows[0]
 option_frames=[];option_positions=[];option_times=[]
 option_frames.append(Image.frombytes('RGB',(200,228),shot('quick-options-before')))
-assert choice_rows(option_frames[-1].tobytes())==58
+assert choice_rows(option_frames[-1].tobytes())==68
 started=time.monotonic();tap('Down',0)
 for n,offset in enumerate((.0,.025,.055,.085,.13,.18,.24)):
     time.sleep(max(0,started+offset-time.monotonic()))
     data=shot('quick-options-'+str(n));position=choice_rows(data)
-    assert 58<=position<=101,position
+    assert 68<=position<=112,position
     option_positions.append(position);option_times.append(round((time.monotonic()-started)*1000))
     option_frames.append(Image.frombytes('RGB',(200,228),data))
-assert option_positions[-1]==101
+assert option_positions[-1]==112
 option_frames[0].save(OUT/'quick-options.gif',save_all=True,append_images=option_frames[1:],
  duration=[350]+[max(20,b-a) for a,b in zip(option_times,option_times[1:])]+[500],loop=0)
 tap('Up',.025);tap('Down',.025);tap('Up',.18)
-assert choice_rows(shot('rapid-options-reverse-settled'))==58
+assert choice_rows(shot('rapid-options-reverse-settled'))==68
 # Two rapid Down events activate Delete's safe confirmation immediately; no
 # timer mutation is queued behind a travelling highlight. Back keeps the timer.
 tap('Down',.025);tap('Down',.025);tap('Select',.025)
@@ -137,7 +137,7 @@ ended=shot('os-call-ended',.7)
 if ended[:3]==bytes((255,0,0)):tap('Back')
 for _ in range(40):
     returned=pixels()
-    if returned[:3]==bytes((255,255,255)) and returned[199*3:200*3]==bytes((0,0,0)):break
+    if returned[:3]==bytes((255,255,255)) and returned[(100*200+199)*3:(100*200+200)*3]==bytes((0,0,0)):break
     time.sleep(.1)
 else:raise AssertionError('Stock call surface did not reveal Timer')
 returned=shot('after-cover-settled',.2);later=shot('after-cover-still',.7)
@@ -147,7 +147,7 @@ assert reopened[:3]==bytes((255,255,255))
 report={'result':'PASS','version':VERSION,'pbwSha256':sha(pbw.read_bytes()),
  'scope':'Actual exact-distribution Emery native payload; FIFO QEMU, QA fixture and simulated AppMessage receipts; no phone JS, physical watch or battery/timing measurement',
  'nativePayloadSha256':payload,'captures':captures,'sampleElapsedMilliseconds':{'list':menu_samples,'options':option_times,'value':value_samples,'field':field_samples},
- 'quickOptionPositions':option_positions,'selectionDurationMs':120,'selectionHeightPixels':41,
+ 'quickOptionPositions':option_positions,'selectionDurationMs':120,'selectionHeightPixels':38,
  'gifNote':'Actual sampled native frames; transition dwell follows host acquisition intervals, before/after dwell aids review. Screenshot RPC is not hardware timing.',
  'proofs':{'selectDuringSelectionMotionUsesImmediateCorrectTarget':True,'holdDoesNotLeakAcrossEditorEntry':True,'editorCancelPreservesOwnerState':True,'pausedBodyStatic':True,'physicalPressMovesIconAndReleaseSettles':True,'coverCancelsAndReturnStaysStill':True,'coldReopen':True},
  'physicalDeviceVerified':False,'freshStockDerivedFlash':True,'qemuState':str(state)}

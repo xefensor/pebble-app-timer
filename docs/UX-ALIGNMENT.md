@@ -1,4 +1,4 @@
-# Timer shared UI — local 0.14.1 review branch
+# Timer shared UI — local 0.14.2 review branch
 
 The shared reference remains in the local sibling `xoce` checkout at
 `src/pages/docs/design/pebble-ui-system.md`, also available through
@@ -7,14 +7,30 @@ The canonical standard remains the baseline. This branch is an alternative for
 Xef to compare, documented in [REDESIGN.md](REDESIGN.md). No website or
 release has been published by this work.
 
-## User correction in 0.14.1
+## Whole-composition correction in 0.14.2
+
+Xef rejected enlarging only the top clock while leaving the rest tiny. Current
+native compositions use Roboto Condensed Bold26 headers/clock,24 main labels
+and22 secondary/help, with dominant Fredoka countdowns and measured ink. The
+full-width header and footers, two spacious list rows, critical one-row viewport,
+separate editor bands and complete warnings fit together. Long running values
+split hours/MM:SS; list values/state/saved duration share one left column.
+Extended SDK font indexing retains printable Latin017F and actual PFO bounds
+govern placement. The rigid120ms response, immediate model updates, safe Delete,
+native owner/storage/alarm behavior and phone Save controller stay unchanged.
+See [current compositions](REDESIGN.md) and
+[final-candidate validation](qa/0.14.2/validation.json). Native emulator pixels
+and source/compiled font coverage do not establish physical-watch legibility.
+
+## Historical correction in 0.14.1
 
 Readability takes priority over imitating Pebble's smaller utility text. The clock
 is now Gothic 28 Bold; utility/cell/status text uses bold 24. Native ink and padding
 are checked in every captured screen, with a shared optical header centre and
 larger warning line spacing. Vertical choices move rigidly for 120ms; they no
 longer stretch for 350ms. Scroll changes/skips/repeats snap, and Select stays
-immediate. See [REDESIGN](REDESIGN.md) and current [validation](qa/0.14.1/validation.json).
+immediate. This is the [previous validation](qa/0.14.1/validation.json); its
+Gothic typography is superseded by0.14.2's coherent utility hierarchy.
 
 The remaining 0.14.0 record below is historical; its elastic vertical-menu timings
 were explicitly rejected. Editor/hourglass feedback remains meaningful and bounded.

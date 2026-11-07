@@ -264,3 +264,39 @@ feedback and 300ms hourglass behavior. The old 0.14.0 stretch specification abov
 is historical. Physical action icons keep their hardware-button anchors; Timer
 has no inline text/icon pairs. Preserve exact native screenshots/provenance and
 separate phone CSS source audits from browser rendering, which remains blocked.
+
+## Whole-composition correction — local 0.14.2
+
+The user rejected enlarging only the clock while other text stays tiny. Treat
+each screen as one composition: Roboto Condensed Bold26 header/clock (19px
+digit ink),24 primary labels (17–18px caps) and22 secondary/help (16px caps,
+with appropriate descender clearance). Preserve dominant Fredoka digits. Check
+actual visible ink, complete copy and comfortable group/box padding together;
+do not shrink a label to rescue an otherwise cramped layout.
+
+The header uses all200px; the34px physical action rail starts below it. Complete
+footers may use the full width. The list has two80px rows with8px gap; critical
+warnings and oldest-Ready replacement use one readable row. Both the renderer
+and tick policy share that window, and the selected item must remain visible in
+both directions at every index. Critical copy is complete: `Not saved`,
+`Keep Timer open`, and `Cannot undo` must not receive an ellipsis. Long running
+timers split hours from MM:SS; list rows retain the full remaining/saved duration
+in a single left-aligned column. Keep editor units, selected digits and help in
+separate bands. Keep-first Delete and immediate owner actions remain unchanged.
+
+Three22/24/26pt custom bitmap resources replace the previous OS Gothic roles.
+Set `extended:true` for declared Latin017F coverage: the SDK's default256-glyph
+limit silently truncates Czech letters. `scripts/generate-body-metrics.py`
+derives actual ink from SDK-built PFOs; the distribution build regenerates and
+relinks only if needed. `check-timer-fonts.py` verifies exact sources/licences,
+compiled printable Latin coverage, native alignment tables and Fredoka outlines.
+Fit text to its logical column, anchor its advance explicitly and paint Left
+into a wide rectangle so tight clock/unit fields cannot trigger SDK reflow.
+This is not arbitrary Unicode coverage or physical-watch legibility proof.
+
+The rigid120ms selection and independent editor/hourglass behavior above remain.
+After visual approval, run current-geometry native suites plus
+`emulator-list-readability.py`: all8 normal/critical positions forward/reverse,
+boundary/Back restore and unchanged owner/bank checks. Keep immutable preview
+sets under candidate-hash directories and bind final QA to the exact finalPBW.
+Package standalone source last. Preserve all0.14.1 artifacts and prior evidence.

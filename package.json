@@ -1,6 +1,6 @@
 {
   "name": "pebble-app-timer",
-  "version": "0.14.1",
+  "version": "0.14.2",
   "author": "Xef",
   "private": true,
   "license": "SEE LICENSE IN LICENSE",
@@ -25,7 +25,29 @@
       "watchface": false
     },
     "resources": {
-      "media": []
+      "media": [
+        {
+          "type": "font",
+          "name": "FONT_BODY_22",
+          "file": "fonts/RobotoCondensed-Bold.ttf",
+          "characterRegex": "[\\u0020-\\u017F\\u2019\\u2026]",
+          "extended": true
+        },
+        {
+          "type": "font",
+          "name": "FONT_BODY_24",
+          "file": "fonts/RobotoCondensed-Bold.ttf",
+          "characterRegex": "[\\u0020-\\u017F\\u2019\\u2026]",
+          "extended": true
+        },
+        {
+          "type": "font",
+          "name": "FONT_BODY_26",
+          "file": "fonts/RobotoCondensed-Bold.ttf",
+          "characterRegex": "[\\u0020-\\u017F\\u2019\\u2026]",
+          "extended": true
+        }
+      ]
     },
     "usesPermissions": [],
     "messageKeys": {

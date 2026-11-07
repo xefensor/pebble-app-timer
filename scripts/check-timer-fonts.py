@@ -7,8 +7,12 @@ from pathlib import Path
 import re
 import struct
 import zipfile
+import importlib.util
 
 ROOT = Path(__file__).resolve().parents[1]
+SPEC = importlib.util.spec_from_file_location('body_metrics', ROOT/'scripts/generate-body-metrics.py')
+METRICS = importlib.util.module_from_spec(SPEC)
+SPEC.loader.exec_module(METRICS)
 
 
 def require(condition, message):
@@ -46,11 +50,16 @@ def audit(pbw, root=ROOT):
     package = json.loads((root / 'package.json').read_text())
     provenance = json.loads((root / 'resources/fonts/font-provenance.json').read_text())
     media = package['pebble']['resources']['media']
-    require(media == [], 'Native Gothic utility roles must not package unused custom bitmap fonts')
+    require(len(media) == 3 and [m['name'] for m in media] == ['FONT_BODY_22', 'FONT_BODY_24', 'FONT_BODY_26'],
+            'Utility font resource roles differ')
+    require(all(m['type']=='font' and m['file']=='fonts/RobotoCondensed-Bold.ttf' and
+                m['extended'] is True and m['characterRegex']==r'[\u0020-\u017F\u2019\u2026]' for m in media),
+            'Utility font source, extended indexing or declared coverage differs')
     utility = (root / 'src/c/timer_fonts.c').read_text()
-    require(all(key in utility for key in ('FONT_KEY_GOTHIC_24_BOLD', 'FONT_KEY_GOTHIC_28_BOLD')) and
-            'fonts_load_custom_font' not in utility and 'RESOURCE_ID_FONT_BODY' not in utility,
-            'Utility font roles differ from the native Gothic candidate')
+    require(all('RESOURCE_ID_'+m['name'] in utility for m in media) and
+            'fonts_load_custom_font' in utility and 'fonts_unload_custom_font' in utility and
+            '#include "generated_body_metrics.h"' in utility,
+            'Utility resource lifetime or exact alignment tables are missing')
     for record in provenance['files']:
         data = (root / record['file']).read_bytes()
         require(len(data) == record['bytes'] and sha256(data) == record['sha256'],
@@ -66,11 +75,20 @@ def audit(pbw, root=ROOT):
             require(archive.read('licenses/' + notice) == (root / 'resources/fonts' / notice).read_bytes(),
                     'Final PBW font license differs: ' + notice)
         packed = archive.read('emery/app_resources.pbpack')
-        require(struct.unpack_from('<I', packed)[0] == 0, 'Unused custom resources are still packaged')
-        tables = native_tables(header.decode(), archive.read('emery/pebble-app.bin'))
+        body_header, body_proof = METRICS.generate(packed, media)
+        require(body_header == (root/'src/c/generated_body_metrics.h').read_text(),
+                'Utility alignment table differs from packaged font bytes')
+        binary = archive.read('emery/pebble-app.bin')
+        for i in range(3):
+            array = re.search(r's_body_ink_'+str(i)+r'\[\]=\{(.*?)\n\};', body_header, re.S)[1]
+            encoded = b''.join(struct.pack('<Hhh', *(int(v) for v in row.split(',')))
+                               for row in re.findall(r'\{([^{}]+)\}', array))
+            require(encoded in binary, 'Native binary lacks exact utility alignment table '+str(i))
+        tables = native_tables(header.decode(), binary)
     return {'result': 'PASS', 'version': package['version'], 'pbwSha256': sha256(pbw.read_bytes()),
-            'bodyFonts': 'OS Gothic 18 Bold / 24 / 24 Bold; no packaged bitmap fonts', 'roundedClockTables': tables, 'fontLicensesMatchSource': True,
-            'scope': 'Exact unchanged source/notices and linked Fredoka outlines; zero packaged bitmap fonts and OS Gothic source roles. Native captures separately verify pixels, fitting and motion.'}
+            'bodyFonts': body_proof, 'packagedResourcesBytes': len(packed),
+            'roundedClockTables': tables, 'fontLicensesMatchSource': True,
+            'scope': 'Exact unchanged font sources/notices, linked Fredoka outlines and three extended Roboto Condensed PFOs/alignment tables. Coverage verified in compiled PFOs, including Czech glyphs. Native captures separately verify whole-composition ink, fitting and motion.'}
 
 
 if __name__ == '__main__':

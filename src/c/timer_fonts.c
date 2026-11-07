@@ -1,6 +1,7 @@
 #include "timer_fonts.h"
 
 #include <stddef.h>
+#include <stdio.h>
 #include <string.h>
 
 #include "font_raster.h"
@@ -21,31 +22,84 @@ typedef struct {
   GColor colors[FONT_RASTER_COVERAGE + 1];
 } ClockPaint;
 
+typedef struct { uint16_t code; int16_t top,bottom; } TimerGlyphInk;
+#include "generated_body_metrics.h"
+static const int s_sizes[]={22,24,26};
+static const uint32_t s_resources[]={RESOURCE_ID_FONT_BODY_22,RESOURCE_ID_FONT_BODY_24,RESOURCE_ID_FONT_BODY_26};
+static GFont s_body[3];
+static unsigned prv_index(int point) { return point<=22?0:point<=24?1:2; }
 static GFont prv_body(int point) {
-  /* Native18 has a small ink height; regular24 is too thin for a reflective
-   * display. Keep utility ink readable and hierarchy in placement/colour and
-   * the larger Fredoka primary values. */
-  return fonts_get_system_font(point>=28?FONT_KEY_GOTHIC_28_BOLD:FONT_KEY_GOTHIC_24_BOLD);
+  const unsigned index=prv_index(point);
+  return s_body[index]?s_body[index]:fonts_get_system_font(index?FONT_KEY_GOTHIC_28_BOLD:FONT_KEY_GOTHIC_24_BOLD);
 }
-
-bool timer_fonts_init(void) { return true; }
-void timer_fonts_deinit(void) {}
-
-int timer_fonts_text_width(const char *text, int point) {
-  return graphics_text_layout_get_content_size(text ? text : "", prv_body(point),
-      GRect(0, 0, 2048, 128), GTextOverflowModeFill, GTextAlignmentLeft).w;
+bool timer_fonts_init(void) {
+  timer_fonts_deinit();bool loaded=true;
+  for(unsigned i=0;i<3;++i){s_body[i]=fonts_load_custom_font(resource_get_handle(s_resources[i]));if(!s_body[i])loaded=false;}
+  return loaded;
 }
-
-void timer_fonts_text(GContext *ctx, const char *text, int point, int x,
-                      int baseline, int width, GColor color, GTextAlignment align) {
-  if (!ctx || !text || width <= 0) return;
-  /* Gothic includes top bearing and descender clearance. Fit its visible ink
-   * to the existing baseline contract, as checked in native Emery captures,
-   * rather than treating its 18/24 name as the ink height. */
-  const int size = point>=28?28:24;
-  graphics_context_set_text_color(ctx, color);
-  graphics_draw_text(ctx, text, prv_body(point),
-      GRect(x, baseline - size - 2, width, size + 12), GTextOverflowModeFill, align, NULL);
+void timer_fonts_deinit(void) {
+  for(unsigned i=0;i<3;++i){if(s_body[i])fonts_unload_custom_font(s_body[i]);s_body[i]=NULL;}
+}
+static uint32_t prv_codepoint(const unsigned char **at) {
+  const unsigned char *p=*at;uint32_t code=*p++;
+  if(code>=0xc2&&code<0xe0&&(p[0]&0xc0)==0x80){code=((code&31)<<6)|(p[0]&63);++p;}
+  else if(code>=0xe0&&code<0xf0&&p[0]&&p[1]&&(p[0]&0xc0)==0x80&&(p[1]&0xc0)==0x80){code=((code&15)<<12)|((p[0]&63)<<6)|(p[1]&63);p+=2;}
+  *at=p;return code;
+}
+static TimerGlyphInk prv_ink(const char *text,int point) {
+  const unsigned index=prv_index(point);
+  const TimerGlyphInk *rows=index==0?s_body_ink_0:index==1?s_body_ink_1:s_body_ink_2;
+  const unsigned count=index==0?sizeof(s_body_ink_0)/sizeof(*rows):index==1?sizeof(s_body_ink_1)/sizeof(*rows):sizeof(s_body_ink_2)/sizeof(*rows);
+  TimerGlyphInk result={0,255,0};
+  for(const unsigned char *p=(const unsigned char *)(text?text:"");*p;) {
+    const uint32_t code=prv_codepoint(&p);const TimerGlyphInk *glyph=NULL,*wildcard=NULL;
+    for(unsigned i=0;i<count;++i){if(rows[i].code==code)glyph=&rows[i];if(rows[i].code==s_body_wildcards[index])wildcard=&rows[i];}
+    if(!glyph)glyph=wildcard;
+    if(!glyph||glyph->top==255)continue;
+    if(glyph->top<result.top)result.top=glyph->top;
+    if(glyph->bottom>result.bottom)result.bottom=glyph->bottom;
+  }
+  return result;
+}
+int timer_fonts_text_width(const char *text,int point) {
+  return graphics_text_layout_get_content_size(text?text:"",prv_body(point),GRect(0,0,2048,128),GTextOverflowModeFill,GTextAlignmentLeft).w;
+}
+int timer_fonts_text_height(const char *text,int point) {
+  const TimerGlyphInk ink=prv_ink(text,point);return ink.top==255?0:ink.bottom-ink.top+1;
+}
+static void prv_fit(char out[160],const char *text,int point,int width) {
+  snprintf(out,160,"%s",text?text:"");
+  const int available=width;
+  while(out[0]&&timer_fonts_text_width(out,point)>available) {
+    size_t n=strlen(out);do{--n;}while(n&&((unsigned char)out[n]&0xc0)==0x80);out[n]=0;
+    if(n+4<160){memcpy(out+n,"…",4);if(timer_fonts_text_width(out,point)<=available)break;out[n]=0;}
+  }
+}
+static void prv_draw(GContext *ctx,const char *text,int point,int x,int top,int width,GColor color,GTextAlignment align) {
+  const int advance=timer_fonts_text_width(text,point);
+  if(align==GTextAlignmentRight)x+=width-advance;
+  else if(align==GTextAlignmentCenter)x+=(width-advance)/2;
+  /* The string is fitted before this point. A wide paint rectangle prevents
+   * SDK word wrapping from dropping a tight clock/unit field on repaint. */
+  graphics_context_set_text_color(ctx,color);
+  graphics_draw_text(ctx,text,prv_body(point),GRect(x,top,2048,s_sizes[prv_index(point)]+16),GTextOverflowModeFill,GTextAlignmentLeft,NULL);
+}
+void timer_fonts_text_box(GContext *ctx,const char *text,int point,GRect bounds,GColor color,GTextAlignment align) {
+  if(!ctx||!text||bounds.size.w<=0||bounds.size.h<=0)return;
+  char fitted[160];prv_fit(fitted,text,point,bounds.size.w);const TimerGlyphInk ink=prv_ink(fitted,point);
+  if(ink.top==255)return;
+  const int h=ink.bottom-ink.top+1;
+  prv_draw(ctx,fitted,point,bounds.origin.x,bounds.origin.y+(bounds.size.h-h)/2-ink.top,bounds.size.w,color,align);
+}
+void timer_fonts_text_top(GContext *ctx,const char *text,int point,int x,int top,int width,GColor color,GTextAlignment align) {
+  if(!ctx||!text||width<=0)return;
+  char fitted[160];prv_fit(fitted,text,point,width);const TimerGlyphInk ink=prv_ink(fitted,point);if(ink.top==255)return;
+  prv_draw(ctx,fitted,point,x,top-ink.top,width,color,align);
+}
+void timer_fonts_text(GContext *ctx,const char *text,int point,int x,int baseline,int width,GColor color,GTextAlignment align) {
+  if(!ctx||!text||width<=0)return;
+  char fitted[160];prv_fit(fitted,text,point,width);
+  prv_draw(ctx,fitted,point,x,baseline-s_sizes[prv_index(point)],width,color,align);
 }
 
 static const ClockGlyph *prv_glyph(char code) {
@@ -123,4 +177,15 @@ void timer_fonts_digits(GContext *ctx, const char *text, int center_x,
       return;
     x_q8 += advance;
   }
+}
+
+void timer_fonts_digits_box(GContext *ctx,const char *text,int point,GRect bounds,GColor foreground,GColor background) {
+  int ascent=0,descent=0;
+  for(unsigned i=0;i<CLOCK_GLYPH_COUNT;++i)if(clock_glyphs[i].code>='0'&&clock_glyphs[i].code<='9'){
+    if(clock_glyphs[i].y_max>ascent)ascent=clock_glyphs[i].y_max;
+    if(-clock_glyphs[i].y_min>descent)descent=-clock_glyphs[i].y_min;
+  }
+  const int high=(ascent*point+999)/1000,low=(descent*point+999)/1000;
+  const int baseline=bounds.origin.y+(bounds.size.h-high-low)/2+high;
+  timer_fonts_digits(ctx,text,bounds.origin.x+bounds.size.w/2,baseline,point,foreground,background);
 }
