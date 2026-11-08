@@ -299,6 +299,6 @@ report={'result':'PASS','pbw':str(PBW),'pbwSha256':digest,'nativePayloadSha256':
             'Touch drag/tap/Back and mixed input: app touch opt-in is not enabled at this checkpoint',
             'Full stock Timer application capture on the same firmware (SDK shell omits it); independent direct-SDK font bitmaps and native menu/window fixtures were compared',
             'Actual OS Czech/German language packs; locale-lookup fixture renders captured separately',
-            'Later checkpoints: native Add/Edit, Options/confirmation and per-app preference delivery']}
+            'Per-app preference delivery and real phone/device integration remain separate checks']}
 (OUT/'report.json').write_text(json.dumps(report,indent=2)+'\n')
 print(json.dumps({'result':'PASS','path':str(OUT/'report.json'),'matrix':matrix}),flush=True)

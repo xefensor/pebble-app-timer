@@ -18,6 +18,7 @@ typedef struct {
   bool dark, appearance_issue;
   /* Emery Small/Medium/Large resolved once from preferred_content_size(). */
   unsigned text_size;
+  bool context_above;
   uint8_t visible_slots;
   uint32_t now;
   const char *status, *issue;
@@ -42,6 +43,8 @@ static inline int timer_ui_option_top(const TimerUiView *view) {
 
 /* Native viewport membership includes partially visible rows during motion. */
 unsigned timer_ui_menu_for_slot(const TimerCollection *collection, unsigned slot);
+/* Ordinary destinations own real windows; alarm attention replaces that path. */
+unsigned timer_ui_window_path(Screen screen,Screen edit_return,Screen path[4]);
 bool timer_ui_needs_tick(const TimerUiView *view);
 /* Transport state only appears in Options; critical issues appear everywhere. */
 bool timer_ui_chrome_changed(const TimerUiView *view, Screen previous_screen,

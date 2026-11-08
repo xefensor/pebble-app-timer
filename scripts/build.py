@@ -31,16 +31,8 @@ subprocess.run(
     cwd=root,
 )
 subprocess.run(["pebble", "build"], check=True, cwd=root)
-# Derive optical alignment from exact SDK PFOs, then relink if needed. A
-# standalone checkout needs no host font library or guessed point baselines.
-metrics = root / "src/c/generated_body_metrics.h"
-previous_metrics = metrics.read_bytes()
-subprocess.run(["python3", str(root / "scripts/generate-body-metrics.py")], check=True, cwd=root)
-if metrics.read_bytes() != previous_metrics:
-    subprocess.run(["pebble", "build"], check=True, cwd=root)
-subprocess.run(
-    ["python3", str(root / "scripts/generate-body-metrics.py"), "--check"], check=True, cwd=root
-)
+# Production watch text uses the system's bitmap fonts. The old resource-font
+# generator remains a historical comparison tool and is not a build input.
 # The stock SDK names the development bundle after the project directory.
 pbw = build / (root.name + ".pbw")
 with zipfile.ZipFile(pbw) as source:

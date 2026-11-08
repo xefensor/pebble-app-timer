@@ -2,6 +2,18 @@
 
 #include <string.h>
 
+unsigned timer_ui_window_path(Screen screen,Screen edit_return,Screen path[4]) {
+  unsigned count=0;path[count++]=SCREEN_LIST;
+  if(screen==SCREEN_LIST)return count;
+  if(screen==SCREEN_ALARM){path[count++]=SCREEN_ALARM;return count;}
+  if(screen==SCREEN_EDITOR&&edit_return==SCREEN_LIST){path[count++]=SCREEN_EDITOR;return count;}
+  path[count++]=SCREEN_DETAIL;
+  if(screen==SCREEN_OPTIONS||screen==SCREEN_CONFIRM||
+      (screen==SCREEN_EDITOR&&edit_return==SCREEN_OPTIONS))path[count++]=SCREEN_OPTIONS;
+  if(screen==SCREEN_EDITOR||screen==SCREEN_CONFIRM)path[count++]=screen;
+  return count;
+}
+
 unsigned timer_ui_menu_for_slot(const TimerCollection *collection,unsigned slot) {
   unsigned slots[TIMER_COLLECTION_CAPACITY];
   const unsigned count=timer_collection_visible_slots(collection,slots);

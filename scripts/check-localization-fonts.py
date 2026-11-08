@@ -21,6 +21,9 @@ for i,item in enumerate(package['pebble']['resources']['media']):
   for j in range(number):
    at=table+position+j*(cpbytes+offbytes);code=int.from_bytes(pfo[at:at+cpbytes],'little');glyph=int.from_bytes(pfo[at+cpbytes:at+cpbytes+offbytes],'little');width,rows,left,top,advance=struct.unpack_from('<BBbbb',pfo,base+glyph);glyphs[code]=advance
  fonts[int(item['name'].rsplit('_',1)[1])]=glyphs
+if not fonts:
+ print(str(len(data['languages']))+' native locale resources verified; glyph rendering/fallback uses OS fonts (emulator checks separately).')
+ raise SystemExit(0)
 checks=0
 for lang in data['languages']:
  for key in data['native']:

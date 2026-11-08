@@ -51,6 +51,20 @@ def audit(pbw, root=ROOT):
     provenance = json.loads((root / 'resources/fonts/font-provenance.json').read_text())
     media = package['pebble']['resources']['media']
     font_media = [m for m in media if m['type']=='font']
+    if not font_media:
+        require(media==[{'type':'raw','name':'LOCALIZATION','file':'localization.bin'}], 'Native resources differ')
+        with zipfile.ZipFile(pbw) as archive:
+            info=json.loads(archive.read('appinfo.json'))
+            require(info['resources']['media']==media, 'Packaged resource identity differs')
+            binary=archive.read('emery/pebble-app.bin')
+            profiles=json.loads((root/'docs/native-type.json').read_text())
+            keys={value for family in ('baseline','modern') for row in profiles[family] for value in row.values()}
+            keys.update(('RESOURCE_ID_LECO_42_NUMBERS','RESOURCE_ID_LECO_38_BOLD_NUMBERS',
+                         'RESOURCE_ID_LECO_36_BOLD_NUMBERS','RESOURCE_ID_LECO_32_BOLD_NUMBERS',
+                         'RESOURCE_ID_LECO_26_BOLD_NUMBERS_AM_PM','RESOURCE_ID_LECO_20_BOLD_NUMBERS'))
+            for key in keys:require(key.encode()+b'\0' in binary,'Native binary lacks SDK font key '+key)
+        return {'result':'PASS','scope':'Built-in SDK fonts only; glyph bitmaps and layout are verified in the emulator.',
+                'pbwSha256':sha256(pbw.read_bytes()),'nativeFontKeys':sorted(keys)}
     require(len(media)==4 and media[-1]=={'type':'raw','name':'LOCALIZATION','file':'localization.bin'}, 'Native locale resource differs')
     require([m['name'] for m in font_media] == ['FONT_BODY_22', 'FONT_BODY_24', 'FONT_BODY_26'],
             'Utility font resource roles differ')

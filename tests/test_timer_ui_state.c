@@ -4,6 +4,12 @@
 #include <stdio.h>
 
 int main(void) {
+  Screen path[4];
+  assert(timer_ui_window_path(SCREEN_LIST,SCREEN_LIST,path)==1&&path[0]==SCREEN_LIST);
+  assert(timer_ui_window_path(SCREEN_EDITOR,SCREEN_LIST,path)==2&&path[1]==SCREEN_EDITOR);
+  assert(timer_ui_window_path(SCREEN_EDITOR,SCREEN_OPTIONS,path)==4&&path[1]==SCREEN_DETAIL&&path[2]==SCREEN_OPTIONS&&path[3]==SCREEN_EDITOR);
+  assert(timer_ui_window_path(SCREEN_CONFIRM,SCREEN_DETAIL,path)==4&&path[3]==SCREEN_CONFIRM);
+  assert(timer_ui_window_path(SCREEN_ALARM,SCREEN_OPTIONS,path)==2&&path[1]==SCREEN_ALARM);
   TimerCollection collection;
   timer_collection_init(&collection, 42, 1000);
   for (unsigned i = 0; i < TIMER_COLLECTION_CAPACITY; ++i)

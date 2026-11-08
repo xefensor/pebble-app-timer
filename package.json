@@ -7,7 +7,7 @@
   "description": "A standalone stock PebbleOS timer with native alarms and activity sharing.",
   "dependencies": {
     "pebble-activities": "file:vendor/pebble-activities-0.4.0.tgz",
-    "pebble-xoce-ui": "file:vendor/pebble-xoce-ui-0.1.1.tgz"
+    "pebble-xoce-ui": "file:vendor/pebble-xoce-ui-0.1.1-native-type-63526c2e66e1.tgz"
   },
   "scripts": {
     "test": "python3 scripts/test.py && node --test tests/localization*.test.js && npm run test:workflow && npm run check:docs && npm run test:release && python3 scripts/test-localization.py",
@@ -39,27 +39,6 @@
     },
     "resources": {
       "media": [
-        {
-          "type": "font",
-          "name": "FONT_BODY_22",
-          "file": "fonts/RobotoCondensed-Bold.ttf",
-          "characterRegex": "[\\u0020-\\u024F\\u2019\\u2026]",
-          "extended": true
-        },
-        {
-          "type": "font",
-          "name": "FONT_BODY_24",
-          "file": "fonts/RobotoCondensed-Bold.ttf",
-          "characterRegex": "[\\u0020-\\u024F\\u2019\\u2026]",
-          "extended": true
-        },
-        {
-          "type": "font",
-          "name": "FONT_BODY_26",
-          "file": "fonts/RobotoCondensed-Bold.ttf",
-          "characterRegex": "[\\u0020-\\u024F\\u2019\\u2026]",
-          "extended": true
-        },
         {
           "type": "raw",
           "name": "LOCALIZATION",

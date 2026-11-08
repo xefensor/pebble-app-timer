@@ -1,30 +1,18 @@
 #pragma once
 
-#include <stdbool.h>
+#include <pebble-xoce-ui/native-type.h>
 
-typedef enum {
-  TIMER_TYPE_HEADER, TIMER_TYPE_MENU_TITLE, TIMER_TYPE_MENU_SUBTITLE,
-  TIMER_TYPE_FOOTER, TIMER_TYPE_ROLE_COUNT
-} TimerNativeTypeRole;
+typedef XoceUiTypeRole TimerNativeTypeRole;
+#define TIMER_TYPE_HEADER XOCE_UI_TYPE_HEADER
+#define TIMER_TYPE_MENU_TITLE XOCE_UI_TYPE_MENU_TITLE
+#define TIMER_TYPE_MENU_SUBTITLE XOCE_UI_TYPE_MENU_SUBTITLE
+#define TIMER_TYPE_FOOTER XOCE_UI_TYPE_FOOTER
+#define TIMER_TYPE_ROLE_COUNT XOCE_UI_TYPE_ROLE_COUNT
 
-/* Public SDK font keys, matching PebbleOS's semantic style roles. Emery's
- * three settings are content sizes Medium/Large/ExtraLarge. The 4.44 style
- * table completes ExtraLarge; older firmware uses its original table.
- * Provenance and independent regression expectations: docs/native-type.json. */
-static inline const char *timer_native_type_key(unsigned size,TimerNativeTypeRole role,
-                                                bool modern) {
-  static const char *const keys[3][TIMER_TYPE_ROLE_COUNT]={
-    {"RESOURCE_ID_GOTHIC_18_BOLD","RESOURCE_ID_GOTHIC_24_BOLD","RESOURCE_ID_GOTHIC_18","RESOURCE_ID_GOTHIC_18"},
-    {"RESOURCE_ID_GOTHIC_24_BOLD","RESOURCE_ID_GOTHIC_24_BOLD","RESOURCE_ID_GOTHIC_24","RESOURCE_ID_GOTHIC_18"},
-    {"RESOURCE_ID_GOTHIC_28_BOLD","RESOURCE_ID_GOTHIC_28","RESOURCE_ID_GOTHIC_24_BOLD","RESOURCE_ID_GOTHIC_24"}
-  };
-  if(size>2)size=2;
-  if(role>=TIMER_TYPE_ROLE_COUNT)role=TIMER_TYPE_HEADER;
-  if(modern&&size==2) {
-    if(role==TIMER_TYPE_MENU_TITLE)return "RESOURCE_ID_GOTHIC_28_BOLD";
-    if(role==TIMER_TYPE_MENU_SUBTITLE)return "RESOURCE_ID_GOTHIC_28";
-  }
-  return keys[size][role];
+/* App-local names retain the controller boundary; the shared package owns
+ * PebbleOS's role table. The app supplies firmware and effective size. */
+static inline const char *timer_native_type_key(unsigned size,TimerNativeTypeRole role,bool modern) {
+  return xoce_ui_native_font_key(size,role,modern);
 }
 
 #ifndef TIMER_NATIVE_TYPE_PROFILE_ONLY

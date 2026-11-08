@@ -1,4 +1,5 @@
 #include "timer_native_type.h"
+#include <pebble-xoce-ui/pebble-xoce-ui.h>
 
 static bool s_modern;
 
@@ -7,19 +8,13 @@ void timer_native_type_init(void) {
   s_modern=firmware.major>4||(firmware.major==4&&firmware.minor>=44);
 }
 
-static GFont font(unsigned size,TimerNativeTypeRole role) {
-  return fonts_get_system_font(timer_native_type_key(size,role,s_modern));
-}
-
 GSize timer_native_type_measure(const char *text,unsigned size,TimerNativeTypeRole role,int width) {
-  return graphics_text_layout_get_content_size(text?text:"",font(size,role),
-      GRect(0,0,width,2048),GTextOverflowModeWordWrap,GTextAlignmentLeft);
+  return xoce_ui_native_measure(text,size,role,s_modern,width);
 }
 
 void timer_native_type_draw(GContext *ctx,const char *text,unsigned size,TimerNativeTypeRole role,
                             GRect bounds,GColor color,GTextAlignment align,GTextOverflowMode overflow) {
-  graphics_context_set_text_color(ctx,color);
-  graphics_draw_text(ctx,text,font(size,role),bounds,overflow,align,NULL);
+  xoce_ui_native_draw(ctx,text,size,role,s_modern,bounds,color,align,overflow);
 }
 
 void timer_native_type_countdown(GContext *ctx,const char *text,GRect bounds,GColor color) {

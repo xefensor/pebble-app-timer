@@ -9,7 +9,6 @@
 #include "timer_ui.h"
 #include "timer_native_type.h"
 #include "localization.h"
-#include "timer_fonts.h"
 #include "timer_glance.h"
 #include "timer_hourglass.h"
 #include "timer_alarm_feedback.h"
@@ -40,15 +39,16 @@ typedef struct {
 
 static Window *s_window;
 static Layer *s_canvas;
-static Window *s_content_window;
-static Layer *s_list_canvas, *s_content_canvas;
+static Window *s_windows[SCREEN_CONFIRM+1];
+static Layer *s_canvases[SCREEN_CONFIRM+1];
+static Layer *s_list_canvas;
+static MenuLayer *s_options_menu,*s_confirm_menu;
 static MenuLayer *s_list;
 static unsigned s_text_size;
 static unsigned s_list_slots[TIMER_COLLECTION_CAPACITY], s_list_count;
 static int16_t s_list_heights[TIMER_COLLECTION_CAPACITY];
 static int16_t s_list_viewport_height;
 static bool s_list_critical, s_list_dark;
-static Screen s_content_screen = SCREEN_DETAIL;
 static TimerCollection s_collection;
 static uint8_t s_dirty, s_alarm_mask;
 static uint32_t s_accepted[TIMER_COLLECTION_CAPACITY];
@@ -70,6 +70,7 @@ static uint32_t s_motion_started;
 static bool s_glass_motion;
 static int s_glass_from, s_glass_to;
 static AppTimer *s_ui_motion_timer;
+static AppTimer *s_native_chrome_timer;
 static uint32_t s_ui_motion_started;
 static enum { UI_MOTION_NONE, UI_MOTION_MENU, UI_MOTION_FIELD, UI_MOTION_VALUE } s_ui_motion;
 static TimerMotionRect s_ui_from, s_ui_to;
@@ -108,6 +109,7 @@ static void prv_stop_motion(void);
 static void prv_stop_ui_motion(void);
 static void prv_stop_icon_motion(void);
 static void prv_sync_list(void);
+static void prv_sync_aux_menus(void);
 static void prv_sync_windows(void);
 static bool prv_load_bank(unsigned bank, TimerCollection *collection, SavedHeader *header);
 
@@ -585,6 +587,8 @@ static TimerUiView prv_view(void) {
       top+=s_list_heights[row];
     }
   }
+  MenuLayer *context_menu=s_screen==SCREEN_OPTIONS?s_options_menu:s_screen==SCREEN_CONFIRM?s_confirm_menu:NULL;
+  if(context_menu)view.context_above=scroll_layer_get_content_offset(menu_layer_get_scroll_layer(context_menu)).y<0;
   const uint32_t elapsed=prv_millis()-s_ui_motion_started;
   view.selection_transition=s_ui_motion_screen==s_screen&&
       (s_ui_motion==UI_MOTION_MENU||s_ui_motion==UI_MOTION_FIELD);
@@ -604,8 +608,7 @@ static void prv_draw(Layer *layer, GContext *ctx) {
   TimerUiView view = prv_view();
   /* Outgoing windows remain alive and keep their own composition throughout
    * the native push/pop. Never repaint both surfaces as the destination. */
-  if(layer==s_list_canvas)view.screen=SCREEN_LIST;
-  else if(s_screen==SCREEN_LIST)view.screen=s_content_screen;
+  view.screen=*(Screen *)layer_get_data(layer);
   timer_ui_draw(ctx, &view);
   s_drawn_screen = view.screen;
   s_drawn_issue = view.issue;
@@ -646,7 +649,7 @@ static void prv_list_disappear(Window *window) {
   prv_stop_motion();prv_stop_ui_motion();prv_stop_icon_motion();
 }
 static void prv_sync_list(void) {
-  if(!s_list)return;
+  if(!s_list||s_screen!=SCREEN_LIST)return;
   unsigned slots[TIMER_COLLECTION_CAPACITY];
   const unsigned count=timer_collection_visible_slots(&s_collection,slots);
   const TimerUiView view=prv_view();
@@ -682,24 +685,106 @@ static void prv_sync_list(void) {
    * in-flight selection/scroll animation. */
   layer_mark_dirty(menu_layer_get_layer(s_list));
 }
-static void prv_sync_windows(void) {
-  if(!s_content_window||!window_stack_contains_window(s_window))return;
-  const bool contains=window_stack_contains_window(s_content_window);
-  if(s_screen==SCREEN_LIST) {
-    s_canvas=s_list_canvas;
-    if(contains) {
-      window_stack_remove(s_content_window,true);
-      TIMER_DIAG("ui heap=%u screen=%d",(unsigned)heap_bytes_free(),(int)s_screen);
+static MenuLayer *prv_action_menu(Screen screen) {return screen==SCREEN_OPTIONS?s_options_menu:s_confirm_menu;}
+static TimerUiView prv_action_view(void *context) {TimerUiView view=prv_view();view.screen=(Screen)(uintptr_t)context;return view;}
+static uint16_t prv_action_rows(MenuLayer *menu,uint16_t section,void *context) {
+  (void)menu;(void)section;return (Screen)(uintptr_t)context==SCREEN_OPTIONS?3:2;
+}
+static int16_t prv_action_height(MenuLayer *menu,MenuIndex *index,void *context) {
+  (void)menu;const TimerUiView view=prv_action_view(context);return timer_ui_action_row_height(&view,index->row);
+}
+static int16_t prv_context_height(MenuLayer *menu,uint16_t section,void *context) {
+  (void)menu;(void)section;const TimerUiView view=prv_action_view(context);return timer_ui_context_height(&view);
+}
+static void prv_action_draw(GContext *ctx,const Layer *cell,MenuIndex *index,void *context) {
+  const TimerUiView view=prv_action_view(context);timer_ui_draw_action_row(ctx,cell,&view,index->row);
+}
+static void prv_context_draw(GContext *ctx,const Layer *cell,uint16_t section,void *context) {
+  (void)cell;(void)section;const TimerUiView view=prv_action_view(context);timer_ui_draw_context(ctx,&view);
+}
+static void prv_sync_aux_menus(void) {
+  static int16_t geometry[2][4];static bool palettes[2];
+  for(unsigned i=0;i<2;++i) {
+    const Screen screen=i?SCREEN_CONFIRM:SCREEN_OPTIONS;MenuLayer *menu=prv_action_menu(screen);if(!menu)continue;
+    if(s_screen!=screen)continue;
+    TimerUiView view=prv_view();view.screen=screen;
+    bool changed=false;
+    const int16_t header=timer_ui_context_height(&view);
+    if(geometry[i][0]!=header){geometry[i][0]=header;changed=true;}
+    const unsigned count=i?2:3;
+    for(unsigned row=0;row<count;++row) {
+      const int16_t height=timer_ui_action_row_height(&view,row);
+      if(geometry[i][row+1]!=height){geometry[i][row+1]=height;changed=true;}
     }
-  } else {
-    s_content_screen=s_screen;s_canvas=s_content_canvas;
-    window_set_background_color(s_content_window,s_screen==SCREEN_ALARM||s_dark?GColorBlack:GColorWhite);
-    if(!contains) {
-      window_stack_push(s_content_window,s_screen!=SCREEN_ALARM);
-      TIMER_DIAG("ui heap=%u screen=%d",(unsigned)heap_bytes_free(),(int)s_screen);
+    if(changed)menu_layer_reload_data(menu);
+    if(changed||palettes[i]!=s_dark) {
+      palettes[i]=s_dark;
+      menu_layer_set_normal_colors(menu,s_dark?GColorBlack:GColorWhite,s_dark?GColorWhite:GColorBlack);
+      menu_layer_set_highlight_colors(menu,s_dark?GColorWhite:GColorBlack,s_dark?GColorBlack:GColorWhite);
     }
+    const unsigned row=i?s_confirm_choice:s_option;
+    if(changed||menu_layer_get_selected_index(menu).row!=row)
+      menu_layer_set_selected_index(menu,(MenuIndex){.row=row},MenuRowAlignBottom,false);
+    layer_mark_dirty(menu_layer_get_layer(menu));
   }
 }
+static void prv_native_chrome_settled(void *context) {
+  (void)context;s_native_chrome_timer=NULL;
+  if(s_focused&&s_canvas)layer_mark_dirty(s_canvas);
+}
+static void prv_action_step(bool up) {
+  /* The OS animates the menu. Repaint only its surrounding rail once the
+   * native scroll has settled, so the context-Up affordance stays accurate. */
+  if(s_native_chrome_timer)app_timer_cancel(s_native_chrome_timer);
+  s_native_chrome_timer=app_timer_register(400,prv_native_chrome_settled,NULL);
+  MenuLayer *menu=prv_action_menu(s_screen);unsigned *row=s_screen==SCREEN_OPTIONS?&s_option:&s_confirm_choice;
+  ScrollLayer *scroll=menu_layer_get_scroll_layer(menu);const GPoint offset=scroll_layer_get_content_offset(scroll);
+  if(!*row&&up&&offset.y<0) {
+    scroll_layer_set_content_offset(scroll,GPoint(0,offset.y+60>0?0:offset.y+60),true);return;
+  }
+  if(!*row&&!up) {
+    TimerUiView view=prv_view();const int bottom=timer_ui_context_height(&view)+timer_ui_action_row_height(&view,0)+offset.y;
+    if(bottom>188){menu_layer_set_selected_index(menu,(MenuIndex){0,0},MenuRowAlignBottom,true);return;}
+  }
+  const unsigned maximum=s_screen==SCREEN_OPTIONS?2:1;
+  if((up&&!*row)||(!up&&*row==maximum))return;
+  menu_layer_set_selected_next(menu,up,MenuRowAlignBottom,true);
+  *row=menu_layer_get_selected_index(menu).row;
+}
+
+static void prv_sync_windows(void) {
+  if(!s_windows[SCREEN_DETAIL]||!window_stack_contains_window(s_window))return;
+  Screen path[4];const unsigned count=timer_ui_window_path(s_screen,s_edit_return_screen,path);
+  bool wanted[SCREEN_CONFIRM+1]={false};
+  for(unsigned i=0;i<count;++i)wanted[path[i]]=true;
+  Window *old_top=window_stack_get_top_window();
+  const bool existing=window_stack_contains_window(s_windows[s_screen]);
+  /* Ancestors stay underneath their destination. All windows/layers remain
+   * alive until app exit, including outgoing animated surfaces. */
+  for(unsigned i=1;i+1<count;++i)
+    if(!window_stack_contains_window(s_windows[path[i]]))window_stack_push(s_windows[path[i]],false);
+  for(unsigned screen=1;screen<=SCREEN_CONFIRM;++screen) {
+    Window *window=s_windows[screen];
+    if(!wanted[screen]&&window!=old_top&&window_stack_contains_window(window))window_stack_remove(window,false);
+  }
+  s_canvas=s_canvases[s_screen];
+  window_set_background_color(s_windows[s_screen],s_screen==SCREEN_ALARM||s_dark?GColorBlack:GColorWhite);
+  if(s_screen==SCREEN_ALARM) {
+    if(old_top!=s_windows[SCREEN_ALARM]&&old_top!=s_window)window_stack_remove(old_top,false);
+    if(!existing)window_stack_push(s_windows[SCREEN_ALARM],false);
+  } else if(existing) {
+    if(old_top!=s_windows[s_screen]&&old_top!=s_window)window_stack_remove(old_top,true);
+  } else {
+    window_stack_push(s_windows[s_screen],true);
+    if(old_top!=s_window) {
+      bool keep=false;
+      for(unsigned i=0;i<count;++i)if(old_top==s_windows[path[i]])keep=true;
+      if(!keep)window_stack_remove(old_top,false);
+    }
+  }
+  if(old_top!=s_windows[s_screen])TIMER_DIAG("ui heap=%u screen=%d",(unsigned)heap_bytes_free(),(int)s_screen);
+}
+
 static void prv_list_step(bool up) {
   if(!s_list_count)return;
   const unsigned first=timer_collection_can_create(&s_collection)?0:1;
@@ -747,6 +832,7 @@ static void prv_refresh(void) {
   timer_alarm_feedback_update(s_alarm_mask);
   prv_update_ticks();
   prv_sync_list();
+  prv_sync_aux_menus();
   prv_sync_windows();
   if (s_canvas) layer_mark_dirty(s_canvas);
 }
@@ -831,13 +917,10 @@ static void prv_down_press(ClickRecognizerRef r,void *c){(void)r;(void)c;prv_raw
 static void prv_down_release(ClickRecognizerRef r,void *c){(void)r;(void)c;prv_raw_release(2);}
 
 static bool prv_selection_rect(const TimerUiView *view, TimerMotionRect *rect) {
-  if(view->screen==SCREEN_LIST)return false;
-  else if(view->screen==SCREEN_OPTIONS)
-    *rect=(TimerMotionRect){0,timer_ui_option_top(view)+(int)view->option*TIMER_OPTION_STRIDE,166,TIMER_OPTION_HEIGHT};
-  else if(view->screen==SCREEN_CONFIRM)
-    *rect=(TimerMotionRect){0,TIMER_CONFIRM_TOP+(int)view->confirm_choice*TIMER_CONFIRM_STRIDE,166,TIMER_CONFIRM_HEIGHT};
-  else if(view->screen==SCREEN_EDITOR)
-    *rect=(TimerMotionRect){5+(int)view->edit_field*53,96,50,52};
+  if(view->screen==SCREEN_EDITOR) {
+    const GRect frame=timer_ui_editor_field_rect(view,view->edit_field);
+    *rect=(TimerMotionRect){frame.origin.x,frame.origin.y,frame.size.w,frame.size.h};
+  }
   else return false;
   return true;
 }
@@ -883,6 +966,7 @@ static void prv_motion_tick(void *context) {
 }
 
 static void prv_transition(void) {
+  if(s_native_chrome_timer){app_timer_cancel(s_native_chrome_timer);s_native_chrome_timer=NULL;}
   prv_stop_motion();
   prv_stop_ui_motion();
   prv_stop_icon_motion();
@@ -907,6 +991,7 @@ static void prv_rotate_glass(int from, int to) {
 static void prv_focus(bool focused) {
   s_focused=focused;
   if (!focused) {
+    if(s_native_chrome_timer){app_timer_cancel(s_native_chrome_timer);s_native_chrome_timer=NULL;}
     if(s_screen==SCREEN_LIST)prv_list_disappear(s_window);
     prv_stop_motion();prv_stop_ui_motion();prv_stop_icon_motion();
   }
@@ -1015,8 +1100,7 @@ static void prv_press(ButtonId button) {
       }
     }
   } else if (s_screen==SCREEN_OPTIONS) {
-    if (button==BUTTON_ID_UP && s_option) --s_option;
-    else if (button==BUTTON_ID_DOWN && s_option<2) ++s_option;
+    if(button==BUTTON_ID_UP||button==BUTTON_ID_DOWN)prv_action_step(button==BUTTON_ID_UP);
     else if (button==BUTTON_ID_BACK) s_screen=SCREEN_DETAIL;
     else if (button==BUTTON_ID_SELECT) {
       if (s_option==0) prv_begin_edit((int)s_selected);
@@ -1028,8 +1112,7 @@ static void prv_press(ButtonId button) {
       } else { s_confirm_choice=0;s_screen=SCREEN_CONFIRM; }
     }
   } else if (s_screen==SCREEN_CONFIRM) {
-    if (button==BUTTON_ID_UP) s_confirm_choice=0;
-    else if (button==BUTTON_ID_DOWN) s_confirm_choice=1;
+    if(button==BUTTON_ID_UP||button==BUTTON_ID_DOWN)prv_action_step(button==BUTTON_ID_UP);
     else if (button==BUTTON_ID_BACK || (button==BUTTON_ID_SELECT && !s_confirm_choice))
       s_screen=SCREEN_OPTIONS;
     else if (button==BUTTON_ID_SELECT) {
@@ -1141,30 +1224,35 @@ static void prv_init(void) {
   if (persist_exists(WAKEUP_KEY))s_wakeup=persist_read_int(WAKEUP_KEY);
   uint32_t previous_ticket=0;persist_read_data(PUBLICATION_KEY,&previous_ticket,sizeof(previous_ticket));
   pa_publisher_init(&s_publisher,previous_ticket,connection_service_peek_pebble_app_connection());
-  timer_fonts_init();
   timer_native_type_init();
   const PreferredContentSize size=preferred_content_size();
   s_text_size=size<=PreferredContentSizeMedium?0:size==PreferredContentSizeLarge?1:2;
-  s_window=window_create();
-  window_set_background_color(s_window,s_dark?GColorBlack:GColorWhite);
-  window_set_click_config_provider(s_window,prv_click_config);
-  Layer *root=window_get_root_layer(s_window);
-  s_list_canvas=s_canvas=layer_create(layer_get_bounds(root));
-  layer_set_update_proc(s_canvas,prv_draw);layer_add_child(root,s_canvas);
+  for(unsigned screen=SCREEN_LIST;screen<=SCREEN_CONFIRM;++screen) {
+    Window *window=s_windows[screen]=window_create();
+    window_set_background_color(window,screen==SCREEN_ALARM||s_dark?GColorBlack:GColorWhite);
+    window_set_click_config_provider(window,prv_click_config);
+    Layer *root=window_get_root_layer(window);
+    Layer *canvas=s_canvases[screen]=layer_create_with_data(layer_get_bounds(root),sizeof(Screen));
+    *(Screen *)layer_get_data(canvas)=(Screen)screen;
+    layer_set_update_proc(canvas,prv_draw);layer_add_child(root,canvas);
+  }
+  s_window=s_windows[SCREEN_LIST];s_list_canvas=s_canvas=s_canvases[SCREEN_LIST];
   s_list=menu_layer_create(GRect(0,50,CONTENT_WIDTH,178));
   menu_layer_set_callbacks(s_list,NULL,(MenuLayerCallbacks){
       .get_num_rows=prv_list_rows,.get_cell_height=prv_list_height,.draw_row=prv_list_draw});
-  menu_layer_set_center_focused(s_list,false);
-  menu_layer_pad_bottom_enable(s_list,false);
-  layer_add_child(root,menu_layer_get_layer(s_list));
+  menu_layer_set_center_focused(s_list,false);menu_layer_pad_bottom_enable(s_list,false);
+  layer_add_child(window_get_root_layer(s_window),menu_layer_get_layer(s_list));
   window_set_window_handlers(s_window,(WindowHandlers){.disappear=prv_list_disappear});
-  /* One click provider per window, including raw rail feedback. No MenuLayer
-   * or ActionBar provider can overwrite or double-dispatch these handlers. */
-  s_content_window=window_create();
-  window_set_click_config_provider(s_content_window,prv_click_config);
-  s_content_canvas=layer_create(layer_get_bounds(window_get_root_layer(s_content_window)));
-  layer_set_update_proc(s_content_canvas,prv_draw);
-  layer_add_child(window_get_root_layer(s_content_window),s_content_canvas);
+  for(unsigned i=0;i<2;++i) {
+    const Screen screen=i?SCREEN_CONFIRM:SCREEN_OPTIONS;
+    MenuLayer *menu=menu_layer_create(GRect(0,40,CONTENT_WIDTH,188));
+    if(i)s_confirm_menu=menu;else s_options_menu=menu;
+    menu_layer_set_callbacks(menu,(void *)(uintptr_t)screen,(MenuLayerCallbacks){.get_num_rows=prv_action_rows,
+        .get_cell_height=prv_action_height,.get_header_height=prv_context_height,
+        .draw_row=prv_action_draw,.draw_header=prv_context_draw});
+    menu_layer_set_center_focused(menu,false);menu_layer_pad_bottom_enable(menu,false);
+    layer_add_child(window_get_root_layer(s_windows[screen]),menu_layer_get_layer(menu));
+  }
   app_message_register_inbox_received(prv_inbox);
   app_message_register_outbox_sent(prv_outbox_sent);
   app_message_register_outbox_failed(prv_outbox_failed);
@@ -1188,15 +1276,18 @@ static void prv_init(void) {
 static void prv_deinit(void) {
   TIMER_DIAG("exit alarm=%ld deadline=%lu dirty=%u",(long)s_wakeup,(unsigned long)s_alarm_deadline,s_dirty);
   s_ready=false;prv_stop_motion();prv_stop_ui_motion();prv_stop_icon_motion();
+  if(s_native_chrome_timer)app_timer_cancel(s_native_chrome_timer);
   timer_alarm_feedback_deinit();
   timer_glance_deinit();
   if (s_retry_timer)app_timer_cancel(s_retry_timer);
   app_focus_service_unsubscribe();
   tick_timer_service_unsubscribe();connection_service_unsubscribe();app_message_deregister_callbacks();
   menu_layer_destroy(s_list);
-  layer_destroy(s_content_canvas);window_destroy(s_content_window);
-  layer_destroy(s_list_canvas);window_destroy(s_window);
-  timer_fonts_deinit();
+  if(s_options_menu)menu_layer_destroy(s_options_menu);
+  if(s_confirm_menu)menu_layer_destroy(s_confirm_menu);
+  for(unsigned screen=0;screen<=SCREEN_CONFIRM;++screen) {
+    layer_destroy(s_canvases[screen]);window_destroy(s_windows[screen]);
+  }
 }
 
 int main(void) { prv_init();app_event_loop();prv_deinit(); }

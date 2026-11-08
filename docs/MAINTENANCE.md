@@ -9,11 +9,11 @@ Native state, verified banks, deadlines and Wakeups are authoritative. Preserve 
 
 ## Current interaction and product boundaries
 
-Watch timer controls stay on the watch. The phone has one Light/Dark appearance selector and confirmed Save-and-stay. The 34 px contrasting action rail spans every screen row; headers and footers stay inside 166 px. Header clock 26, primary utility 24 and secondary 22 use Roboto Condensed Bold; dominant values use Fredoka. Keep two 80 px list rows or one above a complete critical warning, all eight selections visible, rigid 120 ms choices and bounded 144 ms physical feedback. Long elapsed/counter values and warnings stay complete.
+Watch timer controls stay on the watch. The phone still has the existing Light/Dark selector until the preference stage. The 34 px contrasting action rail spans every screen row; headers and footers stay inside 166 px. Development rendering uses actual PebbleOS Header, MenuCellTitle, MenuCellSubtitle and Footer profiles from the pinned shared UI candidate. Native LECO number fonts fit dominant values without rescaling. MenuLayer owns measured list, Options and confirmation motion; real Windows own navigation. Preserve the first-row y=50 anchor, identity restoration, all eight timers, complete warnings, safe Keep-first deletion, the stock editor feedback and bounded 144 ms physical-button feedback. App code retains all input, window, timer, alarm and resource lifetime ownership.
 
 ## Source ownership
 
-src/c/main.c orchestrates SDK input, persistence and alarms; timer_model/collection own portable state; timer_ui/fonts/hourglass own rendering. src/pkjs and src/plugin own the phone bridge.
+src/c/main.c orchestrates SDK input, persistence and alarms; timer_model/collection own portable state; timer_ui/native_type/hourglass own rendering (legacy custom-font sources remain for historical tooling, excluded from production). src/pkjs and src/plugin own the phone bridge.
 
 ## Phone persistence and evidence
 

@@ -21,7 +21,7 @@ int main(void) {
 ''')
             binary=folder/'profiles'
             subprocess.run([os.environ.get('CC','cc'),'-std=c99','-Wall','-Wextra','-Werror',
-                '-I',str(ROOT/'src/c'),str(source),'-o',str(binary)],check=True)
+                '-I',str(ROOT/'src/c'),'-I',str(ROOT/'node_modules'),str(source),'-o',str(binary)],check=True)
             actual=subprocess.check_output([str(binary)],text=True).splitlines()
         wanted=[row[role] for family in ('baseline','modern') for row in expected[family] for role in expected['roles']]
         self.assertEqual(actual,wanted)

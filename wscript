@@ -33,7 +33,7 @@ def build(ctx):
                                if value != 'ACTIVITY_TIMER_DIAGNOSTICS=1']
         ctx.set_group(ctx.env.PLATFORM_NAME)
         app_elf = '{}/pebble-app.elf'.format(ctx.env.BUILD_DIR)
-        ctx.pbl_build(source=ctx.path.ant_glob('src/c/**/*.c'), target=app_elf, bin_type='app')
+        ctx.pbl_build(source=ctx.path.ant_glob('src/c/**/*.c', excl=['src/c/timer_fonts.c']), target=app_elf, bin_type='app')
         binaries.append({'platform': platform, 'app_elf': app_elf})
     ctx.env = cached_env
     ctx.set_group('bundle')

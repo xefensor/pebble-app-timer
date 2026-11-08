@@ -2,7 +2,6 @@
  * This separate UUID never reads/writes Timer storage or owns alarms. */
 #include <pebble.h>
 #include "timer_ui.h"
-#include "timer_fonts.h"
 #include "timer_native_type.h"
 static Window *s_window,*s_detail;
 static MenuLayer *s_menu;
@@ -36,7 +35,7 @@ static void select_row(MenuLayer *m,MenuIndex *i,void *c) {
   (void)m;(void)c;s_view.selected=i->row;window_stack_push(s_detail,true);
 }
 int main(void) {
-  timer_fonts_init();timer_native_type_init();const uint32_t now=(uint32_t)time(NULL);
+  timer_native_type_init();const uint32_t now=(uint32_t)time(NULL);
   timer_collection_init(&s_collection,42,now);
   for(unsigned i=0;i<8;++i){timer_collection_create(&s_collection,600,now);timer_collection_pause(&s_collection,i,now);}
   const PreferredContentSize size=preferred_content_size();
@@ -58,5 +57,5 @@ int main(void) {
   layer_add_child(window_get_root_layer(s_window),menu_layer_get_layer(s_menu));
   window_stack_push(s_window,false);app_event_loop();
   menu_layer_destroy(s_menu);layer_destroy(s_detail_canvas);window_destroy(s_detail);
-  layer_destroy(s_chrome);window_destroy(s_window);timer_fonts_deinit();
+  layer_destroy(s_chrome);window_destroy(s_window);
 }
