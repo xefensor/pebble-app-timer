@@ -94,7 +94,7 @@ for _ in range(10):
     tap('Select');tap('Down');tap('Down',2);tap('Select');tap('Select');tap('Back',2)
 shot('after-ten-nested-navigation-cycles');checks['nestedCycles']=10
 assert sha(PBW.read_bytes())==digest;check_build(ROOT,PBW)
-report={'result':'PASS','label':args.label,'pbwSha256':digest,'nativePayloadSha256':payload,
+report={'result':'PASS','label':args.label,'pbwSha256':digest,'nativePayloadSha256':payload,'firmware':str(p.watch_info.running),
         'checks':checks,'captures':captures,'diagnosticLogs':logs,
-        'scope':'Exact supplied native bytes in isolated Emery v4.33.2; public native input APIs, production model, no phone runtime. Any locale/diagnostic fixture is identified by label and native hashes.'}
+        'scope':'Exact supplied native bytes in isolated Emery QEMU; public native input APIs, production model, no phone runtime. Any locale/diagnostic fixture is identified by label and native hashes.'}
 (OUT/'report.json').write_text(json.dumps(report,indent=2)+'\n');print(json.dumps({'result':'PASS','path':str(OUT/'report.json'),'captures':len(captures)}),flush=True)

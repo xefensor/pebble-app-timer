@@ -291,3 +291,11 @@ The page shows Saved on phone / Pending on watch until an exact native applicati
 receipt arrives. Transport success alone cannot change that status. Pending choices
 survive reopening and reconcile when Timer starts or reconnects. Draft edits remain
 untouched by status polling. Settings never create, pause, reset or edit a timer.
+
+
+## Supporting text contrast
+
+Supporting/help text uses the normal foreground colour rather than blended grey.
+This keeps black text on white and white text on black readable without changing
+type sizes or layouts. See the [contrast checkpoint](text-contrast-checkpoint.md)
+for the current candidate and verification scope.

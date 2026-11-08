@@ -16,7 +16,7 @@
 static bool s_dark;
 static GColor ui_bg(void) { return s_dark ? GColorBlack : GColorWhite; }
 static GColor ui_fg(void) { return s_dark ? GColorWhite : GColorBlack; }
-static GColor ui_muted(void) { return s_dark ? GColorLightGray : GColorDarkGray; }
+static GColor ui_muted(void) { return ui_fg(); }
 static GColor ui_line(void) { return s_dark ? GColorDarkGray : GColorLightGray; }
 
 static void rect(GContext *ctx, GRect frame, GColor color) {
