@@ -33,7 +33,9 @@ test('fresh watch state invalidates an earlier receipt even if pending metadata 
  const s=setup();s.request('saveUiPreferences',large);s.ack();s.fail(true);
  const hello=prefs.encode(light,0);hello[3]=1;s.controller.receive(hello);
  assert.equal(s.request('getUiPreferences').delivery.applied,false);
- assert.equal(s.sent.length,2);s.fail(false);s.ack();
+ assert.equal(s.sent.length,1,'metadata failure must not send a reusable revision');
+ assert.equal(s.ack(),false,'an old receipt cannot undo known watch mismatch');
+ s.fail(false);s.request('retryUiPreferences');s.ack();
  assert.equal(s.request('getUiPreferences').delivery.applied,true);
 });
 test('save failure cannot become applied; retry and reopening retain desired choices',()=>{
@@ -73,4 +75,25 @@ test('editing an uncommitted legacy migration keeps advancing the known revision
  s.map.set(legacy.key,JSON.stringify({version:1,theme:'light'}));
  const edited={...large,textSize:'small'};s.request('saveUiPreferences',edited);
  assert.ok(JSON.parse(s.map.get(prefs.key)).revision>revision);
+});
+
+test('a fresh watch mismatch rotates the revision before resending and rejects the prior receipt',()=>{
+ const s=setup();s.request('saveUiPreferences',large);s.ack();
+ const old=s.sent[0].message.TIMER_UI_PREFERENCES.slice();
+ const hello=prefs.encode(light,0);hello[3]=1;s.controller.receive(hello);
+ const current=s.sent.at(-1).message.TIMER_UI_PREFERENCES;
+ assert.notEqual(prefs.decode(current).revision,prefs.decode(old).revision);
+ s.controller.receive(old);assert.equal(s.request('getUiPreferences').delivery.applied,false);
+ s.ack();assert.equal(s.request('getUiPreferences').delivery.applied,true);
+ s.request('retryUiPreferences');s.controller.receive(current);
+ assert.equal(s.request('getUiPreferences').delivery.applied,false,'manual retry has a new delivery identity');
+ s.ack();assert.equal(s.request('getUiPreferences').delivery.applied,true);
+});
+
+test('a failed reset revision cancels the previous receipt wait and ignores its late transport callback',()=>{
+ const s=setup();s.request('saveUiPreferences',large);s.sent[0].ok();assert.equal(s.timers.size,1);
+ s.fail(true);const hello=prefs.encode(light,0);hello[3]=1;s.controller.receive(hello);
+ assert.equal(s.timers.size,0);s.sent[0].ok();assert.equal(s.timers.size,0);
+ s.ack(0);assert.equal(s.request('getUiPreferences').delivery.applied,false);
+ s.fail(false);s.request('retryUiPreferences');s.ack();assert.equal(s.request('getUiPreferences').delivery.applied,true);
 });

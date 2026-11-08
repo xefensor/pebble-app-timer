@@ -1,5 +1,7 @@
 # Timer preferences checkpoint — 2026-11-08
 
+The latest candidate is recorded in the [receipt freshness checkpoint](ui-preferences-revision-checkpoint.md). The evidence below describes the original preference candidate.
+
 Local candidate only; no version change, push or publication. Earlier native
 navigation evidence is in [its checkpoint](native-navigation-checkpoint.md).
 

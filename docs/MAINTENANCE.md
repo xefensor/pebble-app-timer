@@ -61,3 +61,8 @@ existing single app queue, with three bounded attempts and a separate wait for a
 application receipt. Native UI replies share the existing outbox without consuming
 or acknowledging an owner publication ticket. The UI library owns no controller,
 persistence, queue, event subscription or timer.
+
+A runtime resync, explicit Retry or mismatched fresh watch hello rotates the
+positive delivery revision before sending. A delayed receipt from before that
+boundary cannot mark the new delivery applied. If the new revision cannot be
+verified in phone storage, keep the choice pending and suppress old receipts.

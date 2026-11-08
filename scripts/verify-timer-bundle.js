@@ -99,7 +99,7 @@ function verifyPkjs() {
   assert.equal(outgoing.length, 2, 'PKJS ready reconciles appearance and requests the native snapshot');
   const ui=pkjsDictionary(outgoing.shift());
   assert.equal(ui.TIMER_APPEARANCE,0);assert.equal(ui.TIMER_APPEARANCE_VERSION,1);
-  assert.deepEqual(Array.from(ui.TIMER_UI_PREFERENCES),[1,3,0,0,1,0,0,0,0,0,0,0,1,0,0,0,1,0,0,0]);
+  assert.deepEqual(Array.from(ui.TIMER_UI_PREFERENCES),[1,3,0,0,2,0,0,0,0,0,0,0,1,0,0,0,1,0,0,0]);
   const request = pkjsDictionary(outgoing.shift());
   assert.equal(request.ACTIVITY_REQUEST, 1);
   assert.equal(request.ACTIVITY_LAST_REVISION, 0);
