@@ -42,7 +42,10 @@ A single timer and a multi-timer list use that same anchor. Small/Medium/Large
 resolve the per-app override or actual launch-time `preferred_content_size()` (Emery SDK values
 Medium/Large/ExtraLarge). Font roles, UTF-8 wrapping, value fitting and row
 measurement share one layout. Stock role fonts keep their actual bitmap sizes;
-state and saved duration share one line only when those native glyphs fit. Critical warnings reserve their full bottom panel;
+countdown and state share one line when their measured native widths, including
+the gap, fit. Otherwise they stack, and state and saved duration share a line
+when their complete measured widths fit. Saved label/value text wraps when
+necessary. Measure and paint use the same row plan; numeric values remain complete. Critical warnings reserve their full bottom panel;
 the menu scrolls every selected timer completely into the remaining viewport.
 
 The app's click provider owns taps, 150 ms repeats and raw rail feedback exactly
@@ -299,3 +302,6 @@ Supporting/help text uses the normal foreground colour rather than blended grey.
 This keeps black text on white and white text on black readable without changing
 type sizes or layouts. See the [contrast checkpoint](text-contrast-checkpoint.md)
 for the current candidate and verification scope.
+
+The compact-layout implementation and current verification scope are recorded in
+[the compact layout checkpoint](compact-layout-checkpoint.md).

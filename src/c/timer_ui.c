@@ -286,8 +286,9 @@ static void main_screen(GContext *ctx,const TimerUiView *view) {
 typedef struct {
   char clock[20],saved[64],support[128];
   const char *state;
-  bool joined;
+  bool joined,clock_inline;
   GSize clock_size,state_size,saved_size;
+  int first_height;
   int pad,gap,height;
   uint32_t left,total;
 } RowLayout;
@@ -300,9 +301,16 @@ static RowLayout row_layout(const TimerUiView *view,unsigned slot) {
   row.total=ready?timer->repeat_seconds:timer->configured_seconds;
   clock_text(row.left,row.clock,sizeof(row.clock));
   row.state=app_text(timer->state==ACTIVITY_TIMER_RUNNING?"Running":timer->state==ACTIVITY_TIMER_PAUSED?"Paused":ready?"Ready":"Time's up");
-  row.clock_size=timer_native_type_measure(row.clock,size,TIMER_TYPE_MENU_TITLE,143);
-  row.state_size=timer_native_type_measure(row.state,size,TIMER_TYPE_MENU_SUBTITLE,143);
-  row.height=2*row.pad+row.clock_size.h+row.gap+row.state_size.h;
+  row.clock_size=timer_native_type_measure(row.clock,size,TIMER_TYPE_MENU_TITLE,2048);
+  row.state_size=timer_native_type_measure(row.state,size,TIMER_TYPE_MENU_SUBTITLE,2048);
+  row.clock_inline=row.clock_size.w+6+row.state_size.w<=143;
+  if(!row.clock_inline){
+    row.clock_size=timer_native_type_measure(row.clock,size,TIMER_TYPE_MENU_TITLE,143);
+    row.state_size=timer_native_type_measure(row.state,size,TIMER_TYPE_MENU_SUBTITLE,143);
+  }
+  row.first_height=row.clock_size.h;
+  if(row.clock_inline&&row.state_size.h>row.first_height)row.first_height=row.state_size.h;
+  row.height=2*row.pad+row.first_height+(row.clock_inline?0:row.gap+row.state_size.h);
   if(!ready) {
     char duration[24];duration_text(timer->repeat_seconds,duration,sizeof(duration),false);
     snprintf(row.saved,sizeof(row.saved),app_text("Set %s"),duration);
@@ -310,7 +318,7 @@ static RowLayout row_layout(const TimerUiView *view,unsigned slot) {
     const GSize joined=timer_native_type_measure(row.support,size,TIMER_TYPE_MENU_SUBTITLE,2048);
     /* Keep both pieces of information on one line only when the native font
      * really fits. Density comes from reflow, never from shrinking its type. */
-    if(joined.w<=143) {
+    if(!row.clock_inline&&joined.w<=143) {
       row.joined=true;row.height+=joined.h-row.state_size.h;row.state_size=joined;
     } else {
       row.saved_size=timer_native_type_measure(row.saved,size,TIMER_TYPE_MENU_SUBTITLE,143);
@@ -330,20 +338,31 @@ void timer_ui_draw_row(GContext *ctx,const Layer *cell,const TimerUiView *view,u
   const GColor ink=selected?(view->dark?GColorBlack:GColorWhite):(view->dark?GColorWhite:GColorBlack);
   rect(ctx,layer_get_bounds(cell),background);
   int top=row.pad;
-  timer_native_type_draw(ctx,row.clock,size,TIMER_TYPE_MENU_TITLE,GRect(8,top,143,row.clock_size.h),
+  timer_native_type_draw(ctx,row.clock,size,TIMER_TYPE_MENU_TITLE,
+      GRect(8,top+(row.first_height-row.clock_size.h)/2,row.clock_inline?row.clock_size.w:143,row.clock_size.h),
       ink,GTextAlignmentLeft,GTextOverflowModeWordWrap);
-  top+=row.clock_size.h+row.gap;
-  timer_native_type_draw(ctx,row.joined?row.support:row.state,size,TIMER_TYPE_MENU_SUBTITLE,GRect(8,top,143,row.state_size.h),
-      ink,GTextAlignmentLeft,GTextOverflowModeWordWrap);
+  if(row.clock_inline){
+    timer_native_type_draw(ctx,row.state,size,TIMER_TYPE_MENU_SUBTITLE,
+        GRect(151-row.state_size.w,top+(row.first_height-row.state_size.h)/2,row.state_size.w,row.state_size.h),
+        ink,GTextAlignmentRight,GTextOverflowModeWordWrap);
+    top+=row.first_height;
+  }else{
+    top+=row.first_height+row.gap;
+    timer_native_type_draw(ctx,row.joined?row.support:row.state,size,TIMER_TYPE_MENU_SUBTITLE,GRect(8,top,143,row.state_size.h),
+        ink,GTextAlignmentLeft,GTextOverflowModeWordWrap);
+    top+=row.state_size.h;
+  }
   if(row.saved[0]&&!row.joined) {
-    top+=row.state_size.h+row.gap;
+    top+=row.gap;
     timer_native_type_draw(ctx,row.saved,size,TIMER_TYPE_MENU_SUBTITLE,GRect(8,top,143,row.saved_size.h),
         ink,GTextAlignmentLeft,GTextOverflowModeWordWrap);
   }
   const unsigned fill=row.total?(unsigned)(((uint64_t)row.left*28+row.total/2)/row.total):0;
   const unsigned bounded=fill>28?28:fill;
-  rect(ctx,GRect(151,row.pad+2,4,28),GColorDarkGray);
-  if(bounded)rect(ctx,GRect(151,row.pad+30-bounded,4,bounded),
+  const int track=row.height-2*row.pad<28?row.height-2*row.pad:28;
+  const int filled=(bounded*track+27)/28;
+  rect(ctx,GRect(151,row.pad,4,track),GColorDarkGray);
+  if(filled)rect(ctx,GRect(151,row.pad+track-filled,4,filled),
       view->collection->slots[slot].state==ACTIVITY_TIMER_PAUSED?AMBER:BLUE);
 }
 

@@ -250,9 +250,11 @@ for value,name in enumerate(('small','medium','large'),1):
     title_height=24 if value<3 else 28
     actual=Image.open(OUT/(name+'-list.png'))
     details=Image.open(OUT/(name+'-details.png'))
-    assert ink(actual,(8,53,151,53+title_height),(255,255,255))==ink(ref,(8,53,151,53+title_height),(0,0,0)),(name,'menu title bitmap')
+    # The state now shares the title line. Isolate the complete countdown
+    # glyphs so the independent font comparison excludes the adjacent state.
+    assert ink(actual,(8,53,88,53+title_height),(255,255,255))==ink(ref,(8,53,88,53+title_height),(0,0,0)),(name,'menu title bitmap')
     assert ink(details,(8,0,90,31),(0,0,0))==ink(ref,(8,0,90,31),(0,0,0)),(name,'header bitmap')
-    assert ink(details,(8,198,158,228),(85,85,85))==ink(ref,(8,198,158,228),(0,0,0)),(name,'footer bitmap')
+    assert ink(details,(8,198,158,228),(0,0,0))==ink(ref,(8,198,158,228),(0,0,0)),(name,'footer bitmap')
     checks['nativeTypeBitmapMatches'].append({'size':name,'menuTitle':True,'header':True,'footer':True})
     stop(reference)
 checks['nativeTypeReferencePayload']=type_payload
