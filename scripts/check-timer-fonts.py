@@ -51,8 +51,8 @@ def audit(pbw, root=ROOT):
     provenance = json.loads((root / 'resources/fonts/font-provenance.json').read_text())
     media = package['pebble']['resources']['media']
     font_media = [m for m in media if m['type']=='font']
-    require(len(media)==4 and media[-1]=={'type':'raw','name':'LOCALIZATION','file':'localization.bin'}, 'Native locale resource differs')
-    require(len(font_media) == 3 and [m['name'] for m in font_media] == ['FONT_BODY_22', 'FONT_BODY_24', 'FONT_BODY_26'],
+    require(len(media)==6 and media[-1]=={'type':'raw','name':'LOCALIZATION','file':'localization.bin'}, 'Native locale resource differs')
+    require([m['name'] for m in font_media] == ['FONT_BODY_22', 'FONT_BODY_24', 'FONT_BODY_26', 'FONT_BODY_18', 'FONT_BODY_20'],
             'Utility font resource roles differ')
     require(all(m['type']=='font' and m['file']=='fonts/RobotoCondensed-Bold.ttf' and
                 m['extended'] is True and m['characterRegex']==r'[\u0020-\u024F\u2019\u2026]' for m in font_media),
@@ -90,7 +90,7 @@ def audit(pbw, root=ROOT):
     return {'result': 'PASS', 'version': package['version'], 'pbwSha256': sha256(pbw.read_bytes()),
             'bodyFonts': body_proof, 'packagedResourcesBytes': len(packed),
             'roundedClockTables': tables, 'fontLicensesMatchSource': True,
-            'scope': 'Exact unchanged font sources/notices, linked Fredoka outlines and three extended Roboto Condensed PFOs/alignment tables. Coverage verified in compiled PFOs, including Czech glyphs. Native captures separately verify whole-composition ink, fitting and motion.'}
+            'scope': 'Exact unchanged font sources/notices, linked Fredoka outlines and five extended Roboto Condensed PFOs/alignment tables. Coverage verified in compiled PFOs, including Czech glyphs. Native captures separately verify whole-composition ink, fitting and motion.'}
 
 
 if __name__ == '__main__':

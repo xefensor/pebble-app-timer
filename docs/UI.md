@@ -3,7 +3,7 @@
 The current release is 0.14.5. Earlier downloads and frozen evidence retain
 their original versions and interfaces.
 
-Watch timer controls stay on the watch. The phone has one Light/Dark appearance selector and confirmed Save-and-stay. The 34 px contrasting action rail spans every screen row; headers and footers stay inside 166 px. Header title and clock 26, primary utility 24 and secondary 22 use Roboto Condensed Bold; dominant values use Fredoka. Keep two 80 px list rows or one above a complete critical warning, all eight selections visible and rigid 120 ms choices. Long elapsed/counter values and warnings stay complete.
+Watch timer controls stay on the watch. The phone has one Light/Dark appearance selector and confirmed Save-and-stay. The 34 px contrasting action rail spans every screen row; headers and footers stay inside 166 px. Roboto Condensed Bold supplies utility text and the size-aware header; dominant values use Fredoka. The development Timer checkpoint uses native MenuLayer selection and measured rows, with all eight slots reachable. Long elapsed/counter values and warnings stay complete.
 
 ## Shared UI
 
@@ -19,8 +19,8 @@ An ordinary one-timer list uses the same first-row anchor as a longer list;
 adding another timer does not recenter the first row.
 
 Timer still owns its fonts, layers, input handlers, animation timers and state.
-The library installs no input callbacks. The rigid 120 ms vertical selection,
-editor feedback, custom Fredoka digit rendering and animated hourglass remain
+The library installs no input callbacks. Native MenuLayer owns list motion; editor
+feedback, custom Fredoka digit rendering and the animated hourglass remain
 Timer-specific. Shared drawing cannot delay an owner operation or change alarm
 handling. Earlier published downloads remain unchanged.
 
@@ -31,10 +31,52 @@ field gap, then settle that gap for 179 ms with EaseOut. A value edit moves the
 previous glyph toward Up/Down for 107 ms, then shows the new glyph while a 6 px
 extension on that edge settles over 214 ms. Logical edits remain immediate;
 repeating input and Select settle this visual feedback before consuming current
-state. The 120 ms rigid vertical selection remains the explicit readability
-choice; the bounded hourglass illustration remains Timer's own animation.
+state. Options and confirmation retain their existing 120 ms feedback until their
+own checkpoint; the bounded hourglass illustration remains Timer's own animation.
 
 Native state, verified banks, deadlines and Wakeups are authoritative. Preserve eight slots, saved repeat duration, acknowledgement and migration compatibility. A transport ACK is not a saved-state receipt. Paused sharing expires after five minutes without renewing its observation. Zero does not establish completion. Keep one AppMessage queue. Appearance keys are separate from timer/Glance keys; appearance never changes a timer. Back, critical warnings, safe Keep-first Delete and immediate owner operations remain available.
+
+## Development checkpoint: list → details → Back
+
+The production list is a `MenuLayer` below the existing first-row anchor at y=50.
+A single timer and a multi-timer list use that same anchor. Small/Medium/Large
+read the actual launch-time `preferred_content_size()` (Emery SDK values
+Medium/Large/ExtraLarge). Font roles, UTF-8 wrapping, value fitting and row
+measurement share one layout. Eight standard paused timers fit three complete
+Small rows and two Large rows. Critical warnings reserve their full bottom panel;
+the menu scrolls every selected timer completely into the remaining viewport.
+
+The app's click provider owns taps, 150 ms repeats and raw rail feedback exactly
+once, stepping through the exported animated MenuLayer APIs. Colors come from
+`menu_cell_layer_is_highlighted()` during SDK animation. The New/Replace position
+above the first timer keeps its existing Up/Down/Select behavior. All eight slots,
+safe Keep-first deletion and immediate pause/resume remain available.
+
+Details uses a second real Window with animated stack push/pop. Both surfaces
+remain alive during transitions; menu motion settles on cover. The selected
+production timer slot, rather than a previous row number, restores focus after
+Back and after state-driven sorting. The windows/layers/fonts are app-owned and
+are released at app exit. Alarm attention preempts the ordinary content window.
+Add/Edit, Options and confirmation still use their existing renderer and input
+inside that content window; their native navigation is a later checkpoint.
+
+The left header label fits/truncates after reserving the measured full local clock.
+The existing full-height 34 px XOCE rail, canonical icons, button positions and
+5 px held displacement remain unchanged. No native rail replacement is proposed
+at this checkpoint. Text-size overrides, phone preference delivery and touch
+opt-in are also deferred to the later checkpoints.
+
+Build with `npm run build`, then `python3 scripts/build-fixtures.py` and
+`python3 scripts/build-native-reference.py`. Run
+`python3 scripts/emulator-timer-checkpoint.py --baseline /path/to/starting.pbw`.
+The baseline argument is optional. Evidence is disposable under
+`build/qa/timer-checkpoint/<PBW hash>/<run>/`, including raw PNGs, sampled GIFs,
+comparison boards and a hash-bound JSON report. The reference harness uses SDK
+stock menu cells and an XOCE center-focus trial; it is not the full stock Timer.
+Separate locale-lookup and heap-log fixtures must never be described as final
+candidate bytes. The SDK emulator's content-size command changes the OS preference;
+the read-only probe confirms it through `preferred_content_size()`. Its SDK shell
+omits Settings and stock Timer, so their physical checks stay pending.
 
 ## Native/phone verification
 

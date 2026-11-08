@@ -25,21 +25,21 @@ typedef struct {
 
 typedef struct { uint16_t code; int16_t top,bottom; } TimerGlyphInk;
 #include "generated_body_metrics.h"
-static const int s_sizes[]={XOCE_UI_SECONDARY_POINT,XOCE_UI_BODY_POINT,XOCE_UI_HEADER_POINT};
-static const uint32_t s_resources[]={RESOURCE_ID_FONT_BODY_22,RESOURCE_ID_FONT_BODY_24,RESOURCE_ID_FONT_BODY_26};
-static GFont s_body[3];
-static unsigned prv_index(int point) { return point<=22?0:point<=24?1:2; }
+static const int s_sizes[]={XOCE_UI_SECONDARY_POINT,XOCE_UI_BODY_POINT,XOCE_UI_HEADER_POINT,18,20};
+static const uint32_t s_resources[]={RESOURCE_ID_FONT_BODY_22,RESOURCE_ID_FONT_BODY_24,RESOURCE_ID_FONT_BODY_26,RESOURCE_ID_FONT_BODY_18,RESOURCE_ID_FONT_BODY_20};
+static GFont s_body[5];
+static unsigned prv_index(int point) { return point<=18?3:point<=20?4:point<=22?0:point<=24?1:2; }
 static GFont prv_body(int point) {
   const unsigned index=prv_index(point);
   return s_body[index]?s_body[index]:fonts_get_system_font(index?FONT_KEY_GOTHIC_28_BOLD:FONT_KEY_GOTHIC_24_BOLD);
 }
 bool timer_fonts_init(void) {
   timer_fonts_deinit();bool loaded=true;
-  for(unsigned i=0;i<3;++i){s_body[i]=fonts_load_custom_font(resource_get_handle(s_resources[i]));if(!s_body[i])loaded=false;}
+  for(unsigned i=0;i<5;++i){s_body[i]=fonts_load_custom_font(resource_get_handle(s_resources[i]));if(!s_body[i])loaded=false;}
   return loaded;
 }
 void timer_fonts_deinit(void) {
-  for(unsigned i=0;i<3;++i){if(s_body[i])fonts_unload_custom_font(s_body[i]);s_body[i]=NULL;}
+  for(unsigned i=0;i<5;++i){if(s_body[i])fonts_unload_custom_font(s_body[i]);s_body[i]=NULL;}
 }
 static uint32_t prv_codepoint(const unsigned char **at) {
   const unsigned char *p=*at;uint32_t code=*p++;
@@ -49,8 +49,8 @@ static uint32_t prv_codepoint(const unsigned char **at) {
 }
 static TimerGlyphInk prv_ink(const char *text,int point) {
   const unsigned index=prv_index(point);
-  const TimerGlyphInk *rows=index==0?s_body_ink_0:index==1?s_body_ink_1:s_body_ink_2;
-  const unsigned count=index==0?sizeof(s_body_ink_0)/sizeof(*rows):index==1?sizeof(s_body_ink_1)/sizeof(*rows):sizeof(s_body_ink_2)/sizeof(*rows);
+  const TimerGlyphInk *rows=index==0?s_body_ink_0:index==1?s_body_ink_1:index==2?s_body_ink_2:index==3?s_body_ink_3:s_body_ink_4;
+  const unsigned count=index==0?sizeof(s_body_ink_0)/sizeof(*rows):index==1?sizeof(s_body_ink_1)/sizeof(*rows):index==2?sizeof(s_body_ink_2)/sizeof(*rows):index==3?sizeof(s_body_ink_3)/sizeof(*rows):sizeof(s_body_ink_4)/sizeof(*rows);
   TimerGlyphInk result={0,255,0};
   for(const unsigned char *p=(const unsigned char *)(text?text:"");*p;) {
     const uint32_t code=prv_codepoint(&p);const TimerGlyphInk *glyph=NULL,*wildcard=NULL;

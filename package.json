@@ -61,6 +61,20 @@
           "extended": true
         },
         {
+          "type": "font",
+          "name": "FONT_BODY_18",
+          "file": "fonts/RobotoCondensed-Bold.ttf",
+          "characterRegex": "[\\u0020-\\u024F\\u2019\\u2026]",
+          "extended": true
+        },
+        {
+          "type": "font",
+          "name": "FONT_BODY_20",
+          "file": "fonts/RobotoCondensed-Bold.ttf",
+          "characterRegex": "[\\u0020-\\u024F\\u2019\\u2026]",
+          "extended": true
+        },
+        {
           "type": "raw",
           "name": "LOCALIZATION",
           "file": "localization.bin"

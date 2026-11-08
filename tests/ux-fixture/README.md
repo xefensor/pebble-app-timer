@@ -17,7 +17,10 @@ write refusal while retaining native alarm/Back behavior.
 Mode 9 combines mode 5's eight mixed timers with the exhausted bank generation,
 so actual critical-warning layouts can prove every selected item remains visible
 in the one-row readable viewport. Mode 8 is the read-only Glance/appearance/bank
-checksum probe and never writes timer data.
+checksum/preferred-content-size probe and never writes timer data.
+Modes 10 and 11 seed eight/single paused timers with identical 10-minute values
+for density and anchor comparisons. Mode 12 uses paused 24-hour values. These
+fixtures inject production data only; the candidate reads the actual OS size.
 
 Build all variants from this directory after activating the Pebble SDK:
 

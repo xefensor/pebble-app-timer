@@ -10,51 +10,29 @@ int main(void) {
     assert(timer_collection_create(&collection, 60 + i * 60, 1000) == (int)i);
   for (unsigned i = 1; i < TIMER_COLLECTION_CAPACITY; ++i)
     assert(timer_collection_pause(&collection, i, 1010));
-  TimerUiView view = {.screen=SCREEN_LIST, .collection=&collection, .menu=1, .now=1010};
-  TimerListWindow list = timer_ui_list_window(&view);
-  assert(list.first == 0 && list.rows == 2 && list.count == 8);
+  TimerUiView view = {.screen=SCREEN_LIST, .collection=&collection, .menu=1,
+      .now=1010,.visible_slots=1};
   assert(timer_ui_needs_tick(&view));
-  /* A single timer occupies the ordinary first row. Adding a second timer
-   * must not move the first one down/up or change its selection geometry. */
-  TimerCollection single;
-  timer_collection_init(&single, 43, 1000);
-  assert(timer_collection_create(&single, 600, 1000) == 0);
-  TimerUiView one = {.screen=SCREEN_LIST, .collection=&single, .menu=1, .now=1000};
-  const int first_row_top=timer_ui_list_top(&view);
-  assert(timer_ui_list_top(&one)==first_row_top);
-  one.menu=0;
-  assert(timer_ui_list_top(&one)==first_row_top);
-  assert(timer_collection_create(&single, 300, 1000) == 1);
-  assert(timer_ui_list_top(&one)==first_row_top);
-  view.menu = 8;
-  list = timer_ui_list_window(&view);
-  assert(list.first == 6 && list.slots[6] == 6);
+  view.visible_slots=0xfe;
   assert(!timer_ui_needs_tick(&view));
-  /* Running slot zero is offscreen, but it must still become due natively. */
-  assert(!timer_collection_has_due(&collection, 1059));
-  assert(timer_collection_has_due(&collection, 1060));
-  assert(timer_collection_finish_due(&collection, 1060) == 1);
-  assert(!timer_collection_has_due(&collection, 1060));
-  view.menu = 1;
-  view.issue = "Alarm not set";
-  list = timer_ui_list_window(&view);
-  assert(list.rows == 1 && list.first == 0);
-  view.menu=8;list=timer_ui_list_window(&view);
-  assert(list.first==7&&list.first+list.rows==8);
+  /* Reordering after an owner action restores by timer slot, never by old
+   * row index. A paused timer moves below every running timer. */
+  assert(timer_ui_menu_for_slot(&collection,0)==1);
+  assert(timer_collection_resume(&collection,7,1010));
+  assert(timer_ui_menu_for_slot(&collection,7)==2);
+  assert(timer_collection_pause(&collection,0,1011));
+  assert(timer_ui_menu_for_slot(&collection,7)==1);
+  assert(timer_ui_menu_for_slot(&collection,0)==2);
+  view.visible_slots=1u<<7;
+  assert(timer_ui_needs_tick(&view));
+  view.visible_slots=1;
   assert(!timer_ui_needs_tick(&view));
-  /* Every selected item remains inside the same renderer/tick window, in
-   * either direction; a warning reduces the viewport to one readable row. */
-  for(unsigned warning=0;warning<2;++warning) {
-    view.issue=warning?"Not saved":NULL;
-    for(unsigned step=0;step<16;++step) {
-      view.menu=step<8?step+1:16-step;
-      list=timer_ui_list_window(&view);
-      assert(view.menu-1>=list.first&&view.menu-1<list.first+list.rows);
-      const int top=timer_ui_list_top(&view);
-      assert(top>=40);
-      assert(top+TIMER_LIST_ROW_HEIGHT+(int)(list.rows-1)*TIMER_LIST_ROW_STRIDE<= (warning?174:228));
-    }
-  }
+  /* Due processing still sees a running timer outside the native viewport. */
+  assert(timer_collection_has_due(&collection,1480));
+  assert(timer_collection_finish_due(&collection,1480)==(1u<<7));
+  assert(!timer_collection_has_due(&collection,1480));
+  assert(timer_collection_delete(&collection,7,1480));
+  assert(timer_ui_menu_for_slot(&collection,7)==1);
   view.issue="Alarm not set";
   for (unsigned screen = SCREEN_EDITOR; screen <= SCREEN_CONFIRM; ++screen) {
     view.screen = (Screen)screen;
@@ -79,6 +57,6 @@ int main(void) {
     assert(timer_ui_chrome_changed(&view, view.screen, NULL, view.status));
     assert(!timer_ui_chrome_changed(&view, view.screen, view.issue, view.status));
   }
-  puts("timer UI state: offscreen clocks, shared row windows, native completion and visible status invalidation passed");
+  puts("timer UI state: native viewport clocks, selection identity, native completion and visible status invalidation passed");
   return 0;
 }

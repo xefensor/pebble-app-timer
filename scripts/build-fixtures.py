@@ -11,9 +11,9 @@ import subprocess
 
 root = Path(__file__).resolve().parents[1]
 fixture = root / 'tests/ux-fixture'
-for mode in (0, 1, 2, 3, 4, 5, 6, 8, 9):
+for mode in (0, 1, 2, 3, 4, 5, 6, 8, 9, 10, 11, 12):
     environment = {**os.environ, 'UX_FIXTURE_MODE': str(mode)}
     subprocess.run(['pebble', 'clean'], cwd=fixture, env=environment, check=True)
     subprocess.run(['pebble', 'build'], cwd=fixture, env=environment, check=True)
     shutil.copyfile(fixture / 'build/ux-fixture.pbw', root / ('build/fixture-mode' + str(mode) + '.pbw'))
-print('Built nine emulator-only Timer seed/probe helpers')
+print('Built twelve emulator-only Timer seed/probe helpers')

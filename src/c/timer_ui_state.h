@@ -16,6 +16,9 @@ typedef struct {
   const uint32_t *edit;
   bool editing_new, editing_ready;
   bool dark, appearance_issue;
+  /* Emery Small/Medium/Large resolved once from preferred_content_size(). */
+  unsigned text_size;
+  uint8_t visible_slots;
   uint32_t now;
   const char *status, *issue;
   bool hourglass_transition;
@@ -27,13 +30,6 @@ typedef struct {
   int8_t action_offset[3];
 } TimerUiView;
 
-typedef struct {
-  unsigned count, menu, first, rows;
-  unsigned slots[TIMER_COLLECTION_CAPACITY];
-} TimerListWindow;
-
-#define TIMER_LIST_ROW_HEIGHT 80
-#define TIMER_LIST_ROW_STRIDE 88
 #define TIMER_OPTION_TOP 68
 #define TIMER_OPTION_HEIGHT 38
 #define TIMER_OPTION_STRIDE 44
@@ -44,9 +40,8 @@ static inline int timer_ui_option_top(const TimerUiView *view) {
   return view->issue&&view->issue[0]?94:TIMER_OPTION_TOP;
 }
 
-/* The renderer and tick decision share exactly the same visible row window. */
-TimerListWindow timer_ui_list_window(const TimerUiView *view);
-int timer_ui_list_top(const TimerUiView *view);
+/* Native viewport membership includes partially visible rows during motion. */
+unsigned timer_ui_menu_for_slot(const TimerCollection *collection, unsigned slot);
 bool timer_ui_needs_tick(const TimerUiView *view);
 /* Transport state only appears in Options; critical issues appear everywhere. */
 bool timer_ui_chrome_changed(const TimerUiView *view, Screen previous_screen,

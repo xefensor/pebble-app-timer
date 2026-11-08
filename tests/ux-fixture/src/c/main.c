@@ -49,6 +49,7 @@ static void report_persistence(void *context) {
   dict_write_uint32(out,3005,(uint32_t)persist_read_int(2105));
   dict_write_uint32(out,3006,stored_checksum);
   dict_write_uint32(out,3007,banks);
+  dict_write_uint32(out,3008,(uint32_t)preferred_content_size());
   app_message_outbox_send();
 }
 int main(void) {
@@ -107,6 +108,13 @@ int main(void) {
       timer->configured_seconds=30;timer->run=1;timer->state=1;
       timer->deadline=now+30;timer->valid_until=timer->deadline+60;
       collection.visible_mask|=1u<<i;
+    }
+    /* Stable production data for native sizing comparisons. Paused values do
+     * not change between launches; no font, size or UI is injected. */
+    if (UX_FIXTURE_MODE==10 || (UX_FIXTURE_MODE==11&&!i) || UX_FIXTURE_MODE==12) {
+      timer->configured_seconds=UX_FIXTURE_MODE==12?86400:600;
+      timer->run=1;timer->state=2;timer->remaining_seconds=timer->configured_seconds;
+      timer->valid_until=now+300;collection.visible_mask|=1u<<i;
     }
   }
   const uint8_t *bytes=(const uint8_t *)&collection;

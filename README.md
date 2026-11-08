@@ -49,6 +49,12 @@ npm run check:artifact
 [Contributor guide](CONTRIBUTING.md) · [Release preparation](docs/RELEASING.md) · [History index](docs/history/index.md).
 Development outputs belong in ignored `build/`; published archives stay frozen.
 
+The development candidate now proves native list → details → Back with
+launch-time Pebble Text Size, measured row density and restored timer selection.
+The existing header and full-height rail remain. This is a local checkpoint,
+with [scope and verification commands](docs/UI.md#development-checkpoint-list--details--back);
+the published 0.14.5 download above remains unchanged.
+
 ## Licence
 
 [PolyForm Noncommercial 1.0.0](LICENSE). Preserve bundled third-party notices and attribution.
