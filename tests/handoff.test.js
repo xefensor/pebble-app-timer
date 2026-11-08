@@ -50,6 +50,7 @@ function runtime(file, shared, at = now, options = {}) {
           return library.summary.defineSnapshotProvider({...options, now: () => at * 1000});
         }};
       }
+      if (name === './ui-preferences') {const preferences=require('../src/pkjs/ui-preferences');return {...preferences,create:options=>preferences.create({...options,later:()=>1,cancel(){}})};}
       if (name === './settings' || name === '../pkjs/settings') return require('../src/pkjs/settings');
       assert.equal(name, 'pebble-activities/publisher');
       return api;

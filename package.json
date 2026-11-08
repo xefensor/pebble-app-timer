@@ -73,7 +73,9 @@
       "ACTIVITY_TOTAL_DURATION": 1022,
       "ACTIVITY_SHOW_TERMINAL": 1023,
       "TIMER_APPEARANCE": 1024,
-      "TIMER_APPEARANCE_VERSION": 1025
+      "TIMER_APPEARANCE_VERSION": 1025,
+      "TIMER_UI_PREFERENCES": 1026,
+      "TIMER_UI_PREFERENCES_RESULT": 1027
     },
     "plugin": {
       "description": "Native Timer snapshots as activity/summary with an app destination and legacy compatibility sources. Native timers own their alarms; this plugin shares their original state.",

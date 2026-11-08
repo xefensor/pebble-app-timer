@@ -18,15 +18,17 @@ function sdk(seed,faults,pluginCode,pkjsCode,persistenceKey,locale){
  let config,events={};
  new Function('Pebble','localStorage',pluginCode)({registerSourceHandler(){},registerConfigHandler(fn){config=fn;}},storage);
  state.start=function(){state.dom=copy(state.store);events={};new Function('Pebble','localStorage',pkjsCode)({addEventListener(n,fn){events[n]=fn;},sendAppMessage(message,ok){state.appMessages.push(copy(message));if(ok)ok();}},{getItem:k=>Object.prototype.hasOwnProperty.call(state.dom,k)?state.dom[k]:null,setItem(k,v){state.dom[k]=String(v);state.store[k]=String(v);persist();}});state.active=true;};
+ state.confirm=function(){const message=state.appMessages.filter(m=>m.TIMER_UI_PREFERENCES).at(-1);if(message)events.appmessage({payload:{TIMER_UI_PREFERENCES_RESULT:message.TIMER_UI_PREFERENCES.slice()}});};
+ state.resetWatch=function(){events.appmessage({payload:{TIMER_UI_PREFERENCES_RESULT:[1,3,0,1,0,0,0,0,0,0,0,0,1,0,0,0,1,0,0,0]}});};
  state.teardown=function(){state.store=copy(state.dom);state.active=false;events={};persist();};
  if(faults.active)state.start();
  window.Pebble={targets(){return Promise.resolve(state.active?[{id:'plugin'},{id:'pkjs'}]:[{id:'plugin'}]);},addEventListener(name,fn){if(name==='ready')document.addEventListener('DOMContentLoaded',()=>{fn({target:'plugin'});if(state.active)fn({target:'pkjs'});});},sendMessage(target,message){state.requests.push({...copy(message),target});return new Promise((resolve,reject)=>{
-  if(message.type==='getSettings'&&faults.load){faults.load--;reject(Error('load unavailable'));return;}
-  if(message.type==='saveSettings'&&faults.save){faults.save--;resolve({ok:false,error:'save_unconfirmed'});return;}
-  if(message.type==='saveSettings'&&target==='pkjs'&&faults.pkjsReject){faults.pkjsReject--;if(faults.gone)state.teardown();reject(Error('target disappeared'));return;}
-  if(message.type==='saveSettings'&&faults.mismatch){faults.mismatch--;resolve({ok:true,settings:{version:1,theme:message.settings.theme==='dark'?'light':'dark'}});return;}
-  const dispatch=respond=>{if(target==='plugin')config(message,value=>{if(message.type==='saveSettings'&&faults.appear){faults.appear--;state.start();}respond(value);});else if(state.active)events.configmessage({data:message,respond});else reject(Error('no PKJS'));};
-  if(message.type==='saveSettings'&&faults.lost){faults.lost--;dispatch(()=>reject(Error('lost acknowledgment')));return;}
+  if(message.type==='getUiPreferences'&&faults.load){faults.load--;reject(Error('load unavailable'));return;}
+  if(message.type==='saveUiPreferences'&&faults.save){faults.save--;resolve({ok:false,error:'save_unconfirmed'});return;}
+  if(message.type==='saveUiPreferences'&&target==='pkjs'&&faults.pkjsReject){faults.pkjsReject--;if(faults.gone)state.teardown();reject(Error('target disappeared'));return;}
+  if(message.type==='saveUiPreferences'&&faults.mismatch){faults.mismatch--;resolve({ok:true,settings:{...message.settings,textSize:message.settings.textSize==='large'?'small':'large'}});return;}
+  const dispatch=respond=>{if(target==='plugin')config(message,value=>{if(message.type==='saveUiPreferences'&&faults.appear){faults.appear--;state.start();}respond(value);});else if(state.active)events.configmessage({data:message,respond});else reject(Error('no PKJS'));};
+  if(message.type==='saveUiPreferences'&&faults.lost){faults.lost--;dispatch(()=>reject(Error('lost acknowledgment')));return;}
   setTimeout(()=>dispatch(resolve),faults.delay||0);
  });}};
 }
@@ -48,44 +50,51 @@ async function launch(){
  await send('Page.enable');await send('Runtime.enable');
 }
 async function stop(){if(!browser)return;try{await send('Browser.close');}catch{}for(let i=0;i<80&&browser.exitCode===null;i++)await delay(25);if(browser.exitCode===null)browser.kill('SIGTERM');try{socket.close();}catch{}}
-async function wait(expression){for(let i=0;i<150;i++){if(await evaluate(expression))return;await delay(30);}throw Error('Timed out: '+expression);}
+async function wait(expression){for(let i=0;i<300;i++){if(await evaluate(expression))return;await delay(30);}throw Error('Timed out: '+expression);}
 async function nav(url){await send('Page.navigate',{url});await wait("document.readyState==='complete'&&!document.getElementById('theme').disabled");}
 async function change(value){await evaluate('(()=>{const f=document.getElementById("theme");f.value='+JSON.stringify(value)+';f.dispatchEvent(new Event("change",{bubbles:true}));})()');}
 async function save(){await evaluate('document.getElementById("save").click()');}
-async function saved(){await wait('document.getElementById("status").textContent==="✓ Saved"');}
+async function saved(){await wait('document.getElementById("status").textContent==="Saved on phone · Pending on watch"');}
 async function capture(name){const r=await send('Page.captureScreenshot',{format:'png',captureBeyondViewport:false});const bytes=Buffer.from(r.data,'base64');fs.writeFileSync(path.join(out,name),bytes);captures.push({file:name,sha256:sha(bytes)});}
 async function run(){
- await launch();const key=require('../src/pkjs/settings').key,light={version:1,theme:'light'},dark={version:1,theme:'dark'};
+ await launch();const key=require('../src/pkjs/settings').key,uiKey=require('../src/pkjs/ui-preferences').key,light={version:1,theme:'light'};
+ const desired={version:2,textSize:'large',appearance:'dark',lastExplicit:'dark'};
  for(const width of [320,360])for(const theme of ['light','dark']){
   await send('Emulation.setDeviceMetricsOverride',{width,height:800,deviceScaleFactor:1,mobile:true});await send('Emulation.setEmulatedMedia',{features:[{name:'prefers-color-scheme',value:theme}]});
-  await nav(fixture());assert.equal(await evaluate('document.getElementById("save").disabled'),true);assert.equal(await evaluate('document.activeElement.tagName'),'BODY');assert.deepEqual(await evaluate('Object.keys(__qa.store)'),[]);
-  const layout=await evaluate('({width:innerWidth,scroll:document.documentElement.scrollWidth,targets:Array.from(document.querySelectorAll("button,select,summary")).filter(x=>x.getClientRects().length).map(x=>x.getBoundingClientRect().height),selects:document.querySelectorAll("select").length})');
-  assert.ok(layout.scroll<=width);assert.equal(layout.selects,1);assert.ok(layout.targets.every(h=>h>=44));await capture('settings-'+width+'-'+theme+'.png');
+  await nav(fixture());assert.equal(await evaluate('document.getElementById("save").disabled'),false);assert.equal(await evaluate('document.activeElement.tagName'),'BODY');assert.deepEqual(await evaluate('Object.keys(__qa.store)'),[]);
+  const layout=await evaluate('({scroll:document.documentElement.scrollWidth,targets:Array.from(document.querySelectorAll("button,select,summary")).filter(x=>x.getClientRects().length).map(x=>x.getBoundingClientRect().height),selects:document.querySelectorAll("select").length})');
+  assert.ok(layout.scroll<=width);assert.equal(layout.selects,2);assert.ok(layout.targets.every(h=>h>=44));await capture('settings-'+width+'-'+theme+'.png');
  }
- checks.push('one Appearance selector only; no writes/default saves or autofocus;320/360px light/dark;44px targets;no overflow');
- const route=fixture({[key]:JSON.stringify(light)},{active:true});await nav(route);await change('dark');assert.equal(await evaluate('document.getElementById("status").textContent'),'Unsaved changes');
+ checks.push('two independent selectors;explicit fresh-default Save;no writes/autofocus on load;320/360px light/dark;44px targets;no overflow');
+ const route=fixture({[key]:JSON.stringify(light)},{active:true});await nav(route);await change('dark');
+ await evaluate('(()=>{const field=document.getElementById("text-size");field.value="large";field.dispatchEvent(new Event("change"));})()');
  await evaluate('__qa.faults.delay=150');await save();await wait('document.getElementById("status").textContent==="Saving…"');await saved();
- assert.equal(await evaluate('location.href'),route);assert.equal(await evaluate('document.getElementById("save").disabled'),true);assert.equal(await evaluate('__qa.requests.filter(m=>m.type==="saveSettings")[0].target'),'pkjs');
- assert.deepEqual(JSON.parse(await evaluate('__qa.store['+JSON.stringify(key)+']')),dark);assert.ok(await evaluate('__qa.appMessages.every(m=>m.TIMER_APPEARANCE_VERSION===1&&Object.keys(m).length===2)'));
+ assert.equal(await evaluate('location.href'),route);assert.equal(await evaluate('__qa.requests.filter(m=>m.type==="saveUiPreferences")[0].target'),'pkjs');
+ assert.deepEqual(JSON.parse(await evaluate('__qa.store['+JSON.stringify(uiKey)+']')).settings,desired);
+ assert.ok(await evaluate('__qa.appMessages.every(m=>m.TIMER_UI_PREFERENCES&&m.TIMER_APPEARANCE_VERSION===1)'));
+ await capture('settings-pending.png');await evaluate('__qa.confirm()');await wait('document.getElementById("status").textContent==="Applied on watch"');await capture('settings-applied.png');
+ await evaluate('__qa.resetWatch()');await saved();await evaluate('__qa.confirm()');await wait('document.getElementById("status").textContent==="Applied on watch"');
  await evaluate('__qa.teardown()');await send('Page.reload');await wait('!document.getElementById("theme").disabled');assert.equal(await evaluate('document.getElementById("theme").value'),'dark');
- await stop();await launch();await nav(route);assert.equal(await evaluate('document.getElementById("theme").value'),'dark');
- checks.push('active PKJS owns exact confirmed Save;page stays open;Android teardown,reload and full browser restart preserve appearance;appearance transport never acts on timers');
- await change('light');await evaluate('__qa.faults.lost=1');await save();await wait('document.getElementById("status").textContent.includes("not confirmed")');assert.equal(await evaluate('document.getElementById("theme").value'),'light');assert.equal(await evaluate('document.getElementById("discard").textContent'),'Reload saved');
- await evaluate('document.getElementById("discard").click()');await wait('document.getElementById("status").textContent==="Saved settings reloaded."');assert.equal(await evaluate('document.getElementById("theme").value'),'light');
- checks.push('lost acknowledgment stays uncertain;explicit Reload saved reads actual stored value without falsely claiming rollback');
+ await stop();await launch();await nav(route);assert.equal(await evaluate('document.getElementById("text-size").value'),'large');
+ checks.push('actual optimized PKJS/plugin persist exact choices;transport success stays pending;exact watch application receipt changes status;fresh mismatched watch state returns the page to pending;Android teardown/page reopen/browser restart retain choices');
+ await change('light');await evaluate('__qa.faults.lost=1');await save();await wait('document.getElementById("status").textContent.includes("not confirmed")');assert.equal(await evaluate('document.getElementById("theme").value'),'light');
+ await evaluate('document.getElementById("discard").click()');await saved();assert.equal(await evaluate('document.getElementById("theme").value'),'light');
+ checks.push('lost phone response retains draft;explicit reload reads saved choice as pending');
  for(const faults of [{appear:1},{active:true,pkjsReject:1,gone:true},{save:1},{mismatch:1}]){
   await nav(fixture({[key]:JSON.stringify(light)},faults));await change('dark');await save();
   if(faults.save||faults.mismatch){await wait('document.getElementById("status").textContent.includes("not confirmed")');assert.equal(await evaluate('document.getElementById("theme").value'),'dark');}
-  else{await saved();assert.deepEqual(JSON.parse(await evaluate('__qa.store['+JSON.stringify(key)+']')),dark);if(await evaluate('__qa.active'))await evaluate('__qa.teardown()');assert.deepEqual(JSON.parse(await evaluate('__qa.store['+JSON.stringify(key)+']')),dark);}
+  else{await saved();assert.equal(JSON.parse(await evaluate('__qa.store['+JSON.stringify(uiKey)+']')).settings.appearance,'dark');if(await evaluate('__qa.active'))await evaluate('__qa.teardown()');assert.equal(JSON.parse(await evaluate('__qa.store['+JSON.stringify(uiKey)+']')).settings.appearance,'dark');}
  }
- checks.push('newly started PKJS synchronizes plugin save;confirmed disappearance permits fallback;failed/mismatched acknowledgments retain draft');
- const failed=fixture({[key]:JSON.stringify(dark)},{load:1});await send('Page.navigate',{url:failed});await wait('!document.getElementById("retry").hidden');assert.equal(await evaluate('document.getElementById("theme").value'),'');assert.equal(await evaluate('document.getElementById("save").disabled'),true);await evaluate('document.getElementById("retry").click()');await wait('!document.getElementById("theme").disabled');assert.equal(await evaluate('document.getElementById("theme").value'),'dark');
- await nav(fixture({[key]:'broken'}));assert.equal(await evaluate('__qa.store['+JSON.stringify(key)+']'),'broken');assert.equal(await evaluate('document.getElementById("save").disabled'),false);await save();await saved();
- checks.push('load failure retains unknown disabled choice;Retry reads saved state;corrupt record requires explicit repair');
- await send('Emulation.setDeviceMetricsOverride',{width:320,height:800,deviceScaleFactor:1,mobile:true});await nav(fixture({}, {},'cs-CZ'));assert.equal(await evaluate('document.documentElement.lang'),'cs');assert.equal(await evaluate('document.getElementById("save").textContent'),'Uložit');await change('dark');await save();await wait('document.getElementById("status").textContent==="✓ Uloženo"');await capture('settings-320-czech-saved.png');
- await send('Emulation.setDeviceMetricsOverride',{width:320,height:360,deviceScaleFactor:1,mobile:true});await wait('document.getElementById("actions").getAttribute("data-flow")==="true"');await evaluate('(()=>{const style=document.createElement("style");style.textContent="body,button,select,summary,label{font-size:32px!important}h1{font-size:56px!important}h2{font-size:40px!important}.hint,.status,details>p{font-size:28px!important}";document.head.appendChild(style);})()');await capture('settings-320-short-czech.png');
- assert.ok(await evaluate('document.documentElement.scrollWidth<=innerWidth'),'Double text must not overflow the page');
- checks.push('EN/CS Save states and controls;short viewport moves action area into document flow');
- const report={result:'PASS',version,scope:'Actual packaged optimized config HTML and handlers in Chromium, simulated SDK and independent Android stores;not real-phone/device verification',pbwSha256:sha(fs.readFileSync(artifact)),configSha256:sha(files['config.html']),checks,captures};fs.writeFileSync(path.join(out,'report.json'),JSON.stringify(report,null,2)+'\n');console.log(JSON.stringify({result:'PASS',checks:checks.length,captures:captures.length,path:path.join(out,'report.json')}));
+ checks.push('live-writer handoff survives PKJS appearing/disappearing;failed/mismatched responses do not claim saved');
+ const failed=fixture({[key]:JSON.stringify(light)},{load:1});await send('Page.navigate',{url:failed});await wait('!document.getElementById("retry").hidden');assert.equal(await evaluate('document.getElementById("theme").value'),'');assert.equal(await evaluate('document.getElementById("save").disabled'),true);await evaluate('document.getElementById("retry").click()');await wait('!document.getElementById("theme").disabled');
+ await nav(fixture({[uiKey]:'broken'}));assert.equal(await evaluate('__qa.store['+JSON.stringify(uiKey)+']'),'broken');await save();await saved();
+ checks.push('load failure leaves unknown choice disabled;Retry loads;corrupt record repaired only by explicit Save');
+ await nav(fixture({[key]:JSON.stringify(light)},{active:true}));await change('dark');await save();await saved();await evaluate('(()=>{const f=document.getElementById("text-size");f.value="small";f.dispatchEvent(new Event("change"));__qa.confirm();})()');await delay(2200);
+ assert.equal(await evaluate('document.getElementById("text-size").value'),'small');assert.equal(await evaluate('document.getElementById("status").textContent'),'Unsaved changes');
+ checks.push('late watch confirmation/polling leaves an unsaved text-size draft intact');
+ await send('Emulation.setDeviceMetricsOverride',{width:320,height:800,deviceScaleFactor:1,mobile:true});await nav(fixture({}, {},'cs-CZ'));assert.equal(await evaluate('document.documentElement.lang'),'cs');await change('dark');await save();await wait('document.getElementById("status").textContent==="Uloženo v telefonu · Čeká na hodinky"');await capture('settings-320-czech-pending.png');
+ await send('Emulation.setDeviceMetricsOverride',{width:320,height:360,deviceScaleFactor:1,mobile:true});await wait('document.getElementById("actions").getAttribute("data-flow")==="true"');await evaluate('(()=>{const style=document.createElement("style");style.textContent="body,button,select,summary,label{font-size:32px!important}h1{font-size:56px!important}h2{font-size:40px!important}.hint,.status,details>p{font-size:28px!important}";document.head.appendChild(style);})()');await capture('settings-320-short-czech.png');assert.ok(await evaluate('document.documentElement.scrollWidth<=innerWidth'));
+ checks.push('localized pending status;short viewport and enlarged text keep controls reachable without horizontal overflow');
+ const report={result:'PASS',version,scope:'Exact packaged optimized config HTML and handlers in Chromium;simulated SDK, watch receipts and independent Android stores;not real-phone/device verification',pbwSha256:sha(fs.readFileSync(artifact)),configSha256:sha(files['config.html']),checks,captures};fs.writeFileSync(path.join(out,'report.json'),JSON.stringify(report,null,2)+'\n');console.log(JSON.stringify({result:'PASS',checks:checks.length,captures:captures.length,path:path.join(out,'report.json')}));
 }
 run().catch(error=>{console.error(error);process.exitCode=1;}).finally(async()=>{await stop();fs.rmSync(scratch,{recursive:true,force:true});});

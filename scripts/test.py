@@ -75,7 +75,16 @@ with tempfile.TemporaryDirectory(prefix="timer-appearance-test-") as scratch:
         str(root / "tests/test_timer_appearance.c"), "-o", str(binary)
     ], check=True)
     subprocess.run([str(binary)], check=True)
-subprocess.run(["node", "--test", str(root / "tests/handoff.test.js"), str(root / "tests/settings.test.js")], check=True)
+with tempfile.TemporaryDirectory(prefix="timer-ui-preferences-test-") as scratch:
+    binary = Path(scratch) / "timer-ui-preferences"
+    subprocess.run([
+        os.environ.get("CC", "cc"), "-std=c99", "-Wall", "-Wextra", "-Werror", "-pedantic",
+        "-I", str(root / "tests/fake-sdk"),
+        str(root / "src/c/timer_appearance.c"), str(root / "src/c/timer_ui_preferences.c"),
+        str(root / "tests/test_timer_ui_preferences.c"), "-o", str(binary)
+    ], check=True)
+    subprocess.run([str(binary)], check=True)
+subprocess.run(["node", "--test", str(root / "tests/handoff.test.js"), str(root / "tests/settings.test.js"), str(root / "tests/ui-preferences.test.js")], check=True)
 with tempfile.TemporaryDirectory(prefix="timer-ui-state-test-") as scratch:
     binary = Path(scratch) / "timer-ui-state"
     subprocess.run([

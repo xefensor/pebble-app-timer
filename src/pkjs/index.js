@@ -2,6 +2,7 @@
 
 var activities = require('pebble-activities/publisher');
 var settings = require('./settings');
+var preferences = require('./ui-preferences');
 var publisher = activities.createPublisher({
   storage: localStorage,
   pluginUuid: '50e9ef12-a5ab-4369-a3b5-3447bfba5151',
@@ -22,13 +23,14 @@ function flush() {
     settled = true;
     busy = false;
     if (!ok && item.failure) item.failure();
+    if (ok && item.success) item.success();
     flush();
   }
   try {
     Pebble.sendAppMessage(item.message, function () { done(true); }, function () { done(false); });
   } catch (error) { done(false); }
 }
-function send(message, failure) {
+function send(message, failure, success) {
   if (message.ACTIVITY_ACCEPTED_REVISION !== undefined) {
     queue = queue.filter(function (pending) {
       return pending.message.ACTIVITY_ACCEPTED_REVISION === undefined;
@@ -37,12 +39,15 @@ function send(message, failure) {
   if (message.TIMER_APPEARANCE_VERSION !== undefined) {
     queue = queue.filter(function(pending) { return pending.message.TIMER_APPEARANCE_VERSION === undefined; });
   }
-  queue.push({message: message, failure: failure});
+  queue.push({message: message, failure: failure, success: success});
   flush();
 }
 
+var uiPreferences=preferences.create({storage:localStorage,send:send});
+
 var appearanceGeneration = 0, appearanceTimer = null;
 function appearance(chosen) {
+  if(uiPreferences.legacyChanged(chosen))return;
   var message = settings.message(chosen);
   if (!message) return;
   var generation = ++appearanceGeneration, attempts = 0;
@@ -60,7 +65,10 @@ function appearance(chosen) {
 }
 Pebble.addEventListener('configmessage', function(event) {
   if (!event || typeof event.respond !== 'function') return;
-  settings.handle(localStorage, event.message || event.data || event.payload || event, function(response) { event.respond(response); }, appearance);
+  var message=event.message||event.data||event.payload||event;
+  if(typeof message==='string'){try{message=JSON.parse(message);}catch(error){}}
+  if(preferences.isRequest(message)){uiPreferences.handle(message,function(response){event.respond(response);});return;}
+  settings.handle(localStorage,message,function(response){event.respond(response);},appearance);
 });
 
 var requestStarted = false, requestAttempts = 0, requestTimer = null, ownerAccepted = false;
@@ -78,13 +86,15 @@ Pebble.addEventListener('ready', function () {
   // Reconcile the phone choice on each runtime start, including its explicit
   // default after a phone-store reset. Native startup keeps the last confirmed
   // appearance until this bounded update arrives.
-  appearance(settings.load(localStorage));
+  uiPreferences.reconcile(true);
   requestSnapshot();
 });
 
 Pebble.addEventListener('appmessage', function (event) {
   var payload = event && event.payload;
-  if (!payload || payload.ACTIVITY_SCHEMA_VERSION === undefined) return;
+  if(!payload)return;
+  if(payload.TIMER_UI_PREFERENCES_RESULT!==undefined)uiPreferences.receive(payload.TIMER_UI_PREFERENCES_RESULT);
+  if(payload.ACTIVITY_SCHEMA_VERSION===undefined)return;
   var receipt = publisher.handleMessage(payload);
   if (requestStarted && receipt && receipt.ACTIVITY_ACCEPTED_REVISION !== undefined) {
     ownerAccepted = true;

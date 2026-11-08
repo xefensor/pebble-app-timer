@@ -63,7 +63,10 @@ Pebble.registerSourceHandler(function (request, respond) {
 // The current phone app can invoke this handler while Timer is closed.
 if (typeof Pebble.registerConfigHandler === 'function') {
   var settings = require('../pkjs/settings');
+  var preferences=require('../pkjs/ui-preferences');
   Pebble.registerConfigHandler(function(message, respond) {
-    settings.handle(localStorage, message, respond);
+    if(typeof message==='string'){try{message=JSON.parse(message);}catch(error){}}
+    if(preferences.isRequest(message)){preferences.create({storage:localStorage}).handle(message,respond);return;}
+    settings.handle(localStorage,message,respond);
   });
 }

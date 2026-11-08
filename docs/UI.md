@@ -3,7 +3,7 @@
 The current release is 0.14.5. Earlier downloads and frozen evidence retain
 their original versions and interfaces.
 
-Watch timer controls stay on the watch. The phone has one Light/Dark appearance selector and confirmed Save-and-stay. The 34 px contrasting action rail spans every screen row; headers and footers stay inside 166 px. All development watch screens use built-in Pebble Gothic roles and LECO number fonts; no custom fonts are bundled in the candidate. The development Timer checkpoint uses native MenuLayer selection and measured rows, with all eight slots reachable. Long elapsed/counter values and warnings stay complete.
+Watch timer controls stay on the watch. The published phone page has one Light/Dark selector. The development candidate adds independent Text Size and Appearance controls, stays open after Save, and distinguishes saved phone choices from watch-confirmed application. The 34 px contrasting action rail spans every screen row; headers and footers stay inside 166 px. All development watch screens use built-in Pebble Gothic roles and LECO number fonts; no custom fonts are bundled in the candidate. The development Timer checkpoint uses native MenuLayer selection and measured rows, with all eight slots reachable. Long elapsed/counter values and warnings stay complete.
 
 ## Shared UI
 
@@ -39,7 +39,7 @@ Native state, verified banks, deadlines and Wakeups are authoritative. Preserve 
 
 The production list is a `MenuLayer` below the existing first-row anchor at y=50.
 A single timer and a multi-timer list use that same anchor. Small/Medium/Large
-read the actual launch-time `preferred_content_size()` (Emery SDK values
+resolve the per-app override or actual launch-time `preferred_content_size()` (Emery SDK values
 Medium/Large/ExtraLarge). Font roles, UTF-8 wrapping, value fitting and row
 measurement share one layout. Stock role fonts keep their actual bitmap sizes;
 state and saved duration share one line only when those native glyphs fit. Critical warnings reserve their full bottom panel;
@@ -60,8 +60,9 @@ are released at app exit. Alarm attention immediately replaces ordinary navigati
 The left header label fits/truncates after reserving the measured full local clock.
 The existing full-height 34 px XOCE rail, canonical icons, button positions and
 5 px held displacement remain unchanged. No native rail replacement is proposed
-at this checkpoint. Text-size overrides, phone preference delivery and touch
-opt-in remain outside this navigation checkpoint.
+at this checkpoint. Preference overrides and watch-confirmed delivery are documented in the
+[preferences checkpoint](ui-preferences-checkpoint.md). Touch opt-in remains outside
+this navigation checkpoint.
 
 Build with `npm run build`, then `python3 scripts/build-fixtures.py` and
 `python3 scripts/build-native-reference.py`. Run
@@ -276,3 +277,17 @@ The complete development navigation and native type changes are recorded in
 [native navigation checkpoint](native-navigation-checkpoint.md). This supersedes
 only the active rendering/navigation descriptions above; older hash-bound records
 below retain their original scope. Preference delivery is a separate pending stage.
+
+## Development preferences
+
+Text Size offers Follow Pebble, Small, Medium and Large. Manual choices use the
+same native role profiles as the matching Emery setting and survive relaunch.
+Appearance offers Follow Pebble, Light and Dark. This SDK has no supported system
+appearance API: the page explains that limitation, retains a saved Follow choice
+and uses its last explicit Light/Dark fallback. Fresh defaults follow Pebble text
+size and retain Timer's light appearance; existing explicit appearance migrates.
+
+The page shows Saved on phone / Pending on watch until an exact native application
+receipt arrives. Transport success alone cannot change that status. Pending choices
+survive reopening and reconcile when Timer starts or reconnects. Draft edits remain
+untouched by status polling. Settings never create, pause, reset or edit a timer.

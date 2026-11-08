@@ -70,6 +70,8 @@ static void report_persistence(void *context) {
   for(unsigned role=0;role<TIMER_TYPE_ROLE_COUNT;++role)
     dict_write_cstring(out,3011+role,timer_native_type_key(size,(TimerNativeTypeRole)role,modern));
   dict_write_uint32(out,3015,modern);
+  const int preferences=persist_read_data(2106,bytes,sizeof(bytes));
+  if(preferences>0)dict_write_data(out,3016,bytes,preferences);
   app_message_outbox_send();
 }
 int main(void) {

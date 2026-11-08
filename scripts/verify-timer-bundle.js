@@ -88,7 +88,7 @@ function verifyPkjs() {
     }
   };
   const context = vm.createContext({
-    Pebble: pebble, localStorage: storage, Date: FixedDate, console,
+    Pebble: pebble, localStorage: storage, Date: FixedDate, console,setTimeout(){return 1;},clearTimeout(){},
     __events: events
   });
   vm.runInContext(fs.readFileSync(path.join(root, 'pebble-js-app.js'), 'utf8'), context,
@@ -97,7 +97,9 @@ function verifyPkjs() {
   assert.equal(typeof events.appmessage, 'function', 'Packaged PKJS has no message handler');
   vm.runInContext('__events.ready()', context, {timeout: 1000});
   assert.equal(outgoing.length, 2, 'PKJS ready reconciles appearance and requests the native snapshot');
-  assert.deepEqual(pkjsDictionary(outgoing.shift()), {TIMER_APPEARANCE:0,TIMER_APPEARANCE_VERSION:1});
+  const ui=pkjsDictionary(outgoing.shift());
+  assert.equal(ui.TIMER_APPEARANCE,0);assert.equal(ui.TIMER_APPEARANCE_VERSION,1);
+  assert.deepEqual(Array.from(ui.TIMER_UI_PREFERENCES),[1,3,0,0,1,0,0,0,0,0,0,0,1,0,0,0,1,0,0,0]);
   const request = pkjsDictionary(outgoing.shift());
   assert.equal(request.ACTIVITY_REQUEST, 1);
   assert.equal(request.ACTIVITY_LAST_REVISION, 0);

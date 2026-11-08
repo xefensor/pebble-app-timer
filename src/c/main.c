@@ -13,6 +13,7 @@
 #include "timer_hourglass.h"
 #include "timer_alarm_feedback.h"
 #include "timer_appearance.h"
+#include "timer_ui_preferences.h"
 #include "timer_wakeup.h"
 
 #define LEGACY_MODEL_KEY 2100
@@ -63,6 +64,12 @@ static uint32_t s_edit_initial_seconds;
 static unsigned s_edit_field, s_option, s_confirm_choice;
 static bool s_focused, s_ready;
 static bool s_dark, s_appearance_error;
+static TimerUiPreferences s_ui_preferences;
+static PreferredContentSize s_system_text_size;
+static uint8_t s_ui_reply[TIMER_UI_PREFERENCES_BYTES];
+static bool s_ui_reply_pending,s_transport_ui;
+static unsigned s_ui_reply_attempts;
+static uint32_t s_ui_reply_generation,s_ui_flight_generation;
 static TimeUnits s_tick_units;
 static bool s_exit_pending;
 static AppTimer *s_motion_timer;
@@ -389,8 +396,36 @@ static int prv_pending_slot(void) {
   return chosen;
 }
 
+static void prv_queue_ui_reply(const TimerUiPreferences *value,uint8_t status,uint8_t flags) {
+  timer_ui_preferences_encode(value,status,flags,s_ui_reply);
+  ++s_ui_reply_generation;s_ui_reply_attempts=0;s_ui_reply_pending=true;
+}
+static bool prv_flush_ui_reply(void) {
+  if(!s_ui_reply_pending||s_ui_reply_attempts>=3)return false;
+  ++s_ui_reply_attempts;
+  DictionaryIterator *out;
+  if(app_message_outbox_begin(&out)!=APP_MSG_OK)return false;
+  dict_write_data(out,MESSAGE_KEY_TIMER_UI_PREFERENCES_RESULT,s_ui_reply,sizeof(s_ui_reply));
+  dict_write_end(out);s_transport_busy=true;s_transport_ui=true;
+  s_ui_flight_generation=s_ui_reply_generation;s_ui_reply_pending=false;
+  if(app_message_outbox_send()!=APP_MSG_OK) {
+    s_transport_busy=false;s_transport_ui=false;s_ui_reply_pending=true;
+  }
+  return true;
+}
+static void prv_apply_ui_preferences(const TimerUiPreferences *value) {
+  const unsigned size=xoce_ui_effective_text_size(value->text_size,s_system_text_size);
+  if(size!=s_text_size){prv_stop_motion();prv_stop_ui_motion();prv_stop_icon_motion();}
+  s_ui_preferences=*value;s_dark=timer_ui_preferences_dark(value);s_text_size=size;
+  s_appearance_error=false;
+  for(unsigned screen=SCREEN_LIST;screen<=SCREEN_CONFIRM;++screen)
+    if(s_windows[screen])window_set_background_color(s_windows[screen],screen==SCREEN_ALARM||s_dark?GColorBlack:GColorWhite);
+  prv_refresh();
+}
 static void prv_flush(void) {
-  if (s_storage_error || !s_phone_ready || s_transport_busy || !connection_service_peek_pebble_app_connection()) return;
+  if(s_transport_busy||!connection_service_peek_pebble_app_connection())return;
+  if(prv_flush_ui_reply())return;
+  if(s_storage_error||!s_phone_ready)return;
   if (s_retries >= RETRY_LIMIT) { s_share_error = true; prv_refresh_sharing(); return; }
   if (!s_have_flight) {
     const int slot = prv_pending_slot();
@@ -445,7 +480,7 @@ static void prv_flush(void) {
       timer->state == ACTIVITY_TIMER_FINISHED && !timer->acknowledged);
   dict_write_uint8(out, MESSAGE_KEY_ACTIVITY_PRIVATE, 0);
   dict_write_end(out);
-  s_transport_busy = true;
+  s_transport_busy = true;s_transport_ui=false;
   result = app_message_outbox_send();
   if (result != APP_MSG_OK) {
     s_transport_busy = false;
@@ -457,6 +492,9 @@ static void prv_flush(void) {
 
 static void prv_outbox_sent(DictionaryIterator *iter, void *context) {
   (void)context;
+  if(s_transport_ui||(iter&&dict_find(iter,MESSAGE_KEY_TIMER_UI_PREFERENCES_RESULT))) {
+    s_transport_busy=false;s_transport_ui=false;prv_flush();return;
+  }
   uint32_t ticket = s_transport_ticket;
   if (iter) prv_u32(dict_find(iter, MESSAGE_KEY_ACTIVITY_PUBLISH_SESSION), &ticket);
   s_transport_busy = false;
@@ -469,6 +507,11 @@ static void prv_outbox_sent(DictionaryIterator *iter, void *context) {
 
 static void prv_outbox_failed(DictionaryIterator *iter, AppMessageResult reason, void *context) {
   (void)reason; (void)context;
+  if(s_transport_ui||(iter&&dict_find(iter,MESSAGE_KEY_TIMER_UI_PREFERENCES_RESULT))) {
+    s_transport_busy=false;s_transport_ui=false;
+    if(s_ui_flight_generation==s_ui_reply_generation)s_ui_reply_pending=true;
+    prv_flush();return;
+  }
   uint32_t ticket = s_transport_ticket;
   if (iter) prv_u32(dict_find(iter, MESSAGE_KEY_ACTIVITY_PUBLISH_SESSION), &ticket);
   s_transport_busy = false;
@@ -492,14 +535,26 @@ static void prv_reset_publication(void) {
 static void prv_inbox(DictionaryIterator *iter, void *context) {
   (void)context;
   uint32_t value,appearance_version,appearance;
-  if (prv_u32(dict_find(iter,MESSAGE_KEY_TIMER_APPEARANCE_VERSION),&appearance_version)&&
+  const Tuple *requested=dict_find(iter,MESSAGE_KEY_TIMER_UI_PREFERENCES);
+  if(requested) {
+    TimerUiPreferences incoming,confirmed;uint8_t status,flags;
+    if(requested->type==TUPLE_BYTE_ARRAY&&timer_ui_preferences_decode(requested->value->data,
+        requested->length,&incoming,&status,&flags)&&incoming.revision&&!status&&!flags) {
+      if(timer_ui_preferences_save(&incoming)&&timer_ui_preferences_load(&confirmed)) {
+        prv_apply_ui_preferences(&confirmed);
+        prv_queue_ui_reply(&confirmed,TIMER_UI_APPLIED,0);
+      } else {
+        s_appearance_error=true;prv_refresh();
+        prv_queue_ui_reply(&incoming,TIMER_UI_SAVE_FAILED,0);
+      }
+    }
+  } else if(prv_u32(dict_find(iter,MESSAGE_KEY_TIMER_APPEARANCE_VERSION),&appearance_version)&&
       appearance_version==1&&prv_u32(dict_find(iter,MESSAGE_KEY_TIMER_APPEARANCE),&appearance)&&appearance<=1) {
-    const bool dark=appearance==1;
-    if (timer_appearance_save(dark)) {
-      const bool changed=s_dark!=dark||s_appearance_error;
-      s_dark=dark;s_appearance_error=false;
-      if (changed) { if(s_window)window_set_background_color(s_window,s_screen==SCREEN_ALARM||s_dark?GColorBlack:GColorWhite);prv_refresh(); }
-    } else { s_appearance_error=true;prv_refresh(); }
+    TimerUiPreferences chosen=s_ui_preferences;
+    chosen.appearance=chosen.last_explicit=appearance?TIMER_UI_DARK:TIMER_UI_LIGHT;
+    if(chosen.revision?timer_ui_preferences_save(&chosen):timer_appearance_save(appearance==1)) {
+      prv_apply_ui_preferences(&chosen);
+    } else {s_appearance_error=true;prv_refresh();}
   }
   if (prv_u32(dict_find(iter, MESSAGE_KEY_ACTIVITY_REQUEST), &value) && value) {
     s_phone_ready = false;
@@ -547,6 +602,7 @@ static void prv_inbox(DictionaryIterator *iter, void *context) {
 static void prv_connection(bool connected) {
   if (!pa_publisher_set_connected(&s_publisher, connected)) return;
   if (connected) {
+    prv_queue_ui_reply(&s_ui_preferences,TIMER_UI_APPLIED,TIMER_UI_HELLO);
     s_retries = 0;
     if (s_have_flight) pa_publisher_retry(&s_publisher);
     prv_flush();
@@ -572,7 +628,7 @@ static TimerUiView prv_view(void) {
       .editing_ready=s_edit_slot>=0&&
           activity_timer_ready(&s_collection.slots[s_edit_slot]),
       .issue=s_storage_error?"Changes not saved":
-          s_alarm_error?"Alarm not set":s_appearance_error?"Theme not saved":NULL,
+          s_alarm_error?"Alarm not set":s_appearance_error?"Not saved":NULL,
       .appearance_issue=s_appearance_error&&!s_storage_error&&!s_alarm_error,
       .status=prv_status(),
       .hourglass_transition=s_glass_motion&&s_screen==SCREEN_DETAIL,
@@ -1219,14 +1275,15 @@ static void prv_init(void) {
   TIMER_DIAG("launch reason=%d wakeup=%d id=%ld cookie=%ld",(int)launch_reason(),wakeup_launch,(long)launch_id,(long)cookie);
   (void)wakeup_launch;(void)launch_id;(void)cookie;
   prv_load();
-  s_dark=timer_appearance_load();
+  s_appearance_error=!timer_ui_preferences_load(&s_ui_preferences);
+  s_dark=timer_ui_preferences_dark(&s_ui_preferences);
   timer_glance_update(&s_collection, prv_now());
   if (persist_exists(WAKEUP_KEY))s_wakeup=persist_read_int(WAKEUP_KEY);
   uint32_t previous_ticket=0;persist_read_data(PUBLICATION_KEY,&previous_ticket,sizeof(previous_ticket));
   pa_publisher_init(&s_publisher,previous_ticket,connection_service_peek_pebble_app_connection());
   timer_native_type_init();
-  const PreferredContentSize size=preferred_content_size();
-  s_text_size=size<=PreferredContentSizeMedium?0:size==PreferredContentSizeLarge?1:2;
+  s_system_text_size=preferred_content_size();
+  s_text_size=xoce_ui_effective_text_size(s_ui_preferences.text_size,s_system_text_size);
   for(unsigned screen=SCREEN_LIST;screen<=SCREEN_CONFIRM;++screen) {
     Window *window=s_windows[screen]=window_create();
     window_set_background_color(window,screen==SCREEN_ALARM||s_dark?GColorBlack:GColorWhite);
@@ -1271,6 +1328,7 @@ static void prv_init(void) {
   s_focused=true;
   window_stack_push(s_window,true);
   prv_sync_windows();
+  prv_queue_ui_reply(&s_ui_preferences,TIMER_UI_APPLIED,TIMER_UI_HELLO);prv_flush();
 }
 
 static void prv_deinit(void) {
