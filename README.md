@@ -27,6 +27,13 @@ The current SDK target is **Pebble Time 2 / Emery**, using **Pebble SDK 4.33.1**
 emulator evidence is versioned; physical phone/watch checks retain their documented gaps.
 Existing screenshots keep their original version and provenance.
 
+## Setup and use
+
+Install the PBW through the Pebble phone app. Create, start, pause and manage timers on the watch; native deadlines and alarms remain usable offline. The phone settings change this app’s appearance. See [current UI and controls](docs/UI.md).
+
+The version notes below describe the published download. Development candidates
+remain separate; use [CONTRIBUTING](CONTRIBUTING.md) for local builds.
+
 ## Version 0.14.5
 
 - Adopt shared XOCE headers, readable type roles, full-height action rails, canonical icons and stock Pebble action-bar feedback.
