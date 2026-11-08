@@ -204,6 +204,59 @@ scaling is allowed in that comparison. Legacy custom 18/20 font resources added
 by the first draft were removed; existing 22/24/26 resources serve the deferred
 legacy controls.
 
+### Native-type verification — 2026-11-08
+
+Implementation: `f448cfb8c1475224f079be97e4360b9c1d0c4772`. Local candidate PBW:
+`build/candidate/Timer-0.14.5.pbw`, SHA-256
+`123c5563c12bf866710de98adcf997128f8d14d4abbe0f23f8680b68b3e24bda`.
+SDK 4.33.1, CLI 5.0.40 and actual Emery firmware v4.33.2 are unchanged.
+`npm test`, `npm run build` and `npm run check:artifact` passed, including the
+independent stock-role regression test. Resources are 52,484 bytes; static RAM
+is 57,357 bytes, leaving 73,715 bytes before runtime heap allocations.
+
+| OS size | Native measured row | Complete standard rows | Single/multi first y |
+| --- | --- | --- | --- |
+| Small | 50 px | 3 | 50 / 50 |
+| Medium | 56 px | 3 | 50 / 50 |
+| Large | 86 px | 2 | 50 / 50 |
+
+These are the same eight paused timers at every size, with unchanged native
+bank checksums during navigation. Native 24-hour and 12-hour clock measurements
+use every hour/minute combination: widest header clocks are 36/44/49 px at the
+three sizes. Menu values, headers and footers match the independent direct-SDK
+font fixture's bitmap pixels at every size. The full-height rail remains
+pixel-identical to the previous checkpoint; the existing anchor is retained.
+No custom font scaling is used to obtain the row-count difference.
+
+The exact candidate passed forward/reverse access to all eight slots, holds,
+rapid reversals, Select during movement, exactly-once immediate owner actions,
+identity restoration after sorting, light/dark, complete 24-hour values and
+warnings, and alarm preemption. The diagnostic fixture completed 40 open/Back
+cycles (80 samples): minimum 70,348 heap bytes, last 20 samples 70,348–70,384.
+The exact candidate completed another 20 cycles. Czech/German renders were
+inspected in their separately identified locale fixtures. No phone runtime or
+physical-device verification is claimed.
+
+Current disposable proof:
+
+- `build/qa/timer-checkpoint/123c5563c12b/1794134390697643578/report.json`
+  binds the candidate/native hashes, OS font keys, bitmap comparisons and 227
+  raw captures. That directory contains `sizes-list.png`, `sizes-details.png`,
+  `sizes-back.png`, `baseline-comparison.png`, native reference specimens and
+  sampled motion GIFs.
+- `build/qa/timer-checkpoint/123c5563c12b/1794134498546359128/anchors-report.json`
+  binds the all-size single/multi anchor captures and retained replacement notice.
+
+Pending: current-firmware rendering on a physical Time 2, Settings UI and actual
+language-pack checks, paired-phone delivery/upgrade, real notification covers,
+Quiet Time/offline Wakeup and physical button feel. The 4.44 font-key profile is
+source-verified and regression-tested, but only the actual 4.33.2 emulator was
+rendered here. Full stock Timer app reproduction, including its bundled custom
+numeric font, remains separate from the verified native role-font comparison.
+Touch remains disabled and unverified at this checkpoint. Native Add/Edit,
+Options, confirmation and alarm typography remain later checkpoints. Nothing
+was pushed or published.
+
 ## Native/phone verification
 
 Inspect actual affected compositions, full text, glyph/icon alignment, edges,
