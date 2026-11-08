@@ -3,6 +3,7 @@
 #include <pebble.h>
 #include <stdint.h>
 #include <string.h>
+#include "../../../../src/c/timer_native_type.h"
 #ifndef UX_FIXTURE_MODE
 #define UX_FIXTURE_MODE 0
 #endif
@@ -50,6 +51,25 @@ static void report_persistence(void *context) {
   dict_write_uint32(out,3006,stored_checksum);
   dict_write_uint32(out,3007,banks);
   dict_write_uint32(out,3008,(uint32_t)preferred_content_size());
+  const unsigned content=preferred_content_size(),size=content<=1?0:content==2?1:2;
+  const WatchInfoVersion firmware=watch_info_get_firmware_version();
+  const bool modern=firmware.major>4||(firmware.major==4&&firmware.minor>=44);
+  const char *font_key=timer_native_type_key(size,TIMER_TYPE_HEADER,modern);
+  const GFont font=fonts_get_system_font(font_key);
+  unsigned widest24=0,widest12=0;
+  char text[12];
+  for(unsigned h=0;h<24;++h)for(unsigned m=0;m<60;++m) {
+    snprintf(text,sizeof(text),"%02u:%02u",h,m);
+    unsigned width=graphics_text_layout_get_content_size(text,font,GRect(0,0,2048,128),GTextOverflowModeWordWrap,GTextAlignmentLeft).w;
+    if(width>widest24)widest24=width;
+    snprintf(text,sizeof(text),"%u:%02u",h%12?h%12:12,m);
+    width=graphics_text_layout_get_content_size(text,font,GRect(0,0,2048,128),GTextOverflowModeWordWrap,GTextAlignmentLeft).w;
+    if(width>widest12)widest12=width;
+  }
+  dict_write_uint32(out,3009,widest24);dict_write_uint32(out,3010,widest12);
+  for(unsigned role=0;role<TIMER_TYPE_ROLE_COUNT;++role)
+    dict_write_cstring(out,3011+role,timer_native_type_key(size,(TimerNativeTypeRole)role,modern));
+  dict_write_uint32(out,3015,modern);
   app_message_outbox_send();
 }
 int main(void) {
@@ -58,7 +78,7 @@ int main(void) {
   text_layer_set_text(label,"Read-only QA\nGlance + Appearance\nNo timer writes");
   layer_add_child(window_get_root_layer(window),text_layer_get_layer(label));
   window_stack_push(window,false);
-  app_message_open(256,256);
+  app_message_open(256,512);
   app_timer_register(500,report_persistence,NULL);
   app_event_loop();
   text_layer_destroy(label);window_destroy(window);

@@ -3,7 +3,7 @@
 The current release is 0.14.5. Earlier downloads and frozen evidence retain
 their original versions and interfaces.
 
-Watch timer controls stay on the watch. The phone has one Light/Dark appearance selector and confirmed Save-and-stay. The 34 px contrasting action rail spans every screen row; headers and footers stay inside 166 px. Roboto Condensed Bold supplies utility text and the size-aware header; dominant values use Fredoka. The development Timer checkpoint uses native MenuLayer selection and measured rows, with all eight slots reachable. Long elapsed/counter values and warnings stay complete.
+Watch timer controls stay on the watch. The phone has one Light/Dark appearance selector and confirmed Save-and-stay. The 34 px contrasting action rail spans every screen row; headers and footers stay inside 166 px. The list/details checkpoint uses built-in Pebble Gothic and LECO fonts. Legacy editor, Options, confirmation and alarm rendering retain their existing fonts until their own checkpoints. The development Timer checkpoint uses native MenuLayer selection and measured rows, with all eight slots reachable. Long elapsed/counter values and warnings stay complete.
 
 ## Shared UI
 
@@ -42,8 +42,8 @@ The production list is a `MenuLayer` below the existing first-row anchor at y=50
 A single timer and a multi-timer list use that same anchor. Small/Medium/Large
 read the actual launch-time `preferred_content_size()` (Emery SDK values
 Medium/Large/ExtraLarge). Font roles, UTF-8 wrapping, value fitting and row
-measurement share one layout. Eight standard paused timers fit three complete
-Small rows and two Large rows. Critical warnings reserve their full bottom panel;
+measurement share one layout. Stock role fonts keep their actual bitmap sizes;
+state and saved duration share one line only when those native glyphs fit. Critical warnings reserve their full bottom panel;
 the menu scrolls every selected timer completely into the remaining viewport.
 
 The app's click provider owns taps, 150 ms repeats and raw rail feedback exactly
@@ -78,7 +78,12 @@ candidate bytes. The SDK emulator's content-size command changes the OS preferen
 the read-only probe confirms it through `preferred_content_size()`. Its SDK shell
 omits Settings and stock Timer, so their physical checks stay pending.
 
-## Checkpoint verification — 2026-11-08
+## Superseded custom-type checkpoint evidence — 2026-11-08
+
+This record belongs to the first custom-type candidate. Its interaction and
+preference checks passed, but its font scales did not match Pebble's type roles.
+The native-type correction below supersedes it; the old evidence keeps its
+original PBW hash.
 
 Starting Timer main: `23028676172e2dab0d0057a11e411673f13995be` (also confirmed
 through GitHub). UI implementation: `09a1740d137d3faefca0a638dd93b81a09f419e8`.
@@ -159,6 +164,45 @@ Physical check sequence (do not install the data-writing QA fixtures on a watch)
    pause/resume, then Back; confirm the exact timer remains selected after sorting.
 4. While in Details, test a short timer alarm and a real notification cover;
    repeat with Quiet Time and the phone disconnected to check the native Wakeup.
+
+## Native typography correction
+
+The first draft's custom 22/30/36 value sizes and 18/20/22 supporting sizes were
+removed from the list/details flow. Pebble compatibility uses actual built-in
+fonts, not custom fonts resized to similar nominal points. The app calls only
+public `fonts_get_system_font()`, `graphics_draw_text()`, text measurement and
+watch-firmware APIs. It does not call PebbleOS's private theme functions.
+
+[The pinned role data](native-type.json) records the source tables for v4.33.2
+and v4.44.0/v4.44.4. On the tested 4.33.2 firmware, the exact Emery profiles are:
+
+| Watch setting | Header | Menu value | Menu supporting text | Footer |
+| --- | --- | --- | --- | --- |
+| Small | Gothic 18 Bold | Gothic 24 Bold | Gothic 18 | Gothic 18 |
+| Medium | Gothic 24 Bold | Gothic 24 Bold | Gothic 24 | Gothic 18 |
+| Large | Gothic 28 Bold | Gothic 28 | Gothic 24 Bold | Gothic 24 |
+
+Firmware 4.44 and newer completes the Large menu roles with Gothic 28 Bold for
+the value and Gothic 28 for supporting text. The public firmware-version API
+selects that table without changing SDK/minimum-firmware requirements. The
+portable regression test compares every key in both profiles against the pinned
+source data. Current-firmware rendering remains a separate device check.
+
+Details uses the SDK's built-in LECO numeric fonts, starting at 42 and falling
+back to the next available native size only if a complete value cannot fit.
+Those bitmap fonts are never rescaled and the dominant readout is independent
+of menu/body Text Size, as in stock Timer's separate numeric treatment. This is
+not a claim to reproduce stock Timer's app-bundled custom 48-point font. The
+clock/header, rows, footer, warnings and wrapping in this checkpoint use native
+role fonts. The hourglass yields space before text is shrunk or clipped.
+
+The independent font fixture draws directly with public SDK font constants,
+without Timer's type helpers. The emulator suite compares its menu-value,
+header and footer bitmap pixels against the real candidate at each OS size;
+only outer whitespace, position and foreground color are normalized. No
+scaling is allowed in that comparison. Legacy custom 18/20 font resources added
+by the first draft were removed; existing 22/24/26 resources serve the deferred
+legacy controls.
 
 ## Native/phone verification
 

@@ -85,3 +85,5 @@ with tempfile.TemporaryDirectory(prefix="timer-ui-state-test-") as scratch:
         "-o", str(binary)
     ], check=True)
     subprocess.run([str(binary)], check=True)
+
+subprocess.run(["python3", "-m", "unittest", "discover", "-s", "tests", "-p", "test_native_type.py"], check=True, cwd=root)

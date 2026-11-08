@@ -3,6 +3,7 @@
 #include <pebble.h>
 #include "timer_ui.h"
 #include "timer_fonts.h"
+#include "timer_native_type.h"
 static Window *s_window,*s_detail;
 static MenuLayer *s_menu;
 static Layer *s_chrome,*s_detail_canvas;
@@ -35,7 +36,7 @@ static void select_row(MenuLayer *m,MenuIndex *i,void *c) {
   (void)m;(void)c;s_view.selected=i->row;window_stack_push(s_detail,true);
 }
 int main(void) {
-  timer_fonts_init();const uint32_t now=(uint32_t)time(NULL);
+  timer_fonts_init();timer_native_type_init();const uint32_t now=(uint32_t)time(NULL);
   timer_collection_init(&s_collection,42,now);
   for(unsigned i=0;i<8;++i){timer_collection_create(&s_collection,600,now);timer_collection_pause(&s_collection,i,now);}
   const PreferredContentSize size=preferred_content_size();

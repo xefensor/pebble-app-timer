@@ -42,26 +42,9 @@ def receive(transaction,app,data):
     records[int(data[1021])]=dict(data)
     service.send_message(target,{1014:CString(data[1001]),1015:Uint32(data[1002]),1020:Uint32(data[1020])})
 service.register_handler('appmessage',receive)
-def header_metrics():
-    spec=importlib.util.spec_from_file_location('checkpoint_pfo',ROOT/'scripts/generate-body-metrics.py')
-    module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module)
-    media=json.loads((ROOT/'package.json').read_text())['pebble']['resources']['media']
-    with zipfile.ZipFile(PBW) as archive:packed=archive.read('emery/app_resources.pbpack')
-    result=[]
-    for i,item in enumerate(media):
-        if item['name'] not in ('FONT_BODY_22','FONT_BODY_24','FONT_BODY_26'):continue
-        _,offset,length,_=struct.unpack_from('<4I',packed,12+i*16)
-        _,glyphs=module.parse_pfo(packed[4108+offset:4108+offset+length])
-        width=lambda text:sum(glyphs[ord(c)]['advance'] for c in text)
-        clocks24=[f'{h:02d}:{m:02d}' for h in range(24) for m in range(60)]
-        clocks12=[f'{h}:{m:02d}' for h in range(1,13) for m in range(60)]
-        maximum=max(width(t) for t in clocks24+clocks12)
-        assert maximum<=142
-        result.append({'font':item['name'],'widest24h':max(clocks24,key=width),
-          'width24h':max(map(width,clocks24)),'widest12h':max(clocks12,key=width),
-          'width12h':max(map(width,clocks12)),'minimumLabelWidth':166-24-maximum})
-    return result
-checks['headerClockCorpus']=header_metrics()
+checks['headerClockCorpus']=[]
+stock_type=json.loads((ROOT/'docs/native-type.json').read_text())
+
 def stop(app=target):
     p.send_packet(AppRunState(data=AppRunStateStop(uuid=app)));time.sleep(.22)
 def launch(app=target):
@@ -156,7 +139,13 @@ clock(23)
 seed(10);theme(False);before=probe()[3007]
 labels={}
 for value,name in enumerate(('small','medium','large'),1):
-    size(value);assert probe()[3008]==value,'OS preferred_content_size mismatch'
+    size(value);verified=probe();assert verified[3008]==value,'OS preferred_content_size mismatch'
+    expected=stock_type['modern' if verified[3015] else 'baseline'][value-1]
+    for role,key in enumerate(stock_type['roles']):assert verified[3011+role]==expected[key]
+    assert max(verified[3009],verified[3010])<142
+    checks['headerClockCorpus'].append({'size':name,'font':verified[3011],
+        'width24h':verified[3009],'width12h':verified[3010],
+        'roles':{key:verified[3011+role] for role,key in enumerate(stock_type['roles'])}})
     first=shot(name+'-list');top,bottom=selected(first)
     assert top==50,(name,'first-row anchor',top)
     height=bottom-top;complete=178//height
@@ -218,7 +207,9 @@ for value,name in enumerate(('small','medium','large'),1):
 seed(9);size(3);shot('critical-large-first')
 for row in range(2,9):
     tap('Down');critical=shot(f'critical-large-row-{row}')
-    lo,hi=selected(critical);assert lo>=50 and hi<=174
+    lo,hi=selected(critical)
+    warning_top=next(y for y in range(32,228) if critical.getpixel((2,y))==(255,170,0))
+    assert lo>=50 and hi<=warning_top
 tap('Select');shot('critical-large-details');tap('Back');shot('critical-large-back')
 # Alarm preempts a stacked detail window, and remains operable with write refusal.
 seed(6);tap('Select');shot('alarm-interruption-detail-before');time.sleep(31)
@@ -243,6 +234,28 @@ for name in ('stock-cells','xoce-center-focused'):
     references[name]['push']=motion(name+'-push','Select')
     references[name]['pop']=motion(name+'-pop','Back');stop(reference)
 assert references['xoce-center-focused']['firstSelectedY']>50
+# Compare native font bitmaps against independent direct-SDK specimens. Only
+# outside whitespace/position and foreground color are normalized, never scale.
+def ink(image,box,color=None):
+    crop=image.crop(box)
+    mask=Image.new('1',crop.size)
+    mask.putdata([pixel==color if color else pixel!=(255,255,255) for pixel in crop.getdata()])
+    bounds=mask.getbbox();assert bounds
+    result=mask.crop(bounds)
+    return result.size,result.tobytes()
+type_ref,type_payload=native(ROOT/'build/qa/menu-reference/stock-type.pbw','stock-type-native')
+checks['nativeTypeBitmapMatches']=[]
+for value,name in enumerate(('small','medium','large'),1):
+    size(value);stop();install(type_ref,reference);ref=shot('stock-type-'+name,False)
+    title_height=24 if value<3 else 28
+    actual=Image.open(OUT/(name+'-list.png'))
+    details=Image.open(OUT/(name+'-details.png'))
+    assert ink(actual,(8,53,151,53+title_height),(255,255,255))==ink(ref,(8,53,151,53+title_height),(0,0,0)),(name,'menu title bitmap')
+    assert ink(details,(8,0,90,31),(0,0,0))==ink(ref,(8,0,90,31),(0,0,0)),(name,'header bitmap')
+    assert ink(details,(8,198,158,228),(85,85,85))==ink(ref,(8,198,158,228),(0,0,0)),(name,'footer bitmap')
+    checks['nativeTypeBitmapMatches'].append({'size':name,'menuTitle':True,'header':True,'footer':True})
+    stop(reference)
+checks['nativeTypeReferencePayload']=type_payload
 # Diagnostic build: same source plus existing opt-in logs. No final-byte claim.
 diag,diag_payload=native(ROOT/'build/qa/menu-reference/heap-diagnostic.pbw','heap-diagnostic-native')
 active=diag;seed(10);logs.clear()
@@ -278,13 +291,13 @@ if args.baseline:board([('Starting Timer','baseline-list'),('Native candidate','
 report={'result':'PASS','pbw':str(PBW),'pbwSha256':digest,'nativePayloadSha256':payload,
  'sourceCommit':subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip(),
  'buildRecordSha256':sha((PBW.parent/'candidate.json').read_bytes()),
- 'firmware':'v4.33.2','sdk':'4.33.1','cli':'5.0.40','matrix':matrix,'checks':checks,'references':references,
+ 'stockTypeSources':stock_type['sources'],'firmware':'v4.33.2','sdk':'4.33.1','cli':'5.0.40','matrix':matrix,'checks':checks,'references':references,
  'fixtures':fixtures,'captures':captures,'baselineSha256':sha(args.baseline.read_bytes()) if args.baseline else None,
  'scope':'Exact final packaged Emery native payload, no phone JS; OS preference protocol and production-model data fixtures. Center-focus/stock cells, locale lookup overrides and heap-instrumented builds are separate named fixtures.',
  'pending':['Physical Time 2 on current supported firmware, paired phone and real notifications/focus covers',
             'Settings UI selection of Text Size (SDK emulator omits Settings); all three actual OS preference values were verified through preferred_content_size()',
             'Touch drag/tap/Back and mixed input: app touch opt-in is not enabled at this checkpoint',
-            'Full stock Timer application capture on the same firmware (SDK shell omits it); SDK native menu/window fixtures captured instead',
+            'Full stock Timer application capture on the same firmware (SDK shell omits it); independent direct-SDK font bitmaps and native menu/window fixtures were compared',
             'Actual OS Czech/German language packs; locale-lookup fixture renders captured separately',
             'Later checkpoints: native Add/Edit, Options/confirmation and per-app preference delivery']}
 (OUT/'report.json').write_text(json.dumps(report,indent=2)+'\n')

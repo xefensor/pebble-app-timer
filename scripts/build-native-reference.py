@@ -22,6 +22,12 @@ for mode,name in ((0,'stock-cells'),(1,'xoce-center-focused')):
     subprocess.run(['pebble','clean'],cwd=project,env=env,check=True)
     subprocess.run(['pebble','build'],cwd=project,env=env,check=True)
     shutil.copyfile(project/'build/project.pbw',out/(name+'.pbw'))
+# Independent, direct-public-SDK specimens for pixel comparison with the app.
+(project/'src/c/main.c').write_bytes((ROOT/'tests/native-menu-reference/stock-type.c').read_bytes())
+env={**os.environ,'REFERENCE_MODE':'2','ACTIVITY_TIMER_DIAGNOSTICS':'0'}
+subprocess.run(['pebble','clean'],cwd=project,env=env,check=True)
+subprocess.run(['pebble','build'],cwd=project,env=env,check=True)
+shutil.copyfile(project/'build/project.pbw',out/'stock-type.pbw')
 # Separate instrumentation/locale fixtures. Their native bytes deliberately
 # differ from the final candidate; reports must not conflate that evidence.
 (project/'src/c/main.c').write_bytes((ROOT/'src/c/main.c').read_bytes())

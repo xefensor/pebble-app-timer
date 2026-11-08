@@ -1,0 +1,54 @@
+{
+  "sources": {
+    "baseline": "https://github.com/coredevices/PebbleOS/blob/09131922fb12edbf392d7411222ad88294e5bb0d/src/fw/shell/system_theme.c",
+    "modern": "https://github.com/coredevices/PebbleOS/blob/v4.44.0/fw/shell/system_theme_style.c",
+    "current": "https://github.com/coredevices/PebbleOS/blob/v4.44.4/fw/shell/system_theme_style.c"
+  },
+  "note": "Emery Small/Medium/Large are SDK Medium/Large/ExtraLarge. Exact stock role keys; no rescaled fonts. Fonts selected via public SDK API. Countdown uses the largest unscaled built-in LECO font that fits its available bounds, independently of body/menu scale.",
+  "roles": [
+    "Header",
+    "MenuCellTitle",
+    "MenuCellSubtitle",
+    "Footer"
+  ],
+  "baseline": [
+    {
+      "Header": "RESOURCE_ID_GOTHIC_18_BOLD",
+      "MenuCellTitle": "RESOURCE_ID_GOTHIC_24_BOLD",
+      "MenuCellSubtitle": "RESOURCE_ID_GOTHIC_18",
+      "Footer": "RESOURCE_ID_GOTHIC_18"
+    },
+    {
+      "Header": "RESOURCE_ID_GOTHIC_24_BOLD",
+      "MenuCellTitle": "RESOURCE_ID_GOTHIC_24_BOLD",
+      "MenuCellSubtitle": "RESOURCE_ID_GOTHIC_24",
+      "Footer": "RESOURCE_ID_GOTHIC_18"
+    },
+    {
+      "Header": "RESOURCE_ID_GOTHIC_28_BOLD",
+      "MenuCellTitle": "RESOURCE_ID_GOTHIC_28",
+      "MenuCellSubtitle": "RESOURCE_ID_GOTHIC_24_BOLD",
+      "Footer": "RESOURCE_ID_GOTHIC_24"
+    }
+  ],
+  "modern": [
+    {
+      "Header": "RESOURCE_ID_GOTHIC_18_BOLD",
+      "MenuCellTitle": "RESOURCE_ID_GOTHIC_24_BOLD",
+      "MenuCellSubtitle": "RESOURCE_ID_GOTHIC_18",
+      "Footer": "RESOURCE_ID_GOTHIC_18"
+    },
+    {
+      "Header": "RESOURCE_ID_GOTHIC_24_BOLD",
+      "MenuCellTitle": "RESOURCE_ID_GOTHIC_24_BOLD",
+      "MenuCellSubtitle": "RESOURCE_ID_GOTHIC_24",
+      "Footer": "RESOURCE_ID_GOTHIC_18"
+    },
+    {
+      "Header": "RESOURCE_ID_GOTHIC_28_BOLD",
+      "MenuCellTitle": "RESOURCE_ID_GOTHIC_28_BOLD",
+      "MenuCellSubtitle": "RESOURCE_ID_GOTHIC_28",
+      "Footer": "RESOURCE_ID_GOTHIC_24"
+    }
+  ]
+}

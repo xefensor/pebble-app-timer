@@ -7,6 +7,7 @@
 
 #include "timer_collection.h"
 #include "timer_ui.h"
+#include "timer_native_type.h"
 #include "localization.h"
 #include "timer_fonts.h"
 #include "timer_glance.h"
@@ -652,7 +653,7 @@ static void prv_sync_list(void) {
   const bool critical=view.issue&&view.issue[0];
   const bool replacing=count==TIMER_COLLECTION_CAPACITY&&
       timer_collection_can_create(&s_collection)&&!s_menu;
-  const int16_t viewport_height=critical?124:replacing?144:178;
+  const int16_t viewport_height=critical?178-timer_ui_issue_height(&view):replacing?144:178;
   bool changed=count!=s_list_count||critical!=s_list_critical||
       viewport_height!=s_list_viewport_height;
   for(unsigned row=0;row<count;++row) {
@@ -1141,6 +1142,7 @@ static void prv_init(void) {
   uint32_t previous_ticket=0;persist_read_data(PUBLICATION_KEY,&previous_ticket,sizeof(previous_ticket));
   pa_publisher_init(&s_publisher,previous_ticket,connection_service_peek_pebble_app_connection());
   timer_fonts_init();
+  timer_native_type_init();
   const PreferredContentSize size=preferred_content_size();
   s_text_size=size<=PreferredContentSizeMedium?0:size==PreferredContentSizeLarge?1:2;
   s_window=window_create();

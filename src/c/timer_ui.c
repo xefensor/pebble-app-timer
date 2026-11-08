@@ -1,6 +1,7 @@
 #include "timer_ui.h"
 #include "localization.h"
 #include "timer_fonts.h"
+#include "timer_native_type.h"
 #include "timer_hourglass.h"
 #include <pebble-xoce-ui/pebble-xoce-ui.h>
 
@@ -65,14 +66,15 @@ static void header(GContext *ctx,const TimerUiView *view,const char *title,GColo
   const bool twenty_four=clock_is_24h_style();
   if(local){strftime(wall_clock,sizeof(wall_clock),twenty_four?"%H:%M":"%I:%M",local);if(!twenty_four&&wall_clock[0]=='0')memmove(wall_clock,wall_clock+1,strlen(wall_clock));}
   else clock_copy_time_string(wall_clock,sizeof(wall_clock));
-  const int point=22+2*(int)size_index(view);
-  const int clock_width=timer_fonts_text_width(wall_clock,point);
+  const unsigned size=size_index(view);
+  const int clock_width=timer_native_type_measure(wall_clock,size,TIMER_TYPE_HEADER,2048).w;
   const int clock_x=UI_WIDTH-XOCE_UI_INSET-clock_width;
-  /* Allocate the full measured clock first. Only the translated label fits or
-   * truncates; the clock never wraps or loses its last digit. */
-  timer_fonts_text_box(ctx,app_heading(title),point,
-      GRect(XOCE_UI_INSET,0,clock_x-2*XOCE_UI_INSET,32),ink,GTextAlignmentLeft);
-  timer_fonts_text_box(ctx,wall_clock,point,GRect(clock_x,0,clock_width,32),ink,GTextAlignmentRight);
+  /* Same built-in Header font/size as PebbleOS. Reserve the complete clock
+   * first, then let native ellipsis protect it from a long translated label. */
+  timer_native_type_draw(ctx,app_heading(title),size,TIMER_TYPE_HEADER,
+      GRect(XOCE_UI_INSET,0,clock_x-2*XOCE_UI_INSET,32),ink,GTextAlignmentLeft,GTextOverflowModeTrailingEllipsis);
+  timer_native_type_draw(ctx,wall_clock,size,TIMER_TYPE_HEADER,
+      GRect(clock_x,0,clock_width,32),ink,GTextAlignmentRight,GTextOverflowModeWordWrap);
   rect(ctx,GRect(0,31,UI_WIDTH,1),ui_line());
 }
 
@@ -247,94 +249,90 @@ static void hourglass(GContext *ctx, uint32_t remaining, uint32_t total,
   graphics_context_set_stroke_width(ctx,1);
 }
 
+int timer_ui_issue_height(const TimerUiView *view) {
+  if(!view->issue||!view->issue[0])return 0;
+  if(view->screen!=SCREEN_LIST&&view->screen!=SCREEN_DETAIL)return 54;
+  const char *message=!strcmp(view->issue,"Changes not saved")?"Not saved":view->issue;
+  const unsigned size=size_index(view);
+  const int height=timer_native_type_measure(app_text(message),size,TIMER_TYPE_FOOTER,150).h+
+      timer_native_type_measure(app_text(view->appearance_issue?"Retry phone app":"Keep app open"),size,TIMER_TYPE_FOOTER,150).h+8;
+  return height<54?54:height;
+}
 static void main_screen(GContext *ctx,const TimerUiView *view) {
   const ActivityTimerModel *timer=&view->collection->slots[view->selected];
   const bool paused=timer->state==ACTIVITY_TIMER_PAUSED,finished=timer->state==ACTIVITY_TIMER_FINISHED,ready=activity_timer_ready(timer);
   const uint32_t left=ready?timer->repeat_seconds:activity_timer_remaining(timer,view->now);
   bar(ctx,view,XOCE_ICON_EDIT,paused||finished||ready?XOCE_ICON_PLAY:XOCE_ICON_PAUSE,XOCE_ICON_MORE,ui_fg());
   header(ctx,view,paused?"Paused":ready?"Ready":finished?"Ended":"Timer",ui_fg());
-  char clock[20],support[40];
+  char clock[20],support[64];
   const unsigned size=size_index(view);
-  const int support_point=18+2*(int)size;
   const bool long_time=left>=3600;
   if(long_time) {
-    char hours[8];snprintf(hours,sizeof(hours),"%lu",(unsigned long)(left/3600));
-    const int point=view->issue?36:34+4*(int)size,width=(timer_font_digits_width_q8(hours,point)+128)/256;
-    const char *unit="h";const int unit_width=timer_fonts_text_width(unit,support_point),first=(UI_WIDTH-width-8-unit_width)/2;
-    timer_fonts_digits_box(ctx,hours,point,GRect(first,38,width,36),ui_fg(),ui_bg());
-    label(ctx,unit,support_point,GRect(first+width+8,38,unit_width,36),ui_fg(),GTextAlignmentLeft);
+    char hours[12];snprintf(hours,sizeof(hours),"%lu",(unsigned long)(left/3600));
+    timer_native_type_countdown(ctx,hours,GRect(22,34,92,44),ui_fg());
+    timer_native_type_draw(ctx,"h",size,TIMER_TYPE_FOOTER,GRect(116,42,38,32),
+        ui_fg(),GTextAlignmentLeft,GTextOverflowModeWordWrap);
     clock_text(left%3600,clock,sizeof(clock));
-    timer_fonts_digits_box(ctx,clock,view->issue?40:40+4*(int)size,GRect(8,78,150,46),ui_fg(),ui_bg());
+    timer_native_type_countdown(ctx,clock,GRect(8,78,150,46),ui_fg());
   } else {
     clock_text(left,clock,sizeof(clock));
-    timer_fonts_digits_box(ctx,clock,46+6*(int)size,GRect(8,38,150,56),ui_fg(),ui_bg());
+    timer_native_type_countdown(ctx,clock,GRect(8,38,150,56),ui_fg());
   }
-  const int pose=timer_hourglass_pose(ready?TIMER_GLASS_READY:paused?TIMER_GLASS_PAUSED:TIMER_GLASS_RUNNING);
-  const int angle=view->hourglass_transition?view->hourglass_angle:pose;
-  const int glass_size=view->issue?(long_time?34:70):(long_time?60:90);
-  const int glass_y=view->issue?(long_time?148:132):(long_time?160:144);
-  hourglass(ctx,left,ready?timer->repeat_seconds:timer->configured_seconds,UI_CENTER,glass_y,glass_size,angle,paused?AMBER:BLUE,ui_fg(),timer->state==ACTIVITY_TIMER_RUNNING,view->now);
+  int bottom=228-timer_ui_issue_height(view);
   if(!view->issue) {
-    if(ready)snprintf(support,sizeof(support),"Select to start");
+    if(ready)snprintf(support,sizeof(support),"%s",app_text("Select to start"));
     else {clock_text(activity_timer_elapsed(timer,view->now),clock,sizeof(clock));snprintf(support,sizeof(support),app_text("Elapsed %s"),clock);}
-    footer(ctx,support,support_point);
+    const int measured=timer_native_type_measure(support,size,TIMER_TYPE_FOOTER,150).h+4;
+    const int height=measured<30?30:measured;bottom=228-height;
+    timer_native_type_draw(ctx,support,size,TIMER_TYPE_FOOTER,GRect(8,bottom+2,150,height-2),
+        ui_muted(),GTextAlignmentCenter,GTextOverflowModeWordWrap);
   }
+  const int available=bottom-(long_time?124:94)-8;
+  const int desired=view->issue?(long_time?34:70):(long_time?60:90);
+  const int glass_size=desired<available?desired:available;
+  const int glass_y=bottom-4-glass_size/2;
+  const int pose=timer_hourglass_pose(ready?TIMER_GLASS_READY:paused?TIMER_GLASS_PAUSED:TIMER_GLASS_RUNNING);
+  hourglass(ctx,left,ready?timer->repeat_seconds:timer->configured_seconds,UI_CENTER,glass_y,glass_size,
+      view->hourglass_transition?view->hourglass_angle:pose,paused?AMBER:BLUE,ui_fg(),timer->state==ACTIVITY_TIMER_RUNNING,view->now);
 }
 
 /* One layout is used for both MenuLayer measurement and paint. No selected
  * index is consulted for animation colors: the SDK may draw the same cell in
  * both highlight states in an intermediate frame. */
 typedef struct {
-  char lines[4][64];
-  int heights[4];
-  unsigned count;
-} RowText;
-typedef struct {
-  char clock[20];
-  RowText text;
-  int digit_point, secondary_point, pad, gap, height;
-  uint32_t left, total;
+  char clock[20],saved[64],support[128];
+  const char *state;
+  bool joined;
+  GSize clock_size,state_size,saved_size;
+  int pad,gap,height;
+  uint32_t left,total;
 } RowLayout;
-
-static void row_text(RowText *out,const char *text,int point,int width) {
-  /* Bounded UTF-8 wrapping, including an overlong word. Never shorten a saved
-   * duration or state to force a fixed row height. */
-  while(*text&&out->count<4) {
-    char *line=out->lines[out->count];unsigned length=0,last_space=0;
-    while(text[length]&&length<sizeof(out->lines[0])-5) {
-      unsigned next=length+1;
-      while(((unsigned char)text[next]&0xc0)==0x80)++next;
-      memcpy(line,text,next);line[next]=0;
-      if(timer_fonts_text_width(line,point)>width&&length)break;
-      if(text[length]==' ')last_space=length;
-      length=next;
-    }
-    if(text[length]&&last_space)length=last_space;
-    memcpy(line,text,length);line[length]=0;
-    out->heights[out->count]=timer_fonts_text_height(line,point);
-    ++out->count;text+=length;while(*text==' ')++text;
-  }
-}
 static RowLayout row_layout(const TimerUiView *view,unsigned slot) {
   const ActivityTimerModel *timer=&view->collection->slots[slot];
   const bool ready=activity_timer_ready(timer);
   const unsigned size=size_index(view);
-  static const int digits[]={22,30,36};
-  RowLayout row={.secondary_point=18+2*(int)size,.digit_point=digits[size],
-      .pad=3+(int)size,.gap=1+(int)size};
+  RowLayout row={.pad=3,.gap=2};
   row.left=ready?timer->repeat_seconds:activity_timer_remaining(timer,view->now);
   row.total=ready?timer->repeat_seconds:timer->configured_seconds;
   clock_text(row.left,row.clock,sizeof(row.clock));
-  while(timer_font_digits_width_q8(row.clock,row.digit_point)>137*256&&row.digit_point>18)--row.digit_point;
-  const char *state=timer->state==ACTIVITY_TIMER_RUNNING?"Running":timer->state==ACTIVITY_TIMER_PAUSED?"Paused":ready?"Ready":"Time's up";
-  row_text(&row.text,app_text(state),row.secondary_point,143);
+  row.state=app_text(timer->state==ACTIVITY_TIMER_RUNNING?"Running":timer->state==ACTIVITY_TIMER_PAUSED?"Paused":ready?"Ready":"Time's up");
+  row.clock_size=timer_native_type_measure(row.clock,size,TIMER_TYPE_MENU_TITLE,143);
+  row.state_size=timer_native_type_measure(row.state,size,TIMER_TYPE_MENU_SUBTITLE,143);
+  row.height=2*row.pad+row.clock_size.h+row.gap+row.state_size.h;
   if(!ready) {
-    char duration[24],saved[64];duration_text(timer->repeat_seconds,duration,sizeof(duration),false);
-    snprintf(saved,sizeof(saved),app_text("Set %s"),duration);
-    row_text(&row.text,saved,row.secondary_point,143);
+    char duration[24];duration_text(timer->repeat_seconds,duration,sizeof(duration),false);
+    snprintf(row.saved,sizeof(row.saved),app_text("Set %s"),duration);
+    snprintf(row.support,sizeof(row.support),"%s · %s",row.state,row.saved);
+    const GSize joined=timer_native_type_measure(row.support,size,TIMER_TYPE_MENU_SUBTITLE,2048);
+    /* Keep both pieces of information on one line only when the native font
+     * really fits. Density comes from reflow, never from shrinking its type. */
+    if(joined.w<=143) {
+      row.joined=true;row.height+=joined.h-row.state_size.h;row.state_size=joined;
+    } else {
+      row.saved_size=timer_native_type_measure(row.saved,size,TIMER_TYPE_MENU_SUBTITLE,143);
+      row.height+=row.gap+row.saved_size.h;
+    }
   }
-  row.height=2*row.pad+row.digit_point;
-  for(unsigned i=0;i<row.text.count;++i)row.height+=row.gap+row.text.heights[i];
   return row;
 }
 int16_t timer_ui_row_height(const TimerUiView *view,unsigned slot) {
@@ -342,16 +340,21 @@ int16_t timer_ui_row_height(const TimerUiView *view,unsigned slot) {
 }
 void timer_ui_draw_row(GContext *ctx,const Layer *cell,const TimerUiView *view,unsigned slot) {
   const RowLayout row=row_layout(view,slot);
+  const unsigned size=size_index(view);
   const bool selected=view->menu&&menu_cell_layer_is_highlighted(cell);
   const GColor background=selected?(view->dark?GColorWhite:GColorBlack):(view->dark?GColorBlack:GColorWhite);
   const GColor ink=selected?(view->dark?GColorBlack:GColorWhite):(view->dark?GColorWhite:GColorBlack);
   rect(ctx,layer_get_bounds(cell),background);
-  timer_fonts_digits_box(ctx,row.clock,row.digit_point,GRect(8,row.pad,137,row.digit_point),ink,background);
-  int top=row.pad+row.digit_point;
-  for(unsigned i=0;i<row.text.count;++i) {
-    top+=row.gap;
-    timer_fonts_text_top(ctx,row.text.lines[i],row.secondary_point,8,top,143,ink,GTextAlignmentLeft);
-    top+=row.text.heights[i];
+  int top=row.pad;
+  timer_native_type_draw(ctx,row.clock,size,TIMER_TYPE_MENU_TITLE,GRect(8,top,143,row.clock_size.h),
+      ink,GTextAlignmentLeft,GTextOverflowModeWordWrap);
+  top+=row.clock_size.h+row.gap;
+  timer_native_type_draw(ctx,row.joined?row.support:row.state,size,TIMER_TYPE_MENU_SUBTITLE,GRect(8,top,143,row.state_size.h),
+      ink,GTextAlignmentLeft,GTextOverflowModeWordWrap);
+  if(row.saved[0]&&!row.joined) {
+    top+=row.state_size.h+row.gap;
+    timer_native_type_draw(ctx,row.saved,size,TIMER_TYPE_MENU_SUBTITLE,GRect(8,top,143,row.saved_size.h),
+        ink,GTextAlignmentLeft,GTextOverflowModeWordWrap);
   }
   const unsigned fill=row.total?(unsigned)(((uint64_t)row.left*28+row.total/2)/row.total):0;
   const unsigned bounded=fill>28?28:fill;
@@ -371,12 +374,14 @@ static void list_screen(GContext *ctx,const TimerUiView *view) {
   header(ctx,view,heading,ui_fg());
   if(!count) {
     hourglass(ctx,1,1,UI_CENTER,110,78,180,BLUE,ui_fg(),false,view->now);
-    centered_label(ctx,"Start a timer",24,165,32,ui_fg());
+    timer_native_type_draw(ctx,app_text("Start a timer"),size_index(view),TIMER_TYPE_MENU_TITLE,
+        GRect(8,165,150,50),ui_fg(),GTextAlignmentCenter,GTextOverflowModeWordWrap);
     return;
   }
   /* Production rows, clipping, selection and scrolling belong to MenuLayer.
    * The app canvas owns only the header, warnings and full-height action rail. */
-  if(replacing&&!menu&&!view->issue)centered_label(ctx,"Oldest ready",22,194,34,ui_muted());
+  if(replacing&&!menu&&!view->issue)timer_native_type_draw(ctx,app_text("Oldest ready"),size_index(view),
+      TIMER_TYPE_FOOTER,GRect(8,194,150,34),ui_muted(),GTextAlignmentCenter,GTextOverflowModeWordWrap);
 
 }
 
@@ -461,10 +466,20 @@ void timer_ui_draw(GContext *ctx,const TimerUiView *view) {
   s_dark=view&&view->dark;rect(ctx,GRect(0,0,200,228),ui_bg());if(!view||!view->collection)return;
   switch(view->screen){case SCREEN_LIST:list_screen(ctx,view);break;case SCREEN_EDITOR:editor_screen(ctx,view);break;case SCREEN_ALARM:alarm_screen(ctx,view);break;case SCREEN_OPTIONS:options_screen(ctx,view);break;case SCREEN_CONFIRM:confirm_screen(ctx,view);break;default:main_screen(ctx,view);break;}
   if(view->issue&&view->issue[0]) {
-    const bool top_issue=view->screen==SCREEN_CONFIRM||view->screen==SCREEN_OPTIONS||view->screen==SCREEN_EDITOR;const int top=top_issue?32:174;
-    rect(ctx,GRect(0,top,UI_WIDTH,54),AMBER);
+    const bool top_issue=view->screen==SCREEN_CONFIRM||view->screen==SCREEN_OPTIONS||view->screen==SCREEN_EDITOR;
+    const int height=timer_ui_issue_height(view),top=top_issue?32:228-height;
+    rect(ctx,GRect(0,top,UI_WIDTH,height),AMBER);
     const char *message=!strcmp(view->issue,"Changes not saved")?"Not saved":view->issue;
-    centered_label(ctx,message,22,top+3,23,GColorBlack);
-    centered_label(ctx,view->appearance_issue?"Retry phone app":"Keep app open",22,top+28,23,GColorBlack);
+    if(view->screen==SCREEN_LIST||view->screen==SCREEN_DETAIL) {
+      const unsigned size=size_index(view);
+      const int first=timer_native_type_measure(app_text(message),size,TIMER_TYPE_FOOTER,150).h;
+      timer_native_type_draw(ctx,app_text(message),size,TIMER_TYPE_FOOTER,GRect(8,top+2,150,first),
+          GColorBlack,GTextAlignmentCenter,GTextOverflowModeWordWrap);
+      timer_native_type_draw(ctx,app_text(view->appearance_issue?"Retry phone app":"Keep app open"),size,
+          TIMER_TYPE_FOOTER,GRect(8,top+first+4,150,height-first-4),GColorBlack,GTextAlignmentCenter,GTextOverflowModeWordWrap);
+    } else {
+      centered_label(ctx,message,22,top+3,23,GColorBlack);
+      centered_label(ctx,view->appearance_issue?"Retry phone app":"Keep app open",22,top+28,23,GColorBlack);
+    }
   }
 }
