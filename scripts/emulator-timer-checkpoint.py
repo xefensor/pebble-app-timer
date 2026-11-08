@@ -20,6 +20,7 @@ from PIL import Image, ImageDraw
 ROOT=Path(__file__).resolve().parents[1]
 parser=argparse.ArgumentParser(description=__doc__)
 parser.add_argument('--baseline',type=Path)
+parser.add_argument('--anchors-only',action='store_true',help='Focused single/multi anchor and existing Replace notice check')
 args=parser.parse_args()
 PBW=candidate(ROOT,'Timer');check_build(ROOT,PBW)
 sha=lambda b:hashlib.sha256(b).hexdigest()
@@ -133,6 +134,22 @@ def motion(name,button):
         frames.append(shot(name+f'-frame-{i}',False));times.append(round(1000*(time.monotonic()-started)))
     frames[0].save(OUT/(name+'.gif'),save_all=True,append_images=frames[1:],duration=[300]+[70]*5+[500],loop=0)
     return {'framesMs':times,'distinctFrames':len({im.tobytes() for im in frames})}
+
+if args.anchors_only:
+    clock(23);anchors=[]
+    for value,name in enumerate(('small','medium','large'),1):
+        seed(10);size(value);theme(False);multi=shot(name+'-multi-anchor')
+        seed(11);single=shot(name+'-single-anchor')
+        assert selected(single)[0]==selected(multi)[0]==50
+        anchors.append({'size':name,'singleY':selected(single)[0],'multiY':selected(multi)[0]})
+    seed(2);shot('ready-eight-before-replace');tap('Up');replace=shot('replace-oldest-ready-notice')
+    assert any(replace.getpixel((x,y))==(85,85,85) for x in range(8,158) for y in range(198,225))
+    assert sha(PBW.read_bytes())==digest;check_build(ROOT,PBW)
+    report={'result':'PASS','pbwSha256':digest,'anchors':anchors,'captures':captures,
+      'scope':'Exact packaged native bytes, actual OS sizes; existing Replace notice is checked without replacing any timer.'}
+    (OUT/'anchors-report.json').write_text(json.dumps(report,indent=2)+'\n')
+    print(json.dumps({'result':'PASS','path':str(OUT/'anchors-report.json'),'anchors':anchors}),flush=True)
+    sys.exit(0)
 
 clock(23)
 # Paused production bank is installed once; every size uses these same bytes.

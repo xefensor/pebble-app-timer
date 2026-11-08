@@ -78,6 +78,88 @@ candidate bytes. The SDK emulator's content-size command changes the OS preferen
 the read-only probe confirms it through `preferred_content_size()`. Its SDK shell
 omits Settings and stock Timer, so their physical checks stay pending.
 
+## Checkpoint verification — 2026-11-08
+
+Starting Timer main: `23028676172e2dab0d0057a11e411673f13995be` (also confirmed
+through GitHub). UI implementation: `09a1740d137d3faefca0a638dd93b81a09f419e8`.
+Shared UI documentation only: `80e05792e933f44bd3f2116bb85598ec3ccd77d1`;
+the bundled UI 0.1.1 archive and consumer pins did not change. No push, release,
+version bump or Dashboard implementation was performed.
+
+`npm test`, `npm run build` and `npm run check:artifact` passed. Source tests ran
+with Python 3.13.16 and Node 26.12.0, and passed again with available Node 22.14.0.
+The exact contributor pins (Node 22.23.4 / Python 3.12.15) were not available.
+The shared UI `npm test` also passed. The native build used SDK 4.33.1 / CLI
+5.0.40; the running Emery firmware reports **v4.33.2**, separately verified in
+its startup log. Native resources are 71,672 bytes; static RAM is 60,568 bytes
+with 70,504 bytes available for the heap before runtime allocations.
+
+Candidate: `build/candidate/Timer-0.14.5.pbw` (local candidate, same version label
+as the frozen release). SHA-256:
+`6176fb349290804489fc8d8dc2f1fab19caf7263c137f5b547d16863f5fdc08f`.
+
+| OS Text Size | SDK preference | Measured standard row | Complete rows | First-row y |
+| --- | --- | --- | --- | --- |
+| Small | Medium (1) | 58 px | 3 | 50 |
+| Medium | Large (2) | 72 px | 2 | 50 |
+| Large | ExtraLarge (3) | 85 px | 2 | 50 |
+
+The same eight paused production timers and authoritative bank checksum were
+retained across the size matrix and ordinary navigation. All eight slots were
+reached in both directions and restored after Details/Back. Single- and
+multi-timer y=50 were separately checked at all three sizes. Headers reserve
+50/55/59 px for the widest 12- or 24-hour clock at 22/24/26 points. Native
+center focus moved the first selected XOCE row to y=97, so the y=50 anchor stays.
+The 34 px full-height rail is pixel-identical to the starting build on the
+checked list/details screens; held feedback moves 5 px toward content.
+
+Exact candidate checks also passed for holds, fast reversals, Select during
+motion, exactly one immediate owner action on slot 3, identity restoration
+after state sorting, light/dark, 12-hour time, complete 24-hour values, actual
+storage warnings and alarm interruption of Details. A distinct instrumented
+build completed 40 open/Back cycles: 80 heap samples, minimum 67,012 bytes,
+last 20 samples bounded at 67,012–67,048 bytes. The uninstrumented exact
+candidate completed another 20 cycles. Czech and German row/header/footer
+renders passed visual inspection in explicitly separate locale-lookup fixtures;
+all 17 catalogues passed packaged glyph coverage and 935 measured text fits.
+
+Disposable evidence, bound to the PBW and native payload hashes:
+
+- `build/qa/timer-checkpoint/6176fb349290/1794132084657217416/report.json`:
+  224 raw captures, sampled native selection/push/pop GIFs, `sizes-list.png`,
+  `sizes-details.png`, `sizes-back.png`, `alignment-comparison.png` and
+  `baseline-comparison.png`.
+- `build/qa/timer-checkpoint/6176fb349290/1794132281463428939/anchors-report.json`:
+  all-size single/multi captures and the retained Oldest ready notice.
+
+The PNGs are real emulator frames. GIFs use fixed review cadence and before/after
+dwell; `framesMs` records actual host acquisition intervals. They do not measure
+physical button feel. Stock cells and center-focus references are public SDK
+control fixtures on the same firmware, not the complete stock Timer app.
+
+Pending device checks: physical Time 2 on current supported firmware, actual
+Settings UI selection of Text Size, paired-phone delivery and upgrade from the
+published PBW, real notification covers/focus, Quiet Time/offline Wakeup and
+hardware button feel. ADB listed no attached device. The SDK shell omits Settings
+and stock Timer; its official content-size protocol was used and the actual OS
+preference was independently read back. Actual OS Czech/German language packs
+and a full stock Timer side-by-side capture remain pending. Touch drag/tap/Back
+and mixed input are pending; this checkpoint retains the existing button-only
+flow and does not opt in to touch. Add/Edit, Options/confirmation and per-app
+preference delivery belong to later checkpoints.
+
+Physical check sequence (do not install the data-writing QA fixtures on a watch):
+
+1. Install the candidate over the published Timer with saved timers; confirm
+   their state and original deadline survive. Prepare eight paused timers once.
+2. Choose Small, Medium and Large in watch Settings, closing and reopening Timer
+   for each. Verify 3/2/2 complete standard rows, full header clock, y=50 anchor
+   with one/eight timers and the full-height rail.
+3. Navigate all eight slots with taps, holds and reversals. Select during motion,
+   pause/resume, then Back; confirm the exact timer remains selected after sorting.
+4. While in Details, test a short timer alarm and a real notification cover;
+   repeat with Quiet Time and the phone disconnected to check the native Wakeup.
+
 ## Native/phone verification
 
 Inspect actual affected compositions, full text, glyph/icon alignment, edges,
