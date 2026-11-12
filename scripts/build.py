@@ -30,6 +30,8 @@ subprocess.run(
     check=True,
     cwd=root,
 )
+# SDK 4.44 validates and bundles the generated root plugin entrypoint.
+(root / "plugin.js").write_bytes((root / "build/plugin.js").read_bytes())
 subprocess.run(["pebble", "build"], check=True, cwd=root)
 # Production watch text uses the system's bitmap fonts. The old resource-font
 # generator remains a historical comparison tool and is not a build input.

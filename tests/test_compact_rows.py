@@ -20,6 +20,7 @@ typedef struct {int state;uint32_t repeat_seconds,configured_seconds;} ActivityT
 typedef struct {ActivityTimerModel slots[8];} Collection;
 typedef struct {Collection *collection;uint32_t now;} TimerUiView;
 enum {ACTIVITY_TIMER_RUNNING=1,ACTIVITY_TIMER_PAUSED=2,TIMER_TYPE_MENU_TITLE=0,TIMER_TYPE_MENU_SUBTITLE=1};
+static int UI_WIDTH=166;
 static int clock_width=60,state_width=76,support_width=142;
 static bool activity_timer_ready(const ActivityTimerModel *t){return t->state==0;}
 static unsigned size_index(const TimerUiView *v){(void)v;return 0;}
@@ -35,17 +36,20 @@ static GSize timer_native_type_measure(const char *s,unsigned size,unsigned role
         cases=r'''
 int main(void){
  Collection c={0};c.slots[0]=(ActivityTimerModel){ACTIVITY_TIMER_PAUSED,300,300};TimerUiView v={&c,0};
- for(state_width=76;state_width<=78;++state_width){
-  RowLayout r=row_layout(&v,0);assert(r.clock_inline==(state_width<=77));
+ for(UI_WIDTH=166;UI_WIDTH>=142;UI_WIDTH-=24){
+ const int available=UI_WIDTH-23;clock_width=60;support_width=available;
+ for(state_width=available-67;state_width<=available-65;++state_width){
+  RowLayout r=row_layout(&v,0);assert(r.clock_inline==(state_width<=available-66));
   assert(!strcmp(r.clock,"04:59")&&!strcmp(r.saved,"Set 5 min"));
   assert(r.height==60);
  }
- state_width=120; // Countdown/state stack; supporting pair then uses its own measured boundary.
- for(support_width=142;support_width<=144;++support_width){
-  RowLayout r=row_layout(&v,0);assert(!r.clock_inline);assert(r.joined==(support_width<=143));
+ state_width=available-1; // Countdown/state stack; supporting pair then uses its own measured boundary.
+ for(support_width=available-1;support_width<=available+1;++support_width){
+  RowLayout r=row_layout(&v,0);assert(!r.clock_inline);assert(r.joined==(support_width<=available));
   assert(r.height==(r.joined?60:86));
  }
- c.slots[0].state=0;state_width=50;RowLayout ready=row_layout(&v,0);
+ }
+ c.slots[0].state=0;state_width=50;UI_WIDTH=166;RowLayout ready=row_layout(&v,0);
  assert(ready.clock_inline&&!ready.saved[0]&&ready.height==34);
  c.slots[0].state=ACTIVITY_TIMER_RUNNING;clock_width=180;
  RowLayout long_value=row_layout(&v,0);assert(!long_value.clock_inline&&long_value.clock_size.h==56);

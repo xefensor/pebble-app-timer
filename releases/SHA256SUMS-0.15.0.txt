@@ -1,0 +1,4 @@
+246a6f68b3f56cde7fda813f18c02a88ec7745f96a9e7c7d3901bf8fa001a5e3  Timer-0.15.0-debug.zip
+b5d5185cdbcbd9b4b335fa68cab3a0a50fceb3e118048b3c7930e1e876cbcadc  Timer-0.15.0-source.zip
+a20ca0df315ee53c8a15a9337f95713fabae85e4460e23e503200e23db07bec9  Timer-0.15.0-store-package.zip
+e50c7663a9d6fa8b646e04efafdefb9cb0dcbbb0bdff0f4632b1aeddd1974469  Timer-0.15.0.pbw

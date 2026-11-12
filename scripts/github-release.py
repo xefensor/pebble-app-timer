@@ -483,7 +483,7 @@ def validate_timer(root, config, commit, package, files, debug=None):
             if field == "application":
                 require(
                     binary[:8] == b"PBLAPP\0\0"
-                    and binary[8:10] == bytes((16, 0))
+                    and binary[8:10] in (bytes((16, 0)), bytes((16, 1)))
                     and binary[104:120] == uuid.UUID(expected["uuid"]).bytes
                     and list(binary[12:14])
                     == [int(value) for value in package["version"].split(".")[:2]],
@@ -492,9 +492,8 @@ def validate_timer(root, config, commit, package, files, debug=None):
     validate_timer_pkjs(root, commit, "", source_files, dependency)
     with tempfile.TemporaryDirectory(prefix="timer-release-plugin-") as directory:
         checkout = Path(directory)
-        inputs = ["scripts/bundle-js.py", "scripts/verify-timer-bundle.js", "src/plugin/index.js"]
-        if expected.get("configPage"):
-            inputs.append("src/pkjs/settings.js")
+        inputs = ["scripts/bundle-js.py", "scripts/verify-timer-bundle.js"]
+        inputs += [name for name in git(root,"ls-tree","-r","--name-only","-z",commit).decode().split("\0") if name.startswith("src/")]
         for name in inputs:
             destination = checkout / name
             destination.parent.mkdir(parents=True, exist_ok=True)

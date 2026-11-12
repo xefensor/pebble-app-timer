@@ -26,3 +26,6 @@ print('Timer candidate: identity, current inputs, runtime, settings and exact fo
 
 import subprocess
 subprocess.run(["python3",str(root / "scripts/check-localization-fonts.py"),"--pbw",str(args.pbw)],check=True)
+
+from platform_audit import audit_platforms
+print(audit_platforms(root,args.pbw))

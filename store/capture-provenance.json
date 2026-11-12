@@ -1,0 +1,54 @@
+{
+  "version": "0.15.0",
+  "nativePixelsModified": false,
+  "scope": "Raw native emulator screenshots, synthetic sample data; no phone/provider or physical-device claim. SDK timestamp/build-ID differences alone are normalized, with independent exact native package audits.",
+  "candidateSha256": "e50c7663a9d6fa8b646e04efafdefb9cb0dcbbb0bdff0f4632b1aeddd1974469",
+  "renderer": {
+    "emery": {
+      "nativeRendererSha256": "d7e99333035433056f47e81bfa97e9500a05e060a70cfbf95f382abdfbc0fb1b",
+      "resourceRendererSha256": "42f9180a4dbc22c617346fb11a8609765ac8092709de5032e5d5a971af277e68"
+    },
+    "gabbro": {
+      "nativeRendererSha256": "cb7dd23d0481bb051bc516bccee34724262678651516b7b36a1d89da6ad54277",
+      "resourceRendererSha256": "42f9180a4dbc22c617346fb11a8609765ac8092709de5032e5d5a971af277e68"
+    }
+  },
+  "screenshots": {
+    "emery-overview.png": {
+      "platform": "emery",
+      "sha256": "43a647b43c639b854058fb26a67d791c0b2f65a112ac621bc377eb10df9ad94e",
+      "source": "recovery-validation/release-qa/timer/emery/candidate/1794516478191011653/2-light-eight-list.png",
+      "rendererProof": "Native source binary/resources match this candidate after identified SDK metadata normalization."
+    },
+    "emery-editor.png": {
+      "platform": "emery",
+      "sha256": "b303a3c6d803f3a5e247a19473a7135144608411e8144fabc2b6c21dfde4c572",
+      "source": "recovery-validation/release-qa/timer/emery/candidate/1794516478191011653/2-light-editor-minutes.png",
+      "rendererProof": "Native source binary/resources match this candidate after identified SDK metadata normalization."
+    },
+    "emery-detail.png": {
+      "platform": "emery",
+      "sha256": "5530441229584e3b6edb69cec64162815355ebccbdd76ae814351fe154cf9720",
+      "source": "recovery-validation/release-qa/timer/emery/candidate/1794516478191011653/2-light-large-detail.png",
+      "rendererProof": "Native source binary/resources match this candidate after identified SDK metadata normalization."
+    },
+    "gabbro-overview.png": {
+      "platform": "gabbro",
+      "sha256": "6061283ff02e284388331fd6276797712f5c622cc85ed1e97d040e0206a6f335",
+      "source": "recovery-validation/release-qa/timer/gabbro/candidate/1794516479350143704/2-light-eight-list.png",
+      "rendererProof": "Native source binary/resources match this candidate after identified SDK metadata normalization."
+    },
+    "gabbro-editor.png": {
+      "platform": "gabbro",
+      "sha256": "92c07285eb4afb4407592ec17444b2e43e3bd17536755793b3ac3056fc9362ca",
+      "source": "recovery-validation/release-qa/timer/gabbro/candidate/1794516479350143704/2-light-editor-minutes.png",
+      "rendererProof": "Native source binary/resources match this candidate after identified SDK metadata normalization."
+    },
+    "gabbro-detail.png": {
+      "platform": "gabbro",
+      "sha256": "ef3a9bc330a80873c34d1fdc088d68f4f2fb5c0acc9522240739f4a08800e050",
+      "source": "recovery-validation/release-qa/timer/gabbro/candidate/1794516479350143704/2-light-large-detail.png",
+      "rendererProof": "Native source binary/resources match this candidate after identified SDK metadata normalization."
+    }
+  }
+}

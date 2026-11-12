@@ -1,0 +1,37 @@
+{
+  "product": "Timer",
+  "version": "0.15.0",
+  "pbwSha256": "e50c7663a9d6fa8b646e04efafdefb9cb0dcbbb0bdff0f4632b1aeddd1974469",
+  "targets": [
+    "emery",
+    "gabbro"
+  ],
+  "automated": [
+    "npm test PASS (pinned Node/Python)",
+    "Current configuration generation PASS",
+    "Exact candidate SDK/ELF/PBW audits PASS",
+    "Store prepare/check PASS",
+    "npm audit: zero known vulnerabilities"
+  ],
+  "emulatorAndLiveScope": "Two emulator models: all three OS sizes and both themes, list/header chrome, editor fields, large countdown and paused-state reopening. Native stopped-app Wakeup, alarm, one-minute snooze and reopen pass. Separate en_US/cs_CZ/de_DE locale-lookup diagnostic fixtures pass editor geometry at every size/theme on both models (36 cases); these are explicitly not final candidate binaries. Measured inline/stack boundary tests pass at both actual widths.",
+  "physicalWatchTested": false,
+  "physicalPhoneTested": false,
+  "remoteCiRun": false,
+  "published": false,
+  "remainingPublicationGates": [
+    "Physical Time 2 and current Android Pebble app checks (Round 2 is emulator-only)",
+    "Verify Developer Dashboard listing ownership, UUID and unused version",
+    "Publish and verify proposed privacy/support URLs",
+    "Explicit final publication approval"
+  ],
+  "renderer": {
+    "emery": {
+      "nativeRendererSha256": "d7e99333035433056f47e81bfa97e9500a05e060a70cfbf95f382abdfbc0fb1b",
+      "resourceRendererSha256": "42f9180a4dbc22c617346fb11a8609765ac8092709de5032e5d5a971af277e68"
+    },
+    "gabbro": {
+      "nativeRendererSha256": "cb7dd23d0481bb051bc516bccee34724262678651516b7b36a1d89da6ad54277",
+      "resourceRendererSha256": "42f9180a4dbc22c617346fb11a8609765ac8092709de5032e5d5a971af277e68"
+    }
+  }
+}

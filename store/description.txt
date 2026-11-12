@@ -1,0 +1,9 @@
+Up to eight timers, directly on Pebble.
+
+Create a timer with separate hours, minutes and seconds. Pause, resume, reset or delete it from the watch. The list keeps countdown and state together when they fit; the detail screen keeps its large countdown. Timers survive closing and reopening the app.
+
+Native alarms work without a connected phone. Snooze for one minute or finish the alarm from the watch. Optional Pebble activity publishing makes your timer available to compatible faces and apps.
+
+Choose Small, Medium, Large or Follow Pebble text and your display appearance. Available in 17 languages. No account, advertisements or analytics.
+
+Free. For Pebble Time 2 and Round 2. Round 2 validation uses the emulator; physical Time 2 and Android checks are pending before publication.

@@ -15,6 +15,7 @@ class ListChrome(unittest.TestCase):
 #include <stdint.h>
 #include <stdio.h>
 #include <string.h>
+#define APP_SCREEN_H 228
 typedef int GContext,Layer,GColor;
 typedef struct {int w,h;} GSize;
 typedef struct {int x,y,w,h;} Rect;

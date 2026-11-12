@@ -1,16 +1,16 @@
 {
   "name": "pebble-app-timer",
-  "version": "0.14.5",
+  "version": "0.15.0",
   "author": "Xef",
   "private": true,
   "license": "SEE LICENSE IN LICENSE",
   "description": "A standalone stock PebbleOS timer with native alarms and activity sharing.",
   "dependencies": {
-    "pebble-activities": "file:vendor/pebble-activities-0.4.0.tgz",
-    "pebble-xoce-ui": "file:vendor/pebble-xoce-ui-0.1.1-native-type-63526c2e66e1.tgz"
+    "pebble-activities": "file:vendor/pebble-activities-0.4.5.tgz",
+    "pebble-xoce-ui": "file:vendor/pebble-xoce-ui-0.1.2.tgz"
   },
   "scripts": {
-    "test": "python3 scripts/test.py && node --test tests/localization*.test.js && npm run test:workflow && npm run check:docs && npm run test:release && python3 scripts/test-localization.py",
+    "test": "python3 scripts/test.py && node --test tests/localization*.test.js && npm run test:workflow && npm run check:docs && npm run test:release && python3 scripts/test-localization.py && npm run test:platforms && npm run test:store",
     "build": "python3 scripts/build.py",
     "build:release": "python3 scripts/build.py --release",
     "test:workflow": "python3 -m unittest discover -s tests -p test_development_workflow.py",
@@ -23,7 +23,11 @@
     "release:publish": "python3 scripts/github-release.py publish",
     "test:release": "python3 -m unittest discover -s tests -p \"test_*release*.py\"",
     "check:setup": "python3 scripts/check-setup.py",
-    "check:localization": "python3 scripts/generate-localization.py --check"
+    "check:localization": "python3 scripts/generate-localization.py --check",
+    "test:platforms": "python3 -m unittest discover -s tests -p test_platform_audit.py",
+    "store:prepare": "python3 scripts/store-kit.py",
+    "store:check": "python3 scripts/store-kit.py --check",
+    "test:store": "python3 -m unittest discover -s tests -p test_store_kit.py"
   },
   "pebble": {
     "displayName": "Timer",
@@ -31,7 +35,8 @@
     "sdkVersion": "3",
     "projectType": "native",
     "targetPlatforms": [
-      "emery"
+      "emery",
+      "gabbro"
     ],
     "enableMultiJS": true,
     "watchapp": {

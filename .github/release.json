@@ -8,16 +8,16 @@
   "assets": [
     "releases/Timer-{version}.pbw",
     "releases/Timer-{version}-source.zip",
+    "releases/Timer-{version}-store-package.zip",
     "releases/Timer-{version}-debug.zip"
   ],
   "debug_archive": "releases/Timer-{version}-debug.zip",
-  "checksums_file": "releases/SHA256SUMS.txt",
+  "checksums_file": "releases/SHA256SUMS-{version}.txt",
   "source_archive": {
     "path": "releases/Timer-{version}-source.zip",
     "prefix": ""
   },
   "notes": {
-    "path": "README.md",
-    "heading": "## Version {version}"
+    "path": "store/release-notes.txt"
   }
 }

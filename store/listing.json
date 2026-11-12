@@ -1,0 +1,45 @@
+{
+  "schemaVersion": 1,
+  "name": "Timer",
+  "author": "Xef",
+  "version": "0.15.0",
+  "uuid": "50e9ef12-a5ab-4369-a3b5-3447bfba5151",
+  "type": "watchapp",
+  "category": "Tools & Utilities",
+  "price": "free",
+  "target_platforms": [
+    "emery",
+    "gabbro"
+  ],
+  "description_file": "description.txt",
+  "release_notes_file": "release-notes.txt",
+  "source_url": "https://github.com/xefensor/pebble-app-timer",
+  "support_url": "https://github.com/xefensor/pebble-app-timer/issues",
+  "privacy_url": "https://github.com/xefensor/pebble-app-timer/blob/main/PRIVACY.md",
+  "publication_status": "preparation",
+  "store_submission_allowed": false,
+  "publication_rule_url": "https://developer.repebble.com/guides/appstore-publishing/preparing-a-submission/",
+  "publication_rule_checked_on": "2026-11-12",
+  "icons": [
+    "icon-small-80.png",
+    "icon-large-144.png"
+  ],
+  "screenshots": {
+    "emery": [
+      "emery-overview.png",
+      "emery-editor.png",
+      "emery-detail.png"
+    ],
+    "gabbro": [
+      "gabbro-overview.png",
+      "gabbro-editor.png",
+      "gabbro-detail.png"
+    ]
+  },
+  "remaining_publication_gates": [
+    "Physical Time 2 and current Android Pebble app checks (Round 2 is emulator-only)",
+    "Verify Developer Dashboard listing ownership, UUID and unused version",
+    "Publish and verify proposed privacy/support URLs",
+    "Explicit final publication approval"
+  ]
+}

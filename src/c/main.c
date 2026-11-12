@@ -26,9 +26,10 @@
 #define CHUNK_BYTES 200u
 #define RETRY_LIMIT 3
 #define BAR_WIDTH ACTION_BAR_WIDTH
-#define CONTENT_WIDTH (200 - BAR_WIDTH)
+#include "app_geometry.h"
+#define CONTENT_WIDTH (APP_SCREEN_W - BAR_WIDTH)
 #define LIST_TOP XOCE_UI_HEADER_HEIGHT
-#define LIST_HEIGHT (228 - LIST_TOP)
+#define LIST_HEIGHT (APP_SCREEN_H - LIST_TOP)
 
 #if defined(ACTIVITY_TIMER_DIAGNOSTICS) && ACTIVITY_TIMER_DIAGNOSTICS
 #define TIMER_DIAG(...) APP_LOG(APP_LOG_LEVEL_INFO, __VA_ARGS__)
@@ -715,7 +716,7 @@ static void prv_sync_list(void) {
   const bool replacing=count==TIMER_COLLECTION_CAPACITY&&
       timer_collection_can_create(&s_collection)&&!s_menu;
   const int16_t viewport_height=critical?LIST_HEIGHT-timer_ui_issue_height(&view):
-      replacing?194-LIST_TOP:LIST_HEIGHT;
+      replacing?APP_SCREEN_H-34-LIST_TOP:LIST_HEIGHT;
   bool changed=count!=s_list_count||critical!=s_list_critical||
       viewport_height!=s_list_viewport_height;
   for(unsigned row=0;row<count;++row) {
@@ -808,7 +809,7 @@ static void prv_action_step(bool up) {
   }
   if(!*row&&!up) {
     TimerUiView view=prv_view();const int bottom=timer_ui_context_height(&view)+timer_ui_action_row_height(&view,0)+offset.y;
-    if(bottom>188){menu_layer_set_selected_index(menu,(MenuIndex){0,0},MenuRowAlignBottom,true);return;}
+    if(bottom>APP_SCREEN_H-40){menu_layer_set_selected_index(menu,(MenuIndex){0,0},MenuRowAlignBottom,true);return;}
   }
   const unsigned maximum=s_screen==SCREEN_OPTIONS?2:1;
   if((up&&!*row)||(!up&&*row==maximum))return;
@@ -1277,6 +1278,8 @@ static void prv_wakeup(WakeupId id,int32_t cookie) {
   prv_finish();prv_schedule_alarm();prv_refresh();
 }
 
+/* Keep initialization scratch off the event-loop stack on 2 KiB Flint. */
+__attribute__((noinline))
 static void prv_init(void) {
   WakeupId launch_id=-1;int32_t cookie=0;
   const bool wakeup_launch=wakeup_get_launch_event(&launch_id,&cookie);
@@ -1297,7 +1300,7 @@ static void prv_init(void) {
     window_set_background_color(window,screen==SCREEN_ALARM||s_dark?GColorBlack:GColorWhite);
     window_set_click_config_provider(window,prv_click_config);
     Layer *root=window_get_root_layer(window);
-    Layer *canvas=s_canvases[screen]=layer_create_with_data(layer_get_bounds(root),sizeof(Screen));
+    Layer *canvas=s_canvases[screen]=layer_create_with_data(APP_SCREEN_FRAME,sizeof(Screen));
     *(Screen *)layer_get_data(canvas)=(Screen)screen;
     layer_set_update_proc(canvas,prv_draw);layer_add_child(root,canvas);
   }
@@ -1306,17 +1309,17 @@ static void prv_init(void) {
   menu_layer_set_callbacks(s_list,NULL,(MenuLayerCallbacks){
       .get_num_rows=prv_list_rows,.get_cell_height=prv_list_height,.draw_row=prv_list_draw});
   menu_layer_set_center_focused(s_list,false);menu_layer_pad_bottom_enable(s_list,false);
-  layer_add_child(window_get_root_layer(s_window),menu_layer_get_layer(s_list));
+  layer_add_child(s_list_canvas,menu_layer_get_layer(s_list));
   window_set_window_handlers(s_window,(WindowHandlers){.disappear=prv_list_disappear});
   for(unsigned i=0;i<2;++i) {
     const Screen screen=i?SCREEN_CONFIRM:SCREEN_OPTIONS;
-    MenuLayer *menu=menu_layer_create(GRect(0,40,CONTENT_WIDTH,188));
+    MenuLayer *menu=menu_layer_create(GRect(0,40,CONTENT_WIDTH,APP_SCREEN_H-40));
     if(i)s_confirm_menu=menu;else s_options_menu=menu;
     menu_layer_set_callbacks(menu,(void *)(uintptr_t)screen,(MenuLayerCallbacks){.get_num_rows=prv_action_rows,
         .get_cell_height=prv_action_height,.get_header_height=prv_context_height,
         .draw_row=prv_action_draw,.draw_header=prv_context_draw});
     menu_layer_set_center_focused(menu,false);menu_layer_pad_bottom_enable(menu,false);
-    layer_add_child(window_get_root_layer(s_windows[screen]),menu_layer_get_layer(menu));
+    layer_add_child(s_canvases[screen],menu_layer_get_layer(menu));
   }
   app_message_register_inbox_received(prv_inbox);
   app_message_register_outbox_sent(prv_outbox_sent);

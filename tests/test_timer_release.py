@@ -118,6 +118,26 @@ class TimerReleaseTests(unittest.TestCase):
         self.assertFalse(any(name.startswith("dist/") for name in self.dependency))
         self.validate()
 
+    def test_sdk_444_header_is_accepted_without_accepting_unknown_headers(self):
+        for minor in (1,2):
+            files=dict(self.pbw);native=bytearray(files['emery/pebble-app.bin'])
+            native.extend(b'\0'*4);native[9]=minor;files['emery/pebble-app.bin']=bytes(native)
+            manifest=json.loads(files['emery/manifest.json'])
+            manifest['application'].update(size=len(native),crc=release.pebble_crc(native))
+            files['emery/manifest.json']=json.dumps(manifest).encode()
+            if minor==1:self.validate(files)
+            else:
+                with self.assertRaisesRegex(ValueError,'native identity/version'):self.validate(files)
+
+    def test_plugin_rebuild_includes_committed_shared_module(self):
+        self.write('src/common/sample.js',b'module.exports={caption:"Original"};')
+        self.write('src/plugin/index.js',b"var provider=require('pebble-activities/publisher');\nvar copy=require('../common/sample.js');\n")
+        output=self.root/'build/shared-provider.js'
+        subprocess.run(['python3',str(self.root/'scripts/bundle-js.py'),str(self.root/'src/plugin/index.js'),str(output)],check=True)
+        files={**self.pbw,'plugin.js':output.read_bytes()};self.commit_sha=self.commit();self.validate(files)
+        self.write('src/common/sample.js',b'module.exports={caption:"Changed"};');self.commit_sha=self.commit()
+        with self.assertRaisesRegex(ValueError,'plugin/source differs'):self.validate(files)
+
     def test_full_version_uuid_names_and_plugin_manifest_cannot_drift(self):
         for field, value in [("versionLabel", "1.2.4"), ("uuid", "0" * 36), ("shortName", "Other"),
                 ("manifestVersion", 1), ("plugin", {"script": "missing.js"}), ("appKeys", {})]:

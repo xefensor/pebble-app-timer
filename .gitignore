@@ -8,3 +8,9 @@ __pycache__/
 dist/
 
 /.venv/
+
+# Generated SDK plugin entrypoint; rebuilt from src/plugin.
+/plugin.js
+
+# Isolated pinned SDK/CLI environment.
+/.build-tools/
