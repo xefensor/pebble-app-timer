@@ -12,10 +12,12 @@ class ListChrome(unittest.TestCase):
         prelude=r'''
 #include <assert.h>
 #include <stdbool.h>
+#define APP_CENTER_FOCUSED false
 #include <stdint.h>
 #include <stdio.h>
 #include <string.h>
 #define APP_SCREEN_H 228
+#define APP_REPLACE_TOP (APP_SCREEN_H-34)
 typedef int GContext,Layer,GColor;
 typedef struct {int w,h;} GSize;
 typedef struct {int x,y,w,h;} Rect;
@@ -43,6 +45,7 @@ static unsigned size_index(const TimerUiView *v){(void)v;return 0;}
 static unsigned timer_collection_count(const Collection *c){return c->count;}
 static bool timer_collection_can_create(const Collection *c){return c->create;}
 static const char *app_text(const char *s){return s;}
+static Rect content_band(int top,int height){return GRect(8,top,150,height);}
 static void rect(GContext *c,Rect r,GColor ink){(void)c;rectangles++;painted=r;color=ink;}
 static void bar(GContext *c,...){(void)c;}
 static void hourglass(GContext *c,...){(void)c;}

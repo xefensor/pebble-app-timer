@@ -20,6 +20,7 @@ typedef struct {int state;uint32_t repeat_seconds,configured_seconds;} ActivityT
 typedef struct {ActivityTimerModel slots[8];} Collection;
 typedef struct {Collection *collection;uint32_t now;} TimerUiView;
 enum {ACTIVITY_TIMER_RUNNING=1,ACTIVITY_TIMER_PAUSED=2,TIMER_TYPE_MENU_TITLE=0,TIMER_TYPE_MENU_SUBTITLE=1};
+#define APP_CENTER_FOCUSED false
 static int UI_WIDTH=166;
 static int clock_width=60,state_width=76,support_width=142;
 static bool activity_timer_ready(const ActivityTimerModel *t){return t->state==0;}

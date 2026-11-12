@@ -7,7 +7,7 @@
   "description": "A standalone stock PebbleOS timer with native alarms and activity sharing.",
   "dependencies": {
     "pebble-activities": "file:vendor/pebble-activities-0.4.5.tgz",
-    "pebble-xoce-ui": "file:vendor/pebble-xoce-ui-0.1.2.tgz"
+    "pebble-xoce-ui": "file:vendor/pebble-xoce-ui-0.1.3.tgz"
   },
   "scripts": {
     "test": "python3 scripts/test.py && node --test tests/localization*.test.js && npm run test:workflow && npm run check:docs && npm run test:release && python3 scripts/test-localization.py && npm run test:platforms && npm run test:store",

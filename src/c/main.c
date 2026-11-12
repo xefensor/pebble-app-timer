@@ -28,7 +28,7 @@
 #define BAR_WIDTH ACTION_BAR_WIDTH
 #include "app_geometry.h"
 #define CONTENT_WIDTH (APP_SCREEN_W - BAR_WIDTH)
-#define LIST_TOP XOCE_UI_HEADER_HEIGHT
+#define LIST_TOP APP_HEADER_HEIGHT
 #define LIST_HEIGHT (APP_SCREEN_H - LIST_TOP)
 
 #if defined(ACTIVITY_TIMER_DIAGNOSTICS) && ACTIVITY_TIMER_DIAGNOSTICS
@@ -46,7 +46,30 @@ static Layer *s_canvas;
 static Window *s_windows[SCREEN_CONFIRM+1];
 static Layer *s_canvases[SCREEN_CONFIRM+1];
 static Layer *s_list_canvas;
+#ifdef PBL_ROUND
+static Layer *s_menu_indicators[SCREEN_CONFIRM+1][2];
+static void round_menu_indicators(MenuLayer *menu,Layer *canvas,unsigned screen,GColor foreground,GColor background) {
+  ScrollLayer *scroll=menu_layer_get_scroll_layer(menu);
+  scroll_layer_set_paging(scroll,true);
+  for(unsigned i=0;i<2;++i) {
+    if(!s_menu_indicators[screen][i]) {
+      s_menu_indicators[screen][i]=layer_create(GRect(APP_SCREEN_W/2-16,i?APP_SCREEN_H-14:APP_HEADER_HEIGHT,32,14));
+      if(s_menu_indicators[screen][i])layer_add_child(canvas,s_menu_indicators[screen][i]);
+    }
+    if(s_menu_indicators[screen][i]) {
+      const ContentIndicatorConfig config={.layer=s_menu_indicators[screen][i],.times_out=false,
+          .alignment=i?GAlignBottom:GAlignTop,.colors={.foreground=foreground,.background=background}};
+      content_indicator_configure_direction(scroll_layer_get_content_indicator(scroll),
+          i?ContentIndicatorDirectionDown:ContentIndicatorDirectionUp,&config);
+    }
+  }
+}
+#endif
+
 static MenuLayer *s_options_menu,*s_confirm_menu;
+/* Center-focused MenuLayer reports the old index during its first animation half. */
+static unsigned s_native_menu_target[SCREEN_CONFIRM+1];
+static bool s_native_menu_target_valid[SCREEN_CONFIRM+1];
 static MenuLayer *s_list;
 static unsigned s_text_size;
 static unsigned s_list_slots[TIMER_COLLECTION_CAPACITY], s_list_count;
@@ -715,8 +738,8 @@ static void prv_sync_list(void) {
   const bool critical=view.issue&&view.issue[0];
   const bool replacing=count==TIMER_COLLECTION_CAPACITY&&
       timer_collection_can_create(&s_collection)&&!s_menu;
-  const int16_t viewport_height=critical?LIST_HEIGHT-timer_ui_issue_height(&view):
-      replacing?APP_SCREEN_H-34-LIST_TOP:LIST_HEIGHT;
+  const int16_t viewport_height=critical?(APP_CENTER_FOCUSED?224:APP_SCREEN_H)-LIST_TOP-timer_ui_issue_height(&view):
+      replacing?APP_REPLACE_TOP-LIST_TOP:LIST_HEIGHT;
   bool changed=count!=s_list_count||critical!=s_list_critical||
       viewport_height!=s_list_viewport_height;
   for(unsigned row=0;row<count;++row) {
@@ -740,11 +763,16 @@ static void prv_sync_list(void) {
      * that cached row normal colors until focus returns to the timer list. */
     menu_layer_set_highlight_colors(s_list,header_selected?background:ink,header_selected?ink:background);
   }
+#ifdef PBL_ROUND
+  round_menu_indicators(s_list,s_list_canvas,SCREEN_LIST,s_dark?GColorWhite:GColorBlack,s_dark?GColorBlack:GColorWhite);
+#endif
   layer_set_hidden(menu_layer_get_layer(s_list),!count);
   if(count&&s_menu) {
     const MenuIndex index={.section=0,.row=s_menu-1};
-    if(changed||menu_layer_get_selected_index(s_list).row!=index.row)
-      menu_layer_set_selected_index(s_list,index,s_menu==1?MenuRowAlignTop:MenuRowAlignBottom,false);
+    if(changed||(APP_CENTER_FOCUSED?(!s_native_menu_target_valid[SCREEN_LIST]||s_native_menu_target[SCREEN_LIST]!=index.row):menu_layer_get_selected_index(s_list).row!=index.row)) {
+      menu_layer_set_selected_index(s_list,index,APP_CENTER_FOCUSED?MenuRowAlignCenter:s_menu==1?MenuRowAlignTop:APP_MENU_ALIGN,false);
+      s_native_menu_target[SCREEN_LIST]=index.row;s_native_menu_target_valid[SCREEN_LIST]=true;
+    }
   }
   /* Do not reload on ticks or raw icon feedback: that would cancel the SDK's
    * in-flight selection/scroll animation. */
@@ -772,6 +800,9 @@ static void prv_sync_aux_menus(void) {
   for(unsigned i=0;i<2;++i) {
     const Screen screen=i?SCREEN_CONFIRM:SCREEN_OPTIONS;MenuLayer *menu=prv_action_menu(screen);if(!menu)continue;
     if(s_screen!=screen)continue;
+#ifdef PBL_ROUND
+    round_menu_indicators(menu,s_canvases[screen],screen,s_dark?GColorWhite:GColorBlack,s_dark?GColorBlack:GColorWhite);
+#endif
     TimerUiView view=prv_view();view.screen=screen;
     bool changed=false;
     const int16_t header=timer_ui_context_height(&view);
@@ -788,8 +819,10 @@ static void prv_sync_aux_menus(void) {
       menu_layer_set_highlight_colors(menu,s_dark?GColorWhite:GColorBlack,s_dark?GColorBlack:GColorWhite);
     }
     const unsigned row=i?s_confirm_choice:s_option;
-    if(changed||menu_layer_get_selected_index(menu).row!=row)
-      menu_layer_set_selected_index(menu,(MenuIndex){.row=row},MenuRowAlignBottom,false);
+    if(changed||(APP_CENTER_FOCUSED?(!s_native_menu_target_valid[screen]||s_native_menu_target[screen]!=row):menu_layer_get_selected_index(menu).row!=row)) {
+      menu_layer_set_selected_index(menu,(MenuIndex){.row=row},APP_MENU_ALIGN,false);
+      s_native_menu_target[screen]=row;s_native_menu_target_valid[screen]=true;
+    }
     layer_mark_dirty(menu_layer_get_layer(menu));
   }
 }
@@ -805,16 +838,22 @@ static void prv_action_step(bool up) {
   MenuLayer *menu=prv_action_menu(s_screen);unsigned *row=s_screen==SCREEN_OPTIONS?&s_option:&s_confirm_choice;
   ScrollLayer *scroll=menu_layer_get_scroll_layer(menu);const GPoint offset=scroll_layer_get_content_offset(scroll);
   if(!*row&&up&&offset.y<0) {
-    scroll_layer_set_content_offset(scroll,GPoint(0,offset.y+60>0?0:offset.y+60),true);return;
+    scroll_layer_set_content_offset(scroll,GPoint(0,offset.y+(APP_CENTER_FOCUSED?APP_SCREEN_H-APP_HEADER_HEIGHT:60)>0?0:offset.y+(APP_CENTER_FOCUSED?APP_SCREEN_H-APP_HEADER_HEIGHT:60)),true);return;
   }
-  if(!*row&&!up) {
+  if(!APP_CENTER_FOCUSED&&!*row&&!up) {
     TimerUiView view=prv_view();const int bottom=timer_ui_context_height(&view)+timer_ui_action_row_height(&view,0)+offset.y;
     if(bottom>APP_SCREEN_H-40){menu_layer_set_selected_index(menu,(MenuIndex){0,0},MenuRowAlignBottom,true);return;}
   }
   const unsigned maximum=s_screen==SCREEN_OPTIONS?2:1;
   if((up&&!*row)||(!up&&*row==maximum))return;
-  menu_layer_set_selected_next(menu,up,MenuRowAlignBottom,true);
-  *row=menu_layer_get_selected_index(menu).row;
+  if(APP_CENTER_FOCUSED) {
+    *row=up?*row-1:*row+1;
+    s_native_menu_target[s_screen]=*row;s_native_menu_target_valid[s_screen]=true;
+    menu_layer_set_selected_index(menu,(MenuIndex){.row=*row},APP_MENU_ALIGN,true);
+  } else {
+    menu_layer_set_selected_next(menu,up,APP_MENU_ALIGN,true);
+    *row=menu_layer_get_selected_index(menu).row;
+  }
 }
 
 static void prv_sync_windows(void) {
@@ -865,10 +904,13 @@ static void prv_list_step(bool up) {
   const int height=layer_get_frame(menu_layer_get_layer(s_list)).size.h;
   const MenuRowAlign align=top+offset<0?MenuRowAlignTop:
       top+offset+s_list_heights[next]>height?MenuRowAlignBottom:MenuRowAlignNone;
-  menu_layer_set_selected_next(s_list,up,align,true);
-  /* Native logical selection is immediate, even while its highlight travels.
-   * Select during motion always opens precisely this production timer. */
-  s_menu=menu_layer_get_selected_index(s_list).row+1;
+  if(APP_CENTER_FOCUSED) {
+    s_menu=next+1;s_native_menu_target[SCREEN_LIST]=next;s_native_menu_target_valid[SCREEN_LIST]=true;
+    menu_layer_set_selected_index(s_list,(MenuIndex){.row=next},MenuRowAlignCenter,true);
+  } else {
+    menu_layer_set_selected_next(s_list,up,align,true);
+    s_menu=menu_layer_get_selected_index(s_list).row+1;
+  }
 }
 
 static void prv_update_ticks(void) {
@@ -1308,17 +1350,17 @@ static void prv_init(void) {
   s_list=menu_layer_create(GRect(0,LIST_TOP,CONTENT_WIDTH,LIST_HEIGHT));
   menu_layer_set_callbacks(s_list,NULL,(MenuLayerCallbacks){
       .get_num_rows=prv_list_rows,.get_cell_height=prv_list_height,.draw_row=prv_list_draw});
-  menu_layer_set_center_focused(s_list,false);menu_layer_pad_bottom_enable(s_list,false);
+  menu_layer_set_center_focused(s_list,APP_CENTER_FOCUSED);menu_layer_pad_bottom_enable(s_list,false);
   layer_add_child(s_list_canvas,menu_layer_get_layer(s_list));
   window_set_window_handlers(s_window,(WindowHandlers){.disappear=prv_list_disappear});
   for(unsigned i=0;i<2;++i) {
     const Screen screen=i?SCREEN_CONFIRM:SCREEN_OPTIONS;
-    MenuLayer *menu=menu_layer_create(GRect(0,40,CONTENT_WIDTH,APP_SCREEN_H-40));
+    MenuLayer *menu=menu_layer_create(GRect(0,APP_CENTER_FOCUSED?LIST_TOP:40,CONTENT_WIDTH,APP_SCREEN_H-(APP_CENTER_FOCUSED?LIST_TOP:40)));
     if(i)s_confirm_menu=menu;else s_options_menu=menu;
     menu_layer_set_callbacks(menu,(void *)(uintptr_t)screen,(MenuLayerCallbacks){.get_num_rows=prv_action_rows,
         .get_cell_height=prv_action_height,.get_header_height=prv_context_height,
         .draw_row=prv_action_draw,.draw_header=prv_context_draw});
-    menu_layer_set_center_focused(menu,false);menu_layer_pad_bottom_enable(menu,false);
+    menu_layer_set_center_focused(menu,APP_CENTER_FOCUSED);menu_layer_pad_bottom_enable(menu,false);
     layer_add_child(s_canvases[screen],menu_layer_get_layer(menu));
   }
   app_message_register_inbox_received(prv_inbox);
@@ -1354,6 +1396,10 @@ static void prv_deinit(void) {
   menu_layer_destroy(s_list);
   if(s_options_menu)menu_layer_destroy(s_options_menu);
   if(s_confirm_menu)menu_layer_destroy(s_confirm_menu);
+#ifdef PBL_ROUND
+  for(unsigned screen=0;screen<=SCREEN_CONFIRM;++screen)for(unsigned i=0;i<2;++i)
+    if(s_menu_indicators[screen][i])layer_destroy(s_menu_indicators[screen][i]);
+#endif
   for(unsigned screen=0;screen<=SCREEN_CONFIRM;++screen) {
     layer_destroy(s_canvases[screen]);window_destroy(s_windows[screen]);
   }
