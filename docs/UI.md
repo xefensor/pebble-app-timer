@@ -328,9 +328,10 @@ The SDK 4.44 reference and disposable candidate evidence are in the workspace's
 and historical QA are unchanged. No physical Round 2 or Android result is implied.
 
 Native round menus center the selected timer and show compact surrounding rows.
-New/Replace keeps its existing header focus. The editor uses circular fields
+On Round 2, New/Replace is the first native menu row; the clock and context remain passive. The editor uses circular fields
 and preserves the existing slide, settle and value-bump timing. Details and alarm
 keep their large native countdown and give text priority over the hourglass.
 The shared rail uses Gabbro's curved background, 40px width, icon anchors and
-4px held displacement. Timer state, deadlines, Wakeups and Keep-first deletion
-are unchanged.
+4px held displacement. Full-width row and warning backgrounds continue underneath the curved rail. Confirmation and action context use separate native text layers and paging, so menu motion cannot cut a critical line. Timer state, deadlines, Wakeups and Keep-first deletion are unchanged.
+
+Round menu content indicators occupy a separate right-hand column and follow the actual menu viewport. Text measurement and drawing reserve that column, so arrows cannot cover neighboring titles.

@@ -53,10 +53,12 @@ static void round_menu_indicators(MenuLayer *menu,Layer *canvas,unsigned screen,
   scroll_layer_set_paging(scroll,true);
   for(unsigned i=0;i<2;++i) {
     if(!s_menu_indicators[screen][i]) {
-      s_menu_indicators[screen][i]=layer_create(GRect(APP_SCREEN_W/2-16,i?APP_SCREEN_H-14:APP_HEADER_HEIGHT,32,14));
+      s_menu_indicators[screen][i]=layer_create(GRect(0,0,28,14));
       if(s_menu_indicators[screen][i])layer_add_child(canvas,s_menu_indicators[screen][i]);
     }
     if(s_menu_indicators[screen][i]) {
+      const GRect frame=layer_get_frame(menu_layer_get_layer(menu));
+      layer_set_frame(s_menu_indicators[screen][i],GRect(CONTENT_WIDTH-28,frame.origin.y+(i?frame.size.h-14:0),28,14));
       const ContentIndicatorConfig config={.layer=s_menu_indicators[screen][i],.times_out=false,
           .alignment=i?GAlignBottom:GAlignTop,.colors={.foreground=foreground,.background=background}};
       content_indicator_configure_direction(scroll_layer_get_content_indicator(scroll),
@@ -71,6 +73,24 @@ static MenuLayer *s_options_menu,*s_confirm_menu;
 static unsigned s_native_menu_target[SCREEN_CONFIRM+1];
 static bool s_native_menu_target_valid[SCREEN_CONFIRM+1];
 static MenuLayer *s_list;
+#ifdef PBL_ROUND
+static bool s_list_action;
+static int s_list_top;
+static Layer *s_rail_layers[SCREEN_CONFIRM+1];
+static ScrollLayer *s_context_scroll[2];
+static TextLayer *s_context_text[2][3];
+static Layer *s_context_indicators[2][2];
+static char s_context_strings[2][3][96];
+static bool s_context_reading[2];
+static Screen s_context_screen=SCREEN_LIST;
+static int s_context_page_height[2];
+
+static TimerUiView prv_view(void);
+static void prv_draw_rail(Layer *layer,GContext *ctx) {
+  TimerUiView view=prv_view();view.screen=*(Screen *)layer_get_data(layer);timer_ui_draw_rail(ctx,&view);
+}
+static unsigned prv_native_list_index(unsigned logical) {return s_list_action?logical:logical-1;}
+#endif
 static unsigned s_text_size;
 static unsigned s_list_slots[TIMER_COLLECTION_CAPACITY], s_list_count;
 static int16_t s_list_heights[TIMER_COLLECTION_CAPACITY];
@@ -664,9 +684,16 @@ static TimerUiView prv_view(void) {
   if(s_list) {
     int top=scroll_layer_get_content_offset(menu_layer_get_scroll_layer(s_list)).y;
     const int height=layer_get_frame(menu_layer_get_layer(s_list)).size.h;
+#ifdef PBL_ROUND
+    if(s_list_action)top+=timer_ui_new_row_height(&view);
+#endif
     for(unsigned row=0;row<s_list_count;++row) {
-      if(top+s_list_heights[row]>0&&top<height)view.visible_slots|=(uint8_t)(1u<<s_list_slots[row]);
-      top+=s_list_heights[row];
+      int row_height=s_list_heights[row];
+#ifdef PBL_ROUND
+      if(s_menu!=row+1)row_height=timer_native_type_measure("00:00",s_text_size,TIMER_TYPE_MENU_TITLE,184).h+12;
+#endif
+      if(top+row_height>0&&top<height)view.visible_slots|=(uint8_t)(1u<<s_list_slots[row]);
+      top+=row_height;
     }
   }
   MenuLayer *context_menu=s_screen==SCREEN_OPTIONS?s_options_menu:s_screen==SCREEN_CONFIRM?s_confirm_menu:NULL;
@@ -701,22 +728,42 @@ static void prv_draw(Layer *layer, GContext *ctx) {
 
 static uint16_t prv_list_rows(MenuLayer *menu,uint16_t section,void *context) {
   (void)menu;(void)section;(void)context;
+  #ifdef PBL_ROUND
+  return s_list_count+(s_list_action?1:0);
+#else
   return s_list_count?s_list_count:1;
+#endif
 }
 static int16_t prv_list_height(MenuLayer *menu,MenuIndex *index,void *context) {
   (void)menu;(void)context;
+#ifdef PBL_ROUND
+  const TimerUiView view=prv_view();
+  if(s_list_action&&!index->row)return timer_ui_new_row_height(&view);
+  const unsigned row=index->row-(s_list_action?1:0);
+  if(row>=s_list_count)return 1;
+  return s_menu==row+1?s_list_heights[row]:timer_native_type_measure("00:00",s_text_size,TIMER_TYPE_MENU_TITLE,184).h+12;
+#else
   return index->row<s_list_count?s_list_heights[index->row]:1;
+#endif
 }
 static void prv_list_draw(GContext *ctx,const Layer *cell,MenuIndex *index,void *context) {
   (void)context;
-  if(index->row>=s_list_count)return;
   TimerUiView view=prv_view();view.screen=SCREEN_LIST;
-  timer_ui_draw_row(ctx,cell,&view,s_list_slots[index->row]);
+#ifdef PBL_ROUND
+  if(s_list_action&&!index->row){timer_ui_draw_new_row(ctx,cell,&view);return;}
+  const unsigned row=index->row-(s_list_action?1:0);
+#else
+  const unsigned row=index->row;
+#endif
+  if(row<s_list_count)timer_ui_draw_row(ctx,cell,&view,s_list_slots[row]);
 }
 static void prv_list_disappear(Window *window) {
   (void)window;
   /* Stop native motion while covered; both surfaces remain alive until the
    * OS finishes the transition. Return to the selected identity fully visible. */
+#ifdef PBL_ROUND
+  if(s_list&&(s_list_action||s_list_count))menu_layer_set_selected_index(s_list,(MenuIndex){.row=prv_native_list_index(s_menu)},MenuRowAlignCenter,false);
+#else
   if(s_list&&s_list_count&&s_menu) {
     ScrollLayer *scroll=menu_layer_get_scroll_layer(s_list);
     const GPoint offset=scroll_layer_get_content_offset(scroll);
@@ -728,6 +775,7 @@ static void prv_list_disappear(Window *window) {
         top+offset.y+s_list_heights[s_menu-1]>height?MenuRowAlignBottom:MenuRowAlignNone;
     menu_layer_set_selected_index(s_list,(MenuIndex){.row=s_menu-1},align,false);
   }
+#endif
   prv_stop_motion();prv_stop_ui_motion();prv_stop_icon_motion();
 }
 static void prv_sync_list(void) {
@@ -738,10 +786,22 @@ static void prv_sync_list(void) {
   const bool critical=view.issue&&view.issue[0];
   const bool replacing=count==TIMER_COLLECTION_CAPACITY&&
       timer_collection_can_create(&s_collection)&&!s_menu;
+#ifdef PBL_ROUND
+  const int top=timer_ui_round_header_height(&view);
+  const bool action=timer_collection_can_create(&s_collection);
+  int bottom=APP_SCREEN_H-top;
+  if(critical&&bottom>224-timer_ui_issue_height(&view))bottom=224-timer_ui_issue_height(&view);
+  const int16_t viewport_height=bottom-top;
+#else
   const int16_t viewport_height=critical?(APP_CENTER_FOCUSED?224:APP_SCREEN_H)-LIST_TOP-timer_ui_issue_height(&view):
       replacing?APP_REPLACE_TOP-LIST_TOP:LIST_HEIGHT;
+#endif
   bool changed=count!=s_list_count||critical!=s_list_critical||
       viewport_height!=s_list_viewport_height;
+#ifdef PBL_ROUND
+  changed|=s_list_top!=top||s_list_action!=action;s_list_top=top;s_list_action=action;
+  (void)replacing;
+#endif
   for(unsigned row=0;row<count;++row) {
     const int16_t height=timer_ui_row_height(&view,slots[row]);
     if(s_list_slots[row]!=slots[row]||s_list_heights[row]!=height)changed=true;
@@ -750,7 +810,13 @@ static void prv_sync_list(void) {
   s_list_count=count;s_list_critical=critical;
   s_list_viewport_height=viewport_height;
   if(changed) {
-    layer_set_frame(menu_layer_get_layer(s_list),GRect(0,LIST_TOP,CONTENT_WIDTH,viewport_height));
+    layer_set_frame(menu_layer_get_layer(s_list),
+#ifdef PBL_ROUND
+        GRect(0,top,APP_SCREEN_W,viewport_height)
+#else
+        GRect(0,LIST_TOP,CONTENT_WIDTH,viewport_height)
+#endif
+    );
     menu_layer_reload_data(s_list);
   }
   const bool header_selected=!s_menu;
@@ -761,14 +827,20 @@ static void prv_sync_list(void) {
     menu_layer_set_normal_colors(s_list,background,ink);
     /* The native menu remembers its row while New/Replace owns focus. Give
      * that cached row normal colors until focus returns to the timer list. */
-    menu_layer_set_highlight_colors(s_list,header_selected?background:ink,header_selected?ink:background);
+    menu_layer_set_highlight_colors(s_list,APP_CENTER_FOCUSED?ink:header_selected?background:ink,APP_CENTER_FOCUSED?background:header_selected?ink:background);
   }
 #ifdef PBL_ROUND
   round_menu_indicators(s_list,s_list_canvas,SCREEN_LIST,s_dark?GColorWhite:GColorBlack,s_dark?GColorBlack:GColorWhite);
 #endif
-  layer_set_hidden(menu_layer_get_layer(s_list),!count);
-  if(count&&s_menu) {
-    const MenuIndex index={.section=0,.row=s_menu-1};
+  layer_set_hidden(menu_layer_get_layer(s_list),!(count+(APP_CENTER_FOCUSED&&timer_collection_can_create(&s_collection)?1:0)));
+  if((count&&s_menu)||(APP_CENTER_FOCUSED&&!s_menu&&timer_collection_can_create(&s_collection))) {
+    const MenuIndex index={.section=0,.row=
+#ifdef PBL_ROUND
+      prv_native_list_index(s_menu)
+#else
+      s_menu-1
+#endif
+    };
     if(changed||(APP_CENTER_FOCUSED?(!s_native_menu_target_valid[SCREEN_LIST]||s_native_menu_target[SCREEN_LIST]!=index.row):menu_layer_get_selected_index(s_list).row!=index.row)) {
       menu_layer_set_selected_index(s_list,index,APP_CENTER_FOCUSED?MenuRowAlignCenter:s_menu==1?MenuRowAlignTop:APP_MENU_ALIGN,false);
       s_native_menu_target[SCREEN_LIST]=index.row;s_native_menu_target_valid[SCREEN_LIST]=true;
@@ -787,7 +859,12 @@ static int16_t prv_action_height(MenuLayer *menu,MenuIndex *index,void *context)
   (void)menu;const TimerUiView view=prv_action_view(context);return timer_ui_action_row_height(&view,index->row);
 }
 static int16_t prv_context_height(MenuLayer *menu,uint16_t section,void *context) {
-  (void)menu;(void)section;const TimerUiView view=prv_action_view(context);return timer_ui_context_height(&view);
+  (void)menu;(void)section;
+#ifdef PBL_ROUND
+  (void)context;return 0;
+#else
+  const TimerUiView view=prv_action_view(context);return timer_ui_context_height(&view);
+#endif
 }
 static void prv_action_draw(GContext *ctx,const Layer *cell,MenuIndex *index,void *context) {
   const TimerUiView view=prv_action_view(context);timer_ui_draw_action_row(ctx,cell,&view,index->row);
@@ -795,17 +872,77 @@ static void prv_action_draw(GContext *ctx,const Layer *cell,MenuIndex *index,voi
 static void prv_context_draw(GContext *ctx,const Layer *cell,uint16_t section,void *context) {
   (void)cell;(void)section;const TimerUiView view=prv_action_view(context);timer_ui_draw_context(ctx,&view);
 }
+#ifdef PBL_ROUND
+static int prv_context_layout(unsigned i,const TimerUiView *view,int top,int height) {
+  ScrollLayer *scroll=s_context_scroll[i];
+  layer_set_frame(scroll_layer_get_layer(scroll),GRect(0,top,APP_SCREEN_W,height));
+  const unsigned count=timer_ui_context_copy(view,s_context_strings[i]);int y=0;
+  for(unsigned line=0;line<3;++line) {
+    TextLayer *text=s_context_text[i][line];layer_set_hidden(text_layer_get_layer(text),line>=count);
+    if(line>=count)continue;
+    text_layer_set_text(text,s_context_strings[i][line]);
+    text_layer_set_font(text,fonts_get_system_font(timer_native_type_key(s_text_size,line?TIMER_TYPE_FOOTER:TIMER_TYPE_MENU_SUBTITLE,true)));
+    text_layer_set_text_color(text,s_dark?GColorWhite:GColorBlack);
+    layer_set_frame(text_layer_get_layer(text),GRect(8,y,CONTENT_WIDTH-40,2048));
+    text_layer_enable_screen_text_flow_and_paging(text,8);
+    const int h=text_layer_get_content_size(text).h;
+    layer_set_frame(text_layer_get_layer(text),GRect(8,y,CONTENT_WIDTH-40,h+2));y+=h+4;
+  }
+  scroll_layer_set_content_size(scroll,GSize(APP_SCREEN_W,y));
+  for(unsigned direction=0;direction<2;++direction){
+    Layer *indicator=s_context_indicators[i][direction];layer_set_frame(indicator,GRect(CONTENT_WIDTH-28,top+(direction?height-14:0),28,14));
+    const ContentIndicatorConfig config={.layer=indicator,.times_out=false,.alignment=direction?GAlignBottom:GAlignTop,.colors={.foreground=s_dark?GColorWhite:GColorBlack,.background=s_dark?GColorBlack:GColorWhite}};
+    content_indicator_configure_direction(scroll_layer_get_content_indicator(scroll),direction?ContentIndicatorDirectionDown:ContentIndicatorDirectionUp,&config);
+  }
+  return y;
+}
+static void prv_round_context_sync(unsigned i,const TimerUiView *view,MenuLayer *menu) {
+  const int top=timer_ui_round_header_height(view);
+  const int bottom=view->issue&&view->issue[0]?224-timer_ui_issue_height(view):APP_SCREEN_H-16;
+  const int row=timer_ui_action_row_height(view,0);
+  int available=bottom-top-row-20;if(available<30)available=30;if(available>128)available=128;
+  int content=prv_context_layout(i,view,top,available);
+  const int height=content+12<available?content+12:available;
+  if(height!=available)content=prv_context_layout(i,view,top,height);
+  s_context_page_height[i]=height;
+  layer_set_frame(menu_layer_get_layer(menu),GRect(0,top+height+4,APP_SCREEN_W,bottom-top-height-4));
+  if(s_context_screen!=view->screen) {
+    s_context_reading[i]=false;scroll_layer_set_content_offset(s_context_scroll[i],GPointZero,false);
+    s_context_screen=view->screen;
+  }
+}
+static bool prv_round_context_step(unsigned i,bool up,unsigned row) {
+  ScrollLayer *scroll=s_context_scroll[i];const int page=s_context_page_height[i];
+  const int length=scroll_layer_get_content_size(scroll).h;
+  const int last=length>page?length-page:0;
+  if(!last)return false;
+  GPoint offset=scroll_layer_get_content_offset(scroll);
+  if(!s_context_reading[i]) {
+    if(row||!up)return false;
+    s_context_reading[i]=true;
+  } else if(up)offset.y=offset.y+page>0?0:offset.y+page;
+  else if(offset.y<=-last){s_context_reading[i]=false;return true;}
+  else offset.y=offset.y-page < -last ? -last:offset.y-page;
+  scroll_layer_set_content_offset(scroll,offset,true);return true;
+}
+#endif
 static void prv_sync_aux_menus(void) {
   static int16_t geometry[2][4];static bool palettes[2];
+#ifdef PBL_ROUND
+  static bool reading[2];
+#endif
   for(unsigned i=0;i<2;++i) {
     const Screen screen=i?SCREEN_CONFIRM:SCREEN_OPTIONS;MenuLayer *menu=prv_action_menu(screen);if(!menu)continue;
     if(s_screen!=screen)continue;
-#ifdef PBL_ROUND
-    round_menu_indicators(menu,s_canvases[screen],screen,s_dark?GColorWhite:GColorBlack,s_dark?GColorBlack:GColorWhite);
-#endif
     TimerUiView view=prv_view();view.screen=screen;
     bool changed=false;
+#ifdef PBL_ROUND
+    prv_round_context_sync(i,&view,menu);
+    round_menu_indicators(menu,s_canvases[screen],screen,s_dark?GColorWhite:GColorBlack,s_dark?GColorBlack:GColorWhite);
+    const int16_t header=0;
+#else
     const int16_t header=timer_ui_context_height(&view);
+#endif
     if(geometry[i][0]!=header){geometry[i][0]=header;changed=true;}
     const unsigned count=i?2:3;
     for(unsigned row=0;row<count;++row) {
@@ -813,9 +950,17 @@ static void prv_sync_aux_menus(void) {
       if(geometry[i][row+1]!=height){geometry[i][row+1]=height;changed=true;}
     }
     if(changed)menu_layer_reload_data(menu);
-    if(changed||palettes[i]!=s_dark) {
+    bool palette_changed=changed||palettes[i]!=s_dark;
+#ifdef PBL_ROUND
+    palette_changed|=reading[i]!=s_context_reading[i];reading[i]=s_context_reading[i];
+#endif
+    if(palette_changed) {
       palettes[i]=s_dark;
       menu_layer_set_normal_colors(menu,s_dark?GColorBlack:GColorWhite,s_dark?GColorWhite:GColorBlack);
+#ifdef PBL_ROUND
+      if(s_context_reading[i])menu_layer_set_highlight_colors(menu,s_dark?GColorBlack:GColorWhite,s_dark?GColorWhite:GColorBlack);
+      else
+#endif
       menu_layer_set_highlight_colors(menu,s_dark?GColorWhite:GColorBlack,s_dark?GColorBlack:GColorWhite);
     }
     const unsigned row=i?s_confirm_choice:s_option;
@@ -836,8 +981,11 @@ static void prv_action_step(bool up) {
   if(s_native_chrome_timer)app_timer_cancel(s_native_chrome_timer);
   s_native_chrome_timer=app_timer_register(400,prv_native_chrome_settled,NULL);
   MenuLayer *menu=prv_action_menu(s_screen);unsigned *row=s_screen==SCREEN_OPTIONS?&s_option:&s_confirm_choice;
+#ifdef PBL_ROUND
+  if(prv_round_context_step(s_screen==SCREEN_CONFIRM,up,*row))return;
+#endif
   ScrollLayer *scroll=menu_layer_get_scroll_layer(menu);const GPoint offset=scroll_layer_get_content_offset(scroll);
-  if(!*row&&up&&offset.y<0) {
+  if(!APP_CENTER_FOCUSED&&!*row&&up&&offset.y<0) {
     scroll_layer_set_content_offset(scroll,GPoint(0,offset.y+(APP_CENTER_FOCUSED?APP_SCREEN_H-APP_HEADER_HEIGHT:60)>0?0:offset.y+(APP_CENTER_FOCUSED?APP_SCREEN_H-APP_HEADER_HEIGHT:60)),true);return;
   }
   if(!APP_CENTER_FOCUSED&&!*row&&!up) {
@@ -890,6 +1038,17 @@ static void prv_sync_windows(void) {
 }
 
 static void prv_list_step(bool up) {
+#ifdef PBL_ROUND
+  if(!s_list_count)return;
+  const unsigned first_round=s_list_action?0:1;
+  if((up&&s_menu==first_round)||(!up&&s_menu>=s_list_count))return;
+  s_menu=up?s_menu-1:s_menu+1;
+  const unsigned target=prv_native_list_index(s_menu);
+  s_native_menu_target[SCREEN_LIST]=target;s_native_menu_target_valid[SCREEN_LIST]=true;
+  menu_layer_reload_data(s_list);
+  menu_layer_set_selected_index(s_list,(MenuIndex){.row=target},MenuRowAlignCenter,true);
+  return;
+#endif
   if(!s_list_count)return;
   const unsigned first=timer_collection_can_create(&s_collection)?0:1;
   if(up&&s_menu==1&&first==0) {s_menu=0;return;}
@@ -1073,6 +1232,9 @@ static void prv_motion_tick(void *context) {
 }
 
 static void prv_transition(void) {
+#ifdef PBL_ROUND
+  if(s_screen!=SCREEN_OPTIONS&&s_screen!=SCREEN_CONFIRM){s_context_screen=SCREEN_LIST;s_context_reading[0]=s_context_reading[1]=false;}
+#endif
   if(s_native_chrome_timer){app_timer_cancel(s_native_chrome_timer);s_native_chrome_timer=NULL;}
   prv_stop_motion();
   prv_stop_ui_motion();
@@ -1207,6 +1369,9 @@ static void prv_press(ButtonId button) {
       }
     }
   } else if (s_screen==SCREEN_OPTIONS) {
+#ifdef PBL_ROUND
+    if(button==BUTTON_ID_SELECT&&s_context_reading[0]){s_context_reading[0]=false;prv_refresh();return;}
+#endif
     if(button==BUTTON_ID_UP||button==BUTTON_ID_DOWN)prv_action_step(button==BUTTON_ID_UP);
     else if (button==BUTTON_ID_BACK) s_screen=SCREEN_DETAIL;
     else if (button==BUTTON_ID_SELECT) {
@@ -1219,6 +1384,9 @@ static void prv_press(ButtonId button) {
       } else { s_confirm_choice=0;s_screen=SCREEN_CONFIRM; }
     }
   } else if (s_screen==SCREEN_CONFIRM) {
+#ifdef PBL_ROUND
+    if(button==BUTTON_ID_SELECT&&s_context_reading[1]){s_context_reading[1]=false;prv_refresh();return;}
+#endif
     if(button==BUTTON_ID_UP||button==BUTTON_ID_DOWN)prv_action_step(button==BUTTON_ID_UP);
     else if (button==BUTTON_ID_BACK || (button==BUTTON_ID_SELECT && !s_confirm_choice))
       s_screen=SCREEN_OPTIONS;
@@ -1362,7 +1530,27 @@ static void prv_init(void) {
         .draw_row=prv_action_draw,.draw_header=prv_context_draw});
     menu_layer_set_center_focused(menu,APP_CENTER_FOCUSED);menu_layer_pad_bottom_enable(menu,false);
     layer_add_child(s_canvases[screen],menu_layer_get_layer(menu));
+#ifdef PBL_ROUND
+    s_context_scroll[i]=scroll_layer_create(GRect(0,0,APP_SCREEN_W,128));
+    scroll_layer_set_paging(s_context_scroll[i],true);
+    layer_add_child(s_canvases[screen],scroll_layer_get_layer(s_context_scroll[i]));
+    for(unsigned direction=0;direction<2;++direction){s_context_indicators[i][direction]=layer_create(GRect(0,0,28,14));layer_add_child(s_canvases[screen],s_context_indicators[i][direction]);}
+    for(unsigned line=0;line<3;++line){
+      s_context_text[i][line]=text_layer_create(GRect(8,0,CONTENT_WIDTH-16,1));
+      text_layer_set_background_color(s_context_text[i][line],GColorClear);
+      text_layer_set_overflow_mode(s_context_text[i][line],GTextOverflowModeWordWrap);
+      text_layer_set_text_alignment(s_context_text[i][line],GTextAlignmentCenter);
+      scroll_layer_add_child(s_context_scroll[i],text_layer_get_layer(s_context_text[i][line]));
+    }
+#endif
   }
+#ifdef PBL_ROUND
+  for(unsigned screen=SCREEN_LIST;screen<=SCREEN_CONFIRM;++screen) {
+    s_rail_layers[screen]=layer_create_with_data(APP_SCREEN_FRAME,sizeof(Screen));
+    *(Screen *)layer_get_data(s_rail_layers[screen])=(Screen)screen;
+    layer_set_update_proc(s_rail_layers[screen],prv_draw_rail);layer_add_child(s_canvases[screen],s_rail_layers[screen]);
+  }
+#endif
   app_message_register_inbox_received(prv_inbox);
   app_message_register_outbox_sent(prv_outbox_sent);
   app_message_register_outbox_failed(prv_outbox_failed);
@@ -1397,6 +1585,8 @@ static void prv_deinit(void) {
   if(s_options_menu)menu_layer_destroy(s_options_menu);
   if(s_confirm_menu)menu_layer_destroy(s_confirm_menu);
 #ifdef PBL_ROUND
+  for(unsigned i=0;i<2;++i){for(unsigned line=0;line<3;++line)if(s_context_text[i][line])text_layer_destroy(s_context_text[i][line]);for(unsigned d=0;d<2;++d)if(s_context_indicators[i][d])layer_destroy(s_context_indicators[i][d]);if(s_context_scroll[i])scroll_layer_destroy(s_context_scroll[i]);}
+  for(unsigned screen=0;screen<=SCREEN_CONFIRM;++screen)if(s_rail_layers[screen])layer_destroy(s_rail_layers[screen]);
   for(unsigned screen=0;screen<=SCREEN_CONFIRM;++screen)for(unsigned i=0;i<2;++i)
     if(s_menu_indicators[screen][i])layer_destroy(s_menu_indicators[screen][i]);
 #endif

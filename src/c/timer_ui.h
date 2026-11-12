@@ -14,3 +14,11 @@ void timer_ui_draw_action_row(GContext *ctx,const Layer *cell,const TimerUiView 
 int16_t timer_ui_row_height(const TimerUiView *view, unsigned slot);
 void timer_ui_draw_row(GContext *ctx, const Layer *cell, const TimerUiView *view,
                        unsigned slot);
+
+#ifdef PBL_ROUND
+unsigned timer_ui_context_copy(const TimerUiView *,char lines[3][96]);
+int timer_ui_round_header_height(const TimerUiView *view);
+int16_t timer_ui_new_row_height(const TimerUiView *view);
+void timer_ui_draw_new_row(GContext *,const Layer *,const TimerUiView *);
+void timer_ui_draw_rail(GContext *,const TimerUiView *);
+#endif

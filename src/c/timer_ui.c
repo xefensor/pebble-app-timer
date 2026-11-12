@@ -73,11 +73,8 @@ static void header(GContext *ctx,const TimerUiView *view,const char *title,GColo
   const unsigned size=size_index(view);
 #ifdef PBL_ROUND
   const XoceUiHeaderLayout layout=xoce_ui_round_header_layout(APP_SCREEN_FRAME,UI_WIDTH,size,true);
-  if(!view->menu&&view->screen==SCREEN_LIST) {
-    rect(ctx,GRect(0,0,UI_WIDTH,APP_HEADER_HEIGHT),ui_fg());
-  }
   timer_native_type_draw(ctx,wall_clock,size,TIMER_TYPE_HEADER,layout.clock,ink,GTextAlignmentCenter,GTextOverflowModeWordWrap);
-  timer_native_type_draw(ctx,app_heading(title),size,TIMER_TYPE_HEADER,layout.label,ink,GTextAlignmentCenter,GTextOverflowModeTrailingEllipsis);
+  if(view->screen!=SCREEN_OPTIONS&&view->screen!=SCREEN_CONFIRM)timer_native_type_draw(ctx,app_heading(title),size,TIMER_TYPE_HEADER,layout.label,ink,GTextAlignmentCenter,GTextOverflowModeTrailingEllipsis);
   return;
 #endif
   const int clock_width=timer_native_type_measure(wall_clock,size,TIMER_TYPE_HEADER,2048).w;
@@ -139,9 +136,24 @@ static void duration_text(uint32_t seconds, char *buffer, size_t capacity,
   }
 }
 
+#ifdef PBL_ROUND
+static XoceUiIcon s_rail_icons[SCREEN_CONFIRM+1][3];
+static GColor s_rail_background[SCREEN_CONFIRM+1];
+void timer_ui_draw_rail(GContext *ctx,const TimerUiView *view) {
+  const GColor bg=s_rail_background[view->screen];
+  xoce_ui_draw_action_bar(ctx,GRect(UI_WIDTH,0,ACTION_BAR_WIDTH,APP_SCREEN_H),s_rail_icons[view->screen],view->action_offset,bg,bg.argb==GColorWhite.argb?GColorBlack:GColorWhite);
+}
+int timer_ui_round_header_height(const TimerUiView *view) {
+  const XoceUiHeaderLayout layout=xoce_ui_round_header_layout(APP_SCREEN_FRAME,UI_WIDTH,size_index(view),true);
+  return view->screen==SCREEN_OPTIONS||view->screen==SCREEN_CONFIRM?layout.label.origin.y+4:layout.height;
+}
+#endif
 static void bar(GContext *ctx, const TimerUiView *view, XoceUiIcon up,
                 XoceUiIcon select, XoceUiIcon down, GColor background) {
   const XoceUiIcon icons[]={up,select,down};
+#ifdef PBL_ROUND
+  memcpy(s_rail_icons[view->screen],icons,sizeof(icons));s_rail_background[view->screen]=background;
+#endif
   const GColor ink=background.argb==GColorWhite.argb?GColorBlack:GColorWhite;
   xoce_ui_draw_action_bar(ctx,GRect(UI_WIDTH,0,ACTION_BAR_WIDTH,APP_SCREEN_H),icons,
                           view->action_offset,background,ink);
@@ -369,7 +381,7 @@ static RowLayout row_layout(const TimerUiView *view,unsigned slot) {
   const ActivityTimerModel *timer=&view->collection->slots[slot];
   const bool ready=activity_timer_ready(timer);
   const unsigned size=size_index(view);
-  const int width=UI_WIDTH-(APP_CENTER_FOCUSED?32:23);
+  const int width=UI_WIDTH-(APP_CENTER_FOCUSED?36:23);
   RowLayout row={.pad=3,.gap=2};
   row.left=ready?timer->repeat_seconds:activity_timer_remaining(timer,view->now);
   clock_text(row.left,row.clock,sizeof(row.clock));
@@ -414,7 +426,7 @@ void timer_ui_draw_row(GContext *ctx,const Layer *cell,const TimerUiView *view,u
   const RowLayout row=row_layout(view,slot);
   const int width=UI_WIDTH-23;
   const unsigned size=size_index(view);
-  const bool selected=view->menu&&menu_cell_layer_is_highlighted(cell);
+  const bool selected=(APP_CENTER_FOCUSED||view->menu)&&menu_cell_layer_is_highlighted(cell);
   const GColor background=selected?(view->dark?GColorWhite:GColorBlack):(view->dark?GColorBlack:GColorWhite);
   const GColor ink=selected?(view->dark?GColorBlack:GColorWhite):(view->dark?GColorWhite:GColorBlack);
   rect(ctx,layer_get_bounds(cell),background);
@@ -425,9 +437,9 @@ void timer_ui_draw_row(GContext *ctx,const Layer *cell,const TimerUiView *view,u
   for(unsigned i=0;i<(selected?3u:1u);++i) {
     if(!lines[i][0])continue;
     const TimerNativeTypeRole role=i?TIMER_TYPE_MENU_SUBTITLE:TIMER_TYPE_MENU_TITLE;
-    const int h=timer_native_type_measure(lines[i],size,role,UI_WIDTH-32).h;
+    const int h=timer_native_type_measure(lines[i],size,role,UI_WIDTH-36).h;
     GPoint at=layer_convert_point_to_screen(cell,GPoint(8,y));
-    GRect band=xoce_ui_circle_band(APP_SCREEN_FRAME,GRect(at.x,at.y,UI_WIDTH-16,h),6);
+    GRect band=xoce_ui_circle_band(APP_SCREEN_FRAME,GRect(at.x,at.y,UI_WIDTH-36,h),6);
     band.origin.x-=at.x-8;band.origin.y=y;
     timer_native_type_draw(ctx,lines[i],size,role,band,ink,GTextAlignmentCenter,GTextOverflowModeTrailingEllipsis);
     y+=h;
@@ -456,6 +468,22 @@ void timer_ui_draw_row(GContext *ctx,const Layer *cell,const TimerUiView *view,u
   }
 }
 
+#ifdef PBL_ROUND
+int16_t timer_ui_new_row_height(const TimerUiView *view) {
+  return timer_native_type_measure(app_text("Replace"),size_index(view),TIMER_TYPE_MENU_TITLE,184).h+16;
+}
+void timer_ui_draw_new_row(GContext *ctx,const Layer *cell,const TimerUiView *view) {
+  const bool selected=menu_cell_layer_is_highlighted(cell);
+  const GColor bg=selected?ui_fg():ui_bg(),ink=selected?ui_bg():ui_fg();
+  rect(ctx,layer_get_bounds(cell),bg);
+  const char *label=app_heading(timer_collection_count(view->collection)==TIMER_COLLECTION_CAPACITY?"Replace":"New");
+  const unsigned size=size_index(view);const GSize text=timer_native_type_measure(label,size,TIMER_TYPE_MENU_TITLE,184);
+  const int y=(layer_get_bounds(cell).size.h-text.h)/2;
+  const int x=(UI_WIDTH-20-text.w-26)/2;
+  xoce_ui_draw_icon(ctx,XOCE_ICON_PLUS,GPoint(x+9,y+text.h/2),18,ink);
+  timer_native_type_draw(ctx,label,size,TIMER_TYPE_MENU_TITLE,GRect(x+26,y,text.w,text.h),ink,GTextAlignmentLeft,GTextOverflowModeWordWrap);
+}
+#endif
 static void list_screen(GContext *ctx,const TimerUiView *view) {
   const unsigned count=timer_collection_count(view->collection),menu=view->menu;
   const bool full=!timer_collection_can_create(view->collection),replacing=!full&&count==TIMER_COLLECTION_CAPACITY;
@@ -465,9 +493,9 @@ static void list_screen(GContext *ctx,const TimerUiView *view) {
   if(menu)snprintf(heading,sizeof(heading),"%u/%u",menu,count);
   else snprintf(heading,sizeof(heading),replacing?"Replace":"New");
   if(!menu&&!APP_CENTER_FOCUSED)rect(ctx,GRect(0,0,UI_WIDTH,XOCE_UI_HEADER_HEIGHT),ui_fg());
-  header(ctx,view,heading,menu?ui_fg():ui_bg());
+  header(ctx,view,heading,APP_CENTER_FOCUSED?ui_fg():menu?ui_fg():ui_bg());
   if(!count) {
-    hourglass(ctx,1,1,UI_CENTER,APP_CENTER_FOCUSED?142:110,78,180,BLUE,ui_fg(),false,view->now);
+    if(!APP_CENTER_FOCUSED)hourglass(ctx,1,1,UI_CENTER,110,78,180,BLUE,ui_fg(),false,view->now);
     timer_native_type_draw(ctx,app_text("Start a timer"),size_index(view),TIMER_TYPE_MENU_TITLE,
         content_band(APP_SCREEN_H-63,APP_CENTER_FOCUSED?36:50),ui_fg(),GTextAlignmentCenter,GTextOverflowModeWordWrap);
     return;
@@ -605,7 +633,7 @@ static const char *action_label(const TimerUiView *view,unsigned row,char text[6
   snprintf(text,64,app_text("Reset %s"),duration);return text;
 }
 int16_t timer_ui_action_row_height(const TimerUiView *view,unsigned row) {
-  char text[64];const int height=timer_native_type_measure(action_label(view,row,text),size_index(view),TIMER_TYPE_MENU_TITLE,APP_CENTER_FOCUSED?188:(UI_WIDTH-16)).h+12;
+  char text[64];const int height=timer_native_type_measure(action_label(view,row,text),size_index(view),TIMER_TYPE_MENU_TITLE,APP_CENTER_FOCUSED?184:(UI_WIDTH-16)).h+12;
   return height<36?36:height;
 }
 void timer_ui_draw_action_row(GContext *ctx,const Layer *cell,const TimerUiView *view,unsigned row) {
@@ -613,14 +641,14 @@ void timer_ui_draw_action_row(GContext *ctx,const Layer *cell,const TimerUiView 
   const GColor bg=selected?(view->dark?GColorWhite:GColorBlack):(view->dark?GColorBlack:GColorWhite);
   const GColor fg=selected?(view->dark?GColorBlack:GColorWhite):(view->dark?GColorWhite:GColorBlack);
   const GRect bounds=layer_get_bounds(cell);char text[64];const char *label=action_label(view,row,text);
-  const unsigned size=size_index(view);const int height=timer_native_type_measure(label,size,TIMER_TYPE_MENU_TITLE,APP_CENTER_FOCUSED?188:(UI_WIDTH-16)).h;
+  const unsigned size=size_index(view);const int height=timer_native_type_measure(label,size,TIMER_TYPE_MENU_TITLE,APP_CENTER_FOCUSED?184:(UI_WIDTH-16)).h;
   rect(ctx,bounds,bg);
 #ifdef PBL_ROUND
   const int top=(bounds.size.h-height)/2;
   const GPoint at=layer_convert_point_to_screen(cell,GPoint(8,top));
-  GRect band=xoce_ui_circle_band(APP_SCREEN_FRAME,GRect(at.x,at.y,UI_WIDTH-16,height),6);
+  GRect band=xoce_ui_circle_band(APP_SCREEN_FRAME,GRect(at.x,at.y,UI_WIDTH-36,height),6);
   band.origin.x-=at.x-8;band.origin.y=top;
-  if(band.size.w>188){band.origin.x+=(band.size.w-188)/2;band.size.w=188;}
+  if(band.size.w>184){band.origin.x+=(band.size.w-184)/2;band.size.w=184;}
   timer_native_type_draw(ctx,label,size,TIMER_TYPE_MENU_TITLE,band,fg,GTextAlignmentCenter,selected?GTextOverflowModeWordWrap:GTextOverflowModeTrailingEllipsis);
   return;
 #endif
@@ -656,7 +684,7 @@ static int issue_panel(GContext *ctx,const TimerUiView *view,int top,int offset)
   const char *message=app_text(!strcmp(view->issue,"Changes not saved")?"Not saved":view->issue);
   const unsigned size=size_index(view);const int first=timer_native_type_measure(message,size,TIMER_TYPE_FOOTER,APP_CENTER_FOCUSED?160:(UI_WIDTH-16)).h;
   if(ctx) {
-    rect(ctx,GRect(0,top,UI_WIDTH,height),AMBER);
+    rect(ctx,GRect(0,top,APP_CENTER_FOCUSED?APP_SCREEN_W:UI_WIDTH,height),AMBER);
     timer_native_type_draw(ctx,message,size,TIMER_TYPE_FOOTER,warning_band(top+2,first,offset),GColorBlack,GTextAlignmentCenter,GTextOverflowModeWordWrap);
     timer_native_type_draw(ctx,app_text(view->appearance_issue?"Retry phone app":"Keep app open"),size,TIMER_TYPE_FOOTER,
         warning_band(top+first+4,height-first-4,offset),GColorBlack,GTextAlignmentCenter,GTextOverflowModeWordWrap);
@@ -684,6 +712,23 @@ static int action_context(GContext *ctx,const TimerUiView *view) {
   }
   return top+4;
 }
+#ifdef PBL_ROUND
+unsigned timer_ui_context_copy(const TimerUiView *view,char lines[3][96]) {
+  const ActivityTimerModel *timer=&view->collection->slots[view->selected];char duration[24];
+  duration_text(timer->repeat_seconds,duration,sizeof(duration),false);
+  if(view->screen==SCREEN_CONFIRM) {
+    snprintf(lines[0],96,"%s",app_text("Delete timer?"));
+    snprintf(lines[1],96,app_text("%s timer"),duration);
+    snprintf(lines[2],96,"%s",app_text("Cannot undo"));return 3;
+  }
+  snprintf(lines[0],96,"%s · %s",duration,app_text(timer->state==ACTIVITY_TIMER_RUNNING?"Running":timer->state==ACTIVITY_TIMER_PAUSED?"Paused":activity_timer_ready(timer)?"Ready":"Time's up"));
+  const char *status=view->status&&view->status[0]?view->status:"Back to timer";
+  if(!strcmp(status,"Phone disconnected"))status="Phone offline";
+  else if(!strcmp(status,"Sharing unavailable"))status="Sharing failed";
+  else if(!strcmp(status,"Shared with phone"))status="Phone received";
+  snprintf(lines[1],96,"%s",app_text(status));return 2;
+}
+#endif
 int16_t timer_ui_context_height(const TimerUiView *view) {return (int16_t)action_context(NULL,view);}
 void timer_ui_draw_context(GContext *ctx,const TimerUiView *view) {action_context(ctx,view);}
 static void action_screen(GContext *ctx,const TimerUiView *view) {
@@ -695,6 +740,9 @@ static void action_screen(GContext *ctx,const TimerUiView *view) {
   char heading[32];snprintf(heading,sizeof(heading),count>1?"%u/%u":confirm?"Delete":"Options",
       timer_ui_menu_for_slot(view->collection,view->selected),count);
   header(ctx,view,heading,ui_fg());
+#ifdef PBL_ROUND
+  if(view->issue&&view->issue[0])issue_panel(ctx,view,224-timer_ui_issue_height(view),0);
+#endif
 }
 
 void timer_ui_draw(GContext *ctx,const TimerUiView *view) {
