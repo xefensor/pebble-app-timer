@@ -37,7 +37,7 @@ Native state, verified banks, deadlines and Wakeups are authoritative. Preserve 
 
 ## Development navigation
 
-The production list is a `MenuLayer` below the existing first-row anchor at y=50.
+The production list is a `MenuLayer` beginning at the 32 px header boundary.
 A single timer and a multi-timer list use that same anchor. Small/Medium/Large
 resolve the per-app override or actual launch-time `preferred_content_size()` (Emery SDK values
 Medium/Large/ExtraLarge). Font roles, UTF-8 wrapping, value fitting and row
@@ -53,6 +53,17 @@ once, stepping through the exported animated MenuLayer APIs. Colors come from
 `menu_cell_layer_is_highlighted()` during SDK animation. The New/Replace position
 above the first timer keeps its existing Up/Down/Select behavior. All eight slots,
 safe Keep-first deletion and immediate pause/resume remain available.
+
+New/Replace focus inverts the entire header, including its clock. The remembered
+native menu row uses normal colors while the header owns focus, so only one
+position appears selected. Returning to a timer restores the ordinary header
+and native row highlight. Timer rows meet the header without the former 18 px
+gap. The normal list viewport is 196 px; warnings and the Replace notice keep
+their complete reserved bottom panels. Per-timer blue/yellow progress bars are
+removed, with text positions, fonts, row heights and fitting rules retained.
+
+The [list appearance checkpoint](list-chrome-checkpoint.md) records this update.
+Dated captures below retain their original y=50 geometry and verification scope.
 
 List, Details, Add/Edit, Options, confirmation and Alarm each have a real Window. Normal navigation uses animated stack push/pop. Both surfaces
 remain alive during transitions; menu motion settles on cover. The selected

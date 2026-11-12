@@ -27,6 +27,8 @@
 #define RETRY_LIMIT 3
 #define BAR_WIDTH ACTION_BAR_WIDTH
 #define CONTENT_WIDTH (200 - BAR_WIDTH)
+#define LIST_TOP XOCE_UI_HEADER_HEIGHT
+#define LIST_HEIGHT (228 - LIST_TOP)
 
 #if defined(ACTIVITY_TIMER_DIAGNOSTICS) && ACTIVITY_TIMER_DIAGNOSTICS
 #define TIMER_DIAG(...) APP_LOG(APP_LOG_LEVEL_INFO, __VA_ARGS__)
@@ -49,7 +51,7 @@ static unsigned s_text_size;
 static unsigned s_list_slots[TIMER_COLLECTION_CAPACITY], s_list_count;
 static int16_t s_list_heights[TIMER_COLLECTION_CAPACITY];
 static int16_t s_list_viewport_height;
-static bool s_list_critical, s_list_dark;
+static bool s_list_critical, s_list_dark, s_list_header_selected;
 static TimerCollection s_collection;
 static uint8_t s_dirty, s_alarm_mask;
 static uint32_t s_accepted[TIMER_COLLECTION_CAPACITY];
@@ -712,7 +714,8 @@ static void prv_sync_list(void) {
   const bool critical=view.issue&&view.issue[0];
   const bool replacing=count==TIMER_COLLECTION_CAPACITY&&
       timer_collection_can_create(&s_collection)&&!s_menu;
-  const int16_t viewport_height=critical?178-timer_ui_issue_height(&view):replacing?144:178;
+  const int16_t viewport_height=critical?LIST_HEIGHT-timer_ui_issue_height(&view):
+      replacing?194-LIST_TOP:LIST_HEIGHT;
   bool changed=count!=s_list_count||critical!=s_list_critical||
       viewport_height!=s_list_viewport_height;
   for(unsigned row=0;row<count;++row) {
@@ -723,13 +726,18 @@ static void prv_sync_list(void) {
   s_list_count=count;s_list_critical=critical;
   s_list_viewport_height=viewport_height;
   if(changed) {
-    layer_set_frame(menu_layer_get_layer(s_list),GRect(0,50,CONTENT_WIDTH,viewport_height));
+    layer_set_frame(menu_layer_get_layer(s_list),GRect(0,LIST_TOP,CONTENT_WIDTH,viewport_height));
     menu_layer_reload_data(s_list);
   }
-  if(s_list_dark!=s_dark||changed) {
+  const bool header_selected=!s_menu;
+  if(s_list_dark!=s_dark||s_list_header_selected!=header_selected||changed) {
     s_list_dark=s_dark;
-    menu_layer_set_normal_colors(s_list,s_dark?GColorBlack:GColorWhite,s_dark?GColorWhite:GColorBlack);
-    menu_layer_set_highlight_colors(s_list,s_dark?GColorWhite:GColorBlack,s_dark?GColorBlack:GColorWhite);
+    s_list_header_selected=header_selected;
+    const GColor background=s_dark?GColorBlack:GColorWhite,ink=s_dark?GColorWhite:GColorBlack;
+    menu_layer_set_normal_colors(s_list,background,ink);
+    /* The native menu remembers its row while New/Replace owns focus. Give
+     * that cached row normal colors until focus returns to the timer list. */
+    menu_layer_set_highlight_colors(s_list,header_selected?background:ink,header_selected?ink:background);
   }
   layer_set_hidden(menu_layer_get_layer(s_list),!count);
   if(count&&s_menu) {
@@ -1294,7 +1302,7 @@ static void prv_init(void) {
     layer_set_update_proc(canvas,prv_draw);layer_add_child(root,canvas);
   }
   s_window=s_windows[SCREEN_LIST];s_list_canvas=s_canvas=s_canvases[SCREEN_LIST];
-  s_list=menu_layer_create(GRect(0,50,CONTENT_WIDTH,178));
+  s_list=menu_layer_create(GRect(0,LIST_TOP,CONTENT_WIDTH,LIST_HEIGHT));
   menu_layer_set_callbacks(s_list,NULL,(MenuLayerCallbacks){
       .get_num_rows=prv_list_rows,.get_cell_height=prv_list_height,.draw_row=prv_list_draw});
   menu_layer_set_center_focused(s_list,false);menu_layer_pad_bottom_enable(s_list,false);

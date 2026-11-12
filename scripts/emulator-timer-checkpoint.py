@@ -7,7 +7,7 @@ emu-set-content-size protocol, never an app/font-size override.
 """
 from pathlib import Path
 import argparse, datetime, hashlib, importlib.util, json, os, re, struct, subprocess, sys, time, uuid, zipfile
-from repo_workflow import candidate, check_build
+from repo_workflow import candidate, check_build, qa_output
 from pebble_tool.commands.install import ToolAppInstaller
 from pebble_tool.commands.emucontrol import send_data_to_qemu
 from libpebble2.protocol.apps import AppRunState, AppRunStateStart, AppRunStateStop
@@ -18,9 +18,13 @@ from libpebble2.services.screenshot import Screenshot
 from libpebble2.services.appmessage import AppMessageService, Uint8, Uint32, CString
 from PIL import Image, ImageDraw
 ROOT=Path(__file__).resolve().parents[1]
+LIST_TOP=32
+LIST_HEIGHT=228-LIST_TOP
+REFERENCE_ROOT=qa_output(ROOT,'menu-reference')
 parser=argparse.ArgumentParser(description=__doc__)
 parser.add_argument('--baseline',type=Path)
 parser.add_argument('--anchors-only',action='store_true',help='Focused single/multi anchor and existing Replace notice check')
+parser.add_argument('--list-chrome-only',action='store_true',help='Header focus, first-row adjacency and removed progress bars')
 args=parser.parse_args()
 PBW=candidate(ROOT,'Timer');check_build(ROOT,PBW)
 sha=lambda b:hashlib.sha256(b).hexdigest()
@@ -60,7 +64,7 @@ def native(source,name):
     return dest,payload
 NATIVE,payload=native(PBW,'candidate-native-only')
 active=NATIVE
-fixtures={str(i):sha((ROOT/f'build/fixture-mode{i}.pbw').read_bytes()) for i in (5,6,8,9,10,11,12)}
+fixtures={str(i):sha((ROOT/f'build/fixture-mode{i}.pbw').read_bytes()) for i in (0,2,5,6,8,9,10,11,12)}
 def seed(mode):
     stop();install(ROOT/f'build/fixture-mode{mode}.pbw');stop();install(active)
 def press(button):send_data_to_qemu(p.transport,QemuButton(state=int(getattr(QemuButton.Button,button))))
@@ -90,13 +94,13 @@ def snapshot():
         time.sleep(.04)
     assert len(records)==8,'Owner snapshot timed out'
     return dict(records)
-def shot(name,chrome=True,dark=False):
+def shot(name,chrome=True,dark=False,header_focus=False):
     image=Image.frombytes('RGB',(200,228),b''.join(Screenshot(p).grab_image()))
     path=OUT/(name+'.png');image.save(path)
     if chrome:
         rail=(255,255,255) if dark else (0,0,0)
         assert all(image.getpixel((x,y))==rail for y in range(228) for x in (166,167,198,199)),name+' rail'
-        bg=(0,0,0) if dark else (255,255,255)
+        bg=(0,0,0) if dark!=header_focus else (255,255,255)
         assert any(image.getpixel((x,y))!=bg for x in range(8,60) for y in range(2,29)),name+' left label'
         assert any(image.getpixel((x,y))!=bg for x in range(104,158) for y in range(2,29)),name+' right clock'
     captures.append({'file':path.name,'sha256':sha(path.read_bytes()),'chromeChecked':chrome})
@@ -104,11 +108,19 @@ def shot(name,chrome=True,dark=False):
 
 def selected(image,dark=False):
     color=(255,255,255) if dark else (0,0,0)
-    rows=[y for y in range(50,228) if image.getpixel((2,y))==color]
+    rows=[y for y in range(LIST_TOP,228) if image.getpixel((2,y))==color]
     assert rows,'Selected row missing'
     return min(rows),max(rows)+1
 
 def header_label(image):return image.crop((0,0,65,31)).tobytes()
+def list_chrome(image,dark=False,header_focus=False,bottom=228):
+    normal=(0,0,0) if dark else (255,255,255)
+    highlight=(255,255,255) if dark else (0,0,0)
+    assert all(image.getpixel((2,y))==(highlight if header_focus else normal) for y in range(31)),'Header focus colors'
+    if header_focus:
+        assert all(image.getpixel((2,y))==normal for y in range(LIST_TOP,bottom)),'Timer row stayed selected under header focus'
+    # Text ends before x151. The former progress-bar home must be neutral.
+    assert all(len(set(image.getpixel((x,y))))==1 for x in range(151,155) for y in range(LIST_TOP,bottom)),'Colored timer progress bar remains'
 def motion(name,button):
     frames=[shot(name+'-before')];started=time.monotonic();press(button);time.sleep(.035);release()
     times=[]
@@ -118,15 +130,58 @@ def motion(name,button):
     frames[0].save(OUT/(name+'.gif'),save_all=True,append_images=frames[1:],duration=[300]+[70]*5+[500],loop=0)
     return {'framesMs':times,'distinctFrames':len({im.tobytes() for im in frames})}
 
+if args.list_chrome_only:
+    clock(23);results=[]
+    for value,name in enumerate(('small','medium','large'),1):
+        for dark in (False,True):
+            label=name+('-dark' if dark else '-light')
+            seed(0);size(value);theme(dark)
+            empty=shot(label+'-empty-new',dark=dark,header_focus=True)
+            list_chrome(empty,dark,True,bottom=LIST_TOP)
+            seed(11);size(value);theme(dark);before=probe()[3007]
+            first=shot(label+'-first',dark=dark)
+            assert selected(first,dark)[0]==LIST_TOP
+            list_chrome(first,dark)
+            tap('Up');new=shot(label+'-new',dark=dark,header_focus=True)
+            list_chrome(new,dark,True)
+            tap('Up',2);boundary=shot(label+'-new-upper-boundary',dark=dark,header_focus=True)
+            list_chrome(boundary,dark,True)
+            tap('Select');shot(label+'-add-editor',dark=dark)
+            tap('Back',2);back=shot(label+'-add-cancelled',dark=dark,header_focus=True)
+            list_chrome(back,dark,True)
+            tap('Down');restored=shot(label+'-timer-restored',dark=dark)
+            list_chrome(restored,dark);assert selected(restored,dark)[0]==LIST_TOP
+            assert probe()[3007]==before,'Header selection/Add cancellation changed timers'
+            seed(2);theme(dark);before_replace=probe()[3007]
+            tap('Up');replace=shot(label+'-replace',dark=dark,header_focus=True)
+            list_chrome(replace,dark,True,bottom=194)
+            normal=(0,0,0) if dark else (255,255,255)
+            assert any(replace.getpixel((x,y))!=normal for x in range(8,158) for y in range(198,225)),'Replace notice missing'
+            tap('Down');ready=shot(label+'-replace-exit',dark=dark)
+            list_chrome(ready,dark);assert selected(ready,dark)[0]==LIST_TOP
+            assert probe()[3007]==before_replace,'Focusing Replace replaced a timer'
+            seed(10);theme(dark);tap('Up')
+            busy=shot(label+'-full-busy-upper-boundary',dark=dark)
+            list_chrome(busy,dark);assert selected(busy,dark)[0]==LIST_TOP
+            results.append({'size':name,'dark':dark,'listTop':LIST_TOP,
+                'newBankChecksum':before,'replaceBankChecksum':before_replace})
+    assert sha(PBW.read_bytes())==digest;check_build(ROOT,PBW)
+    report={'result':'PASS','pbwSha256':digest,'nativePayloadSha256':payload,
+        'firmware':str(p.watch_info.running),'checks':results,'fixtures':fixtures,'captures':captures,
+        'scope':'Exact packaged native bytes in Emery with synthetic timer banks; no real phone or physical watch.'}
+    (OUT/'list-chrome-report.json').write_text(json.dumps(report,indent=2)+'\n')
+    print(json.dumps({'result':'PASS','path':str(OUT/'list-chrome-report.json'),'captures':len(captures)}),flush=True)
+    sys.exit(0)
+
 if args.anchors_only:
     clock(23);anchors=[]
     for value,name in enumerate(('small','medium','large'),1):
         seed(10);size(value);theme(False);multi=shot(name+'-multi-anchor')
         seed(11);single=shot(name+'-single-anchor')
-        assert selected(single)[0]==selected(multi)[0]==50
+        assert selected(single)[0]==selected(multi)[0]==LIST_TOP
         anchors.append({'size':name,'singleY':selected(single)[0],'multiY':selected(multi)[0]})
     seed(2);shot('ready-eight-before-replace');tap('Up');replace=shot('replace-oldest-ready-notice')
-    assert any(replace.getpixel((x,y))==(85,85,85) for x in range(8,158) for y in range(198,225))
+    assert any(replace.getpixel((x,y))==(0,0,0) for x in range(8,158) for y in range(198,225))
     assert sha(PBW.read_bytes())==digest;check_build(ROOT,PBW)
     report={'result':'PASS','pbwSha256':digest,'anchors':anchors,'captures':captures,
       'scope':'Exact packaged native bytes, actual OS sizes; existing Replace notice is checked without replacing any timer.'}
@@ -147,8 +202,9 @@ for value,name in enumerate(('small','medium','large'),1):
         'width24h':verified[3009],'width12h':verified[3010],
         'roles':{key:verified[3011+role] for role,key in enumerate(stock_type['roles'])}})
     first=shot(name+'-list');top,bottom=selected(first)
-    assert top==50,(name,'first-row anchor',top)
-    height=bottom-top;complete=178//height
+    assert top==LIST_TOP,(name,'first-row anchor',top)
+    list_chrome(first)
+    height=bottom-top;complete=LIST_HEIGHT//height
     matrix.append({'size':name,'osPreferredContentSize':value,'firstRowY':top,'rowHeight':height,'completeRows':complete})
     checks[name+'Push']=motion(name+'-push','Select');shot(name+'-details')
     checks[name+'Pop']=motion(name+'-pop','Back')
@@ -157,20 +213,22 @@ for value,name in enumerate(('small','medium','large'),1):
     for row in range(1,9):
         if row>1:tap('Down')
         im=shot(name+f'-row-{row}');lo,hi=selected(im)
-        assert hi-lo==height and lo>=50 and hi<=228,(name,row,'complete selected row',lo,hi)
+        assert hi-lo==height and lo>=LIST_TOP and hi<=228,(name,row,'complete selected row',lo,hi)
+        list_chrome(im)
         if name=='large':labels[row]=header_label(im)
     tap('Down',3);assert header_label(shot(name+'-bottom-boundary'))==header_label(im)
     tap('Select');tap('Back');assert header_label(shot(name+'-back-to-eight'))==header_label(im)
     for row in range(7,0,-1):
         tap('Up');im=shot(name+f'-reverse-{row}');lo,hi=selected(im)
-        assert hi-lo==height and lo>=50 and hi<=228
-assert matrix[0]['completeRows']>matrix[2]['completeRows'],matrix
+        assert hi-lo==height and lo>=LIST_TOP and hi<=228
+assert matrix[0]['rowHeight']<matrix[2]['rowHeight'],matrix
+assert matrix[0]['completeRows']>=matrix[2]['completeRows'],matrix
 assert probe()[3007]==before,'Ordinary navigation changed authoritative timer banks'
 checks['identicalProductionBankAcrossSizesAndNavigation']=before
 # Single/multi anchor: same size, same first timer. Rail bytes match the baseline.
 size(3);multi=shot('large-multi-anchor');seed(11);single=shot('large-single-anchor')
-assert selected(single)[0]==selected(multi)[0]==50
-checks['singleAndMultiFirstRowY']=50
+assert selected(single)[0]==selected(multi)[0]==LIST_TOP
+checks['singleAndMultiFirstRowY']=LIST_TOP
 # 12-hour clock uses actual OS format; manual comparison shows its full clock.
 clock(11,False);shot('large-12h-details-before');tap('Select');shot('large-12h-details');tap('Back');clock(23)
 # Both themes at every size; full-height 34px rail and label/clock are checked.
@@ -209,7 +267,7 @@ for row in range(2,9):
     tap('Down');critical=shot(f'critical-large-row-{row}')
     lo,hi=selected(critical)
     warning_top=next(y for y in range(32,228) if critical.getpixel((2,y))==(255,170,0))
-    assert lo>=50 and hi<=warning_top
+    assert lo>=LIST_TOP and hi<=warning_top
 tap('Select');shot('critical-large-details');tap('Back');shot('critical-large-back')
 # Alarm preempts a stacked detail window, and remains operable with write refusal.
 seed(6);tap('Select');shot('alarm-interruption-detail-before');time.sleep(31)
@@ -228,7 +286,7 @@ if args.baseline:
 # Public SDK reference controls; explicitly fixtures, not a bundled stock Timer.
 references={}
 for name in ('stock-cells','xoce-center-focused'):
-    stop();ref,ref_payload=native(ROOT/'build/qa/menu-reference'/(name+'.pbw'),name)
+    stop();ref,ref_payload=native(REFERENCE_ROOT/(name+'.pbw'),name)
     install(ref,reference);im=shot(name+'-first');references[name]={'payload':ref_payload,'firstSelectedY':selected(im)[0]}
     references[name]['down']=motion(name+'-down','Down')
     references[name]['push']=motion(name+'-push','Select')
@@ -243,7 +301,7 @@ def ink(image,box,color=None):
     bounds=mask.getbbox();assert bounds
     result=mask.crop(bounds)
     return result.size,result.tobytes()
-type_ref,type_payload=native(ROOT/'build/qa/menu-reference/stock-type.pbw','stock-type-native')
+type_ref,type_payload=native(REFERENCE_ROOT/'stock-type.pbw','stock-type-native')
 checks['nativeTypeBitmapMatches']=[]
 for value,name in enumerate(('small','medium','large'),1):
     size(value);stop();install(type_ref,reference);ref=shot('stock-type-'+name,False)
@@ -252,14 +310,14 @@ for value,name in enumerate(('small','medium','large'),1):
     details=Image.open(OUT/(name+'-details.png'))
     # The state now shares the title line. Isolate the complete countdown
     # glyphs so the independent font comparison excludes the adjacent state.
-    assert ink(actual,(8,53,88,53+title_height),(255,255,255))==ink(ref,(8,53,88,53+title_height),(0,0,0)),(name,'menu title bitmap')
+    assert ink(actual,(8,LIST_TOP+3,88,LIST_TOP+3+title_height),(255,255,255))==ink(ref,(8,53,88,53+title_height),(0,0,0)),(name,'menu title bitmap')
     assert ink(details,(8,0,90,31),(0,0,0))==ink(ref,(8,0,90,31),(0,0,0)),(name,'header bitmap')
     assert ink(details,(8,198,158,228),(0,0,0))==ink(ref,(8,198,158,228),(0,0,0)),(name,'footer bitmap')
     checks['nativeTypeBitmapMatches'].append({'size':name,'menuTitle':True,'header':True,'footer':True})
     stop(reference)
 checks['nativeTypeReferencePayload']=type_payload
 # Diagnostic build: same source plus existing opt-in logs. No final-byte claim.
-diag,diag_payload=native(ROOT/'build/qa/menu-reference/heap-diagnostic.pbw','heap-diagnostic-native')
+diag,diag_payload=native(REFERENCE_ROOT/'heap-diagnostic.pbw','heap-diagnostic-native')
 active=diag;seed(10);logs.clear()
 for _ in range(40):tap('Select');tap('Back')
 heap=[int(re.search(r'ui heap=(\d+)',line)[1]) for line in logs if 'ui heap=' in line]
@@ -273,7 +331,7 @@ assert header_label(shot('exact-candidate-after-20-cycles'))==labels[1]
 checks['exactCandidateOpenBackCycles']=20
 # Locale fixtures: byte-distinct only at app_text's OS-locale lookup.
 for locale in ('cs','de'):
-    loc,loc_payload=native(ROOT/f'build/qa/menu-reference/locale-{locale}.pbw','locale-'+locale+'-native')
+    loc,loc_payload=native(REFERENCE_ROOT/f'locale-{locale}.pbw','locale-'+locale+'-native')
     active=loc;seed(10)
     for value,name in enumerate(('small','medium','large'),1):
         size(value);shot(f'locale-{locale}-{name}-list');tap('Select');shot(f'locale-{locale}-{name}-details');tap('Back')

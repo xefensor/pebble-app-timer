@@ -290,7 +290,7 @@ typedef struct {
   GSize clock_size,state_size,saved_size;
   int first_height;
   int pad,gap,height;
-  uint32_t left,total;
+  uint32_t left;
 } RowLayout;
 static RowLayout row_layout(const TimerUiView *view,unsigned slot) {
   const ActivityTimerModel *timer=&view->collection->slots[slot];
@@ -298,7 +298,6 @@ static RowLayout row_layout(const TimerUiView *view,unsigned slot) {
   const unsigned size=size_index(view);
   RowLayout row={.pad=3,.gap=2};
   row.left=ready?timer->repeat_seconds:activity_timer_remaining(timer,view->now);
-  row.total=ready?timer->repeat_seconds:timer->configured_seconds;
   clock_text(row.left,row.clock,sizeof(row.clock));
   row.state=app_text(timer->state==ACTIVITY_TIMER_RUNNING?"Running":timer->state==ACTIVITY_TIMER_PAUSED?"Paused":ready?"Ready":"Time's up");
   row.clock_size=timer_native_type_measure(row.clock,size,TIMER_TYPE_MENU_TITLE,2048);
@@ -357,13 +356,6 @@ void timer_ui_draw_row(GContext *ctx,const Layer *cell,const TimerUiView *view,u
     timer_native_type_draw(ctx,row.saved,size,TIMER_TYPE_MENU_SUBTITLE,GRect(8,top,143,row.saved_size.h),
         ink,GTextAlignmentLeft,GTextOverflowModeWordWrap);
   }
-  const unsigned fill=row.total?(unsigned)(((uint64_t)row.left*28+row.total/2)/row.total):0;
-  const unsigned bounded=fill>28?28:fill;
-  const int track=row.height-2*row.pad<28?row.height-2*row.pad:28;
-  const int filled=(bounded*track+27)/28;
-  rect(ctx,GRect(151,row.pad,4,track),GColorDarkGray);
-  if(filled)rect(ctx,GRect(151,row.pad+track-filled,4,filled),
-      view->collection->slots[slot].state==ACTIVITY_TIMER_PAUSED?AMBER:BLUE);
 }
 
 static void list_screen(GContext *ctx,const TimerUiView *view) {
@@ -374,7 +366,8 @@ static void list_screen(GContext *ctx,const TimerUiView *view) {
   char heading[32];
   if(menu)snprintf(heading,sizeof(heading),"%u/%u",menu,count);
   else snprintf(heading,sizeof(heading),replacing?"Replace":"New");
-  header(ctx,view,heading,ui_fg());
+  if(!menu)rect(ctx,GRect(0,0,UI_WIDTH,XOCE_UI_HEADER_HEIGHT),ui_fg());
+  header(ctx,view,heading,menu?ui_fg():ui_bg());
   if(!count) {
     hourglass(ctx,1,1,UI_CENTER,110,78,180,BLUE,ui_fg(),false,view->now);
     timer_native_type_draw(ctx,app_text("Start a timer"),size_index(view),TIMER_TYPE_MENU_TITLE,

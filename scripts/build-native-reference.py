@@ -2,8 +2,9 @@
 """Build disposable SDK-native menu/center-focus comparisons, separate UUID."""
 from pathlib import Path
 import json, os, shutil, subprocess
+from repo_workflow import qa_output
 ROOT=Path(__file__).resolve().parents[1]
-out=ROOT/'build/qa/menu-reference'
+out=qa_output(ROOT,'menu-reference')
 project=out/'project'
 project.mkdir(parents=True,exist_ok=True)
 for folder in ('src','resources','vendor','node_modules'):
