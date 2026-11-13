@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "name": "Timer",
   "author": "Xef",
-  "version": "0.15.0",
+  "version": "0.15.1",
   "uuid": "50e9ef12-a5ab-4369-a3b5-3447bfba5151",
   "type": "watchapp",
   "category": "Tools & Utilities",
@@ -37,9 +37,14 @@
     ]
   },
   "remaining_publication_gates": [
-    "Physical Time 2 and current Android Pebble app checks (Round 2 is emulator-only)",
-    "Verify Developer Dashboard listing ownership, UUID and unused version",
-    "Publish and verify proposed privacy/support URLs",
-    "Explicit final publication approval"
-  ]
+    "Verify Developer Dashboard ownership, existing listing and unused numeric version",
+    "Verify live app-owned support/privacy URLs",
+    "Publish exact checked GitHub and Store artifacts, then activate website links"
+  ],
+  "review_acceptance": {
+    "date": "2026-11-13",
+    "reviewer": "Xef",
+    "decision": "Reviewed implementation accepted for stable public release preparation; no further physical-device review prerequisite.",
+    "test_coverage": "Physical watch/phone results are not claimed; see the current release review for actual evidence."
+  }
 }

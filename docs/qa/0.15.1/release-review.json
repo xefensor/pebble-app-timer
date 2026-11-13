@@ -1,0 +1,43 @@
+{
+  "product": "Timer",
+  "version": "0.15.1",
+  "channel": "stable",
+  "pbwSha256": "ef0bc144cb324cca6fdc7d82ebb0adfecc116d348a2be53d98c63b118e95fb0f",
+  "targets": [
+    "emery",
+    "gabbro"
+  ],
+  "reviewAcceptance": {
+    "reviewer": "Xef",
+    "date": "2026-11-13",
+    "decision": "Reviewed and accepted for stable public release preparation; no additional physical-device review prerequisite."
+  },
+  "automated": [
+    "npm test PASS",
+    "SDK 4.44 build and exact artifact audit PASS",
+    "Generated configuration check PASS",
+    "All ten accepted revision-2 native renderer/resources identities retained; no code/version bytes normalized away",
+    "Store prepare/check PASS. Standalone source reconstruction is recorded after freezing in the external launch verification report."
+  ],
+  "sourceTestsLogSha256": "86aaef1b2d391b69e03254eb9fc6eae7eb83d4c6fbfb5d9164f86064652ca74b",
+  "renderer": {
+    "emery": {
+      "nativeRendererSha256": "41b107a0ac03cb9ae4e38e590b143ec50adaf7322bb43312f173dbc83055f6b1",
+      "resourceRendererSha256": "42f9180a4dbc22c617346fb11a8609765ac8092709de5032e5d5a971af277e68"
+    },
+    "gabbro": {
+      "nativeRendererSha256": "fe686c73521cc4b02b52f49699abc61157a7e470e06a3eeedf2938f61861b103",
+      "resourceRendererSha256": "42f9180a4dbc22c617346fb11a8609765ac8092709de5032e5d5a971af277e68"
+    }
+  },
+  "emulatorScope": "Exact stable package captures on Emery and Gabbro. Fresh size/theme cases, source labels, menu/editor/reopening/alarm or face reading/media/Peek cases are indexed in the launch bundle. Locale overrides are diagnostic fixtures, not public packages.",
+  "physicalWatchTested": false,
+  "physicalPhoneTested": false,
+  "remoteCiRun": false,
+  "published": false,
+  "remainingPublicationGates": [
+    "Verify signed-in Developer Dashboard ownership, listing and unused numeric version",
+    "Publish matching stable GitHub assets and upload exact frozen PBW",
+    "Verify public Store/GitHub hashes before website activation"
+  ]
+}
