@@ -1,59 +1,59 @@
 {
-  "version": "0.15.1",
+  "version": "1.0.0",
   "nativePixelsModified": false,
   "scope": "Raw emulator screenshots from the exact stable candidate; synthetic example data. No physical phone/watch claim.",
-  "candidateSha256": "ef0bc144cb324cca6fdc7d82ebb0adfecc116d348a2be53d98c63b118e95fb0f",
+  "candidateSha256": "317f212f1d4739e9fd72dd9bbf1c86e290d8ae606fd9b05e20c584a0f29392bb",
   "renderer": {
     "emery": {
-      "nativeRendererSha256": "41b107a0ac03cb9ae4e38e590b143ec50adaf7322bb43312f173dbc83055f6b1",
+      "nativeRendererSha256": "4e242ae0e2493516dbd64014f185be7da1a0c0034218017fb528a0eecbb42a05",
       "resourceRendererSha256": "42f9180a4dbc22c617346fb11a8609765ac8092709de5032e5d5a971af277e68"
     },
     "gabbro": {
-      "nativeRendererSha256": "fe686c73521cc4b02b52f49699abc61157a7e470e06a3eeedf2938f61861b103",
+      "nativeRendererSha256": "e980b5177e52cc61db65effb006bcce1e6dac4665eeb0e735a82ea8a471832de",
       "resourceRendererSha256": "42f9180a4dbc22c617346fb11a8609765ac8092709de5032e5d5a971af277e68"
     }
   },
   "screenshots": {
     "emery-overview.png": {
       "platform": "emery",
-      "sha256": "1c775dc95459a710534fe5e7734b1453016b747f20d4a517711c51ed260adfca",
-      "source": "Round2-Development/qa/timer/emery/stable-0.15.1-final/1794531583374322572/2-light-first.png",
-      "sourceReport": "Round2-Development/qa/timer/emery/stable-0.15.1-final/1794531583374322572/report.json",
+      "sha256": "90911adde0ae1ce932e9eb5264c8cd35c879f83e41ef8e1a1a508dd4cd8bd016",
+      "source": "Round2-Development/qa/timer/emery/major-1.0.0/1794533479633784610/2-light-first.png",
+      "sourceReport": "Round2-Development/qa/timer/emery/major-1.0.0/1794533479633784610/report.json",
       "rendererProof": "Exact stable PBW captured in native emulator; original PNG bytes unchanged."
     },
     "emery-editor.png": {
       "platform": "emery",
-      "sha256": "d3a48e243674e41af322ed1afb436de910ef3333ed9b9d76c4e1a67cef567edd",
-      "source": "Round2-Development/qa/timer/emery/stable-0.15.1-final/1794531583374322572/2-light-editor-minutes.png",
-      "sourceReport": "Round2-Development/qa/timer/emery/stable-0.15.1-final/1794531583374322572/report.json",
+      "sha256": "23beca55f60e60366eda147f55c54d10344692a6b849cf1d58b5dd9c92960c4e",
+      "source": "Round2-Development/qa/timer/emery/major-1.0.0/1794533479633784610/2-light-editor-minutes.png",
+      "sourceReport": "Round2-Development/qa/timer/emery/major-1.0.0/1794533479633784610/report.json",
       "rendererProof": "Exact stable PBW captured in native emulator; original PNG bytes unchanged."
     },
     "emery-detail.png": {
       "platform": "emery",
-      "sha256": "e8c4249f9e536de3949e1b6ddca9ceb728b001244cb6b4d5ee7a5108bf8d4a8e",
-      "source": "Round2-Development/qa/timer/emery/stable-0.15.1-final/1794531583374322572/2-light-detail.png",
-      "sourceReport": "Round2-Development/qa/timer/emery/stable-0.15.1-final/1794531583374322572/report.json",
+      "sha256": "3bb01caf9ce00b4322822bf64d3c525e1bd12ad5f502a033bf2bdbe90404524b",
+      "source": "Round2-Development/qa/timer/emery/major-1.0.0/1794533479633784610/2-light-detail.png",
+      "sourceReport": "Round2-Development/qa/timer/emery/major-1.0.0/1794533479633784610/report.json",
       "rendererProof": "Exact stable PBW captured in native emulator; original PNG bytes unchanged."
     },
     "gabbro-overview.png": {
       "platform": "gabbro",
-      "sha256": "3bde3fbcbcec7c48ddb8d4a743a38e6d49bb493aac7f4ada238ceeda38bfd4d4",
-      "source": "Round2-Development/qa/timer/gabbro/stable-0.15.1/1794531442952473901/2-light-first.png",
-      "sourceReport": "Round2-Development/qa/timer/gabbro/stable-0.15.1/1794531442952473901/report.json",
+      "sha256": "c53fa4d6faf13d800f380c7a17d3393c992cf583c3811cb7ea1771aa8aa02a58",
+      "source": "Round2-Development/qa/timer/gabbro/major-1.0.0/1794533479628645057/2-light-first.png",
+      "sourceReport": "Round2-Development/qa/timer/gabbro/major-1.0.0/1794533479628645057/report.json",
       "rendererProof": "Exact stable PBW captured in native emulator; original PNG bytes unchanged."
     },
     "gabbro-editor.png": {
       "platform": "gabbro",
-      "sha256": "74947379e02877e692dd34e7d3e12070f0f8c3fb3d43add75c5caa149ce1be24",
-      "source": "Round2-Development/qa/timer/gabbro/stable-0.15.1/1794531442952473901/2-light-editor-minutes.png",
-      "sourceReport": "Round2-Development/qa/timer/gabbro/stable-0.15.1/1794531442952473901/report.json",
+      "sha256": "45c387c1596b7b7b1ec2ab19309d6c3f903449ee4b426991fe58ac5e2b505be2",
+      "source": "Round2-Development/qa/timer/gabbro/major-1.0.0/1794533479628645057/2-light-editor-minutes.png",
+      "sourceReport": "Round2-Development/qa/timer/gabbro/major-1.0.0/1794533479628645057/report.json",
       "rendererProof": "Exact stable PBW captured in native emulator; original PNG bytes unchanged."
     },
     "gabbro-detail.png": {
       "platform": "gabbro",
-      "sha256": "b74d8aca3480526b9b30d5743f67d1c9835e3b57764a9406d24afef0560c1c3d",
-      "source": "Round2-Development/qa/timer/gabbro/stable-0.15.1/1794531442952473901/2-light-detail.png",
-      "sourceReport": "Round2-Development/qa/timer/gabbro/stable-0.15.1/1794531442952473901/report.json",
+      "sha256": "29fb196e90c8a3c3cbef5f1cee4cdb2f041b075aec28aba86f48a90413ae86d8",
+      "source": "Round2-Development/qa/timer/gabbro/major-1.0.0/1794533479628645057/2-light-detail.png",
+      "sourceReport": "Round2-Development/qa/timer/gabbro/major-1.0.0/1794533479628645057/report.json",
       "rendererProof": "Exact stable PBW captured in native emulator; original PNG bytes unchanged."
     }
   }

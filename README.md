@@ -41,7 +41,7 @@ remain separate; use [CONTRIBUTING](CONTRIBUTING.md) for local builds.
 - Preserve a valid later alarm when scheduling its replacement fails. Keep timer ownership, eight slots, persistence and explicit Reset/Start behavior.
 - Bundle UI 0.1.1 and the confirmed stay-open appearance settings page.
 
-## Version 0.15.1 — stable release preparation
+## Version 1.0.0 — stable release preparation
 
 Add Time 2 and Round 2 SDK 4.44 builds, responsive timer rows and editor geometry. Preserve native alarms and saved timers.
 

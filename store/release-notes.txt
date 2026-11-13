@@ -1,5 +1,7 @@
-Timer 0.15.1
+Timer 1.0.0
 
 Prepared for SDK 4.44 on Time 2 and Round 2. Keeps the existing app identity, saved state and compatible provider/action protocols. Uses the selected Pebble text size and native controls. Full verification and remaining real-device checks are recorded in the release preparation report. Not published yet.
 
 The passive top-cap header and centered New/Replace row remain separate. Editor highlights, warnings, paged confirmations and safe Keep-first deletion fit the circular display. Time 2 retains its established composition.
+
+First stable public release numbered 1.0.0. The reviewed implementation, public UUID, saved state and provider protocols are unchanged.
