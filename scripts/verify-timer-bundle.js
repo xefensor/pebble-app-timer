@@ -96,10 +96,12 @@ function verifyPkjs() {
   assert.equal(typeof events.ready, 'function', 'Packaged PKJS has no ready handler');
   assert.equal(typeof events.appmessage, 'function', 'Packaged PKJS has no message handler');
   vm.runInContext('__events.ready()', context, {timeout: 1000});
-  assert.equal(outgoing.length, 2, 'PKJS ready reconciles appearance and requests the native snapshot');
+  assert.equal(outgoing.length, 3, 'PKJS ready reconciles appearance and sound independently, then requests native timers');
   const ui=pkjsDictionary(outgoing.shift());
   assert.equal(ui.TIMER_APPEARANCE,0);assert.equal(ui.TIMER_APPEARANCE_VERSION,1);
   assert.deepEqual(Array.from(ui.TIMER_UI_PREFERENCES),[1,3,0,0,2,0,0,0,0,0,0,0,1,0,0,0,1,0,0,0]);
+  const alarm=pkjsDictionary(outgoing.shift());
+  assert.deepEqual(Array.from(alarm.TIMER_ALARM_PREFERENCES),[1,1,0,0,2,0,0,0,1,0,0,0]);
   const request = pkjsDictionary(outgoing.shift());
   assert.equal(request.ACTIVITY_REQUEST, 1);
   assert.equal(request.ACTIVITY_LAST_REVISION, 0);

@@ -43,3 +43,16 @@ void app_glance_reload(AppGlanceReloadCallback callback, void *context);
 AppGlanceResult app_glance_add_slice(AppGlanceReloadSession *session, AppGlanceSlice slice);
 #define APP_LOG_LEVEL_WARNING 2
 #define APP_LOG(level, ...) do { (void)(level); } while (0)
+
+#ifdef PBL_PLATFORM_EMERY
+typedef enum {SpeakerWaveformSine,SpeakerWaveformSquare} SpeakerWaveform;
+typedef struct {uint8_t midi_note,waveform;uint16_t duration_ms;uint8_t velocity,reserved;} SpeakerNote;
+typedef enum {SpeakerStatusIdle,SpeakerStatusPlaying,SpeakerStatusDraining} SpeakerStatus;
+typedef enum {SpeakerFinishReasonDone,SpeakerFinishReasonStopped,SpeakerFinishReasonPreempted,SpeakerFinishReasonError} SpeakerFinishReason;
+typedef void (*SpeakerFinishedCallback)(SpeakerFinishReason,void *);
+void speaker_set_finish_callback(SpeakerFinishedCallback callback,void *context);
+bool speaker_play_notes(const SpeakerNote *notes,uint32_t count,uint8_t volume);
+bool speaker_is_muted(void);
+SpeakerStatus speaker_get_status(void);
+void speaker_stop(void);
+#endif

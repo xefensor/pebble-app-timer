@@ -9,7 +9,7 @@ Native state, verified banks, deadlines and Wakeups are authoritative. Preserve 
 
 ## Current interaction and product boundaries
 
-Watch timer controls stay on the watch. The development phone page owns independent Text Size and Appearance choices, with saved/pending/applied status. The 34 px contrasting action rail spans every screen row; headers and footers stay inside 166 px. Development rendering uses actual PebbleOS Header, MenuCellTitle, MenuCellSubtitle and Footer profiles from the pinned shared UI candidate. Native LECO number fonts fit dominant values without rescaling. MenuLayer owns measured list, Options and confirmation motion; real Windows own navigation. Preserve the first-row y=50 anchor, identity restoration, all eight timers, complete warnings, safe Keep-first deletion, the stock editor feedback and bounded 144 ms physical-button feedback. App code retains all input, window, timer, alarm and resource lifetime ownership.
+Watch timer controls stay on the watch. The development phone page owns independent Text Size, Appearance and Alarm Sound choices, with saved/pending/applied status. The 34 px contrasting action rail spans every screen row; headers and footers stay inside 166 px. Development rendering uses actual PebbleOS Header, MenuCellTitle, MenuCellSubtitle and Footer profiles from the pinned shared UI candidate. Native LECO number fonts fit dominant values without rescaling. MenuLayer owns measured list, Options and confirmation motion; real Windows own navigation. Preserve the first-row y=50 anchor, identity restoration, all eight timers, complete warnings, safe Keep-first deletion, the stock editor feedback and bounded 144 ms physical-button feedback. App code retains all input, window, timer, alarm and resource lifetime ownership.
 
 ## Source ownership
 
@@ -66,3 +66,26 @@ A runtime resync, explicit Retry or mismatched fresh watch hello rotates the
 positive delivery revision before sending. A delayed receipt from before that
 boundary cannot mark the new delivery applied. If the new revision cannot be
 verified in phone storage, keep the choice pending and suppress old receipts.
+
+
+## Alarm sound preference
+
+A native alarm keeps the existing repeating double vibration every three seconds.
+On Time 2 (Emery), sound defaults on, including an upgrade with no saved sound
+preference: two 150 ms square-wave notes at MIDI 93 (1760 Hz), separated by a
+100 ms rest, at volume 70. Round 2 (Gabbro) has no speaker and retains vibration.
+Quiet Time and speaker mute are respected. Busy/failed sound retries at the next
+normal cadence; it never delays timer operations. Multiple pending timers share
+one feedback scheduler. Only owned sound is cancelled on disable, final verified
+Done/Snooze, Quiet Time or exit. Failed acknowledgement leaves the pending mask
+and feedback active.
+
+TIMER_ALARM_PREFERENCES / RESULT append keys 1028/1029. Their independent 12-byte
+v1 frame contains revision and a sound boolean; reply flags include hello and
+speaker capability. Persistence key 2107 is separate from appearance keys and
+native timer banks. Readback must confirm before applying and returning success.
+An absent record enables sound; a damaged existing record reports failure and
+keeps sound off rather than silently restoring it. Phone storage uses
+`timer-alarm-preferences-v1`, its own settings form, delivery revision and receipt.
+Transport ACK does not establish application. Speaker capability does not change
+timer duration, state, Wakeups, Glance or publisher ownership.

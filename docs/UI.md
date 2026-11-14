@@ -335,3 +335,14 @@ The shared rail uses Gabbro's curved background, 40px width, icon anchors and
 4px held displacement. Full-width row and warning backgrounds continue underneath the curved rail. Confirmation and action context use separate native text layers and paging, so menu motion cannot cut a critical line. Timer state, deadlines, Wakeups and Keep-first deletion are unchanged.
 
 Round menu content indicators occupy a separate right-hand column and follow the actual menu viewport. Text measurement and drawing reserve that column, so arrows cannot cover neighboring titles.
+
+
+## Alarm sound feedback
+
+Time 2 plays a short double beep beside the existing repeating double vibration
+while an alarm awaits acknowledgement. The phone Alarms card has its own Save,
+Discard and watch-delivery status. Sound is on by default and can be disabled;
+Round 2 explains its vibration-only hardware and hides the sound control after
+native capability confirmation. Quiet Time and watch speaker mute suppress
+sound. Display settings remain independent. Actual sound quality, loudness and
+energy use require a physical Time 2; the emulator is not an acoustic test.

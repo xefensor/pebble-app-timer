@@ -12,6 +12,7 @@
 #include "timer_glance.h"
 #include "timer_hourglass.h"
 #include "timer_alarm_feedback.h"
+#include "timer_alarm_preferences.h"
 #include "timer_appearance.h"
 #include "timer_ui_preferences.h"
 #include "timer_wakeup.h"
@@ -111,6 +112,12 @@ static unsigned s_edit_field, s_option, s_confirm_choice;
 static bool s_focused, s_ready;
 static bool s_dark, s_appearance_error;
 static TimerUiPreferences s_ui_preferences;
+static TimerAlarmPreferences s_alarm_preferences;
+static bool s_sound_error;
+static uint8_t s_alarm_reply[TIMER_ALARM_PREFERENCES_BYTES];
+static bool s_alarm_reply_pending,s_transport_alarm;
+static unsigned s_alarm_reply_attempts;
+static uint32_t s_alarm_reply_generation,s_alarm_flight_generation;
 static PreferredContentSize s_system_text_size;
 static uint8_t s_ui_reply[TIMER_UI_PREFERENCES_BYTES];
 static bool s_ui_reply_pending,s_transport_ui;
@@ -459,6 +466,26 @@ static bool prv_flush_ui_reply(void) {
   }
   return true;
 }
+static void prv_queue_alarm_reply(const TimerAlarmPreferences *value,uint8_t status,uint8_t flags) {
+#ifdef PBL_PLATFORM_EMERY
+  flags|=TIMER_ALARM_SPEAKER;
+#endif
+  timer_alarm_preferences_encode(value,status,flags,s_alarm_reply);
+  ++s_alarm_reply_generation;s_alarm_reply_attempts=0;s_alarm_reply_pending=true;
+}
+static bool prv_flush_alarm_reply(void) {
+  if(!s_alarm_reply_pending||s_alarm_reply_attempts>=3)return false;
+  ++s_alarm_reply_attempts;
+  DictionaryIterator *out;
+  if(app_message_outbox_begin(&out)!=APP_MSG_OK)return false;
+  dict_write_data(out,MESSAGE_KEY_TIMER_ALARM_PREFERENCES_RESULT,s_alarm_reply,sizeof(s_alarm_reply));
+  dict_write_end(out);s_transport_busy=true;s_transport_alarm=true;
+  s_alarm_flight_generation=s_alarm_reply_generation;s_alarm_reply_pending=false;
+  if(app_message_outbox_send()!=APP_MSG_OK) {
+    s_transport_busy=false;s_transport_alarm=false;s_alarm_reply_pending=true;
+  }
+  return true;
+}
 static void prv_apply_ui_preferences(const TimerUiPreferences *value) {
   const unsigned size=xoce_ui_effective_text_size(value->text_size,s_system_text_size);
   if(size!=s_text_size){prv_stop_motion();prv_stop_ui_motion();prv_stop_icon_motion();}
@@ -470,6 +497,7 @@ static void prv_apply_ui_preferences(const TimerUiPreferences *value) {
 }
 static void prv_flush(void) {
   if(s_transport_busy||!connection_service_peek_pebble_app_connection())return;
+  if(prv_flush_alarm_reply())return;
   if(prv_flush_ui_reply())return;
   if(s_storage_error||!s_phone_ready)return;
   if (s_retries >= RETRY_LIMIT) { s_share_error = true; prv_refresh_sharing(); return; }
@@ -538,6 +566,9 @@ static void prv_flush(void) {
 
 static void prv_outbox_sent(DictionaryIterator *iter, void *context) {
   (void)context;
+  if(s_transport_alarm||(iter&&dict_find(iter,MESSAGE_KEY_TIMER_ALARM_PREFERENCES_RESULT))) {
+    s_transport_busy=false;s_transport_alarm=false;prv_flush();return;
+  }
   if(s_transport_ui||(iter&&dict_find(iter,MESSAGE_KEY_TIMER_UI_PREFERENCES_RESULT))) {
     s_transport_busy=false;s_transport_ui=false;prv_flush();return;
   }
@@ -553,6 +584,11 @@ static void prv_outbox_sent(DictionaryIterator *iter, void *context) {
 
 static void prv_outbox_failed(DictionaryIterator *iter, AppMessageResult reason, void *context) {
   (void)reason; (void)context;
+  if(s_transport_alarm||(iter&&dict_find(iter,MESSAGE_KEY_TIMER_ALARM_PREFERENCES_RESULT))) {
+    s_transport_busy=false;s_transport_alarm=false;
+    if(s_alarm_flight_generation==s_alarm_reply_generation)s_alarm_reply_pending=true;
+    prv_flush();return;
+  }
   if(s_transport_ui||(iter&&dict_find(iter,MESSAGE_KEY_TIMER_UI_PREFERENCES_RESULT))) {
     s_transport_busy=false;s_transport_ui=false;
     if(s_ui_flight_generation==s_ui_reply_generation)s_ui_reply_pending=true;
@@ -581,6 +617,18 @@ static void prv_reset_publication(void) {
 static void prv_inbox(DictionaryIterator *iter, void *context) {
   (void)context;
   uint32_t value,appearance_version,appearance;
+  const Tuple *alarm_requested=dict_find(iter,MESSAGE_KEY_TIMER_ALARM_PREFERENCES);
+  if(alarm_requested) {
+    TimerAlarmPreferences incoming,confirmed;uint8_t status,flags;
+    if(alarm_requested->type==TUPLE_BYTE_ARRAY&&timer_alarm_preferences_decode(alarm_requested->value->data,
+        alarm_requested->length,&incoming,&status,&flags)&&incoming.revision&&!status&&!flags) {
+      if(timer_alarm_preferences_save(&incoming)&&timer_alarm_preferences_load(&confirmed)) {
+        s_alarm_preferences=confirmed;s_sound_error=false;timer_alarm_feedback_set_sound(confirmed.sound);
+        prv_queue_alarm_reply(&confirmed,0,0);
+      } else {s_sound_error=true;prv_queue_alarm_reply(&incoming,1,0);}
+      prv_refresh();
+    }
+  }
   const Tuple *requested=dict_find(iter,MESSAGE_KEY_TIMER_UI_PREFERENCES);
   if(requested) {
     TimerUiPreferences incoming,confirmed;uint8_t status,flags;
@@ -649,6 +697,7 @@ static void prv_connection(bool connected) {
   if (!pa_publisher_set_connected(&s_publisher, connected)) return;
   if (connected) {
     prv_queue_ui_reply(&s_ui_preferences,TIMER_UI_APPLIED,TIMER_UI_HELLO);
+    prv_queue_alarm_reply(&s_alarm_preferences,s_sound_error?1:0,TIMER_ALARM_HELLO);
     s_retries = 0;
     if (s_have_flight) pa_publisher_retry(&s_publisher);
     prv_flush();
@@ -674,8 +723,8 @@ static TimerUiView prv_view(void) {
       .editing_ready=s_edit_slot>=0&&
           activity_timer_ready(&s_collection.slots[s_edit_slot]),
       .issue=s_storage_error?"Changes not saved":
-          s_alarm_error?"Alarm not set":s_appearance_error?"Not saved":NULL,
-      .appearance_issue=s_appearance_error&&!s_storage_error&&!s_alarm_error,
+          s_alarm_error?"Alarm not set":(s_appearance_error||s_sound_error)?"Not saved":NULL,
+      .appearance_issue=(s_appearance_error||s_sound_error)&&!s_storage_error&&!s_alarm_error,
       .status=prv_status(),
       .hourglass_transition=s_glass_motion&&s_screen==SCREEN_DETAIL,
       .hourglass_angle=(int16_t)(s_glass_motion?
@@ -1496,6 +1545,8 @@ static void prv_init(void) {
   TIMER_DIAG("launch reason=%d wakeup=%d id=%ld cookie=%ld",(int)launch_reason(),wakeup_launch,(long)launch_id,(long)cookie);
   (void)wakeup_launch;(void)launch_id;(void)cookie;
   prv_load();
+  s_sound_error=!timer_alarm_preferences_load(&s_alarm_preferences);
+  timer_alarm_feedback_set_sound(s_alarm_preferences.sound);
   s_appearance_error=!timer_ui_preferences_load(&s_ui_preferences);
   s_dark=timer_ui_preferences_dark(&s_ui_preferences);
   timer_glance_update(&s_collection, prv_now());
@@ -1569,6 +1620,7 @@ static void prv_init(void) {
   s_focused=true;
   window_stack_push(s_window,true);
   prv_sync_windows();
+  prv_queue_alarm_reply(&s_alarm_preferences,s_sound_error?1:0,TIMER_ALARM_HELLO);
   prv_queue_ui_reply(&s_ui_preferences,TIMER_UI_APPLIED,TIMER_UI_HELLO);prv_flush();
 }
 

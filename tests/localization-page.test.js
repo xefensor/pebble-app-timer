@@ -3,14 +3,14 @@ const test=require('node:test'),assert=require('node:assert/strict'),vm=require(
 const page=require('../src/pkjs/settings-page'),data=require('../src/common/translations.json');
 function boot(locale,storage){
  const elements={},events={},timers=new Map(),html=page.config();let sequence=0;
- for(const id of ['theme','text-size','delivery-retry','settings','save','discard','retry','status','actions'])elements[id]={id,value:'',options:[{}],style:{setProperty(){}},setAttribute(){},getBoundingClientRect(){return {height:100};}};
+ for(const id of ['theme','text-size','delivery-retry','settings','save','discard','retry','status','actions','alarm-sound','alarm-delivery-retry','alarm-settings','alarm-save','alarm-discard','alarm-retry','alarm-status','alarm-actions','alarm-controls'])elements[id]={id,value:'',options:[{}],style:{setProperty(){}},setAttribute(){},getBoundingClientRect(){return {height:100};}};
  const root={style:{setProperty(){}}};
  vm.runInNewContext(html.match(/<script>([\s\S]*?)<\/script>/)[1],{
   navigator:{language:locale},document:{documentElement:root,getElementById:id=>elements[id],querySelectorAll:()=>[]},
   window:{innerHeight:800,requestAnimationFrame(){},addEventListener(){}},setTimeout(fn){timers.set(++sequence,fn);return sequence;},clearTimeout(id){timers.delete(id);},Promise,
-  Pebble:{addEventListener:(name,fn)=>{events[name]=fn;},targets:async()=>[{id:'plugin'}],sendMessage:async(target,message)=>{assert.equal(target,'plugin');if(message.type==='saveUiPreferences'){storage.saved=JSON.parse(JSON.stringify(message.settings));storage.applied=false;}return {ok:true,settings:storage.saved,saved:true,delivery:{applied:!!storage.applied,pending:!storage.applied}};}}
+  Pebble:{addEventListener:(name,fn)=>{(events[name]||(events[name]=[])).push(fn);},targets:async()=>[{id:'plugin'}],sendMessage:async(target,message)=>{assert.equal(target,'plugin');if(/AlarmPreferences$/.test(message.type))return {ok:true,settings:{version:1,sound:true},saved:true,supported:true,delivery:{applied:true,pending:false}};if(message.type==='saveUiPreferences'){storage.saved=JSON.parse(JSON.stringify(message.settings));storage.applied=false;}return {ok:true,settings:storage.saved,saved:true,delivery:{applied:!!storage.applied,pending:!storage.applied}};}}
  });
- events.ready({target:'plugin'});
+ events.ready.forEach(fn=>fn({target:'plugin'}));
  return {elements,root,tick(){const entry=timers.entries().next().value;assert.ok(entry);timers.delete(entry[0]);entry[1]();},flush:async()=>{for(let i=0;i<20;++i)await Promise.resolve();}};
 }
 for(const locale of [...data.languages,'nb-NO','nn_NO','DE_de','zz-ZZ'])test('Timer localized save/reopen and watch confirmation: '+locale,async()=>{

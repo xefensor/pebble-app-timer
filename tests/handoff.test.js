@@ -29,7 +29,7 @@ function runtime(file, shared, at = now, options = {}) {
     sendAppMessage(message, success, failure) {
       // These cases isolate the owner-snapshot queue; settings.test.js covers
       // appearance traffic through that same production queue separately.
-      if (message.TIMER_APPEARANCE_VERSION !== undefined) { if (success) success(); return; }
+      if (message.TIMER_APPEARANCE_VERSION !== undefined || message.TIMER_ALARM_PREFERENCES !== undefined) { if (success) success(); return; }
       sent.push(JSON.parse(JSON.stringify(message)));
       if (options.send) return options.send(message, success, failure);
       success();
@@ -50,6 +50,7 @@ function runtime(file, shared, at = now, options = {}) {
           return library.summary.defineSnapshotProvider({...options, now: () => at * 1000});
         }};
       }
+      if(name==='./alarm-preferences'){const preferences=require('../src/pkjs/alarm-preferences');return {...preferences,create:options=>preferences.create({...options,later:()=>1,cancel(){}})};}
       if (name === './ui-preferences') {const preferences=require('../src/pkjs/ui-preferences');return {...preferences,create:options=>preferences.create({...options,later:()=>1,cancel(){}})};}
       if (name === './settings' || name === '../pkjs/settings') return require('../src/pkjs/settings');
       assert.equal(name, 'pebble-activities/publisher');

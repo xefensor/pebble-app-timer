@@ -58,6 +58,19 @@ with tempfile.TemporaryDirectory(prefix="timer-alarm-feedback-test-") as scratch
         str(root / "tests/test_timer_alarm_feedback.c"), "-o", str(binary)
     ], check=True)
     subprocess.run([str(binary)], check=True)
+# Compile the speaker-enabled path independently of the speakerless fallback.
+with tempfile.TemporaryDirectory(prefix="timer-speaker-test-") as scratch:
+    binary=Path(scratch)/"speaker"
+    subprocess.run([os.environ.get("CC","cc"),"-std=c99","-Wall","-Wextra","-Werror","-DPBL_PLATFORM_EMERY",
+        "-I",str(root/"tests/fake-sdk"),str(root/"src/c/timer_alarm_feedback.c"),
+        str(root/"tests/test_timer_alarm_feedback.c"),"-o",str(binary)],check=True)
+    subprocess.run([str(binary)],check=True)
+with tempfile.TemporaryDirectory(prefix="timer-sound-preferences-") as scratch:
+    binary=Path(scratch)/"preferences"
+    subprocess.run([os.environ.get("CC","cc"),"-std=c99","-Wall","-Wextra","-Werror",
+        "-I",str(root/"tests/fake-sdk"),str(root/"src/c/timer_alarm_preferences.c"),
+        str(root/"tests/test_timer_alarm_preferences.c"),"-o",str(binary)],check=True)
+    subprocess.run([str(binary)],check=True)
 with tempfile.TemporaryDirectory(prefix="timer-wakeup-test-") as scratch:
     binary = Path(scratch) / "timer-wakeup"
     subprocess.run([
@@ -84,7 +97,7 @@ with tempfile.TemporaryDirectory(prefix="timer-ui-preferences-test-") as scratch
         str(root / "tests/test_timer_ui_preferences.c"), "-o", str(binary)
     ], check=True)
     subprocess.run([str(binary)], check=True)
-subprocess.run(["node", "--test", str(root / "tests/handoff.test.js"), str(root / "tests/settings.test.js"), str(root / "tests/ui-preferences.test.js")], check=True)
+subprocess.run(["node", "--test", str(root / "tests/handoff.test.js"), str(root / "tests/settings.test.js"), str(root / "tests/ui-preferences.test.js"), str(root / "tests/alarm-preferences.test.js")], check=True)
 with tempfile.TemporaryDirectory(prefix="timer-ui-state-test-") as scratch:
     binary = Path(scratch) / "timer-ui-state"
     subprocess.run([

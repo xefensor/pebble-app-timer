@@ -11,6 +11,14 @@ Install Dynamic or Halftone and choose it as your watchface. Enable activity plu
 
 Sharing needs plugin support in the official Pebble phone app, the required permissions and a connected phone. Weather and battery readings use separate reading settings. Music and notification integration requires Android. Open Activity is optional; you can always open Timer from the watch’s app list.
 
+## Development alarm sound
+
+The local feedback candidate adds repeating double beeps on Time 2 alongside
+vibration. Sound defaults on and has an independent switch in the phone settings.
+Quiet Time and speaker mute are respected. Round 2 uses vibration only. Native
+alarm ownership, countdowns and acknowledgement are unchanged; see [current
+UI](docs/UI.md). Physical sound quality and loudness remain unverified.
+
 ## Download
 
 [Version 0.14.5](https://github.com/xefensor/pebble-app-timer/releases/tag/v0.14.5) is a development prerelease.

@@ -26,3 +26,15 @@ an unused version and live app-owned GitHub support/privacy URLs before upload.
 After all six public releases match the checked hashes, activate the redesigned
 website and then update Store metadata to its hosted product/support/privacy
 pages. The website's live release gate remains mandatory.
+
+
+## Feedback development candidate — 2026-11-14
+
+Local review adds independent alarm sound preference and Time 2 speaker feedback. The app version and UUID are unchanged;
+this is a development candidate, outside the earlier stable acceptance. Portable
+source checks, SDK 4.44 builds and native Emery/Gabbro runs are recorded in
+`Watch/Feedback-Development-2026-11-14` in the workspace. Chromium runs use the
+actual generated settings HTML with a simulated Pebble bridge. Physical watch
+and Android integration are unverified; Timer acoustics and battery impact need
+a physical Time 2. Frozen release PBWs, source/Store archives and their proof
+remain unchanged. No commit is pushed and no artifact is submitted or published.

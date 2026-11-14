@@ -9,3 +9,6 @@ void timer_alarm_feedback_update(uint8_t pending_mask);
 
 /* Cancel the repeat callback and any in-flight alarm vibration on app exit. */
 void timer_alarm_feedback_deinit(void);
+
+/* Independent alarm preference; never changes pending alarms or deadlines. */
+void timer_alarm_feedback_set_sound(bool enabled);

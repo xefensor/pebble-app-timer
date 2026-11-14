@@ -14,7 +14,7 @@ function context(kind,storage){
  const file=require.resolve('../src/'+(kind==='plugin'?'plugin':'pkjs')+'/index'),localRequire=createRequire(file);
  const events={},messages=[],timers=new Map();let config,sequence=0;
  const Pebble={addEventListener(name,fn){events[name]=fn;},registerSourceHandler(){},registerConfigHandler(fn){config=fn;},sendAppMessage(message,ok){messages.push(message);if(ok)ok();}};
- vm.runInNewContext(fs.readFileSync(file,'utf8'),{Pebble,localStorage:storage,require:localRequire,setTimeout(fn){timers.set(++sequence,fn);return sequence;},clearTimeout(id){timers.delete(id);}});
+ vm.runInNewContext(fs.readFileSync(file,'utf8'),{Pebble,localStorage:storage,require(name){if(name==='./alarm-preferences'||name==='./ui-preferences'){const mod=localRequire(name);return {...mod,create:options=>mod.create({...options,later:()=>1,cancel(){}})};}return localRequire(name);},setTimeout(fn){timers.set(++sequence,fn);return sequence;},clearTimeout(id){timers.delete(id);}});
  return {events,messages,receive(message){let value;const respond=r=>{value=JSON.parse(JSON.stringify(r));};if(kind==='plugin')config(message,respond);else events.configmessage({data:message,respond});return value;}};
 }
 test('appearance config preserves a live Android writer through close/restart without touching timer snapshot keys',()=>{
@@ -24,7 +24,7 @@ test('appearance config preserves a live Android writer through close/restart wi
  assert.deepEqual(runtime.messages,[{TIMER_APPEARANCE:1,TIMER_APPEARANCE_VERSION:1}]);
  assert.equal([...data.native.keys()].length,1);
  data.teardown();assert.deepEqual(context('plugin',data.plugin).receive({type:'getSettings'}).settings,dark);
- const reopened=context('pkjs',data.pkjs);reopened.events.ready();assert.equal(reopened.messages[0].TIMER_APPEARANCE,1);assert.equal(reopened.messages[1].ACTIVITY_REQUEST,1);
+ const reopened=context('pkjs',data.pkjs);reopened.events.ready();assert.equal(reopened.messages[0].TIMER_APPEARANCE,1);assert.ok(reopened.messages.some(m=>m.ACTIVITY_REQUEST===1));assert.ok(reopened.messages.some(m=>m.TIMER_ALARM_PREFERENCES));
 });
 test('closed settings plugin changes only isolated appearance configuration',()=>{
  const data=stores(),plugin=context('plugin',data.plugin);

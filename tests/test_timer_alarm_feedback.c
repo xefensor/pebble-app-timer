@@ -17,6 +17,23 @@ static uint64_t s_now, s_motor_until;
 static unsigned s_pulses, s_cancels, s_registrations, s_peak_timers;
 static bool s_quiet, s_fail_timer;
 
+#ifdef PBL_PLATFORM_EMERY
+static unsigned s_beeps,s_stops;static bool s_muted,s_busy,s_sound_failure;
+static SpeakerFinishedCallback s_finished;static void *s_finish_context;
+void speaker_set_finish_callback(SpeakerFinishedCallback callback,void *context){s_finished=callback;s_finish_context=context;}
+bool speaker_is_muted(void){return s_muted;}
+SpeakerStatus speaker_get_status(void){return s_busy?SpeakerStatusPlaying:SpeakerStatusIdle;}
+bool speaker_play_notes(const SpeakerNote *notes,uint32_t count,uint8_t volume){
+ assert(count==3&&volume==70&&!s_muted&&!s_busy&&!s_quiet);
+ assert(notes[0].midi_note==93&&notes[0].waveform==SpeakerWaveformSquare&&notes[0].duration_ms==150);
+ assert(notes[1].midi_note==0&&notes[1].duration_ms==100);
+ assert(notes[2].midi_note==93&&notes[2].duration_ms==150);
+ ++s_beeps;return !s_sound_failure;
+}
+void speaker_stop(void){++s_stops;if(s_finished)s_finished(SpeakerFinishReasonStopped,s_finish_context);}
+static void sound_tests(void);
+#endif
+
 static unsigned active_timers(void) {
   unsigned count = 0;
   for (unsigned i = 0; i < 4; ++i) if (s_timers[i].active) ++count;
@@ -79,6 +96,10 @@ static void reset(void) {
   s_now = s_motor_until = 0;
   s_pulses = s_cancels = s_registrations = s_peak_timers = 0;
   s_quiet = s_fail_timer = false;
+  timer_alarm_feedback_set_sound(true);
+#ifdef PBL_PLATFORM_EMERY
+  s_beeps=s_stops=0;s_muted=s_busy=s_sound_failure=false;
+#endif
 }
 
 static void repeat_and_cancel(void) {
@@ -166,11 +187,33 @@ static void registration_failure_and_reopen(void) {
   timer_alarm_feedback_deinit();
 }
 
+#ifdef PBL_PLATFORM_EMERY
+static void sound_tests(void){
+ reset();timer_alarm_feedback_update(1);assert(s_beeps==1);
+ timer_alarm_feedback_update(3);timer_alarm_feedback_update(2);assert(s_beeps==1&&!s_stops);
+ assert(s_finished);s_finished(SpeakerFinishReasonDone,s_finish_context);
+ advance(3000);assert(s_beeps==2);timer_alarm_feedback_update(0);assert(s_stops==1);
+ reset();s_busy=true;timer_alarm_feedback_update(1);assert(!s_beeps&&s_pulses==1);
+ timer_alarm_feedback_update(0);assert(!s_stops); /* Never cancel another owner's sound. */
+ reset();s_muted=true;timer_alarm_feedback_update(1);assert(!s_beeps&&s_pulses==1);
+ s_muted=false;advance(3000);assert(s_beeps==1);
+ timer_alarm_feedback_set_sound(false);assert(s_stops==1);advance(3000);assert(s_beeps==1&&s_pulses==3);
+ timer_alarm_feedback_set_sound(true);advance(3000);assert(s_beeps==2);
+ s_quiet=true;timer_alarm_feedback_update(1);assert(s_stops==2);
+ s_quiet=false;s_finished(SpeakerFinishReasonPreempted,s_finish_context);s_busy=true;advance(3000);assert(s_beeps==2);
+ timer_alarm_feedback_deinit();assert(s_stops==2&&s_finished==NULL);
+ reset();s_sound_failure=true;timer_alarm_feedback_update(1);assert(s_beeps==1&&s_pulses==1);
+ advance(3000);assert(s_beeps==2&&s_pulses==2);timer_alarm_feedback_deinit();assert(!s_stops);
+}
+#endif
 int main(void) {
   repeat_and_cancel();
   multiple_pending_and_failed_acknowledgement();
   quiet_time_suppresses_and_resumes();
   registration_failure_and_reopen();
+#ifdef PBL_PLATFORM_EMERY
+  sound_tests();
+#endif
   puts("timer alarm feedback: repeated native pulses, Quiet Time, pending masks, cancellation and timer failure recovery passed");
   return 0;
 }

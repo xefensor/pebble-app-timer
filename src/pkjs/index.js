@@ -3,6 +3,7 @@
 var activities = require('pebble-activities/publisher');
 var settings = require('./settings');
 var preferences = require('./ui-preferences');
+var alarmPreferences = require('./alarm-preferences');
 var publisher = activities.createPublisher({
   storage: localStorage,
   pluginUuid: '50e9ef12-a5ab-4369-a3b5-3447bfba5151',
@@ -44,6 +45,7 @@ function send(message, failure, success) {
 }
 
 var uiPreferences=preferences.create({storage:localStorage,send:send});
+var alarmSettings=alarmPreferences.create({storage:localStorage,send:send});
 
 var appearanceGeneration = 0, appearanceTimer = null;
 function appearance(chosen) {
@@ -67,6 +69,7 @@ Pebble.addEventListener('configmessage', function(event) {
   if (!event || typeof event.respond !== 'function') return;
   var message=event.message||event.data||event.payload||event;
   if(typeof message==='string'){try{message=JSON.parse(message);}catch(error){}}
+  if(alarmPreferences.isRequest(message)){alarmSettings.handle(message,function(response){event.respond(response);});return;}
   if(preferences.isRequest(message)){uiPreferences.handle(message,function(response){event.respond(response);});return;}
   settings.handle(localStorage,message,function(response){event.respond(response);},appearance);
 });
@@ -87,12 +90,14 @@ Pebble.addEventListener('ready', function () {
   // default after a phone-store reset. Native startup keeps the last confirmed
   // appearance until this bounded update arrives.
   uiPreferences.reconcile(true);
+  alarmSettings.reconcile(true);
   requestSnapshot();
 });
 
 Pebble.addEventListener('appmessage', function (event) {
   var payload = event && event.payload;
   if(!payload)return;
+  if(payload.TIMER_ALARM_PREFERENCES_RESULT!==undefined)alarmSettings.receive(payload.TIMER_ALARM_PREFERENCES_RESULT);
   if(payload.TIMER_UI_PREFERENCES_RESULT!==undefined)uiPreferences.receive(payload.TIMER_UI_PREFERENCES_RESULT);
   if(payload.ACTIVITY_SCHEMA_VERSION===undefined)return;
   var receipt = publisher.handleMessage(payload);

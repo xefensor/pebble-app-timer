@@ -64,8 +64,10 @@ Pebble.registerSourceHandler(function (request, respond) {
 if (typeof Pebble.registerConfigHandler === 'function') {
   var settings = require('../pkjs/settings');
   var preferences=require('../pkjs/ui-preferences');
+  var alarmPreferences=require('../pkjs/alarm-preferences');
   Pebble.registerConfigHandler(function(message, respond) {
     if(typeof message==='string'){try{message=JSON.parse(message);}catch(error){}}
+    if(alarmPreferences.isRequest(message)){alarmPreferences.create({storage:localStorage}).handle(message,respond);return;}
     if(preferences.isRequest(message)){preferences.create({storage:localStorage}).handle(message,respond);return;}
     settings.handle(localStorage,message,respond);
   });
