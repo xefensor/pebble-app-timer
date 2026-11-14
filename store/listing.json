@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "name": "Timer",
   "author": "Xef",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "uuid": "50e9ef12-a5ab-4369-a3b5-3447bfba5151",
   "type": "watchapp",
   "category": "Tools & Utilities",
@@ -41,7 +41,7 @@
     ]
   },
   "remaining_publication_gates": [
-    "Verify Developer Dashboard ownership, existing listing and unused numeric version",
+    "Verify Developer Dashboard ownership, existing listing and availability of the new numeric version",
     "Verify live app-owned support/privacy URLs",
     "Publish exact checked GitHub and Store artifacts, then activate website links"
   ],
