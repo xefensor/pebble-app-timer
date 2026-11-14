@@ -1,10 +1,10 @@
 {
   "schemaVersion": 1,
   "originalArtwork": true,
-  "family": "XOCE 2026-11-14",
+  "family": "XOCE tactile 2026-11-14",
   "files": {
-    "icon-source.svg": "ac460fa7475904816fe9cfbf1049200c1665b863ea953acc66ddfae0e10ed65c",
-    "icon-small-80.png": "a6562c37a587a613cc363f7ef154aba5cfc6031eccb4cc3f753f69b60aed0cc6",
-    "icon-large-144.png": "461fbc319f51eef6aabeff092635b3efed4f6b6c04063e8d72dcec02e378098f"
+    "icon-source.svg": "f3ea178684f771b781e92dd24dfc51be1e1cf52b36269f52143ad019e805beb2",
+    "icon-small-80.png": "18895d734317971bb222baeca5005a42a07f0839fc7cf5bdd82528628b83dde5",
+    "icon-large-144.png": "91373b433c8ad2299644cb20c9407f0e12d910bd0e4a7f73cabf7376ecee6799"
   }
 }
