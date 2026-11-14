@@ -1,9 +1,4 @@
-Timer 1.0.2
-
-First stable preparation for Pebble Time 2 and Round 2.
-
-Save up to eight timers and create, pause, resume, reset and reuse them with the watch buttons. A finished timer can be snoozed for one minute or dismissed.
-
-Time 2 adds an optional audible alarm alongside vibration. Sound defaults on and respects system mute and Quiet Time; Round 2 uses vibration. The sound preference is independent of appearance settings.
-
-A countdown can appear as an Activity on Dynamic, Halftone or Dashboard. This optional sharing needs Pebble plugin support and a connected phone. Timer continues to own the countdown and alarm on the watch.
+- New XOCE launcher icon.
+- Fixed delayed delivery checks interfering with edits and Save.
+- Clarified the separate Watch display and Alarm sound save controls.
+- More stable status messages and clearer appearance fallback choices.

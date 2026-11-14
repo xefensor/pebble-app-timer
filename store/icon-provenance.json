@@ -1,23 +1,52 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "originalArtwork": true,
-  "family": "XOCE Pebble glyphs 2026-11-14",
-  "icon_tintable": true,
-  "ink": "#000000",
+  "family": "XOCE optical icon family 2026-11-14",
   "background": "transparent",
+  "ink": "#000000",
   "alphaValues": [
     0,
     255
   ],
-  "pixelGrid": [
-    16,
-    16
+  "storeIconSizes": [
+    80,
+    144
   ],
-  "format": "8-bit RGBA PNG containing a single-colour binary glyph; no antialiasing, gradients, shadows or background plate.",
-  "source": "https://appstore-api.repebble.com/#changelog",
+  "storeIconFieldsApply": true,
+  "icon_tintable": true,
+  "format": "Store PNGs use a single black glyph with binary alpha. Website SVGs use the same silhouette and render smoothly at small UI sizes.",
+  "source": "artwork/generate-icons.py",
   "files": {
-    "icon-source.svg": "5d69e08f276ce0a00c1b6288bc0f916c2eac0500cde5e03662e68dad88c779ea",
-    "icon-small-80.png": "f7b4b426d9c186da905b745e8e6b5bff4d3775cf1c82ff05557eaa2418ec669b",
-    "icon-large-144.png": "9fd8016f72a23afa108e8905ddd7b41228e9e77f674e6c4b81faf8220b5b7151"
-  }
+    "product-mark.svg": "0d826279f9c5fb26f2991d96d7bf6f858354c8911b86918277efd1ed90dfb687",
+    "product-mark-144.png": "83fa0b6c60878ac9ca4e90af7539bd09c7ab3220cf50978984cd023f6f4f07cc",
+    "icon-source.svg": "0d826279f9c5fb26f2991d96d7bf6f858354c8911b86918277efd1ed90dfb687",
+    "icon-small-80.png": "256e5459cc48de332b62a9254d9262706a0286061a9717a1ecda7f290e354d85",
+    "icon-large-144.png": "83fa0b6c60878ac9ca4e90af7539bd09c7ab3220cf50978984cd023f6f4f07cc"
+  },
+  "launcherCandidates": {
+    "white": {
+      "file": "artwork/icons/timer/launcher-white-25.png",
+      "sha256": "312ba8b7115c2b79253a472ff4dd4aabfbca045ccf11283cb90bb81e705d4e7d"
+    },
+    "black": {
+      "file": "artwork/icons/timer/launcher-black-25.png",
+      "sha256": "4cad15d0ee03f627b2460c263a6cb50cd211908b42588b0eb3751dcbf930c156"
+    }
+  },
+  "launcherIntegrated": true,
+  "launcherIntegration": {
+    "version": "1.0.3",
+    "pbw": "release-candidates/pbws/Timer-1.0.3.pbw",
+    "pbwSha256": "60d315c285f9a86e23d4b6d2b93a461cf19d1efdee41f30266eac36f303aab8c",
+    "foreground": "black",
+    "resource": "release-candidates/sources/timer/resources/images/menu-icon.png",
+    "published": false,
+    "scope": "Fresh candidate build only; supplied release PBW and source stay unchanged."
+  },
+  "launcherNote": "Native candidates use black 25px glyphs: selected and unselected launcher/picker rows were checked in SDK 4.44.3 emulators. Supplied release PBWs remain unchanged.",
+  "rules": [
+    "https://developer.repebble.com/guides/appstore-publishing/preparing-a-submission/",
+    "https://appstore-api.repebble.com/#changelog",
+    "https://developer.repebble.com/guides/app-resources/images/#menu-icon-in-the-launcher"
+  ]
 }

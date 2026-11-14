@@ -1,0 +1,28 @@
+{
+  "slug": "timer",
+  "name": "Timer",
+  "version": "1.0.3",
+  "uuid": "50e9ef12-a5ab-4369-a3b5-3447bfba5151",
+  "pbw": "Timer-1.0.3.pbw",
+  "pbwSha256": "33bc8ee06bbcc084a70d133a6f126bc4bcb0b90f3e46f5823dc78ea5b38171f6",
+  "platforms": [
+    "emery",
+    "gabbro"
+  ],
+  "nativeGalleryReuseProof": "store/final-gallery-reuse.json",
+  "baselineVersion": "1.0.2",
+  "sourceTests": "PASS",
+  "freshBuildAndArtifactAudit": "PASS",
+  "sdkVersion": "4.44",
+  "nodeVersion": "22.23.4",
+  "pythonVersion": "3.12.15",
+  "pebbleToolVersion": "5.1.2",
+  "nativeEmulatorRuns": 2,
+  "nativeScreenshots": "Fresh final-binary native smoke and launcher inspection; historical feature galleries reused only with byte compatibility proof.",
+  "syntheticBrowserEvidence": "Supplied six-page review and local regression suites; no real phone bridge claim.",
+  "physicalDeviceTest": false,
+  "liveProviderTest": false,
+  "storeSubmitted": false,
+  "inputFullArchiveSha256": "49b575ddc22e7dd990e1000d4dbdce900a899e7c4bde31fd8ee59a4a593f2b9f",
+  "inputHandoffArchiveSha256": "fcf494a1d87e86115f6af2161decd5a717b601b60d8a558daaee8dba6c157ace"
+}

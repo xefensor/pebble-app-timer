@@ -1,16 +1,16 @@
-Set a countdown on your Pebble and keep its duration ready for next time.
+Reusable countdowns, right on your Pebble.
 
-Timer holds up to eight timers, controlled with the watch buttons. Set hours, minutes and seconds, start a countdown, and return whenever you need to pause or reuse it. Your saved timers survive closing and reopening the app.
+Save up to eight timers and control them with the watch buttons. Choose hours, minutes and seconds, start a countdown, then keep its duration ready for next time. Saved timers survive closing and reopening the app.
 
-- Create timers from five seconds to 24 hours.
+- Set a duration from five seconds to 24 hours.
 - Pause, resume, reset or delete a timer on the watch.
-- Read the remaining time on a large countdown screen.
-- When a timer finishes, snooze its alarm for one minute or choose Done to dismiss it.
-- Use an optional audible alarm on Time 2, alongside vibration. Round 2 uses vibration. Sound respects system mute and Quiet Time.
-- Choose Small, Medium, Large or Follow Pebble text and your display appearance. Available in 17 languages.
+- See the remaining time on a large countdown screen.
+- Snooze a finished timer for one minute, or choose Done to dismiss it.
+- Use vibration, with optional sound on Time 2. Round 2 uses vibration; sound respects system mute and Quiet Time.
+- Choose text size and a Light or Dark watch appearance. Available in 17 interface languages.
 
-Timer runs its countdowns on the watch. Successfully scheduled alarms work without a connected phone.
+Countdowns run on the watch. A scheduled alarm does not need a connected phone.
 
-Want the countdown on your everyday clock screen? Add Dynamic or Halftone, enable activity plugins in its settings and show Timer in its activity list. Return to that watchface to see the remaining time. This optional sharing needs the official Pebble phone app's plugin support and a connected phone. Timer still handles the alarm and controls; Dashboard can also display its activity.
+Want to keep a countdown on your watchface? Dynamic and Halftone can display Timer as an Activity, an ongoing update with the time remaining. Dashboard can display it too. This optional sharing needs a connected phone and plugin support enabled in the official Pebble phone app. Open Timer to pause, resume or change it.
 
-Free. For Pebble Time 2 and Round 2. No account, advertisements or analytics.
+Free. For Pebble Time 2 and Round 2. Part of XOCE. No XOCE account, ads or analytics.

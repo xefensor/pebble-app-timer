@@ -13,7 +13,7 @@ function behavior(initial) {
   Array.prototype.forEach.call(document.querySelectorAll('[data-t]'),function(el){el.textContent=t(el.getAttribute('data-t'));});
   var field=document.getElementById('theme'),size=document.getElementById('text-size'),deliveryRetry=document.getElementById('delivery-retry'),form=document.getElementById('settings');
   var save=document.getElementById('save'),discard=document.getElementById('discard'),retry=document.getElementById('retry'),status=document.getElementById('status'),actions=document.getElementById('actions');
-  var loaded=false,repairing=false,uncertain=false,saved='',phase='loading',operation=0,timer=null,bridgeReady=false,pkjsReady=false,layoutPending=false,lastHeight='',lastFlow=null,poll=null,lastDelivery=null,lastExplicit='light';
+  var loaded=false,repairing=false,uncertain=false,saved='',phase='loading',operation=0,timer=null,bridgeReady=false,pkjsReady=false,layoutPending=false,lastHeight='',lastFlow=null,poll=null,pollGeneration=0,lastDelivery=null,lastExplicit='light';
   function normalize(value){return value&&value.version===2&&Object.keys(value).length===4&&['follow','small','medium','large'].indexOf(value.textSize)>=0&&['follow','light','dark'].indexOf(value.appearance)>=0&&['light','dark'].indexOf(value.lastExplicit)>=0&&(value.appearance==='follow'||value.appearance===value.lastExplicit)?{version:2,textSize:value.textSize,appearance:value.appearance,lastExplicit:value.lastExplicit}:null;}
   function value(){return normalize({version:2,textSize:size.value,appearance:field.value,lastExplicit:lastExplicit});}
   function edited(){return loaded&&JSON.stringify(value())!==saved;}
@@ -29,26 +29,31 @@ function behavior(initial) {
       if(size!==lastHeight){document.documentElement.style.setProperty('--actions-height',size);lastHeight=size;}
     });
   }
-  function say(key,error){status.textContent=t(key);status.className=error?'status error':'status';layout();}
+  function say(key,error){var message=t(key),className=error?'status error':'status';if(status.textContent!==message)status.textContent=message;if(status.className!==className)status.className=className;layout();}
   function controls(){
+    var followChoice=document.getElementById('appearance-follow');
+    if(followChoice){followChoice.disabled=true;followChoice.hidden=field.value!=='follow';followChoice.textContent=t('follow')+' — '+t(lastExplicit);}
     [field,size].forEach(function(select){select.options[0].textContent=t(phase==='load-error'?'notLoaded':'loadingChoice');select.disabled=!loaded||phase==='saving';});
     save.disabled=!loaded||phase==='saving'||!dirty()||!value();save.textContent=t(phase==='saving'?'saving':'save');
     discard.hidden=!loaded;discard.disabled=phase==='saving'||!uncertain&&!edited();discard.textContent=t(uncertain?'reload':'discard');retry.hidden=phase!=='load-error';
     deliveryRetry.hidden=!loaded||!lastDelivery||lastDelivery.applied||dirty();deliveryRetry.disabled=phase!=='ready';
   }
-  function stopPoll(){if(poll!==null)clearTimeout(poll);poll=null;}
+  function stopPoll(){pollGeneration++;if(poll!==null)clearTimeout(poll);poll=null;}
   function showDelivery(){
     controls();say(lastDelivery&&lastDelivery.applied?'applied':lastDelivery&&lastDelivery.error?'watchFailed':'pending',!!(lastDelivery&&lastDelivery.error));
     stopPoll();if(lastDelivery&&!dirty())poll=setTimeout(function(){poll=null;checkDelivery(false);},lastDelivery.applied?5000:2000);
   }
   function checkDelivery(force){
     if(!loaded||phase!=='ready'||dirty())return;
+    var generation=pollGeneration;
+    function current(){return generation===pollGeneration&&loaded&&phase==='ready'&&!dirty();}
     settingsTarget(function(target){
-      if(!loaded||phase!=='ready'||dirty())return;
+      if(!current())return;
       request({type:force?'retryUiPreferences':'getUiPreferences'},function(response){
-        if(!dirty()&&response&&response.ok&&JSON.stringify(normalize(response.settings))===saved){lastDelivery=response.delivery;showDelivery();}else if(!dirty())showDelivery();
-      },function(){if(!dirty())showDelivery();},target);
-    },function(){if(!dirty())showDelivery();});
+        if(!current())return;
+        if(response&&response.ok&&JSON.stringify(normalize(response.settings))===saved){lastDelivery=response.delivery;showDelivery();}else showDelivery();
+      },function(){if(current())showDelivery();},target);
+    },function(){if(current())showDelivery();});
   }
   function apply(chosen,repair,response){
     field.value=chosen.appearance;size.value=chosen.textSize;lastExplicit=chosen.lastExplicit;loaded=true;repairing=!!repair||!!(response&&response.saved===false);uncertain=false;saved=JSON.stringify(chosen);phase='ready';lastDelivery=response&&response.delivery||null;controls();
@@ -118,13 +123,13 @@ function alarmBehavior(initial) {
   Array.prototype.forEach.call(document.querySelectorAll('[data-t]'),function(el){el.textContent=t(el.getAttribute('data-t'));});
   var field=document.getElementById('alarm-sound'),deliveryRetry=document.getElementById('alarm-delivery-retry'),form=document.getElementById('alarm-settings'),supported=null;
   var save=document.getElementById('alarm-save'),discard=document.getElementById('alarm-discard'),retry=document.getElementById('alarm-retry'),status=document.getElementById('alarm-status'),actions=document.getElementById('alarm-actions');
-  var loaded=false,repairing=false,uncertain=false,saved='',phase='loading',operation=0,timer=null,bridgeReady=false,pkjsReady=false,poll=null,lastDelivery=null;
+  var loaded=false,repairing=false,uncertain=false,saved='',phase='loading',operation=0,timer=null,bridgeReady=false,pkjsReady=false,poll=null,pollGeneration=0,lastDelivery=null;
   function normalize(v){return v&&v.version===1&&typeof v.sound==='boolean'?{version:1,sound:v.sound}:null;}
   function value(){return normalize({version:1,sound:field.value==='on'});}
   function edited(){return loaded&&JSON.stringify(value())!==saved;}
   function dirty(){return loaded&&(repairing||uncertain||edited());}
   function layout(){}
-  function say(key,error){status.textContent=t(key);status.className=error?'status error':'status';layout();}
+  function say(key,error){var message=t(key),className=error?'status error':'status';if(status.textContent!==message)status.textContent=message;if(status.className!==className)status.className=className;layout();}
   function controls(){
     [field].forEach(function(select){select.options[0].textContent=t(phase==='load-error'?'notLoaded':'loadingChoice');select.disabled=!loaded||phase==='saving'||supported===false;});
     document.getElementById('alarm-controls').hidden=supported===false;
@@ -133,19 +138,22 @@ function alarmBehavior(initial) {
     discard.hidden=!loaded;discard.disabled=phase==='saving'||!uncertain&&!edited();discard.textContent=t(uncertain?'reload':'discard');retry.hidden=phase!=='load-error';
     deliveryRetry.hidden=!loaded||!lastDelivery||lastDelivery.applied||dirty();deliveryRetry.disabled=phase!=='ready';
   }
-  function stopPoll(){if(poll!==null)clearTimeout(poll);poll=null;}
+  function stopPoll(){pollGeneration++;if(poll!==null)clearTimeout(poll);poll=null;}
   function showDelivery(){
     controls();say(lastDelivery&&lastDelivery.applied?'applied':lastDelivery&&lastDelivery.error?'watchFailed':'pending',!!(lastDelivery&&lastDelivery.error));
     stopPoll();if(lastDelivery&&!dirty())poll=setTimeout(function(){poll=null;checkDelivery(false);},lastDelivery.applied?5000:2000);
   }
   function checkDelivery(force){
     if(!loaded||phase!=='ready'||dirty())return;
+    var generation=pollGeneration;
+    function current(){return generation===pollGeneration&&loaded&&phase==='ready'&&!dirty();}
     settingsTarget(function(target){
-      if(!loaded||phase!=='ready'||dirty())return;
+      if(!current())return;
       request({type:force?'retryAlarmPreferences':'getAlarmPreferences'},function(response){
-        if(!dirty()&&response&&response.ok&&JSON.stringify(normalize(response.settings))===saved){lastDelivery=response.delivery;supported=typeof response.supported==='boolean'?response.supported:supported;showDelivery();}else if(!dirty())showDelivery();
-      },function(){if(!dirty())showDelivery();},target);
-    },function(){if(!dirty())showDelivery();});
+        if(!current())return;
+        if(response&&response.ok&&JSON.stringify(normalize(response.settings))===saved){lastDelivery=response.delivery;supported=typeof response.supported==='boolean'?response.supported:supported;showDelivery();}else showDelivery();
+      },function(){if(current())showDelivery();},target);
+    },function(){if(current())showDelivery();});
   }
   function apply(chosen,repair,response){
     field.value=chosen.sound?'on':'off';supported=response&&typeof response.supported==='boolean'?response.supported:supported;loaded=true;repairing=!!repair||!!(response&&response.saved===false);uncertain=false;saved=JSON.stringify(chosen);phase='ready';lastDelivery=response&&response.delivery||null;controls();
@@ -207,6 +215,7 @@ function alarmBehavior(initial) {
 function render(){return [
   '<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Timer</title><style id="xoce-settings-style">',
   settingsStyle,
-  '</style></head><body><main><header><h1>Timer</h1><p data-t="intro">Watch display · Alarm sound</p></header><section class="card" aria-labelledby="activity-help-heading"><h2 id="activity-help-heading" data-t="activityTitle">What is an activity?</h2><p class="hint" data-t="activityDefinition">Activities are live updates shown by compatible XOCE apps and watchfaces, such as a countdown, music or a new notification.</p><p class="hint" data-t="activityExample">Start a countdown in Timer, then return to Dynamic or Halftone to see the time remaining. Timer still runs the countdown and alarm.</p><p class="hint" data-t="activityConnection">Sharing activities between apps needs plugin support and a connected phone. Timer works on its own without sharing.</p></section><form id="alarm-settings" class="card"><h2 data-t="alarmHeading">Alarms</h2><p class="hint" data-t="alarmHardware">Time 2 can play alarm sounds. Round 2 uses vibration only.</p><div id="alarm-controls"><label for="alarm-sound" data-t="alarmSound">Alarm sound</label><select id="alarm-sound" disabled><option value="" disabled hidden selected data-t="loadingChoice">Loading saved choice…</option><option value="on" data-t="soundOn">Sound and vibration</option><option value="off" data-t="soundOff">Vibration only</option></select><p class="hint" data-t="soundMute">Sound respects Quiet Time and the watch’s speaker mute.</p></div><div id="alarm-actions"><p id="alarm-status" role="status" aria-live="polite" class="status" data-t="loading">Loading settings…</p><div class="actions"><button id="alarm-delivery-retry" type="button" hidden data-t="retryWatch">Retry watch delivery</button><button id="alarm-retry" type="button" hidden data-t="retry">Retry loading</button><button id="alarm-discard" type="button" disabled data-t="discard">Discard</button><button id="alarm-save" type="submit" disabled data-t="save">Save</button></div></div></form><form id="settings"><section class="card"><h2 data-t="display">Watch display</h2><label for="text-size" data-t="textSize">Text size</label><select id="text-size" disabled><option value="" disabled hidden selected data-t="loadingChoice">Loading saved choice…</option><option value="follow" data-t="follow">Follow Pebble</option><option value="small" data-t="small">Small</option><option value="medium" data-t="medium">Medium</option><option value="large" data-t="large">Large</option></select><label for="theme" data-t="theme">Watch appearance</label><select id="theme" aria-describedby="theme-help" disabled><option value="" disabled hidden selected data-t="loadingChoice">Loading saved choice…</option><option value="follow" data-t="follow">Follow Pebble</option><option value="light" data-t="light">Light</option><option value="dark" data-t="dark">Dark</option></select><p id="theme-help" class="hint" data-t="appearanceUnavailable">Follow Pebble appearance is unavailable on this build. It uses your last Light or Dark choice.</p></section></form><details class="card"><summary data-t="help">Setup &amp; help</summary><p data-t="activityTimerSetup">To see a countdown on your watchface, install Dynamic or Halftone and choose it as your clock. In its settings, turn on activity plugins, show Timer in the activity list and save.</p><p data-t="helpText">Create, pause, reset and manage timers on the watch.</p><p data-t="confirmedDelivery">Settings saved on your phone stay pending until Timer is open, connected and confirms them.</p></details></main><footer id="actions"><div class="footer-inner"><p id="status" class="status" role="status" aria-live="polite" data-t="loading">Loading settings…</p><div class="actions"><button id="delivery-retry" type="button" hidden data-t="retryWatch">Retry watch delivery</button><button id="retry" type="button" hidden data-t="retry">Retry loading</button><button id="discard" type="button" disabled data-t="discard">Discard</button><button id="save" type="submit" form="settings" disabled data-t="save">Save</button></div></div></footer><script>var timerSettingsCatalogue=',JSON.stringify(require('../common/translations.json')).replace(/</g,'\\u003c'),';(',behavior.toString(),')(timerSettingsCatalogue);(',alarmBehavior.toString(),')(timerSettingsCatalogue);</script></body></html>'
+  '.footer-scope{font-size:14px;font-weight:650;margin:0 0 4px}',
+  '</style></head><body><main><header><h1>Timer</h1><p data-t="intro">Watch display · Alarm sound</p></header><details class="card" aria-labelledby="activity-help-heading"><summary id="activity-help-heading" data-t="activityTitle">What is an activity?</summary><p class="hint" data-t="activityDefinition">Activities are live updates shown by compatible XOCE apps and watchfaces, such as a countdown, music or a new notification.</p><p class="hint" data-t="activityExample">Start a countdown in Timer, then return to Dynamic or Halftone to see the time remaining. Timer still runs the countdown and alarm.</p><p class="hint" data-t="activityConnection">Sharing activities between apps needs plugin support and a connected phone. Timer works on its own without sharing.</p></details><form id="alarm-settings" class="card"><h2 id="alarm-save-scope" data-t="alarmHeading">Alarms</h2><p class="hint" data-t="alarmHardware">Time 2 can play alarm sounds. Round 2 uses vibration only.</p><div id="alarm-controls"><label for="alarm-sound" data-t="alarmSound">Alarm sound</label><select id="alarm-sound" disabled><option value="" disabled hidden selected data-t="loadingChoice">Loading saved choice…</option><option value="on" data-t="soundOn">Sound and vibration</option><option value="off" data-t="soundOff">Vibration only</option></select><p class="hint" data-t="soundMute">Sound respects Quiet Time and the watch’s speaker mute.</p></div><div id="alarm-actions"><p id="alarm-status" role="status" aria-live="polite" class="status" data-t="loading">Loading settings…</p><div class="actions"><button id="alarm-delivery-retry" type="button" hidden data-t="retryWatch">Retry watch delivery</button><button id="alarm-retry" type="button" hidden data-t="retry">Retry loading</button><button id="alarm-discard" type="button" disabled data-t="discard">Discard</button><button id="alarm-save" type="submit" aria-describedby="alarm-save-scope alarm-status" disabled data-t="save">Save</button></div></div></form><form id="settings"><section class="card"><h2 data-t="display">Watch display</h2><label for="text-size" data-t="textSize">Text size</label><select id="text-size" aria-describedby="status" disabled><option value="" disabled hidden selected data-t="loadingChoice">Loading saved choice…</option><option value="follow" data-t="follow">Follow Pebble</option><option value="small" data-t="small">Small</option><option value="medium" data-t="medium">Medium</option><option value="large" data-t="large">Large</option></select><label for="theme" data-t="theme">Watch appearance</label><select id="theme" aria-describedby="theme-help status" disabled><option value="" disabled hidden selected data-t="loadingChoice">Loading saved choice…</option><option id="appearance-follow" value="follow" disabled data-t="follow">Follow Pebble</option><option value="light" data-t="light">Light</option><option value="dark" data-t="dark">Dark</option></select><p id="theme-help" class="hint" data-t="appearanceUnavailable">Follow Pebble appearance is unavailable on this build. It uses your last Light or Dark choice.</p></section></form><details class="card"><summary data-t="help">Setup &amp; help</summary><p data-t="activityTimerSetup">To see a countdown on your watchface, install Dynamic or Halftone and choose it as your clock. In its settings, turn on activity plugins, show Timer in the activity list and save.</p><p data-t="helpText">Create, pause, reset and manage timers on the watch.</p><p data-t="confirmedDelivery">Settings saved on your phone stay pending until Timer is open, connected and confirms them.</p></details></main><footer id="actions"><div class="footer-inner"><p id="display-save-scope" class="footer-scope" data-t="display">Watch display</p><p id="status" class="status" role="status" aria-live="polite" data-t="loading">Loading settings…</p><div class="actions"><button id="delivery-retry" type="button" hidden data-t="retryWatch">Retry watch delivery</button><button id="retry" type="button" hidden data-t="retry">Retry loading</button><button id="discard" type="button" disabled data-t="discard">Discard</button><button id="save" type="submit" form="settings" aria-describedby="display-save-scope status" disabled data-t="save">Save</button></div></div></footer><script>var timerSettingsCatalogue=',JSON.stringify(require('../common/translations.json')).replace(/</g,'\\u003c'),';(',behavior.toString(),')(timerSettingsCatalogue);(',alarmBehavior.toString(),')(timerSettingsCatalogue);</script></body></html>'
 ].join('\n');}
 module.exports={config:render};

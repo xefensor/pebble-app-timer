@@ -52,7 +52,9 @@ def audit(pbw, root=ROOT):
     media = package['pebble']['resources']['media']
     font_media = [m for m in media if m['type']=='font']
     if not font_media:
-        require(media==[{'type':'raw','name':'LOCALIZATION','file':'localization.bin'}], 'Native resources differ')
+        require(media==[{'type':'raw','name':'LOCALIZATION','file':'localization.bin'},
+                        {'type':'bitmap','name':'IMAGE_MENU_ICON','file':'images/menu-icon.png','menuIcon':True}],
+                'Native locale or launcher resources differ')
         with zipfile.ZipFile(pbw) as archive:
             info=json.loads(archive.read('appinfo.json'))
             require(info['resources']['media']==media, 'Packaged resource identity differs')

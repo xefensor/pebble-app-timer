@@ -1,0 +1,102 @@
+{
+  "schemaVersion": 1,
+  "result": "PASS",
+  "error": null,
+  "product": "timer",
+  "version": "1.0.3",
+  "platform": "gabbro",
+  "sourcePbw": "sources/timer/build/candidate/Timer-1.0.3.pbw",
+  "sourcePbwSha256": "33bc8ee06bbcc084a70d133a6f126bc4bcb0b90f3e46f5823dc78ea5b38171f6",
+  "nativePayloadSha256": {
+    "gabbro/app_resources.pbpack": "2a31a723885db34bf57f910ed03e2a2f0059f6fd57cba34ae676ab03daebc59e",
+    "gabbro/manifest.json": "43f8a5b597226cf9e9f0a48ca559505ad2040561a6d98acfed5920bd16ac8d7f",
+    "gabbro/pebble-app.bin": "1b89d4799c06b732763ed47d5264c97c733e1e48d1a546f2ee06d17361566c1d"
+  },
+  "temporaryNativePbwSha256": "442e50a8349f4c54615e6d411104d94b08fa19bc71445c95756fe693dbb32d7c",
+  "nativePayloadPreserved": true,
+  "nativeMenuIcon": {
+    "file": "resources/images/menu-icon.png",
+    "sha256": "4cad15d0ee03f627b2460c263a6cb50cd211908b42588b0eb3751dcbf930c156",
+    "unselectedIconRendered": true,
+    "matchingNativeGlyphLocations": {
+      "launcher-selected.png": [
+        {
+          "x": 15,
+          "y": 119,
+          "width": 17,
+          "height": 22
+        }
+      ],
+      "launcher-unselected.png": [
+        {
+          "x": 24,
+          "y": 74,
+          "width": 17,
+          "height": 22
+        }
+      ]
+    }
+  },
+  "firmware": "WatchVersionResponse(running=WatchFirmwareVersion(timestamp=1793831942, version_tag=v4.44.3, git_hash=2acda40, flags=0, hardware_platform=242, metadata_version=1), recovery=WatchFirmwareVersion(timestamp=1793831942, version_tag=v4.44.3, git_hash=2acda40, flags=1, hardware_platform=242, metadata_version=1), bootloader_timestamp=0, board=, serial=, bt_address=c923967bb7d7, resource_crc=1611980739, resource_timestamp=0, language=en_US, language_version=1, capabilities=526698239, is_unfaithful=True)",
+  "sdkVersion": "4.44",
+  "pebbleToolVersion": "5.1.2",
+  "capturedAtUtc": "2026-11-14T21:59:01.649620+00:00",
+  "clock": {
+    "baselineUtc": "2026-11-14T12:05:00Z",
+    "utcOffset": 3600,
+    "zone": "Europe/Prague"
+  },
+  "scope": "Native screenshot-service PNGs from the fresh candidate exact ARM/resource payload; real emulated button events. Native main UI and default-appearance launcher or watchface-picker icon visibility. Round 2 hides unselected watchface icons; other rows show icons in both states. Phone JavaScript omitted; no external provider/activity execution.",
+  "physicalDeviceTest": false,
+  "phoneRuntimeTest": false,
+  "osDarkLauncherTest": false,
+  "syntheticClock": true,
+  "renderedOrRepaintedUi": false,
+  "captures": [
+    {
+      "file": "native-main.png",
+      "sha256": "05e0d6e4d058d277480543533c9009adf0691fff321c5215d2fbb3b85a2448ef",
+      "width": 260,
+      "height": 260,
+      "description": "Fresh candidate main UI with its exact compiled native resources; no phone JavaScript."
+    },
+    {
+      "file": "launcher-selected.png",
+      "sha256": "4f106e02ed075867fc2ca967eca44fae5445d459f56c1d269f0b128ed24dcd9b",
+      "width": 260,
+      "height": 260,
+      "description": "Candidate row selected in the actual native launcher."
+    },
+    {
+      "file": "launcher-unselected.png",
+      "sha256": "a9106697bc8278179a807c153f8286b62f548e6f0b8ef8c85a633a1ddb80b0fc",
+      "width": 260,
+      "height": 260,
+      "description": "Candidate row unselected on the actual native default white background."
+    }
+  ],
+  "actions": [
+    {
+      "action": "set-clock",
+      "epoch": 1794657900,
+      "utcOffset": 3600
+    },
+    {
+      "action": "install-exact-native",
+      "nativeSha256": "442e50a8349f4c54615e6d411104d94b08fa19bc71445c95756fe693dbb32d7c"
+    },
+    {
+      "action": "tap",
+      "button": "Back",
+      "count": 1
+    },
+    {
+      "action": "tap",
+      "button": "Down",
+      "count": 1
+    }
+  ],
+  "nativeLogs": [
+    "AppLogMessage(uuid=50e9ef12-a5ab-4369-a3b5-3447bfba5151, timestamp=1794657902, level=100, message_length=81, line_number=497, filename=ocess_manager.c, message=Heap Usage for App <Timer>: Total Size <84928B> Used <6308B> Still allocated <0B>)"
+  ]
+}
