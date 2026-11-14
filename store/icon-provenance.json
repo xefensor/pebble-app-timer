@@ -1,10 +1,23 @@
 {
   "schemaVersion": 1,
   "originalArtwork": true,
-  "family": "XOCE tactile 2026-11-14",
+  "family": "XOCE Pebble glyphs 2026-11-14",
+  "icon_tintable": true,
+  "ink": "#000000",
+  "background": "transparent",
+  "alphaValues": [
+    0,
+    255
+  ],
+  "pixelGrid": [
+    16,
+    16
+  ],
+  "format": "8-bit RGBA PNG containing a single-colour binary glyph; no antialiasing, gradients, shadows or background plate.",
+  "source": "https://appstore-api.repebble.com/#changelog",
   "files": {
-    "icon-source.svg": "f3ea178684f771b781e92dd24dfc51be1e1cf52b36269f52143ad019e805beb2",
-    "icon-small-80.png": "18895d734317971bb222baeca5005a42a07f0839fc7cf5bdd82528628b83dde5",
-    "icon-large-144.png": "91373b433c8ad2299644cb20c9407f0e12d910bd0e4a7f73cabf7376ecee6799"
+    "icon-source.svg": "5d69e08f276ce0a00c1b6288bc0f916c2eac0500cde5e03662e68dad88c779ea",
+    "icon-small-80.png": "f7b4b426d9c186da905b745e8e6b5bff4d3775cf1c82ff05557eaa2418ec669b",
+    "icon-large-144.png": "9fd8016f72a23afa108e8905ddd7b41228e9e77f674e6c4b81faf8220b5b7151"
   }
 }
