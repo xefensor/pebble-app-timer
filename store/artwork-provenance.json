@@ -15,23 +15,23 @@
     "icon-source.svg": "ac460fa7475904816fe9cfbf1049200c1665b863ea953acc66ddfae0e10ed65c",
     "icon-large-144.png": "461fbc319f51eef6aabeff092635b3efed4f6b6c04063e8d72dcec02e378098f",
     "icon-small-80.png": "a6562c37a587a613cc363f7ef154aba5cfc6031eccb4cc3f753f69b60aed0cc6",
-    "emery-family-banner.svg": "938e56d72d55eecdc63acee8abb7edbf6e5678b47fe46821707d124bb3006d7b",
-    "emery-family-banner.png": "9f7230e1f2129a2164cfeea8d47775606ac3e0401ffbd876e3ccc14491e3fb01",
-    "gabbro-family-banner.svg": "f0d380dc1d5eccb3036ebaf610060eb56a391168d8bae4205d39fdf7af78202d",
-    "gabbro-family-banner.png": "66007f5528519726390d4c4c0c28453d2d70ef96a1519b5b9c38d09109ac8aaa"
+    "emery-family-banner.svg": "2d4ee965932d71cfd17911f6a2687ae50efba713968a7ad297ffa5f47e2387fd",
+    "emery-family-banner.png": "6491dbd0ae33919241603f2f341ebd4249cf4a287387b11da5e9ad85e210bdf0",
+    "gabbro-family-banner.svg": "dcb89d4c169611eae8a38ce6214b5367304a25a2ddbc66b7ef28fb0c9d21bc84",
+    "gabbro-family-banner.png": "d16433fc5026b13abe8c106c1b8386cc3eff049aa28df58a31481efbe4d11637"
   },
   "banners": {
     "emery": {
       "file": "emery-family-banner.png",
       "platform": "emery",
-      "screenshot": "emery-store-20261114-overview.png",
-      "screenshotSha256": "de4ce6f0c54dc5502fec458c127b74a260106be49185850f28ef5e06af8800b4"
+      "screenshot": "emery-store-20261114-running.png",
+      "screenshotSha256": "fb7b3ad39958d81f653311f70c6410582d512b7dbe02054a4d90222ee0753974"
     },
     "gabbro": {
       "file": "gabbro-family-banner.png",
       "platform": "gabbro",
-      "screenshot": "gabbro-store-20261114-overview.png",
-      "screenshotSha256": "3df38ffcb4fd6502317178464cd3da8aaf73a639c2a259b4e23337526c0ae8d4"
+      "screenshot": "gabbro-store-20261114-running.png",
+      "screenshotSha256": "e73747b42b27806df50564d9ac1ee6f7720a161977303693944857c216587e1b"
     }
   }
 }

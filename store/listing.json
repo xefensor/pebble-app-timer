@@ -26,16 +26,16 @@
   ],
   "screenshots": {
     "emery": [
+      "emery-store-20261114-running.png",
       "emery-store-20261114-overview.png",
       "emery-store-20261114-editor.png",
-      "emery-store-20261114-running.png",
       "emery-store-20261114-paused.png",
       "emery-store-20261114-pending-alarm.png"
     ],
     "gabbro": [
+      "gabbro-store-20261114-running.png",
       "gabbro-store-20261114-overview.png",
       "gabbro-store-20261114-editor.png",
-      "gabbro-store-20261114-running.png",
       "gabbro-store-20261114-paused.png",
       "gabbro-store-20261114-pending-alarm.png"
     ]
