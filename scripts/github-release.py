@@ -221,6 +221,8 @@ def validate_timer_pkjs(root, commit, prefix, files, dependency=None):
         expected["./src/pkjs/settings.js"] = "src/pkjs/settings.js"
     if re.search(r"require\(\s*[\'\"]\./ui-preferences[\'\"]\s*\)", entry_source):
         expected["./src/pkjs/ui-preferences.js"] = "src/pkjs/ui-preferences.js"
+    if re.search(r"require\(\s*['\"]\./alarm-preferences['\"]\s*\)", entry_source):
+        expected["./src/pkjs/alarm-preferences.js"] = "src/pkjs/alarm-preferences.js"
     mapped = {}
     originals = {}
     for path, text in zip(mapping["sources"], mapping["sourcesContent"]):
@@ -270,6 +272,7 @@ def validate_timer_pkjs(root, commit, prefix, files, dependency=None):
                     "./view": "./~/pebble-activities/dist/js/view.js",
                     "./settings": "./src/pkjs/settings.js",
                     "./ui-preferences": "./src/pkjs/ui-preferences.js",
+                    "./alarm-preferences": "./src/pkjs/alarm-preferences.js",
                 }
                 if dependency is not None
                 else {"pebble-activities/publisher": "publisher.js", "./wire": "wire.js"}

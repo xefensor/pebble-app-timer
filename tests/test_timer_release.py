@@ -219,6 +219,35 @@ class TimerReleaseTests(unittest.TestCase):
             with self.subTest(member=name), self.assertRaisesRegex(ValueError, "native integrity"):
                 self.validate({**self.pbw, name: self.pbw[name][:-1] + b"x"})
 
+    def test_alarm_preferences_module_is_verified_against_source_and_compiled_bytes(self):
+        entry = (self.root / 'src/pkjs/index.js').read_text() + "var alarm=require('./alarm-preferences');\n"
+        alarm = 'module.exports={enabled:true};\n'
+        self.write('src/pkjs/index.js', entry.encode())
+        self.write('src/pkjs/alarm-preferences.js', alarm.encode())
+        self.commit_sha = self.commit()
+        paths = ['_pkjs_shared_additions.js', './src/pkjs/index.js',
+                 './~/pebble-activities/dist/js/publisher.js', './~/pebble-activities/dist/js/wire.js',
+                 './src/pkjs/alarm-preferences.js']
+        texts = ['var sdk=true;\n', entry, self.dependency['src/js/publisher.js'].decode(),
+                 self.dependency['src/js/wire.js'].decode(), alarm]
+        modules = ['/* 0 */\n/***/ (function(module, exports, __webpack_require__) {\n\n'
+                   '\t__webpack_require__(1);\n\tmodule.exports = __webpack_require__(2);\n\n/***/ })']
+        mapped = []
+        for number, text in enumerate(texts, 1):
+            mapped.append(text + '\n\n//////////////////\n// WEBPACK FOOTER\n// module id = ' + str(number) + '\n')
+            compiled = text.replace("require('pebble-activities/publisher')", '__webpack_require__(3)')
+            compiled = compiled.replace("require('./wire')", '__webpack_require__(4)')
+            compiled = compiled.replace("require('./alarm-preferences')", '__webpack_require__(5)')
+            modules.append('/* %d */\n/***/ (function(module, exports, __webpack_require__) {\n\n' % number +
+                           '\n'.join('\t' + line for line in compiled.rstrip().splitlines()) + '\n\n/***/ })')
+        files = {**self.pbw, 'pebble-js-app.js': ',\n'.join(modules).encode(),
+                 'pebble-js-app.js.map': json.dumps({'sources': paths, 'sourcesContent': mapped}).encode()}
+        release.validate_timer_pkjs(self.root, self.commit_sha, '', files, self.dependency)
+        for name in ['pebble-js-app.js', 'pebble-js-app.js.map']:
+            with self.subTest(member=name), self.assertRaises(ValueError):
+                release.validate_timer_pkjs(self.root, self.commit_sha, '',
+                    {**files, name: files[name].replace(b'enabled:true', b'enabled:false')}, self.dependency)
+
     def test_act2_view_module_is_required_and_matches_source_and_compiled_bytes(self):
         dependency = {**self.dependency,
             "src/js/publisher.js": b"var wire=require('./wire');\nvar view=require('./view');\nmodule.exports=view;\n",
