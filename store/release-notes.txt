@@ -1,7 +1,9 @@
 Timer 1.0.0
 
-Prepared for SDK 4.44 on Time 2 and Round 2. Keeps the existing app identity, saved state and compatible provider/action protocols. Uses the selected Pebble text size and native controls. Full verification and remaining real-device checks are recorded in the release preparation report. Not published yet.
+First stable preparation for Pebble Time 2 and Round 2.
 
-The passive top-cap header and centered New/Replace row remain separate. Editor highlights, warnings, paged confirmations and safe Keep-first deletion fit the circular display. Time 2 retains its established composition.
+Save up to eight timers and create, pause, resume, reset and reuse them with the watch buttons. A finished timer can be snoozed for one minute or dismissed.
 
-First stable public release numbered 1.0.0. The reviewed implementation, public UUID, saved state and provider protocols are unchanged.
+Time 2 adds an optional audible alarm alongside vibration. Sound defaults on and respects system mute and Quiet Time; Round 2 uses vibration. The sound preference is independent of appearance settings.
+
+A countdown can appear as an Activity on Dynamic, Halftone or Dashboard. This optional sharing needs Pebble plugin support and a connected phone. Timer continues to own the countdown and alarm on the watch.

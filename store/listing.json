@@ -26,14 +26,18 @@
   ],
   "screenshots": {
     "emery": [
-      "emery-overview.png",
-      "emery-editor.png",
-      "emery-detail.png"
+      "emery-store-20261114-overview.png",
+      "emery-store-20261114-editor.png",
+      "emery-store-20261114-running.png",
+      "emery-store-20261114-paused.png",
+      "emery-store-20261114-pending-alarm.png"
     ],
     "gabbro": [
-      "gabbro-overview.png",
-      "gabbro-editor.png",
-      "gabbro-detail.png"
+      "gabbro-store-20261114-overview.png",
+      "gabbro-store-20261114-editor.png",
+      "gabbro-store-20261114-running.png",
+      "gabbro-store-20261114-paused.png",
+      "gabbro-store-20261114-pending-alarm.png"
     ]
   },
   "remaining_publication_gates": [
@@ -46,5 +50,9 @@
     "reviewer": "Xef",
     "decision": "Reviewed implementation accepted for stable public release preparation; no further physical-device review prerequisite.",
     "test_coverage": "Physical watch/phone results are not claimed; see the current release review for actual evidence."
+  },
+  "banners": {
+    "emery": "emery-family-banner.png",
+    "gabbro": "gabbro-family-banner.png"
   }
 }

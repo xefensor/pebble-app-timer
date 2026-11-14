@@ -1,60 +1,88 @@
 {
   "version": "1.0.0",
   "nativePixelsModified": false,
-  "scope": "Raw emulator screenshots from the exact stable candidate; synthetic example data. No physical phone/watch claim.",
-  "candidateSha256": "317f212f1d4739e9fd72dd9bbf1c86e290d8ae606fd9b05e20c584a0f29392bb",
+  "scope": "Fresh native emulator captures from the exact PBW; synthetic example data; no physical phone/watch claim.",
+  "candidateSha256": "61577edc770449f71d5a7b32db1aa6f1b889aab4b6dd07c7996613ddd3ba563f",
   "renderer": {
     "emery": {
-      "nativeRendererSha256": "4e242ae0e2493516dbd64014f185be7da1a0c0034218017fb528a0eecbb42a05",
+      "nativeRendererSha256": "ea50f342f606c009b790152ccdfe3110e598ae23e65eec8b49c6f0e9acddd82f",
       "resourceRendererSha256": "42f9180a4dbc22c617346fb11a8609765ac8092709de5032e5d5a971af277e68"
     },
     "gabbro": {
-      "nativeRendererSha256": "e980b5177e52cc61db65effb006bcce1e6dac4665eeb0e735a82ea8a471832de",
+      "nativeRendererSha256": "04383206768e13e951c770e0a46a165eee739617a6f7b332d6dd957a38dc46b2",
       "resourceRendererSha256": "42f9180a4dbc22c617346fb11a8609765ac8092709de5032e5d5a971af277e68"
     }
   },
   "screenshots": {
-    "emery-overview.png": {
+    "emery-store-20261114-overview.png": {
       "platform": "emery",
-      "sha256": "90911adde0ae1ce932e9eb5264c8cd35c879f83e41ef8e1a1a508dd4cd8bd016",
-      "source": "Round2-Development/qa/timer/emery/major-1.0.0/1794533479633784610/2-light-first.png",
-      "sourceReport": "Round2-Development/qa/timer/emery/major-1.0.0/1794533479633784610/report.json",
-      "rendererProof": "Exact stable PBW captured in native emulator; original PNG bytes unchanged."
+      "sha256": "de4ce6f0c54dc5502fec458c127b74a260106be49185850f28ef5e06af8800b4",
+      "source": "Store-Update-2026-11-14/verification/native/timer/emery/overview.png",
+      "sourceReport": "Store-Update-2026-11-14/verification/native/timer/emery/report.json",
+      "rendererProof": "Raw Screenshot-service PNG from this exact checked PBW; no pixel modifications."
     },
-    "emery-editor.png": {
+    "emery-store-20261114-editor.png": {
       "platform": "emery",
-      "sha256": "23beca55f60e60366eda147f55c54d10344692a6b849cf1d58b5dd9c92960c4e",
-      "source": "Round2-Development/qa/timer/emery/major-1.0.0/1794533479633784610/2-light-editor-minutes.png",
-      "sourceReport": "Round2-Development/qa/timer/emery/major-1.0.0/1794533479633784610/report.json",
-      "rendererProof": "Exact stable PBW captured in native emulator; original PNG bytes unchanged."
+      "sha256": "9e79827ab6f32041c53d27afd0152677f25bf1ad8ef27a6a3014c8be0fb94f0e",
+      "source": "Store-Update-2026-11-14/verification/native/timer/emery/editor.png",
+      "sourceReport": "Store-Update-2026-11-14/verification/native/timer/emery/report.json",
+      "rendererProof": "Raw Screenshot-service PNG from this exact checked PBW; no pixel modifications."
     },
-    "emery-detail.png": {
+    "emery-store-20261114-running.png": {
       "platform": "emery",
-      "sha256": "3bb01caf9ce00b4322822bf64d3c525e1bd12ad5f502a033bf2bdbe90404524b",
-      "source": "Round2-Development/qa/timer/emery/major-1.0.0/1794533479633784610/2-light-detail.png",
-      "sourceReport": "Round2-Development/qa/timer/emery/major-1.0.0/1794533479633784610/report.json",
-      "rendererProof": "Exact stable PBW captured in native emulator; original PNG bytes unchanged."
+      "sha256": "fb7b3ad39958d81f653311f70c6410582d512b7dbe02054a4d90222ee0753974",
+      "source": "Store-Update-2026-11-14/verification/native/timer/emery/running.png",
+      "sourceReport": "Store-Update-2026-11-14/verification/native/timer/emery/report.json",
+      "rendererProof": "Raw Screenshot-service PNG from this exact checked PBW; no pixel modifications."
     },
-    "gabbro-overview.png": {
-      "platform": "gabbro",
-      "sha256": "c53fa4d6faf13d800f380c7a17d3393c992cf583c3811cb7ea1771aa8aa02a58",
-      "source": "Round2-Development/qa/timer/gabbro/major-1.0.0/1794533479628645057/2-light-first.png",
-      "sourceReport": "Round2-Development/qa/timer/gabbro/major-1.0.0/1794533479628645057/report.json",
-      "rendererProof": "Exact stable PBW captured in native emulator; original PNG bytes unchanged."
+    "emery-store-20261114-paused.png": {
+      "platform": "emery",
+      "sha256": "51b9e91a69aa31f1c7b2adf27e892a35486a1fe9fd6ab5f5b418979ac07fe3fb",
+      "source": "Store-Update-2026-11-14/verification/native/timer/emery/paused.png",
+      "sourceReport": "Store-Update-2026-11-14/verification/native/timer/emery/report.json",
+      "rendererProof": "Raw Screenshot-service PNG from this exact checked PBW; no pixel modifications."
     },
-    "gabbro-editor.png": {
-      "platform": "gabbro",
-      "sha256": "45c387c1596b7b7b1ec2ab19309d6c3f903449ee4b426991fe58ac5e2b505be2",
-      "source": "Round2-Development/qa/timer/gabbro/major-1.0.0/1794533479628645057/2-light-editor-minutes.png",
-      "sourceReport": "Round2-Development/qa/timer/gabbro/major-1.0.0/1794533479628645057/report.json",
-      "rendererProof": "Exact stable PBW captured in native emulator; original PNG bytes unchanged."
+    "emery-store-20261114-pending-alarm.png": {
+      "platform": "emery",
+      "sha256": "fc1e06455bf8def1f2bb1eb5f17498149fa58c7eb92f599d1de785039995314c",
+      "source": "Store-Update-2026-11-14/verification/native/timer/emery/pending-alarm.png",
+      "sourceReport": "Store-Update-2026-11-14/verification/native/timer/emery/report.json",
+      "rendererProof": "Raw Screenshot-service PNG from this exact checked PBW; no pixel modifications."
     },
-    "gabbro-detail.png": {
+    "gabbro-store-20261114-overview.png": {
       "platform": "gabbro",
-      "sha256": "29fb196e90c8a3c3cbef5f1cee4cdb2f041b075aec28aba86f48a90413ae86d8",
-      "source": "Round2-Development/qa/timer/gabbro/major-1.0.0/1794533479628645057/2-light-detail.png",
-      "sourceReport": "Round2-Development/qa/timer/gabbro/major-1.0.0/1794533479628645057/report.json",
-      "rendererProof": "Exact stable PBW captured in native emulator; original PNG bytes unchanged."
+      "sha256": "3df38ffcb4fd6502317178464cd3da8aaf73a639c2a259b4e23337526c0ae8d4",
+      "source": "Store-Update-2026-11-14/verification/native/timer/gabbro/overview.png",
+      "sourceReport": "Store-Update-2026-11-14/verification/native/timer/gabbro/report.json",
+      "rendererProof": "Raw Screenshot-service PNG from this exact checked PBW; no pixel modifications."
+    },
+    "gabbro-store-20261114-editor.png": {
+      "platform": "gabbro",
+      "sha256": "4f0f70e0090e06ccc916f414eb156ba0fa44000a400e36d8fff15b8b37093025",
+      "source": "Store-Update-2026-11-14/verification/native/timer/gabbro/editor.png",
+      "sourceReport": "Store-Update-2026-11-14/verification/native/timer/gabbro/report.json",
+      "rendererProof": "Raw Screenshot-service PNG from this exact checked PBW; no pixel modifications."
+    },
+    "gabbro-store-20261114-running.png": {
+      "platform": "gabbro",
+      "sha256": "e73747b42b27806df50564d9ac1ee6f7720a161977303693944857c216587e1b",
+      "source": "Store-Update-2026-11-14/verification/native/timer/gabbro/running.png",
+      "sourceReport": "Store-Update-2026-11-14/verification/native/timer/gabbro/report.json",
+      "rendererProof": "Raw Screenshot-service PNG from this exact checked PBW; no pixel modifications."
+    },
+    "gabbro-store-20261114-paused.png": {
+      "platform": "gabbro",
+      "sha256": "7c8c11115dd68a25ac94a993787a6a5b8534a337f0f9948bfec84729a0cd3828",
+      "source": "Store-Update-2026-11-14/verification/native/timer/gabbro/paused.png",
+      "sourceReport": "Store-Update-2026-11-14/verification/native/timer/gabbro/report.json",
+      "rendererProof": "Raw Screenshot-service PNG from this exact checked PBW; no pixel modifications."
+    },
+    "gabbro-store-20261114-pending-alarm.png": {
+      "platform": "gabbro",
+      "sha256": "1311d7af0f0d1caed660af2eed170d76c204d972136960ede277a1de511eb4c5",
+      "source": "Store-Update-2026-11-14/verification/native/timer/gabbro/pending-alarm.png",
+      "sourceReport": "Store-Update-2026-11-14/verification/native/timer/gabbro/report.json",
+      "rendererProof": "Raw Screenshot-service PNG from this exact checked PBW; no pixel modifications."
     }
   }
 }

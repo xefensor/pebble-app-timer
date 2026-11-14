@@ -1,15 +1,16 @@
-Up to eight timers, directly on Pebble.
+Set a countdown on your Pebble and keep its duration ready for next time.
 
-Activities are live updates shown by compatible XOCE apps and watchfaces, such as a countdown, music or a new notification.
+Timer holds up to eight timers, controlled with the watch buttons. Set hours, minutes and seconds, start a countdown, and return whenever you need to pause or reuse it. Your saved timers survive closing and reopening the app.
 
-Install Dynamic or Halftone and choose it as your watchface. Enable activity plugins and show Timer in that watchface’s activity list, then save. Start a countdown in Timer and return to the clock to see the time remaining. Timer still runs the countdown and alarm. Sharing is optional; Timer works on its own.
+- Create timers from five seconds to 24 hours.
+- Pause, resume, reset or delete a timer on the watch.
+- Read the remaining time on a large countdown screen.
+- When a timer finishes, snooze its alarm for one minute or choose Done to dismiss it.
+- Use an optional audible alarm on Time 2, alongside vibration. Round 2 uses vibration. Sound respects system mute and Quiet Time.
+- Choose Small, Medium, Large or Follow Pebble text and your display appearance. Available in 17 languages.
 
-Sharing activities between apps needs plugin support in the Pebble phone app, the required permissions and a connected phone.
+Timer runs its countdowns on the watch. Successfully scheduled alarms work without a connected phone.
 
-Create a timer with separate hours, minutes and seconds. Pause, resume, reset or delete it from the watch. The list keeps countdown and state together when they fit; the detail screen keeps its large countdown. Timers survive closing and reopening the app.
+Want the countdown on your everyday clock screen? Add Dynamic or Halftone, enable activity plugins in its settings and show Timer in its activity list. Return to that watchface to see the remaining time. This optional sharing needs the official Pebble phone app's plugin support and a connected phone. Timer still handles the alarm and controls; Dashboard can also display its activity.
 
-Native alarms work without a connected phone. Snooze for one minute or finish the alarm from the watch. Optional Pebble activity publishing makes your timer available to compatible faces and apps.
-
-Choose Small, Medium, Large or Follow Pebble text and your display appearance. Available in 17 languages. No account, advertisements or analytics.
-
-Free. For Pebble Time 2 and Round 2. Round 2 has been validated in the emulator.
+Free. For Pebble Time 2 and Round 2. No account, advertisements or analytics.
