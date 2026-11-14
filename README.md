@@ -3,6 +3,14 @@
 A native timer for stock PebbleOS with eight saved timers, watch-owned alarms and optional
 activity sharing.
 
+## Activities: see what is happening now
+
+Activities are live updates shown by compatible XOCE apps and watchfaces, such as a countdown, music or a new notification. This feature connects compatible XOCE products; support depends on the app or watchface you choose.
+
+Install Dynamic or Halftone and choose it as your watchface. Enable activity plugins and show Timer in that watchface’s activity list, then save. Start a countdown in Timer and return to the clock to see the time remaining. Timer still runs the countdown and alarm. Sharing is optional; Timer works on its own.
+
+Sharing needs plugin support in the official Pebble phone app, the required permissions and a connected phone. Weather and battery readings use separate reading settings. Music and notification integration requires Android. Open Activity is optional; you can always open Timer from the watch’s app list.
+
 ## Download
 
 [Version 0.14.5](https://github.com/xefensor/pebble-app-timer/releases/tag/v0.14.5) is a development prerelease.

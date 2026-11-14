@@ -181,7 +181,12 @@
       "Saved on phone · Pending on watch": "Saved on phone · Pending on watch",
       "Saved on phone · Watch could not confirm saving": "Saved on phone · Watch could not confirm saving",
       "Retry watch delivery": "Retry watch delivery",
-      "Text size and appearance for Timer on your watch.": "Text size and appearance for Timer on your watch."
+      "Text size and appearance for Timer on your watch.": "Text size and appearance for Timer on your watch.",
+      "What is an activity?": "What is an activity?",
+      "Activities are live updates shown by compatible XOCE apps and watchfaces, such as a countdown, music or a new notification.": "Activities are live updates shown by compatible XOCE apps and watchfaces, such as a countdown, music or a new notification.",
+      "Start a countdown in Timer, then return to Dynamic or Halftone to see the time remaining. Timer still runs the countdown and alarm.": "Start a countdown in Timer, then return to Dynamic or Halftone to see the time remaining. Timer still runs the countdown and alarm.",
+      "Sharing activities between apps needs plugin support and a connected phone. Timer works on its own without sharing.": "Sharing activities between apps needs plugin support and a connected phone. Timer works on its own without sharing.",
+      "To see a countdown on your watchface, install Dynamic or Halftone and choose it as your clock. In its settings, turn on activity plugins, show Timer in the activity list and save.": "To see a countdown on your watchface, install Dynamic or Halftone and choose it as your clock. In its settings, turn on activity plugins, show Timer in the activity list and save."
     },
     "cs": {
       "Appearance for Timer on your watch.": "Vzhled aplikace Timer na hodinkách.",
@@ -282,7 +287,12 @@
       "Saved on phone · Pending on watch": "Uloženo v telefonu · Čeká na hodinky",
       "Saved on phone · Watch could not confirm saving": "Uloženo v telefonu · Hodinky nepotvrdily uložení",
       "Retry watch delivery": "Znovu odeslat do hodinek",
-      "Text size and appearance for Timer on your watch.": "Velikost textu a vzhled aplikace Timer v hodinkách."
+      "Text size and appearance for Timer on your watch.": "Velikost textu a vzhled aplikace Timer v hodinkách.",
+      "What is an activity?": "Co je aktivita?",
+      "Activities are live updates shown by compatible XOCE apps and watchfaces, such as a countdown, music or a new notification.": "Aktivity jsou průběžné informace, které zobrazují kompatibilní aplikace a ciferníky XOCE, například odpočet, hudba nebo nové oznámení.",
+      "Start a countdown in Timer, then return to Dynamic or Halftone to see the time remaining. Timer still runs the countdown and alarm.": "Spusťte odpočet v Timer a vraťte se na Dynamic nebo Halftone. Na ciferníku uvidíte zbývající čas. Odpočet i budík nadále zajišťuje Timer.",
+      "Sharing activities between apps needs plugin support and a connected phone. Timer works on its own without sharing.": "Sdílení aktivit mezi aplikacemi vyžaduje podporu pluginů a připojený telefon. Timer funguje samostatně i bez sdílení.",
+      "To see a countdown on your watchface, install Dynamic or Halftone and choose it as your clock. In its settings, turn on activity plugins, show Timer in the activity list and save.": "Chcete-li vidět odpočet na ciferníku, nainstalujte Dynamic nebo Halftone a nastavte jej jako ciferník. V jeho nastavení zapněte pluginy aktivit, povolte Timer v seznamu aktivit a uložte změny."
     },
     "sk": {
       "Appearance for Timer on your watch.": "Vzhľad aplikácie Timer na hodinkách.",
@@ -383,7 +393,12 @@
       "Saved on phone · Pending on watch": "Uložené v telefóne · Čaká na hodinky",
       "Saved on phone · Watch could not confirm saving": "Uložené v telefóne · Hodinky nepotvrdili uloženie",
       "Retry watch delivery": "Znova odoslať do hodiniek",
-      "Text size and appearance for Timer on your watch.": "Veľkosť textu a vzhľad aplikácie Timer v hodinkách."
+      "Text size and appearance for Timer on your watch.": "Veľkosť textu a vzhľad aplikácie Timer v hodinkách.",
+      "What is an activity?": "Čo je aktivita?",
+      "Activities are live updates shown by compatible XOCE apps and watchfaces, such as a countdown, music or a new notification.": "Aktivity sú priebežné informácie, ktoré zobrazujú kompatibilné aplikácie a ciferníky XOCE, napríklad odpočet, hudba alebo nové oznámenie.",
+      "Start a countdown in Timer, then return to Dynamic or Halftone to see the time remaining. Timer still runs the countdown and alarm.": "Spustite odpočet v Timer a vráťte sa na Dynamic alebo Halftone. Na ciferníku uvidíte zostávajúci čas. Odpočet aj budík naďalej zaisťuje Timer.",
+      "Sharing activities between apps needs plugin support and a connected phone. Timer works on its own without sharing.": "Zdieľanie aktivít medzi aplikáciami vyžaduje podporu pluginov a pripojený telefón. Timer funguje samostatne aj bez zdieľania.",
+      "To see a countdown on your watchface, install Dynamic or Halftone and choose it as your clock. In its settings, turn on activity plugins, show Timer in the activity list and save.": "Ak chcete vidieť odpočet na ciferníku, nainštalujte Dynamic alebo Halftone a nastavte ho ako ciferník. V jeho nastaveniach zapnite pluginy aktivít, povoľte Timer v zozname aktivít a uložte zmeny."
     },
     "de": {
       "Appearance for Timer on your watch.": "Darstellung von Timer auf deiner Uhr.",
@@ -484,7 +499,12 @@
       "Saved on phone · Pending on watch": "Auf dem Telefon gespeichert · Auf der Uhr ausstehend",
       "Saved on phone · Watch could not confirm saving": "Auf dem Telefon gespeichert · Uhr konnte das Speichern nicht bestätigen",
       "Retry watch delivery": "Erneut an die Uhr senden",
-      "Text size and appearance for Timer on your watch.": "Textgröße und Erscheinungsbild von Timer auf deiner Uhr."
+      "Text size and appearance for Timer on your watch.": "Textgröße und Erscheinungsbild von Timer auf deiner Uhr.",
+      "What is an activity?": "Was ist eine Aktivität?",
+      "Activities are live updates shown by compatible XOCE apps and watchfaces, such as a countdown, music or a new notification.": "Aktivitäten sind aktuelle Informationen in kompatiblen XOCE-Apps und Zifferblättern, etwa ein Countdown, Musik oder eine neue Mitteilung.",
+      "Start a countdown in Timer, then return to Dynamic or Halftone to see the time remaining. Timer still runs the countdown and alarm.": "Starte einen Countdown in Timer und kehre zu Dynamic oder Halftone zurück, um die Restzeit zu sehen. Timer übernimmt weiterhin Countdown und Alarm.",
+      "Sharing activities between apps needs plugin support and a connected phone. Timer works on its own without sharing.": "Das Teilen von Aktivitäten zwischen Apps benötigt Plugin-Unterstützung und ein verbundenes Telefon. Timer funktioniert auch ohne Teilen.",
+      "To see a countdown on your watchface, install Dynamic or Halftone and choose it as your clock. In its settings, turn on activity plugins, show Timer in the activity list and save.": "Installiere Dynamic oder Halftone und wähle es als Zifferblatt, um den Countdown zu sehen. Aktiviere dort in den Einstellungen Aktivitätsplugins und Timer in der Aktivitätsliste und speichere."
     },
     "fr": {
       "Appearance for Timer on your watch.": "Apparence de Timer sur votre montre.",
@@ -585,7 +605,12 @@
       "Saved on phone · Pending on watch": "Enregistré sur le téléphone · En attente sur la montre",
       "Saved on phone · Watch could not confirm saving": "Enregistré sur le téléphone · La montre n’a pas confirmé l’enregistrement",
       "Retry watch delivery": "Renvoyer à la montre",
-      "Text size and appearance for Timer on your watch.": "Taille du texte et apparence de Timer sur votre montre."
+      "Text size and appearance for Timer on your watch.": "Taille du texte et apparence de Timer sur votre montre.",
+      "What is an activity?": "Qu’est-ce qu’une activité ?",
+      "Activities are live updates shown by compatible XOCE apps and watchfaces, such as a countdown, music or a new notification.": "Les activités sont des informations en cours affichées par les apps et cadrans XOCE compatibles : compte à rebours, musique ou nouvelle notification.",
+      "Start a countdown in Timer, then return to Dynamic or Halftone to see the time remaining. Timer still runs the countdown and alarm.": "Lancez un compte à rebours dans Timer, puis revenez à Dynamic ou Halftone pour voir le temps restant. Timer gère toujours le décompte et l’alarme.",
+      "Sharing activities between apps needs plugin support and a connected phone. Timer works on its own without sharing.": "Le partage d’activités entre apps nécessite les plugins et un téléphone connecté. Timer fonctionne aussi sans partage.",
+      "To see a countdown on your watchface, install Dynamic or Halftone and choose it as your clock. In its settings, turn on activity plugins, show Timer in the activity list and save.": "Pour voir un compte à rebours sur votre cadran, installez Dynamic ou Halftone et choisissez-le comme cadran. Dans ses réglages, activez les plugins d’activité et Timer dans la liste, puis enregistrez."
     },
     "es": {
       "Appearance for Timer on your watch.": "Aspecto de Timer en tu reloj.",
@@ -686,7 +711,12 @@
       "Saved on phone · Pending on watch": "Guardado en el teléfono · Pendiente en el reloj",
       "Saved on phone · Watch could not confirm saving": "Guardado en el teléfono · El reloj no confirmó el guardado",
       "Retry watch delivery": "Reenviar al reloj",
-      "Text size and appearance for Timer on your watch.": "Tamaño del texto y aspecto de Timer en tu reloj."
+      "Text size and appearance for Timer on your watch.": "Tamaño del texto y aspecto de Timer en tu reloj.",
+      "What is an activity?": "¿Qué es una actividad?",
+      "Activities are live updates shown by compatible XOCE apps and watchfaces, such as a countdown, music or a new notification.": "Las actividades son información en curso que muestran las apps y esferas XOCE compatibles, como una cuenta atrás, música o una nueva notificación.",
+      "Start a countdown in Timer, then return to Dynamic or Halftone to see the time remaining. Timer still runs the countdown and alarm.": "Inicia una cuenta atrás en Timer y vuelve a Dynamic o Halftone para ver el tiempo restante. Timer sigue gestionando la cuenta atrás y la alarma.",
+      "Sharing activities between apps needs plugin support and a connected phone. Timer works on its own without sharing.": "Compartir actividades entre apps requiere compatibilidad con plugins y un teléfono conectado. Timer funciona por sí solo sin compartir.",
+      "To see a countdown on your watchface, install Dynamic or Halftone and choose it as your clock. In its settings, turn on activity plugins, show Timer in the activity list and save.": "Para ver la cuenta atrás en tu esfera, instala Dynamic o Halftone y elígelo como reloj. En sus ajustes, activa los plugins de actividad y Timer en la lista, y guarda."
     },
     "it": {
       "Appearance for Timer on your watch.": "Aspetto di Timer sull’orologio.",
@@ -787,7 +817,12 @@
       "Saved on phone · Pending on watch": "Salvato sul telefono · In attesa sull’orologio",
       "Saved on phone · Watch could not confirm saving": "Salvato sul telefono · L’orologio non ha confermato il salvataggio",
       "Retry watch delivery": "Invia di nuovo all’orologio",
-      "Text size and appearance for Timer on your watch.": "Dimensione del testo e aspetto di Timer sull’orologio."
+      "Text size and appearance for Timer on your watch.": "Dimensione del testo e aspetto di Timer sull’orologio.",
+      "What is an activity?": "Che cos’è un’attività?",
+      "Activities are live updates shown by compatible XOCE apps and watchfaces, such as a countdown, music or a new notification.": "Le attività sono aggiornamenti mostrati dalle app e dai quadranti XOCE compatibili, come un conto alla rovescia, musica o una nuova notifica.",
+      "Start a countdown in Timer, then return to Dynamic or Halftone to see the time remaining. Timer still runs the countdown and alarm.": "Avvia un conto alla rovescia in Timer, poi torna a Dynamic o Halftone per vedere il tempo rimasto. Timer continua a gestire il conto e l’allarme.",
+      "Sharing activities between apps needs plugin support and a connected phone. Timer works on its own without sharing.": "La condivisione delle attività tra app richiede il supporto dei plugin e un telefono connesso. Timer funziona anche senza condivisione.",
+      "To see a countdown on your watchface, install Dynamic or Halftone and choose it as your clock. In its settings, turn on activity plugins, show Timer in the activity list and save.": "Per vedere il conto alla rovescia sul quadrante, installa Dynamic o Halftone e sceglilo come orologio. Nelle sue impostazioni, attiva i plugin delle attività e Timer nell’elenco, poi salva."
     },
     "pt": {
       "Appearance for Timer on your watch.": "Aspeto do Timer no relógio.",
@@ -888,7 +923,12 @@
       "Saved on phone · Pending on watch": "Guardado no telefone · Pendente no relógio",
       "Saved on phone · Watch could not confirm saving": "Guardado no telefone · O relógio não confirmou a gravação",
       "Retry watch delivery": "Reenviar para o relógio",
-      "Text size and appearance for Timer on your watch.": "Tamanho do texto e aspeto do Timer no relógio."
+      "Text size and appearance for Timer on your watch.": "Tamanho do texto e aspeto do Timer no relógio.",
+      "What is an activity?": "O que é uma atividade?",
+      "Activities are live updates shown by compatible XOCE apps and watchfaces, such as a countdown, music or a new notification.": "As atividades são informações em curso mostradas por apps e mostradores XOCE compatíveis, como uma contagem decrescente, música ou uma nova notificação.",
+      "Start a countdown in Timer, then return to Dynamic or Halftone to see the time remaining. Timer still runs the countdown and alarm.": "Inicie uma contagem decrescente no Timer e volte ao Dynamic ou Halftone para ver o tempo restante. O Timer continua a gerir a contagem e o alarme.",
+      "Sharing activities between apps needs plugin support and a connected phone. Timer works on its own without sharing.": "Partilhar atividades entre apps requer suporte de plugins e um telemóvel ligado. O Timer também funciona sozinho, sem partilha.",
+      "To see a countdown on your watchface, install Dynamic or Halftone and choose it as your clock. In its settings, turn on activity plugins, show Timer in the activity list and save.": "Para ver uma contagem no mostrador, instale Dynamic ou Halftone e escolha-o como relógio. Nas suas definições, ative os plugins de atividade e o Timer na lista e guarde."
     },
     "nl": {
       "Appearance for Timer on your watch.": "Uiterlijk van Timer op je horloge.",
@@ -989,7 +1029,12 @@
       "Saved on phone · Pending on watch": "Opgeslagen op telefoon · Wacht op horloge",
       "Saved on phone · Watch could not confirm saving": "Opgeslagen op telefoon · Horloge kon opslaan niet bevestigen",
       "Retry watch delivery": "Opnieuw naar horloge sturen",
-      "Text size and appearance for Timer on your watch.": "Tekstgrootte en weergave van Timer op je horloge."
+      "Text size and appearance for Timer on your watch.": "Tekstgrootte en weergave van Timer op je horloge.",
+      "What is an activity?": "Wat is een activiteit?",
+      "Activities are live updates shown by compatible XOCE apps and watchfaces, such as a countdown, music or a new notification.": "Activiteiten zijn actuele updates in compatibele XOCE-apps en wijzerplaten, zoals een aftelling, muziek of een nieuwe melding.",
+      "Start a countdown in Timer, then return to Dynamic or Halftone to see the time remaining. Timer still runs the countdown and alarm.": "Start een aftelling in Timer en ga terug naar Dynamic of Halftone om de resterende tijd te zien. Timer blijft de aftelling en het alarm regelen.",
+      "Sharing activities between apps needs plugin support and a connected phone. Timer works on its own without sharing.": "Activiteiten delen tussen apps vereist pluginondersteuning en een verbonden telefoon. Timer werkt ook zelfstandig zonder delen.",
+      "To see a countdown on your watchface, install Dynamic or Halftone and choose it as your clock. In its settings, turn on activity plugins, show Timer in the activity list and save.": "Installeer Dynamic of Halftone en kies het als wijzerplaat om een aftelling te zien. Schakel in de instellingen activiteitsplugins en Timer in de activiteitenlijst in en sla op."
     },
     "pl": {
       "Appearance for Timer on your watch.": "Wygląd aplikacji Timer na zegarku.",
@@ -1090,7 +1135,12 @@
       "Saved on phone · Pending on watch": "Zapisano w telefonie · Oczekuje na zegarek",
       "Saved on phone · Watch could not confirm saving": "Zapisano w telefonie · Zegarek nie potwierdził zapisu",
       "Retry watch delivery": "Wyślij ponownie na zegarek",
-      "Text size and appearance for Timer on your watch.": "Rozmiar tekstu i wygląd aplikacji Timer na zegarku."
+      "Text size and appearance for Timer on your watch.": "Rozmiar tekstu i wygląd aplikacji Timer na zegarku.",
+      "What is an activity?": "Czym jest aktywność?",
+      "Activities are live updates shown by compatible XOCE apps and watchfaces, such as a countdown, music or a new notification.": "Aktywności to bieżące informacje wyświetlane przez zgodne aplikacje i tarcze XOCE, takie jak odliczanie, muzyka lub nowe powiadomienie.",
+      "Start a countdown in Timer, then return to Dynamic or Halftone to see the time remaining. Timer still runs the countdown and alarm.": "Uruchom odliczanie w Timer i wróć do Dynamic lub Halftone, aby zobaczyć pozostały czas. Timer nadal obsługuje odliczanie i alarm.",
+      "Sharing activities between apps needs plugin support and a connected phone. Timer works on its own without sharing.": "Udostępnianie aktywności między aplikacjami wymaga obsługi wtyczek i połączonego telefonu. Timer działa też samodzielnie bez udostępniania.",
+      "To see a countdown on your watchface, install Dynamic or Halftone and choose it as your clock. In its settings, turn on activity plugins, show Timer in the activity list and save.": "Aby zobaczyć odliczanie na tarczy, zainstaluj Dynamic lub Halftone i wybierz go jako zegar. W jego ustawieniach włącz wtyczki aktywności i Timer na liście, a następnie zapisz."
     },
     "da": {
       "Appearance for Timer on your watch.": "Timers udseende på dit ur.",
@@ -1191,7 +1241,12 @@
       "Saved on phone · Pending on watch": "Gemt på telefonen · Afventer uret",
       "Saved on phone · Watch could not confirm saving": "Gemt på telefonen · Uret kunne ikke bekræfte lagringen",
       "Retry watch delivery": "Send til uret igen",
-      "Text size and appearance for Timer on your watch.": "Tekststørrelse og udseende for Timer på dit ur."
+      "Text size and appearance for Timer on your watch.": "Tekststørrelse og udseende for Timer på dit ur.",
+      "What is an activity?": "Hvad er en aktivitet?",
+      "Activities are live updates shown by compatible XOCE apps and watchfaces, such as a countdown, music or a new notification.": "Aktiviteter er aktuelle oplysninger i kompatible XOCE-apps og urskiver, f.eks. en nedtælling, musik eller en ny notifikation.",
+      "Start a countdown in Timer, then return to Dynamic or Halftone to see the time remaining. Timer still runs the countdown and alarm.": "Start en nedtælling i Timer, og vend tilbage til Dynamic eller Halftone for at se den resterende tid. Timer styrer stadig nedtællingen og alarmen.",
+      "Sharing activities between apps needs plugin support and a connected phone. Timer works on its own without sharing.": "Deling af aktiviteter mellem apps kræver pluginunderstøttelse og en tilsluttet telefon. Timer virker også alene uden deling.",
+      "To see a countdown on your watchface, install Dynamic or Halftone and choose it as your clock. In its settings, turn on activity plugins, show Timer in the activity list and save.": "Installer Dynamic eller Halftone, og vælg den som urskive for at se en nedtælling. Slå aktivitetsplugins og Timer til i aktivitetslisten i dens indstillinger, og gem."
     },
     "sv": {
       "Appearance for Timer on your watch.": "Timers utseende på klockan.",
@@ -1292,7 +1347,12 @@
       "Saved on phone · Pending on watch": "Sparat på telefonen · Väntar på klockan",
       "Saved on phone · Watch could not confirm saving": "Sparat på telefonen · Klockan kunde inte bekräfta sparandet",
       "Retry watch delivery": "Skicka till klockan igen",
-      "Text size and appearance for Timer on your watch.": "Textstorlek och utseende för Timer på din klocka."
+      "Text size and appearance for Timer on your watch.": "Textstorlek och utseende för Timer på din klocka.",
+      "What is an activity?": "Vad är en aktivitet?",
+      "Activities are live updates shown by compatible XOCE apps and watchfaces, such as a countdown, music or a new notification.": "Aktiviteter är aktuella uppdateringar i kompatibla XOCE-appar och urtavlor, till exempel en nedräkning, musik eller en ny avisering.",
+      "Start a countdown in Timer, then return to Dynamic or Halftone to see the time remaining. Timer still runs the countdown and alarm.": "Starta en nedräkning i Timer och gå tillbaka till Dynamic eller Halftone för att se återstående tid. Timer sköter fortfarande nedräkningen och larmet.",
+      "Sharing activities between apps needs plugin support and a connected phone. Timer works on its own without sharing.": "Delning av aktiviteter mellan appar kräver pluginstöd och en ansluten telefon. Timer fungerar även självständigt utan delning.",
+      "To see a countdown on your watchface, install Dynamic or Halftone and choose it as your clock. In its settings, turn on activity plugins, show Timer in the activity list and save.": "Installera Dynamic eller Halftone och välj den som urtavla för att se en nedräkning. Aktivera aktivitetspluginer och Timer i aktivitetslistan i dess inställningar och spara."
     },
     "no": {
       "Appearance for Timer on your watch.": "Utseendet til Timer på klokken.",
@@ -1393,7 +1453,12 @@
       "Saved on phone · Pending on watch": "Lagret på telefonen · Venter på klokken",
       "Saved on phone · Watch could not confirm saving": "Lagret på telefonen · Klokken kunne ikke bekrefte lagringen",
       "Retry watch delivery": "Send til klokken igjen",
-      "Text size and appearance for Timer on your watch.": "Tekststørrelse og utseende for Timer på klokken din."
+      "Text size and appearance for Timer on your watch.": "Tekststørrelse og utseende for Timer på klokken din.",
+      "What is an activity?": "Hva er en aktivitet?",
+      "Activities are live updates shown by compatible XOCE apps and watchfaces, such as a countdown, music or a new notification.": "Aktiviteter er aktuelle oppdateringer i kompatible XOCE-apper og urskiver, som en nedtelling, musikk eller et nytt varsel.",
+      "Start a countdown in Timer, then return to Dynamic or Halftone to see the time remaining. Timer still runs the countdown and alarm.": "Start en nedtelling i Timer og gå tilbake til Dynamic eller Halftone for å se tiden som gjenstår. Timer styrer fortsatt nedtellingen og alarmen.",
+      "Sharing activities between apps needs plugin support and a connected phone. Timer works on its own without sharing.": "Deling av aktiviteter mellom apper krever pluginstøtte og en tilkoblet telefon. Timer fungerer også alene uten deling.",
+      "To see a countdown on your watchface, install Dynamic or Halftone and choose it as your clock. In its settings, turn on activity plugins, show Timer in the activity list and save.": "Installer Dynamic eller Halftone og velg den som urskive for å se en nedtelling. Slå på aktivitetsplugins og Timer i aktivitetslisten i innstillingene, og lagre."
     },
     "fi": {
       "Appearance for Timer on your watch.": "Timerin ulkoasu kellossasi.",
@@ -1494,7 +1559,12 @@
       "Saved on phone · Pending on watch": "Tallennettu puhelimeen · Odottaa kelloa",
       "Saved on phone · Watch could not confirm saving": "Tallennettu puhelimeen · Kello ei vahvistanut tallennusta",
       "Retry watch delivery": "Lähetä kelloon uudelleen",
-      "Text size and appearance for Timer on your watch.": "Timerin tekstin koko ja ulkoasu kellossa."
+      "Text size and appearance for Timer on your watch.": "Timerin tekstin koko ja ulkoasu kellossa.",
+      "What is an activity?": "Mikä on toiminto?",
+      "Activities are live updates shown by compatible XOCE apps and watchfaces, such as a countdown, music or a new notification.": "Toiminnot ovat yhteensopivien XOCE-sovellusten ja kellotaulujen näyttämiä ajankohtaisia tietoja, kuten ajastus, musiikki tai uusi ilmoitus.",
+      "Start a countdown in Timer, then return to Dynamic or Halftone to see the time remaining. Timer still runs the countdown and alarm.": "Käynnistä ajastus Timerissa ja palaa Dynamic- tai Halftone-kellotauluun nähdäksesi jäljellä olevan ajan. Timer huolehtii edelleen ajastuksesta ja hälytyksestä.",
+      "Sharing activities between apps needs plugin support and a connected phone. Timer works on its own without sharing.": "Toimintojen jakaminen sovellusten välillä vaatii lisäosatuen ja yhteyden puhelimeen. Timer toimii myös itsenäisesti ilman jakamista.",
+      "To see a countdown on your watchface, install Dynamic or Halftone and choose it as your clock. In its settings, turn on activity plugins, show Timer in the activity list and save.": "Asenna Dynamic tai Halftone ja valitse se kellotauluksi nähdäksesi ajastuksen. Ota sen asetuksissa toimintolisäosat ja Timer käyttöön toimintoluettelossa ja tallenna."
     },
     "hu": {
       "Appearance for Timer on your watch.": "A Timer megjelenése az órán.",
@@ -1595,7 +1665,12 @@
       "Saved on phone · Pending on watch": "Mentve a telefonon · Várakozás az órára",
       "Saved on phone · Watch could not confirm saving": "Mentve a telefonon · Az óra nem igazolta vissza a mentést",
       "Retry watch delivery": "Újraküldés az órára",
-      "Text size and appearance for Timer on your watch.": "A Timer szövegmérete és megjelenése az órán."
+      "Text size and appearance for Timer on your watch.": "A Timer szövegmérete és megjelenése az órán.",
+      "What is an activity?": "Mi az a tevékenység?",
+      "Activities are live updates shown by compatible XOCE apps and watchfaces, such as a countdown, music or a new notification.": "A tevékenységek a kompatibilis XOCE-alkalmazásokban és számlapokon megjelenő aktuális információk, például visszaszámlálás, zene vagy új értesítés.",
+      "Start a countdown in Timer, then return to Dynamic or Halftone to see the time remaining. Timer still runs the countdown and alarm.": "Indíts visszaszámlálást a Timerben, majd térj vissza a Dynamic vagy Halftone számlapra a hátralévő idő megtekintéséhez. A visszaszámlálást és a riasztást továbbra is a Timer kezeli.",
+      "Sharing activities between apps needs plugin support and a connected phone. Timer works on its own without sharing.": "A tevékenységek alkalmazások közötti megosztásához bővítménytámogatás és csatlakoztatott telefon kell. A Timer megosztás nélkül is önállóan működik.",
+      "To see a countdown on your watchface, install Dynamic or Halftone and choose it as your clock. In its settings, turn on activity plugins, show Timer in the activity list and save.": "A visszaszámlálás megjelenítéséhez telepítsd és válaszd ki a Dynamic vagy Halftone számlapot. A beállításaiban kapcsold be a tevékenységbővítményeket és a Timert a listában, majd ments."
     },
     "ro": {
       "Appearance for Timer on your watch.": "Aspectul Timer pe ceas.",
@@ -1696,7 +1771,12 @@
       "Saved on phone · Pending on watch": "Salvat pe telefon · În așteptare pe ceas",
       "Saved on phone · Watch could not confirm saving": "Salvat pe telefon · Ceasul nu a confirmat salvarea",
       "Retry watch delivery": "Retrimite la ceas",
-      "Text size and appearance for Timer on your watch.": "Mărimea textului și aspectul Timer pe ceas."
+      "Text size and appearance for Timer on your watch.": "Mărimea textului și aspectul Timer pe ceas.",
+      "What is an activity?": "Ce este o activitate?",
+      "Activities are live updates shown by compatible XOCE apps and watchfaces, such as a countdown, music or a new notification.": "Activitățile sunt informații curente afișate de aplicațiile și cadranele XOCE compatibile, precum o numărătoare inversă, muzică sau o notificare nouă.",
+      "Start a countdown in Timer, then return to Dynamic or Halftone to see the time remaining. Timer still runs the countdown and alarm.": "Pornește o numărătoare inversă în Timer, apoi revino la Dynamic sau Halftone pentru a vedea timpul rămas. Timer gestionează în continuare numărătoarea și alarma.",
+      "Sharing activities between apps needs plugin support and a connected phone. Timer works on its own without sharing.": "Partajarea activităților între aplicații necesită suport pentru pluginuri și un telefon conectat. Timer funcționează și independent, fără partajare.",
+      "To see a countdown on your watchface, install Dynamic or Halftone and choose it as your clock. In its settings, turn on activity plugins, show Timer in the activity list and save.": "Pentru a vedea numărătoarea pe cadran, instalează Dynamic sau Halftone și alege-l ca ceas. În setările sale, activează pluginurile de activitate și Timer în listă, apoi salvează."
     },
     "tr": {
       "Appearance for Timer on your watch.": "Saatindeki Timer’ın görünümü.",
@@ -1797,7 +1877,12 @@
       "Saved on phone · Pending on watch": "Telefona kaydedildi · Saat bekleniyor",
       "Saved on phone · Watch could not confirm saving": "Telefona kaydedildi · Saat kaydetmeyi onaylamadı",
       "Retry watch delivery": "Saate yeniden gönder",
-      "Text size and appearance for Timer on your watch.": "Saatinizde Timer için metin boyutu ve görünüm."
+      "Text size and appearance for Timer on your watch.": "Saatinizde Timer için metin boyutu ve görünüm.",
+      "What is an activity?": "Etkinlik nedir?",
+      "Activities are live updates shown by compatible XOCE apps and watchfaces, such as a countdown, music or a new notification.": "Etkinlikler, uyumlu XOCE uygulama ve saat yüzlerinde gösterilen geri sayım, müzik veya yeni bildirim gibi güncel bilgilerdir.",
+      "Start a countdown in Timer, then return to Dynamic or Halftone to see the time remaining. Timer still runs the countdown and alarm.": "Timer’da geri sayım başlatın, ardından kalan süreyi görmek için Dynamic veya Halftone’a dönün. Geri sayımı ve alarmı yine Timer yönetir.",
+      "Sharing activities between apps needs plugin support and a connected phone. Timer works on its own without sharing.": "Uygulamalar arasında etkinlik paylaşımı için eklenti desteği ve bağlı bir telefon gerekir. Timer paylaşım olmadan da bağımsız çalışır.",
+      "To see a countdown on your watchface, install Dynamic or Halftone and choose it as your clock. In its settings, turn on activity plugins, show Timer in the activity list and save.": "Geri sayımı saat yüzünde görmek için Dynamic veya Halftone’u yükleyip saat yüzü olarak seçin. Ayarlarında etkinlik eklentilerini ve listede Timer’ı açıp kaydedin."
     }
   },
   "nativeWords": {
@@ -2353,6 +2438,11 @@
     "applied": "Applied on watch",
     "pending": "Saved on phone · Pending on watch",
     "watchFailed": "Saved on phone · Watch could not confirm saving",
-    "retryWatch": "Retry watch delivery"
+    "retryWatch": "Retry watch delivery",
+    "activityTitle": "What is an activity?",
+    "activityDefinition": "Activities are live updates shown by compatible XOCE apps and watchfaces, such as a countdown, music or a new notification.",
+    "activityExample": "Start a countdown in Timer, then return to Dynamic or Halftone to see the time remaining. Timer still runs the countdown and alarm.",
+    "activityConnection": "Sharing activities between apps needs plugin support and a connected phone. Timer works on its own without sharing.",
+    "activityTimersetup": "To see a countdown on your watchface, install Dynamic or Halftone and choose it as your clock. In its settings, turn on activity plugins, show Timer in the activity list and save."
   }
 }
