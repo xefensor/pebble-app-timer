@@ -3,9 +3,9 @@
 A native timer for stock PebbleOS with eight saved timers, watch-owned alarms and optional
 activity sharing.
 
-## Store update 1.0.1
+## Store update 1.0.2
 
-Current source prepares Timer 1.0.1 for the reviewed Store update. The new numeric version supersedes the existing public 1.0.0 binary without changing the public UUID. Its exact PBW, Store package, source and checksums are under `releases/`; earlier artifacts remain unchanged.
+Current source prepares Timer 1.0.2 for the reviewed Store update. The new numeric version supersedes the existing public 1.0.0 binary without changing the public UUID. Its exact PBW, Store package, source and checksums are under `releases/`; earlier artifacts remain unchanged.
 
 ## Activities: see what is happening now
 

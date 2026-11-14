@@ -1,4 +1,4 @@
-# Timer 1.0.1 — current Store preparation
+# Timer 1.0.2 — current Store preparation
 
 The active listing is `listing.json`. Descriptions and release notes are plain
 text; native screenshots and banner filenames are listed per platform. Upload
