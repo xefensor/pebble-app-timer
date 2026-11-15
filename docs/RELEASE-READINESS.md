@@ -1,6 +1,12 @@
 # Release 1.0.3 · 2026-11-14
 
-The final source tests, fresh builds, package checks and native emulator scope are recorded in [current validation](qa/release-1.0.3/validation.json). Historical galleries keep their capture versions and have explicit final-binary reuse proof. Physical phone/watch and live-provider results are not claimed. Xef authorized stable GitHub publication and retained the existing review acceptance; no new device approval gate applies. Pebble Store submission remains manual and unsubmitted.
+Timer 1.0.3 is published in [Pebble Store](https://apps.repebble.com/2f8f8cfd4e7e442fb724dac7) and as [GitHub v1.0.3](https://github.com/xefensor/pebble-app-timer/releases/tag/v1.0.3). Public Store/GitHub identity and exact PBW bytes were reverified on 2026-11-15 by the XOCE website deployment gate. The matching PBW SHA-256 is `33bc8ee06bbcc084a70d133a6f126bc4bcb0b90f3e46f5823dc78ea5b38171f6`. Publication does not authorize overwriting this release or its archives.
+
+The final source tests, fresh builds, package checks and native emulator scope are recorded in [release validation](qa/release-1.0.3/validation.json). Historical galleries retain their actual capture versions and final-binary reuse proof. Physical phone/watch and live-provider results are not claimed. Xef's stable-release acceptance removed the earlier additional physical-device approval prerequisite; it did not create unobserved test results.
+
+## Historical preparation notes
+
+The dated records below describe the earlier preparation sequence. Their old version numbers and then-pending publication steps do not override the completed publication above. Frozen artifacts and QA records remain unchanged.
 
 # Stable release preparation — 1.0.2
 

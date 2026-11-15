@@ -1,76 +1,64 @@
 # Timer
 
-A native timer for stock PebbleOS with eight saved timers, watch-owned alarms and optional
-activity sharing.
+Eight reusable timers, watch-owned alarms and optional activity sharing.
 
-## Store update 1.0.2
+![Timer XOCE banner with indigo timing arcs and a native countdown example.](store/emery-family-banner.png)
 
-Current source prepares Timer 1.0.2 for the reviewed Store update. The new numeric version supersedes the existing public 1.0.0 binary without changing the public UUID. Its exact PBW, Store package, source and checksums are under `releases/`; earlier artifacts remain unchanged.
-
-## Activities: see what is happening now
-
-Activities are live updates shown by compatible XOCE apps and watchfaces, such as a countdown, music or a new notification. This feature connects compatible XOCE products; support depends on the app or watchface you choose.
-
-Install Dynamic or Halftone and choose it as your watchface. Enable activity plugins and show Timer in that watchface’s activity list, then save. Start a countdown in Timer and return to the clock to see the time remaining. Timer still runs the countdown and alarm. Sharing is optional; Timer works on its own.
-
-Sharing needs plugin support in the official Pebble phone app, the required permissions and a connected phone. Weather and battery readings use separate reading settings. Music and notification integration requires Android. Open Activity is optional; you can always open Timer from the watch’s app list.
-
-## Development alarm sound
-
-The local feedback candidate adds repeating double beeps on Time 2 alongside
-vibration. Sound defaults on and has an independent switch in the phone settings.
-Quiet Time and speaker mute are respected. Round 2 uses vibration only. Native
-alarm ownership, countdowns and acknowledgement are unchanged; see [current
-UI](docs/UI.md). Physical sound quality and loudness remain unverified.
+[Artwork provenance](store/artwork-provenance.json). Native emulator example capture.
 
 ## Download
 
-[Version 0.14.5](https://github.com/xefensor/pebble-app-timer/releases/tag/v0.14.5) is a development prerelease.
+**Timer 1.0.3 is published in [Pebble Store](https://apps.repebble.com/2f8f8cfd4e7e442fb724dac7).**
+The [product page](https://xefensor.github.io/xoce/projects/timer/) provides installation, setup, support and privacy links.
 
-[PBW](https://github.com/xefensor/pebble-app-timer/releases/download/v0.14.5/Timer-0.14.5.pbw),
-[source](https://github.com/xefensor/pebble-app-timer/releases/download/v0.14.5/Timer-0.14.5-source.zip),
-[debug files](https://github.com/xefensor/pebble-app-timer/releases/download/v0.14.5/Timer-0.14.5-debug.zip), and
-[checksums](https://github.com/xefensor/pebble-app-timer/releases/download/v0.14.5/SHA256SUMS.txt).
+Matching [GitHub release v1.0.3](https://github.com/xefensor/pebble-app-timer/releases/tag/v1.0.3):
 
-Install the PBW through the Pebble phone app. No separate library installation is needed.
+- [PBW](https://github.com/xefensor/pebble-app-timer/releases/download/v1.0.3/Timer-1.0.3.pbw)
+- [Source](https://github.com/xefensor/pebble-app-timer/releases/download/v1.0.3/Timer-1.0.3-source.zip)
+- [Debug files](https://github.com/xefensor/pebble-app-timer/releases/download/v1.0.3/Timer-1.0.3-debug.zip)
+- [Checksums](https://github.com/xefensor/pebble-app-timer/releases/download/v1.0.3/SHA256SUMS.txt)
 
-Create a timer with the watch buttons. Select pauses/resumes or starts a Ready timer; More
-options offers Reset and safe deletion. Native Wakeup owns accepted alarms while the app is
-closed. Optional sharing requires phone plugin support. The phone settings page chooses
-Light/Dark appearance and confirms Save without closing.
-
-[Usage and controls](docs/USAGE.md) · [Current UI](docs/UI.md).
+Install one PBW through the Pebble phone app. It includes the watchapp and its phone-side components; no separate library installation is needed. Earlier releases remain available in [release history](https://github.com/xefensor/pebble-app-timer/releases).
 
 ## Compatibility
 
-The release candidate targets **Pebble Time 2 / Emery** and **Round 2 / Gabbro**, using **Pebble SDK 4.44**. Duo is deferred. Portable and
-emulator evidence is versioned; physical phone/watch checks retain their documented gaps.
-Existing screenshots keep their original version and provenance.
+The published release targets **Pebble Time 2 / Emery** and **Round 2 / Gabbro**, built with **Pebble SDK 4.44**. Duo is excluded.
+
+Sharing readings and activities needs plugin support in the official Pebble phone app, the permissions required by your sources and a connected phone. Built-in music and notifications require Android.
 
 ## Setup and use
 
-Install the PBW through the Pebble phone app. Create, start, pause and manage timers on the watch; native deadlines and alarms remain usable offline. The phone settings change this app’s appearance. See [current UI and controls](docs/UI.md).
+Create a timer with the watch buttons, choose hours, minutes and seconds, then start it. Select pauses, resumes or starts a Ready timer; More options offers Reset and safe deletion. Successfully scheduled native Wakeup alarms continue while Timer is closed and do not need a connected phone.
 
-The version notes below describe the published download. Development candidates
-remain separate; use [CONTRIBUTING](CONTRIBUTING.md) for local builds.
+[Usage and controls](docs/USAGE.md) · [Current UI](docs/UI.md) · [Troubleshooting and support](SUPPORT.md).
 
-## Version 0.14.5
+## Activities: see what is happening now
 
-- Adopt shared XOCE headers, readable type roles, full-height action rails, canonical icons and stock Pebble action-bar feedback.
-- Keep one timer anchored at the first-row position. Match native duration-editor movement while retaining rigid 120 ms menu selection.
-- Preserve a valid later alarm when scheduling its replacement fails. Keep timer ownership, eight slots, persistence and explicit Reset/Start behavior.
-- Bundle UI 0.1.1 and the confirmed stay-open appearance settings page.
+Activities are updates about something happening now, such as a countdown, music or a notification. Compatible XOCE products decide how to display them.
 
-## Version 1.0.0 — stable release preparation
+Install Dynamic or Halftone separately and choose it as your watchface. Enable activity plugins, show Timer in its activity list and save. Start a countdown in Timer, then return to the clock. Dashboard can show it too. Timer keeps ownership of the countdown and alarm; sharing is optional.
 
-Add Time 2 and Round 2 SDK 4.44 builds, responsive timer rows and editor geometry. Preserve native alarms and saved timers.
+Weather and battery readings use separate reading settings. Open Activity is optional; an app can always be opened from the watch's app list.
 
-Xef accepted the reviewed implementation for stable release preparation on 2026-11-13. Actual test coverage remains recorded separately; no physical-device result is implied. Publication is a separate step.
+## Alarm sound
+
+On Time 2, **Alarm sound** independently selects sound and vibration or vibration only. Sound respects Quiet Time and speaker mute. Round 2 uses vibration only. Physical loudness, sound quality and battery impact have not been established by emulator tests.
+
+## Display settings and languages
+
+The phone settings provide **Text Size** and **Light/Dark** watch appearance. Follow Pebble text size uses the watch's preference. Automatic Follow Pebble appearance is unavailable in this build; the page explains the saved Light/Dark fallback. Phone-page appearance follows the phone independently.
+
+A confirmed Save means the choices were stored on the phone. Pending watch delivery and Applied on watch are separate states. Saving stays open on the supported embedded settings route; the legacy return-URL route follows its documented closing behaviour.
+
+The release supports English, Czech, Slovak, German, French, Spanish, Italian, Portuguese, Dutch, Polish, Danish, Swedish, Norwegian, Finnish, Hungarian, Romanian and Turkish. Unsupported languages use English. Provider text, user labels and saved bindings keep their original values.
+
+## Verification scope
+
+[Release readiness](docs/RELEASE-READINESS.md) links the version-bound source, package and emulator evidence. Publication is complete; no physical phone/watch or live-provider result is implied by that status. Earlier captures retain their actual versions and provenance.
 
 ## Development
 
-Use Node 22, Python 3.12 and a C compiler. SDK builds additionally need Pebble SDK 4.44 on
-PATH.
+Use the pinned Node 22.23.4 and Python 3.12.15 runtimes and a C compiler. Native builds additionally need Pebble SDK 4.44; the [contributor guide](CONTRIBUTING.md) documents its isolated bootstrap.
 
 ```sh
 npm ci --ignore-scripts
@@ -79,24 +67,21 @@ npm run build
 npm run check:artifact
 ```
 
-[Contributor guide](CONTRIBUTING.md) · [Release preparation](docs/RELEASING.md) · [History index](docs/history/index.md).
-Development outputs belong in ignored `build/`; published archives stay frozen.
-
-The development candidate now proves native list → details → Back with
-launch-time Pebble Text Size, the matching built-in Pebble type roles, measured
-row density and restored timer selection.
-The existing header and full-height rail remain. This is a local checkpoint,
-with [scope and verification commands](docs/UI.md#development-checkpoint-list--details--back);
-the published 0.14.5 download above remains unchanged.
+[Contributor guide](CONTRIBUTING.md) · [Release workflow](docs/RELEASING.md) · [History index](docs/history/index.md).
+Development outputs belong in ignored `build/`; published archives stay frozen. The current bundled UI package is 0.1.3; Activities is bundled at 0.4.5.
 
 ## Licence
 
-[PolyForm Noncommercial 1.0.0](LICENSE). Preserve bundled third-party notices and attribution.
+[PolyForm Noncommercial 1.0.0](LICENSE). Preserve [third-party notices](THIRD-PARTY-NOTICES.md) and attribution. See [privacy](PRIVACY.md) for app-owned data handling.
 
-The development checkout supports English, Czech, Slovak, German, French, Spanish,
-Italian, Portuguese, Dutch, Polish, Danish, Swedish, Norwegian, Finnish, Hungarian,
-Romanian and Turkish on watch screens and phone settings. Watch text follows the
-watch language; settings follow the phone language. Regional locale codes and
-Norwegian nb/nn are accepted; unsupported languages use English. Provider text,
-user labels and saved bindings keep their original values. Frozen release downloads
-retain their original language coverage until a new release is published.
+## Earlier release notes
+
+<span id="store-update-102"></span>
+
+<span id="development-alarm-sound"></span>
+
+<span id="version-0145"></span>
+
+<span id="version-100--stable-release-preparation"></span>
+
+The earlier Store-update preparation, development download and version notes remain in the [README snapshot before this documentation refresh](https://github.com/xefensor/pebble-app-timer/blob/d777546af3c56d3d69c861a29cac093d4c5b260d/README.md). Those notes describe their original versions and evidence, not the current installation.

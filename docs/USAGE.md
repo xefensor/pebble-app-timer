@@ -2,7 +2,7 @@
 
 ## What you install
 
-Install **one Timer PBW**. It contains the native watchapp, its PKJS phone bridge
+Install **Timer 1.0.3** from [Pebble Store](https://apps.repebble.com/2f8f8cfd4e7e442fb724dac7) or its matching [GitHub PBW](https://github.com/xefensor/pebble-app-timer/releases/download/v1.0.3/Timer-1.0.3.pbw). Install **one Timer PBW**. It contains the native watchapp, its PKJS phone bridge
 and a read-only provider plugin. Timer owns its saved timer and native Wakeup
 alarm. The bridge saves the last reported state on the phone, and the plugin
 exposes that state primarily as `activity/summary` v4. The summary contains one
@@ -48,8 +48,7 @@ the elapsed portion and adjusts the run's progress span; an unchanged save keeps
 the deadline. The original saved repeat duration stays separate, including after
 a one-minute snooze. Ready timers retain that saved duration for their next run.
 
-Options and the duration editor control timers on the watch. The phone appearance
-page selects Light/Dark and keeps the confirmed Save state open. The [UX review](../docs/UX-REVIEW.md) records the changes and retained behavior.
+Options and the duration editor control timers on the watch. The phone page has separate Watch display and Alarm sound save controls. Watch display selects text size and Light/Dark appearance; Alarm sound controls Time 2 sound independently. Both report saved phone state separately from pending or applied watch delivery. The supported embedded page stays open after confirmed Save; its legacy return-URL route closes as documented. The [UX review](../docs/UX-REVIEW.md) records the changes and retained behavior.
 
 ## Countdown in the app list
 
@@ -68,7 +67,7 @@ To keep Timer at the top manually, drag it upward in the phone app's
 **My Apps** list, as described in
 [Pebble's app organisation guide](https://help.repebble.com/en/articles/14166032-adding-watchfaces-apps).
 
-The timer respects Quiet Time for vibration. PebbleOS controls missed-Wakeup
+Time 2 offers optional alarm sound alongside vibration; Round 2 uses vibration only. Sound respects Quiet Time and speaker mute. The timer respects Quiet Time for vibration. PebbleOS controls missed-Wakeup
 notifications. A scheduling failure displays “Alarm not set; keep open”
 instead of claiming a background alarm was secured.
 

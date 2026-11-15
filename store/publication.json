@@ -1,0 +1,11 @@
+{
+  "schemaVersion": 1,
+  "publication_status": "published",
+  "version": "1.0.3",
+  "uuid": "50e9ef12-a5ab-4369-a3b5-3447bfba5151",
+  "store_url": "https://apps.repebble.com/2f8f8cfd4e7e442fb724dac7",
+  "github_release_url": "https://github.com/xefensor/pebble-app-timer/releases/tag/v1.0.3",
+  "pbw_url": "https://github.com/xefensor/pebble-app-timer/releases/download/v1.0.3/Timer-1.0.3.pbw",
+  "pbw_sha256": "33bc8ee06bbcc084a70d133a6f126bc4bcb0b90f3e46f5823dc78ea5b38171f6",
+  "verified_on": "2026-11-15"
+}

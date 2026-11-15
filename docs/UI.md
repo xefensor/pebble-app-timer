@@ -1,9 +1,8 @@
 # Timer: current UI
 
-The current release is 0.14.5. Earlier downloads and frozen evidence retain
-their original versions and interfaces.
+The current published release is **1.0.3**. [Install it](../README.md#download) or read [release readiness](RELEASE-READINESS.md) for version-bound evidence. Earlier downloads and frozen evidence retain their original versions and interfaces.
 
-Watch timer controls stay on the watch. The published phone page has one Light/Dark selector. The development candidate adds independent Text Size and Appearance controls, stays open after Save, and distinguishes saved phone choices from watch-confirmed application. The 34 px contrasting action rail spans every screen row; headers and footers stay inside 166 px. All development watch screens use built-in Pebble Gothic roles and LECO number fonts; no custom fonts are bundled in the candidate. The development Timer checkpoint uses native MenuLayer selection and measured rows, with all eight slots reachable. Long elapsed/counter values and warnings stay complete.
+Watch timer controls stay on the watch. The published phone page has independent Text Size, Appearance and Alarm Sound controls. Save stays open on the supported embedded route and distinguishes saved phone choices from watch-confirmed application; the legacy return-URL route closes as documented. The 34 px contrasting action rail spans every Emery row; headers and footers stay inside its 166 px content area. Current watch screens use built-in Pebble Gothic roles and LECO number fonts. No custom text fonts are bundled. Native MenuLayer selection and measured rows keep all eight slots reachable. Long elapsed/counter values and warnings stay complete.
 
 ## Shared UI
 
@@ -35,7 +34,9 @@ hourglass illustration remains Timer's own animation.
 
 Native state, verified banks, deadlines and Wakeups are authoritative. Preserve eight slots, saved repeat duration, acknowledgement and migration compatibility. A transport ACK is not a saved-state receipt. Paused sharing expires after five minutes without renewing its observation. Zero does not establish completion. Keep one AppMessage queue. Appearance keys are separate from timer/Glance keys; appearance never changes a timer. Back, critical warnings, safe Keep-first Delete and immediate owner operations remain available.
 
-## Development navigation
+<span id="development-navigation"></span>
+
+## Navigation
 
 The production list is a `MenuLayer` beginning at the 32 px header boundary.
 A single timer and a multi-timer list use that same anchor. Small/Medium/Large
@@ -89,6 +90,10 @@ Run `python3 scripts/emulator-timer-navigation.py` for Add/Edit, Options, safe c
 candidate bytes. The SDK emulator's content-size command changes the OS preference;
 the read-only probe confirms it through `preferred_content_size()`. Its SDK shell
 omits Settings and stock Timer, so their physical checks stay pending.
+
+## Historical checkpoint records
+
+The following custom/native-type records retain their original dates, versions, hashes and test gaps. They describe the development sequence before the current published release; their local-candidate wording is historical.
 
 ## Superseded custom-type checkpoint evidence — 2026-11-08
 
@@ -287,12 +292,16 @@ fresh browser checks remain explicitly separate.
 
 ## Native navigation verification — 2026-11-08
 
+This is the original checkpoint narrative. Its then-pending preference work is included in the current published release described below.
+
 The complete development navigation and native type changes are recorded in
 [native navigation checkpoint](native-navigation-checkpoint.md). This supersedes
 only the active rendering/navigation descriptions above; older hash-bound records
 below retain their original scope. Preference delivery is a separate pending stage.
 
-## Development preferences
+<span id="development-preferences"></span>
+
+## Display preferences
 
 Text Size offers Follow Pebble, Small, Medium and Large. Manual choices use the
 same native role profiles as the matching Emery setting and survive relaunch.
@@ -312,20 +321,20 @@ untouched by status polling. Settings never create, pause, reset or edit a timer
 Supporting/help text uses the normal foreground colour rather than blended grey.
 This keeps black text on white and white text on black readable without changing
 type sizes or layouts. See the [contrast checkpoint](text-contrast-checkpoint.md)
-for the current candidate and verification scope.
+for that checkpoint’s candidate and verification scope.
 
 The compact-layout implementation and current verification scope are recorded in
 [the compact layout checkpoint](compact-layout-checkpoint.md).
 
 
-## Round 2 development layout
+<span id="round-2-development-layout"></span>
+
+## Round 2 layout
 
 Gabbro uses the complete 260×260 physical display. Text and artwork are fitted
 inside the chord for their vertical band; the shared UI library owns only
 geometry and drawing. Time 2 retains its established rectangular composition.
-The SDK 4.44 reference and disposable candidate evidence are in the workspace's
-`Round2-Development/` directory. This is development work; frozen release files
-and historical QA are unchanged. No physical Round 2 or Android result is implied.
+The released Gabbro implementation uses SDK 4.44. Earlier disposable reference evidence was recorded under `Round2-Development/` in its original review workspace; the version-bound release validation is linked from [release readiness](RELEASE-READINESS.md). Historical QA remains unchanged. No physical Round 2 or Android result is implied.
 
 Native round menus center the selected timer and show compact surrounding rows.
 On Round 2, New/Replace is the first native menu row; the clock and context remain passive. The editor uses circular fields
